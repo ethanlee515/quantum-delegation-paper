@@ -1,0 +1,4 @@
+# derived files from pdflatex
+*.aux
+*.log
+*.pdf
