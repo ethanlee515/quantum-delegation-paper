@@ -28,6 +28,9 @@ This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
 \section{Introduction}
 
 This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
+Below is some intro of it copied from my SoP
+
+It was proven that BQP=BQIP. That is, if a quantum computer can efficiently solve a given decision problem, then it can also efficiently convince a classical machine of its solution. I'm generalizing this to arbitrary efficient quantum computations. The proof for decision problems involves the classical verifier reducing the problem to a local Hamiltonian instance; the quantum prover would then commit its certificate and act as the verifier’s trusted measurement device as put forth in "Classical Verification of Quantum Computations" by Mahadev. It isn't as trivial as it may seem. Repeating the scheme for each qubit loses the information carried by entanglements and throws off the joint distribution between qubits. Simply measuring the entire output register instead is difficult to analyze. For decision problems, it’s not hard to argue that a malicious prover cannot do better than sending identical copies of some pure state unentangled with each others. That same reasoning doesn't apply here a priori. I've been trying to get a grasp on the particular structure of the local Hamiltonian reduction in order to better analyze it.
 
 \section{Preliminaries}
 
@@ -35,28 +38,34 @@ This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
 
 \section{more stuff}
 
-This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
+
 
 \begin{thebibliography}{9}
 	\bibitem{1804.01082}
-		Urmila Mahadev.
-		\newblock Classical Verification of Quantum Computations, 2018;
-		\newblock arXiv:1804.01082.
+	Urmila Mahadev.
+	\newblock Classical Verification of Quantum Computations, 2018;
+	\newblock arXiv:1804.01082.
 
 	\bibitem{quant-ph/0406180}
-		Julia Kempe, Alexei Kitaev and Oded Regev.
-		\newblock The Complexity of the Local Hamiltonian Problem, 2004,
-		\newblock SIAM Journal of Computing, Vol. 35(5), p. 1070-1097 (2006),
-			conference version in Proc. 24th FSTTCS, p. 372-383 (2004);
-			\newblock arXiv:quant-ph/0406180.
+	Julia Kempe, Alexei Kitaev and Oded Regev.
+	\newblock The Complexity of the Local Hamiltonian Problem, 2004,
+	\newblock SIAM Journal of Computing, Vol. 35(5), p. 1070-1097 (2006),
+		conference version in Proc. 24th FSTTCS, p. 372-383 (2004);
+	\newblock arXiv:quant-ph/0406180.
 
 	\bibitem{1109.0795}
-		Matthew McKague.
-		\newblock
-			On the power quantum computation over real Hilbert spaces, 2011,
-		\newblock Int. J. Quantum Inform., 11, 1350001 (2013);
-		\newblock arXiv:1109.0795.
-		\newblock DOI: 10.1142/S0219749913500019.
+	Matthew McKague.
+	\newblock On the power quantum computation over real Hilbert spaces, 2011,
+	\newblock Int. J. Quantum Inform., 11, 1350001 (2013);
+	\newblock arXiv:1109.0795.
+	\newblock DOI: 10.1142/S0219749913500019.
+	
+	\bibitem{0704.1287}
+	Jacob D. Biamonte and Peter J. Love.
+	\newblock Realizable Hamiltonians for Universal Adiabatic Quantum Computers, 2007,
+	\newblock Phys. Rev. A 78, 012352 (2008).;
+	\newblock arXiv:0704.1287.
+	\newblock DOI: 10.1103/PhysRevA.78.012352.
 
 \end{thebibliography}
 
