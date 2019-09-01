@@ -1,5 +1,10 @@
 \documentclass{article}
 \usepackage{authblk}
+\usepackage{amsmath, amssymb, amsthm}
+
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
 \title{Test Title}
 
@@ -27,16 +32,46 @@ This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
 
 \section{Introduction}
 
-This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
-Below is some intro of it copied from my SoP
+Below is some intro of it copied from my SoP.
+This is unpolished and mostly a placeholder at the moment though.
 
 It was proven that BQP=BQIP. That is, if a quantum computer can efficiently solve a given decision problem, then it can also efficiently convince a classical machine of its solution. I'm generalizing this to arbitrary efficient quantum computations. The proof for decision problems involves the classical verifier reducing the problem to a local Hamiltonian instance; the quantum prover would then commit its certificate and act as the verifier’s trusted measurement device as put forth in "Classical Verification of Quantum Computations" by Mahadev. It isn't as trivial as it may seem. Repeating the scheme for each qubit loses the information carried by entanglements and throws off the joint distribution between qubits. Simply measuring the entire output register instead is difficult to analyze. For decision problems, it’s not hard to argue that a malicious prover cannot do better than sending identical copies of some pure state unentangled with each others. That same reasoning doesn't apply here a priori. I've been trying to get a grasp on the particular structure of the local Hamiltonian reduction in order to better analyze it.
 
 \section{Preliminaries}
 
-This is a placeholder. Lorem ipsum. Lorem ipsum. Lorem ipsum...
+\subsection{Notations}
 
-\section{more stuff}
+Let $H\in\mathbb{R}^{N\times N}$ be Hermitian.
+
+\begin{definition}
+	Let $\lambda(H)$ as the least eigenvalue of $H$.
+\end{definition}
+
+\begin{definition}
+	Let the \emph{ground state} of $H$ be the eigenvector corresponding to $\lambda(H)$.
+\end{definition}
+
+\subsection{Local Hamiltonian}
+
+The local Hamiltonian problem is defined as follows:
+
+Given $H_1, \ldots, H_n\in\mathbb{R}^{N\times N}$, where each $H_j$ is Hermitian and has nonzero entries on at most $c\in\mathbb{N}$ rows and columns.
+Given $a<b$ with some inverse polynomial gap, let $H=\sum H_j$, decide whether $\lambda(H)<a$ or $\lambda(H)>b$..
+
+\begin{theorem}
+	Local Hamiltonian is QMA-complete.
+\end{theorem}
+
+\section{The Scheme}
+
+Here we describe the scheme between the classical client and an honest quantum server.
+
+First, we apply the transform given in \cite{1109.0795} to the desired quantum circuit. Everything is real numbers from here on. Note that this preserves the results of X/Z measurements. Then, we transform the circuit following the projection lemma construction described in \cite{quant-ph/0406180}. Additionally, we also double the size of the circuit by padding identity matrices at the end. We then follow the rest of \cite{quant-ph/0406180} and reduce the circuit into a 2-Local Hamiltonian instance. We can then turn all the Hamiltonians involved into some combinations of $X$ and $Z$ matrices following \cite{0704.1287}.
+
+We then follow \cite{1804.01082}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{quant-ph/0406180}. It will drop the $H_{out}$ term and simply set $H=J_{in}H_{in}+J_2H_{prop2}+J_1H_{prop1}+J_{clock}H_{clock}$.
+
+\section{Stuff}
+
 
 
 
