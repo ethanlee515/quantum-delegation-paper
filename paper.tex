@@ -56,6 +56,18 @@ Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
 	Let the \emph{ground state} of $H$ be the eigenvector corresponding to $\lambda(H)$.
 \end{definition}
 
+\begin{definition}
+	Denote the \emph{controlled phase gate}: $C_\phi|xy\rangle=(-1)^{xy}|xy\rangle$.
+\end{definition}
+
+\begin{definition}
+	Let $H\big|_S=\prod_SH\prod_S$, where $\prod_S$ is the projection onto the subspace $S$.
+\end{definition}
+
+\begin{definition}
+	Let $|\widehat{t}\rangle$ denote $t$ represented in unary. That is, a state of the form $|11\ldots1\rangle |00\ldots0\rangle$; that is, $t$ $1$s followed by all $0$s.
+\end{definition}
+
 \subsection{Local Hamiltonian}
 
 The local Hamiltonian problem is defined as follows:
@@ -84,25 +96,40 @@ $\lambda(H_1\big|_S)-\frac{1}{8}\leq
 
 Here we describe the scheme between the classical client and an honest quantum server.
 
-\subsection{Preprocessing the circuit}
-
-We first take our universal 
-
 \subsection{Reduction to Real Quantum Computation}
 
 The transform is found in \cite{1109.0795}. It turns the states and the unitary matrices into real numbers.
 
-Then, we transform the circuit following the projection lemma construction described in \cite{quant-ph/0406180}. Additionally, we also double the size of the circuit by padding identity matrices at the end. We then follow the rest of \cite{quant-ph/0406180} and reduce the circuit into a 2-Local Hamiltonian instance. We can then turn all the Hamiltonians involved into some combinations of $X$ and $Z$ matrices following \cite{0704.1287}.
-
-Note that this preserves the results of X/Z measurements. 
+TODO: maybe describe the transform here as needed. Need to show that this doesn't change X/Z measurements. Also need to show that the result of this can still be rewritten into controlled phase gates and one-qubit gates.
 
 \subsection{Reduction to 2-local Hamiltonians}
 
-We then follow \cite{1804.01082}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{quant-ph/0406180}. It will drop the $H_{out}$ term and simply set $H=J_{in}H_{in}+J_2H_{prop2}+J_1H_{prop1}+J_{clock}H_{clock}$.
+Then we reduce the circuit to an instance of 2-local Hamiltonian. This reduction is mostly based on \cite{quant-ph/0406180}.
 
-\subsection{Test computation}
+\subsection{preprocess the circuit}
 
-\subsection{Stuff}
+First, we rewrite the circuit to consist of only controlled phase gates and 1-qubit gates. TODO: prove that these 1-qubit gates are all real. We then double (TODO maybe multiply by $\gamma$ instead of doubling?) the size of the circuit by padding identity matrices at the end.
+
+\subsection{2-local Hamiltonian construction}
+
+We then attempt to construct a 2-local Hamiltonian with ground state $$\phi=\sum_{t=0}^TU_t...U_1|x\rangle\otimes|\hat{t}\rangle$$.
+
+We then follow the rest of \cite{quant-ph/0406180} and reduce the circuit into a 2-Local Hamiltonian instance. We can then turn all the Hamiltonians involved into some combinations of $X$ and $Z$ matrices following \cite{0704.1287}.
+It will drop the $H_{out}$ term and simply set $H=J_{in}H_{in}+J_2H_{prop2}+J_1H_{prop1}+J_{clock}H_{clock}$.
+
+\subsection{2-local ZX Hamiltonians}
+
+We then follow \cite{0704.1287} in writing each terms of $H$ into only $Z$ and $X$ measurements...
+
+This probably involves some kind of basis arguments on the Hamiltonians and maybe some stuff that's a bit more ugly. This should not change the state. I'll have to write this out later...
+
+\subsection{Checking computation}
+
+We then follow \cite{1804.01082}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{quant-ph/0406180}. 
+
+
+\subsection{Getting the Output}
+
 
 
 \begin{thebibliography}{9}
