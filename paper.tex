@@ -6,7 +6,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\title{Test Title}
+\title{Placeholder Title... Something About Delegating Quantum Computations}
 
 \author[1]{Kai-Min Chung}
 \author[1]{Yi Lee}
@@ -41,7 +41,12 @@ It was proven that BQP=BQIP. That is, if a quantum computer can efficiently solv
 
 \subsection{Notations}
 
-Let $H\in\mathbb{R}^{N\times N}$ be Hermitian.
+Let $\mathcal{B}$ denote the Hilbert space corresponding to a qubit.
+Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
+
+\begin{definition}
+	Let $H\geq0$ denote $H$ is positive semidefinite.
+\end{definition}
 
 \begin{definition}
 	Let $\lambda(H)$ as the least eigenvalue of $H$.
@@ -55,24 +60,49 @@ Let $H\in\mathbb{R}^{N\times N}$ be Hermitian.
 
 The local Hamiltonian problem is defined as follows:
 
-Given $H_1, \ldots, H_n\in\mathbb{R}^{N\times N}$, where each $H_j$ is Hermitian and has nonzero entries on at most $c\in\mathbb{N}$ rows and columns.
-Given $a<b$ with some inverse polynomial gap, let $H=\sum H_j$, decide whether $\lambda(H)<a$ or $\lambda(H)>b$..
+\begin{definition}
+	Let $H_1, \ldots, H_n:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian. Then $$H=\sum_{j=1}^nH_j$$ is called a \emph{Hamiltonian}.
+	If each $H_j$ acts on at most $k$ qubits, then $H$ is called a \emph{$k$-local Hamiltonian}.
+\end{definition}
+
+The local Hamiltonian problem is given by let $a<b$ with some inverse polynomial gap, let $H=\sum H_j$, determine whether $\lambda(H)<a$ or $\lambda(H)>b$..
 
 \begin{theorem}
-	Local Hamiltonian is QMA-complete.
+	The Local Hamiltonian problem is QMA-complete.
 \end{theorem}
+
+\subsection{Projection Lemma}
+
+Here is a lemma that we will use, taken from \cite{quant-ph/0406180}.
+
+Let $H_1, H_2$ be Hamiltonians where $H_2\geq0$, and $S=\ker H_2$.
+Then $\exists J\in\mathbb{R}$ s.t.
+$\lambda(H_1\big|_S)-\frac{1}{8}\leq
+	\lambda(H_1+JH_2)\leq\lambda(H_1\big|_S)$.
 
 \section{The Scheme}
 
 Here we describe the scheme between the classical client and an honest quantum server.
 
-First, we apply the transform given in \cite{1109.0795} to the desired quantum circuit. Everything is real numbers from here on. Note that this preserves the results of X/Z measurements. Then, we transform the circuit following the projection lemma construction described in \cite{quant-ph/0406180}. Additionally, we also double the size of the circuit by padding identity matrices at the end. We then follow the rest of \cite{quant-ph/0406180} and reduce the circuit into a 2-Local Hamiltonian instance. We can then turn all the Hamiltonians involved into some combinations of $X$ and $Z$ matrices following \cite{0704.1287}.
+\subsection{Preprocessing the circuit}
+
+We first take our universal 
+
+\subsection{Reduction to Real Quantum Computation}
+
+The transform is found in \cite{1109.0795}. It turns the states and the unitary matrices into real numbers.
+
+Then, we transform the circuit following the projection lemma construction described in \cite{quant-ph/0406180}. Additionally, we also double the size of the circuit by padding identity matrices at the end. We then follow the rest of \cite{quant-ph/0406180} and reduce the circuit into a 2-Local Hamiltonian instance. We can then turn all the Hamiltonians involved into some combinations of $X$ and $Z$ matrices following \cite{0704.1287}.
+
+Note that this preserves the results of X/Z measurements. 
+
+\subsection{Reduction to 2-local Hamiltonians}
 
 We then follow \cite{1804.01082}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{quant-ph/0406180}. It will drop the $H_{out}$ term and simply set $H=J_{in}H_{in}+J_2H_{prop2}+J_1H_{prop1}+J_{clock}H_{clock}$.
 
-\section{Stuff}
+\subsection{Test computation}
 
-
+\subsection{Stuff}
 
 
 \begin{thebibliography}{9}
