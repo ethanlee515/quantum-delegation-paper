@@ -96,6 +96,22 @@ $\lambda(H_1\big|_S)-\frac{1}{8}\leq
 
 Here we describe schemes that allows a classical client to interact with a quantum server, and various properties that such schemes can have.
 
+\begin{definition}
+	A \emph{quantum delegation protocol} is an polynomial-round interactive protocol between a BPP verifier and a possibly malicious BQP prover. The BPP verifier has an arbitrary quantum circuit with classical input. Its goal is to evaluate the quantum circuit with an honest prover.
+\end{definition}
+
+\begin{definition}
+	A quantum delegation protocol has \emph{long output with error $\epsilon$} if the output can have multiple bits. In this case, the verifier should end with a measurement result of the output register. Said result's probability distribution would be within $\epsilon$ of the true distribution.
+\end{definition}
+
+\begin{definition}
+	A quantum delegation protocol is \emph{blind} if a malicious prover cannot learn the input or the output of the computation. In particular, security notions such as \emph{CPA} can be applied here.
+\end{definition}
+
+\begin{definition}
+	A quantum delegation protocol is \emph{verifiable} if the verifier can check if the output is correct. TODO need to be more rigorous here.
+\end{definition}
+
 \section{The Scheme}
 
 Here we describe the scheme between the classical client and an honest quantum server.
