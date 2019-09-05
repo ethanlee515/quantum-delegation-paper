@@ -100,6 +100,8 @@ Here we describe schemes that allows a classical client to interact with a quant
 	A \emph{quantum delegation protocol} is an polynomial-round interactive protocol between a BPP verifier and a BQP prover. The BPP verifier has an arbitrary quantum circuit with classical input that it needs to evaluate with the help of the prover.
 \end{definition}
 
+TODO (maybe don't assume universality?)
+
 \begin{definition}
 	A quantum delegation protocol has \emph{long output with error $\epsilon$} if the output can have multiple bits. In this case, the verifier should end with a measurement result of the output register. Said result's probability distribution would be within $\epsilon$ of the true distribution.
 \end{definition}
@@ -112,7 +114,11 @@ Here we describe schemes that allows a classical client to interact with a quant
 	A quantum delegation protocol is \emph{verifiable} if the verifier can check if the output is correct. TODO need to be more rigorous here.
 \end{definition}
 
-\section{The Scheme}
+In \cite{1804.01082}, a verifiable scheme is proposed.
+
+TODO check where does \cite{arXiv:1904.06320} fit in.
+
+\section{Long Output scheme}
 
 Here we describe the scheme between the classical client and an honest quantum server.
 Let $x$ be the client's input, and $U_T...U_1$ be the circuit to evaluate.
