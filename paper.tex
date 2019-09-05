@@ -114,13 +114,13 @@ TODO (maybe don't assume universality?)
 	A quantum delegation protocol is \emph{verifiable} if the verifier can check if the output is correct. TODO need to be more rigorous here.
 \end{definition}
 
-In \cite{1804.01082}, a verifiable scheme is proposed.
+In \cite{1804.01082}, a verifiable scheme is proposed. In \cite{1708.02130}, a blind scheme is proposed. (TODO just make this CPA or whatever it actually is...) We propose a verifiable scheme with long output which can also be made blind.
 
 TODO check where does \cite{arXiv:1904.06320} fit in.
 
 \section{Long Output scheme}
 
-Here we describe the scheme between the classical client and an honest quantum server.
+Here we describe the scheme between the classical client and an honest quantum server. We mostly follow the logic in \cite{1804.01082}. We first follow \cite{quant-ph/0406180} to reduce the problem to an instance of local Hamiltonian.
 Let $x$ be the client's input, and $U_T...U_1$ be the circuit to evaluate.
 
 \subsection{Reduction to Real Quantum Computation}
@@ -128,10 +128,6 @@ Let $x$ be the client's input, and $U_T...U_1$ be the circuit to evaluate.
 The transform is found in \cite{1109.0795}. It turns the states and the unitary matrices into real numbers.
 
 TODO: maybe describe the transform here as needed. Need to show that this doesn't change X/Z measurements. Also need to show that the result of this can still be rewritten into controlled phase gates and one-qubit gates.
-
-\subsection{Reduction to 2-local Hamiltonians}
-
-Then we reduce the circuit to an instance of 2-local Hamiltonian. This reduction is mostly based on \cite{quant-ph/0406180}.
 
 \subsection{preprocess the circuit}
 
