@@ -146,19 +146,13 @@ After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ b
 
 \subsection{Constructing a local Hamiltonian instance}
 
-We then attempt to construct a 2-local Hamiltonian with ground state: $$\phi=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
+We then attempt to construct a local Hamiltonian with ground state: $$\phi=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 We do so by ensuring states perpendicular to it have high eigenvalues. The basic construction comes from \cite{kitaev2002classical}. The simplification comes from \cite{biamonte_love_2008}.
 
-First, we ensure that the invalid clock states have high eigenvalues. That is, we take $$H_{clock}=\sum_{1\leq i<j\leq T} I\otimes \ket{01}\bra{01}_{ij}$$. We also set $S_{legal}=\ker H_{clock}$.
-We note that when stricted to $S_{legal}$, 
-\begin{itemize}
-	\item $\ket{10}\bra{10}_{t,t+1}
-		=\ket{\widehat{t}}\bra{\widehat{t}}$ 
-	\item $\ket{1}\bra{0}_{t+1}
-		=\ket{\widehat{t+1}}\bra{\widehat{t}}$
-	\item $\ket{11}\bra{00}_{t,t+1}
-		=\ket{\widehat{t+2}}\bra{\widehat{t}}$
-\end{itemize}
+First, we ensure that the invalid clock states have high eigenvalues.
+$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
+We also set $S_{legal}=\ker H_{clock}$. Note that $S_{legal}$ is precisely the valid clock states; that is, valid unary representations in the time register. Note that $H_{clock}$ can also be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates.
+$$H_{clock}=\frac{1}{4}((T-1)I + Z_1 - Z_T - \sum_t^{T-1}Z_tZ_{t+1})$$
 
 Then, we ensure that 1-qubit gates are propagated properly. To do so, we set
 	$$H_{prop1}=\sum_{t\in T_1}H_{prop,t}$$
