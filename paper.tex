@@ -90,7 +90,7 @@ The local Hamiltonian problem is given by let $a<b$ with some inverse polynomial
 
 \subsection{Projection Lemma}
 
-Here is a lemma that we will use, taken from \cite{quant-ph/0406180}.
+Here is a lemma that we will use, taken from \cite{kempe_kitaev_regev_2006}.
 
 Let $H_1, H_2$ be Hamiltonians where $H_2\geq0$, and $S=\ker H_2$.
 Then $\exists J\in\mathbb{R}$ s.t.
@@ -119,13 +119,13 @@ TODO (maybe don't assume universality?)
 	A quantum delegation protocol is \emph{verifiable} if the verifier can check if the output is correct. TODO need to be more rigorous here.
 \end{definition}
 
-In \cite{1804.01082}, a verifiable scheme is proposed. In \cite{1708.02130}, a blind scheme is proposed. (TODO just make this CPA or whatever it actually is...) We propose a verifiable scheme with long output which can also be made blind.
+In \cite{mahadev_delegation}, a verifiable scheme is proposed. In \cite{mahadev_qfhe}, a blind scheme is proposed. (TODO just make this CPA or whatever it actually is...) We propose a verifiable scheme with long output which can also be made blind.
 
 TODO check where does \cite{1904.06320} fit in.
 
 \section{Long Output scheme}
 
-Here we describe the scheme between the classical client and an honest quantum server. We mostly follow the logic in \cite{1804.01082}. We first follow \cite{quant-ph/0406180} to reduce the problem to an instance of local Hamiltonian.
+Here we describe the scheme between the classical client and an honest quantum server. We mostly follow the logic in \cite{mahadev_delegation}. We first follow \cite{kempe_kitaev_regev_2006} to reduce the problem to an instance of local Hamiltonian.
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
@@ -310,13 +310,13 @@ Now we use the projection lemma here. This step is different now that $H_{out}$ 
 
 \subsection{2-local ZX Hamiltonians}
 
-We then follow \cite{0704.1287} in writing each terms of $H$ into only $Z$ and $X$ measurements...
+We then follow \cite{biamonte_love_2008} in writing each terms of $H$ into only $Z$ and $X$ measurements...
 
 This probably involves some kind of basis arguments on the Hamiltonians and maybe some stuff that's a bit more ugly. This should not change the state. I'll have to write this out later...
 
 \subsection{Checking computation}
 
-We then follow \cite{1804.01082}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{quant-ph/0406180}. 
+We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{kempe_kitaev_regev_2006}. 
 
 And then, this in fact involves some probabilistic analysis shenanigans that we haven't fully figured out yet.
 
