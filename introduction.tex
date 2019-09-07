@@ -1,0 +1,6 @@
+\section{Introduction}
+
+Below is some intro of it copied from my SoP.
+This is unpolished and mostly a placeholder at the moment though.
+
+It was proven that BQP=BQIP. That is, if a quantum computer can efficiently solve a given decision problem, then it can also efficiently convince a classical machine of its solution. I'm generalizing this to arbitrary efficient quantum computations. The proof for decision problems involves the classical verifier reducing the problem to a local Hamiltonian instance; the quantum prover would then commit its certificate and act as the verifier’s trusted measurement device as put forth in "Classical Verification of Quantum Computations" by Mahadev. It isn't as trivial as it may seem. Repeating the scheme for each qubit loses the information carried by entanglements and throws off the joint distribution between qubits. Simply measuring the entire output register instead is difficult to analyze. For decision problems, it’s not hard to argue that a malicious prover cannot do better than sending identical copies of some pure state unentangled with each others. That same reasoning doesn't apply here a priori. I've been trying to get a grasp on the particular structure of the local Hamiltonian reduction in order to better analyze it.
