@@ -1,4 +1,4 @@
-paper.pdf: *.tex
+paper.pdf: *.tex *.bib
 	pdflatex paper
 	bibtex paper
 	pdflatex paper
