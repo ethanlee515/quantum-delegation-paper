@@ -23,7 +23,7 @@ After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ b
 \subsection{Constructing a local Hamiltonian instance}
 
 We then attempt to construct a local Hamiltonian with ground state that encodes the history of the computation: $$\phi=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
-We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{biamonte_love_2008}.
+We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{PhysRevA.78.012352}.
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
