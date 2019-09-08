@@ -33,28 +33,15 @@ Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
 	Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2{1, 2}(X_3)$ would be a Toffoli (CCNOT) gate.
 \end{definition}
 
-\subsection{Local Hamiltonian}
-
-The local Hamiltonian problem is defined as follows:
-
 \begin{definition}
-	Let $H_1, \ldots, H_n:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian. Then $$H=\sum_{j=1}^nH_j$$ is called a \emph{Hamiltonian}.
-	If each $H_j$ acts on at most $k$ qubits, then $H$ is called a \emph{$k$-local Hamiltonian}.
+	Let $H_1, \ldots, H_n:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitians each acting on at most $k$ qubits, then $$H=\sum_{j=1}^nH_j$$ is called a \emph{$k$-local Hamiltonian}.
 \end{definition}
-
-The local Hamiltonian problem is given by let $a<b$ with some inverse polynomial gap, let $H=\sum H_j$, determine whether $\lambda(H)<a$ or $\lambda(H)>b$..
-
-\begin{theorem}
-	The Local Hamiltonian problem is QMA-complete.
-\end{theorem}
 
 \subsection{Projection Lemma}
 
 Here is a lemma that we will use, taken from \cite{kempe_kitaev_regev_2006}.
 
-Let $H_1, H_2$ be Hamiltonians where $H_2\geq0$, and $S=\ker H_2$.
+Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$, and $S=\ker H_2$.
 Then $\exists J\in\mathbb{R}$ s.t.
 $\lambda(H_1\big|_S)-\frac{1}{8}\leq
 	\lambda(H_1+JH_2)\leq\lambda(H_1\big|_S)$.
-
-
