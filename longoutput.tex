@@ -54,11 +54,26 @@ TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
 \subsection{Checking computation}
 
-Here we follow \cite{PhysRevLett.120.040501} and \cite{PhysRevA.93.022326}.
+Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevLett.120.040501} and \cite{PhysRevA.93.022326}.
 
-Obviously, $\lambda(H)=0$. Let $\tilde\lambda$ be the next least eigenvalue.
+We write $H$ as a linear combination of tensors of $I$, $X$, and $Z$.
+$$H=\sum_S d_S S$$
+We then shift each term by an identity.
+$$H'=H+I\sum_S|d_S|$$
+$$=\sum_S|d_S|(I+\sgn(d_S)S)$$
+$$=\sum_S2|d_S|P_S$$
+Note that $P_S$ are in fact projections since $S$ all have eigenvalues $\pm1$. Now scale $H'$:
+$$H''=\frac{1}{2|d_S|}H'=\sum_S\pi_S P_S$$
+Note that $H''$ is now a weighted sum of projectors. We also have $0\leq\pi_S\leq1$ and $\sum_S \pi_S=1$, so we can define the corresponding probability distribution over the choice of $S$. Now we can write the following:
+$$\braket{\phi|H''|\phi}=\sum_S\pi_S\braket{\phi|P_S|\phi}=\E_S[\braket{\phi|P_S|\phi}]$$
+$$\braket{\phi|P_S|\phi}=\braket{\phi|\frac{1}{2}(I+\sgn(d_S)S)|\phi}=\frac{1}{2}(1+\sgn(d_S)\braket{\phi|S|\phi})$$
+Which is simple to estimate by doing the measurements corresponding to $S$.
 
-We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would check whether the computation is done correctly using a modified Hamiltonian from \cite{kempe_kitaev_regev_2006}. 
+TODO so do we have perfect completeness or no?
+
+\subsection{Analysis and amplification}
+
+We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
 
 And then, this in fact involves some probabilistic analysis shenanigans that we haven't fully figured out yet.
 
