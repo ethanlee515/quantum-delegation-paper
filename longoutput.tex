@@ -38,11 +38,14 @@ $$H_{in}=\frac{1}{4}\sum_{i=1}^{|x|}(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
 TODO define $S_{in}$ when projection lemma is used
 
 Then, we ensure that the gates are applied correctly.
-$$H_{prop1}=\sum_{t\in T_1}H_{prop,t}$$
+$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
 $$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
 	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
+Extra care must be taken for boundary cases.
+$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
 I probably need to explain why this works but TODO I'll leave it for another day.
 
