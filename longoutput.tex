@@ -1,6 +1,6 @@
 \section{Long Output scheme}
 
-Here we describe the scheme between the classical client and an honest quantum server. We mostly follow the logic in \cite{mahadev_delegation}. We first follow \cite{kempe_kitaev_regev_2006} to reduce the problem to an instance of local Hamiltonian.
+Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction for \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. We then analyze it using tools from \cite{PhysRevA.93.022326}. Then, NYI cuz we're stuck.
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
@@ -54,7 +54,7 @@ TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
 \subsection{Checking computation}
 
-Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevLett.120.040501} and \cite{PhysRevA.93.022326}.
+Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}.
 
 We write $H$ as a linear combination of tensors of $I$, $X$, and $Z$.
 $$H=\sum_S d_S S$$
