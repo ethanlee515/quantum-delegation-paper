@@ -46,15 +46,29 @@ $$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
 	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
-Extra care must be taken for boundary cases.
-$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-I probably need to explain why this works but TODO I'll leave it for another day.
+It is easier to check that it works and is Hermitian and works as expected by a unitary change of basis.
+
+$$W=\sum_{j=0}^L U_j\ldots U_1\otimes\ket{j}\bra{j}$$
+$$W^\dagger\phi=\sum_{t=0}^T\ket{x}\otimes\ket{\hat{t}}$$
+$$W^\dagger H_{prop} W=
+\begin{pmatrix}
+	\frac{1}{2} & -\frac{1}{2} & & & &  \\
+	-\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
+	& -\frac{1}{2} & 1 & \ddots & & \\
+	& & \ddots & \ddots & -\frac{1}{2} & \\
+	& & & -\frac{1}{2} & 1 & -\frac{1}{2} \\
+	& & & & -\frac{1}{2} & \frac{1}{2}
+\end{pmatrix}$$
+
+I probably need to say even more on why this works but TODO I'll leave it for another day. There's also a closed form to the second smallest eigenvalue above that is apparently related to random walks but I can't find the source at the moment.
 
 Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
 So we can write
 $$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
+Extra care must be taken for boundary cases.
+$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
 TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
