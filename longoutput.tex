@@ -77,19 +77,16 @@ TODO consider using the older construction with the angle between subspaces for 
 Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}.
 
 We write $H$ as a linear combination of tensors of $I$, $X$, and $Z$.
-$$H=\sum_S d_S S$$
-We then shift each term by an identity.
-$$H'=H+I\sum_S|d_S|$$
-$$=\sum_S|d_S|(I+\sgn(d_S)S)$$
-$$=\sum_S2|d_S|P_S$$
-Note that $P_S$ are in fact projections since $S$ all have eigenvalues $\pm1$. Now scale $H'$:
-$$H''=\frac{1}{2|d_S|}H'=\sum_S\pi_S P_S$$
-Note that $H''$ is now a weighted sum of projectors. We also have $0\leq\pi_S\leq1$ and $\sum_S \pi_S=1$, so we can define the corresponding probability distribution over the choice of $S$. Now we can write the following:
-$$\braket{\phi|H''|\phi}=\sum_S\pi_S\braket{\phi|P_S|\phi}=\E_S[\braket{\phi|P_S|\phi}]$$
-$$\braket{\phi|P_S|\phi}=\braket{\phi|\frac{1}{2}(I+\sgn(d_S)S)|\phi}=\frac{1}{2}(1+\sgn(d_S)\braket{\phi|S|\phi})$$
-Which is simple to estimate by doing the measurements corresponding to $S$.
+$$H=\sum_S d_S S= \sum_S |d_S|\sgn(d_S)S$$
+We then scale the Hamiltonian.
+$$D=\sum_S|d_S|$$
+$$p_S=\frac{|d_S|}{D}$$
+$$H'=\frac{H}{D}=\sum_S p_S\sgn(d_S)S$$
 
-TODO so do we have perfect completeness or no?
+Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_S p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
+$$\braket{\phi|H'|\phi}=\sum_S p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
+Which is simple to estimate by doing the measurements corresponding to $S$.
+Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not have perfect completeness.
 
 \subsection{Analysis and amplification}
 
