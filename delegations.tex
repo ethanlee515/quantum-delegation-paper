@@ -11,7 +11,7 @@ Here we describe schemes that allows a classical client to interact with a quant
 \end{definition}
 
 \begin{definition}
-	A quantum delegation protocol is \emph{secure} if a malicious prover cannot learn the input or the output of the computation. In particular, security notions such as \emph{CPA} can be applied here. (TODO Just define CPA right away since there are no other security notions around here)
+	A quantum delegation protocol is \emph{CPA-secure} if both the input and output of the circuit are CPA-secure as ciphertexts. In this case, the scheme should be seen as a homomorphic encryption scheme.
 \end{definition}
 
 \begin{definition}
@@ -24,4 +24,4 @@ TODO check where does \cite{1904.06320} fit in.
 
 \subsection{Our contributions}
 
-We propose a verifiable scheme with long output which can also be made secure. We start by constructing a verifiable long output scheme. Then, we encrypt the scheme as given in \cite{mahadev_delegation} to achieve security. That is, we first encrypt the circuit. Then TODO it's not immediately obvious that this works. This isn't purely a circuit anymore, but we also have classical data and evaluation key now.
+We propose a verifiable scheme with long output which can also be made secure. We start by constructing a verifiable long output scheme. Then, we use \cite{mahadev_delegation} to achieve security. That is, we the techniques in \cite{mahadev_delegation} to encrypt the circuit and the input. We also tack on the evaluation key as extra input, so the entire computation can still be encoded as a single circuit.
