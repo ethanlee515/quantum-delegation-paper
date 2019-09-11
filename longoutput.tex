@@ -93,8 +93,9 @@ Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not hav
 \subsection{Analysis and amplification}
 
 We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
+The client would keep a single copy for output, and use the other copies to check whether the computation is done properly.
 
-And then, this in fact involves some probabilistic analysis shenanigans that we haven't fully figured out yet.
+Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=-1$ on $\ket\psi$ and $\ket\phi$ respectively, where $\phi$ is perpendicular to $\psi$. Obviously, $p_0=\frac{1}{2}$, and $p_1<\frac{1}{2}$... TODO Now what? Hypothesis testing...?
 
 \subsection{Getting the Output}
 
