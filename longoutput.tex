@@ -20,9 +20,7 @@ We consider the transform $\mathcal{F}(\ket{\phi})=\ket{0}\otimes\Re\ket{\phi}+\
 The transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
 $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
-Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. We modify the circuit as appropriate to obtain $C'$.
-
-Now $C'$ has size $T'\leq 4T$. The initial state is real, and all the gates are real. Which implies all the intermediate states as well as the output are real. Its input $x$ doesn't change, but the initial state $\ket{\psi'}$ is now size $N+1$.
+Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. We modify the circuit as appropriate to obtain $C'$ that has size $T'\leq 4T$. Its initial state is real, and all the gates are real. Which implies all the intermediate states as well as the output are real. Its input $x$ doesn't change, but the initial state $\ket{\psi'}$ is now size $N+1$.
 
 \subsection{Properties of the gate set}
 
