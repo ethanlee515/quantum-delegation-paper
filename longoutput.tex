@@ -11,9 +11,9 @@ Which is proven to be universal in \cite{kitaev_1997}.
 
 Here we first reduce the circuit to real gates and states only. The proof is taken from \cite{quant-ph/0301040}.
 
-We consider the transform $\mathcal{T}(\ket{\psi})=\ket{0}\otimes\Re\ket{\psi}+\ket{1}\otimes\Im\ket{\psi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. Under the transform, Hadamard gates are unchanged, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
-$$\mathcal{T}\circ H=H\circ\mathcal{T}$$
-$$\mathcal{T}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{T}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{T}$$
+We consider the transform $\mathcal{F}(\ket{\psi})=\ket{0}\otimes\Re\ket{\psi}+\ket{1}\otimes\Im\ket{\psi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. Under the transform, Hadamard gates are unchanged, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
+$$\mathcal{F}\circ H=H\circ\mathcal{F}$$
+$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. 
 
 We then double (TODO: maybe multiply by $\gamma>1$ instead of doubling?) the size of the circuit by padding identity matrices at the end. This is so that the final output has a higher chance to be measured in the final result in the following reduction.
