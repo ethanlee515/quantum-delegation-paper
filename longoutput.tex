@@ -18,7 +18,7 @@ We first reduce it to real gates and states only. The proof is taken from \cite{
 We consider the transform $\mathcal{F}(\ket{\phi})=\ket{0}\otimes\Re\ket{\phi}+\ket{1}\otimes\Im\ket{\phi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. We apply it to $\ket\psi$.
 
 The transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
-$$\mathcal{F}\circ H=H\circ\mathcal{F}$$
+$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. We modify the circuit as appropriate to obtain $C'$.
 
@@ -28,9 +28,9 @@ Now $C'$ has size $T'\leq 4T$. The initial state is real, and all the gates are 
 
 Let $C$ undergo the above two transforms so it has the following properties
 \begin{itemize}
-	\item Initial state is real
-	\item Contains only Hadamard and Toffoli gates
-	\item The last $\gamma$ of the gates are all identity gates (can achieve easily by padding)
+	\item All states are real (including initial, intermediate states, and output).
+	\item Consists of only Hadamard and Toffoli gates
+	\item The last $\gamma$ of the gates are all identity gates (can easily achieve by padding)
 \end{itemize}
 
 After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ be the circuit to evaluate. Let $x_i$ denote the $i$th bit of $x$, and $|x|$ denote the number of the qubits in the circuit.
@@ -48,8 +48,6 @@ Then, we ensure that the initial condition is set up correctly.
 $$H_{in}=\sum_i^{|x|}(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
 The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, this can be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates as
 $$H_{in}=\frac{1}{4}\sum_{i=1}^{|x|}(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
-
-TODO define $S_{in}$ when projection lemma is used
 
 Then, we ensure that the gates are applied correctly.
 $$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
@@ -72,7 +70,7 @@ $$W^\dagger H_{prop} W=
 	& & & & -\frac{1}{2} & \frac{1}{2}
 \end{pmatrix}$$
 
-Which according to \cite{2002quant.ph.10077A} is relevant to theory of random walks. Particularly, it has positive eigenvalues.
+According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks.
 
 I probably need to say even more on why this works but TODO I'll leave it for another day. There's also a closed form to the second smallest eigenvalue above that is apparently related to random walks but I can't find the source at the moment.
 
