@@ -2,25 +2,38 @@
 
 Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction for \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck.
 
-\subsection{preprocess the circuit}
+\subsection{Picking universal gate set}
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 $$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 Which is proven to be universal in \cite{kitaev_1997}.
 
-Here we first reduce the circuit to real gates and states only. The proof is taken from \cite{quant-ph/0301040}.
+\subsection{Creating Real Circuits}
 
-We consider the transform $\mathcal{F}(\ket{\psi})=\ket{0}\otimes\Re\ket{\psi}+\ket{1}\otimes\Im\ket{\psi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. Under the transform, Hadamard gates are unchanged, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
+Now consider a circuit $C=U_T\ldots U_1$, where $U_i\in\set{H, \Lambda(P(i))}$. Its input is classical $x$ of size $n$. Let $\ket\psi$ denote the initial state with $N$ qubits, containing $x$ possibly followed by ancilliaries.
+
+We first reduce it to real gates and states only. The proof is taken from \cite{quant-ph/0301040}.
+
+We consider the transform $\mathcal{F}(\ket{\phi})=\ket{0}\otimes\Re\ket{\phi}+\ket{1}\otimes\Im\ket{\phi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. We apply it to $\ket\psi$.
+
+The transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
 $$\mathcal{F}\circ H=H\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
-Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. 
+Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. We modify the circuit as appropriate to obtain $C'$.
 
-We then double (TODO: maybe multiply by $\gamma>1$ instead of doubling?) the size of the circuit by padding identity matrices at the end. This is so that the final output has a higher chance to be measured in the final result in the following reduction.
-
-After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ be the circuit to evaluate. Let $x_i$ denote the $i$th bit of $x$, and $|x|$ denote the number of the qubits in the circuit.
+Now $C'$ has size $T'\leq 4T$. The initial state is real, and all the gates are real. Which implies all the intermediate states as well as the output are real. Its input $x$ doesn't change, but the initial state $\ket{\psi'}$ is now size $N+1$.
 
 \subsection{Constructing a local Hamiltonian instance}
+
+Let $C$ undergo the above two transforms so it has the following properties
+\begin{itemize}
+	\item Initial state is real
+	\item Contains only Hadamard and Toffoli gates
+	\item The last $\gamma$ of the gates are all identity gates (can achieve easily by padding)
+\end{itemize}
+
+After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ be the circuit to evaluate. Let $x_i$ denote the $i$th bit of $x$, and $|x|$ denote the number of the qubits in the circuit.
 
 We then attempt to construct a local Hamiltonian with ground state that encodes the history of the computation: $$\phi=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{PhysRevA.78.012352}.
@@ -70,7 +83,16 @@ $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
 TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
-TODO consider using the older construction with the angle between subspaces for better constants?
+\subsection{Measuring}
+
+Here we show that the Hamiltonians above can be written in a simple form.
+
+First, we show that Toffoli and Hadamard matrices can be written in terms of Kronecker products of $X$, $Z$, and $I$.
+$$H=X+Z$$
+$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+$$\ket{11}\bra{11}=I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I$$
+
+
 
 \subsection{Checking computation}
 
