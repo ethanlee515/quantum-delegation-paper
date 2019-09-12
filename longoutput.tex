@@ -2,20 +2,18 @@
 
 Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction for \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck.
 
+\subsection{preprocess the circuit}
+
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 $$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 Which is proven to be universal in \cite{kitaev_1997}.
 
-\subsection{preprocess the circuit}
-
-TODO Maybe encrypt things here first if needed?
-
 Here we first reduce the circuit to real gates and states only. The proof is taken from \cite{quant-ph/0301040}.
 
-We consider the transform $T(\ket{\psi})=\ket{0}\otimes\Re\ket{\psi}+\ket{1}\otimes\Im\ket{\psi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. Under the transform, Hadamard gates are unchanged, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
-$$T\circ H=H\circ T$$
-$$T\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ T=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ T$$
+We consider the transform $\mathcal{T}(\ket{\psi})=\ket{0}\otimes\Re\ket{\psi}+\ket{1}\otimes\Im\ket{\psi}$, where $\Re$ and $\Im$ denote real and imaginary parts respectively. Note that after this transformation, the state is real. This transformation preserves measurement results in the standard basis. Under the transform, Hadamard gates are unchanged, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
+$$\mathcal{T}\circ H=H\circ\mathcal{T}$$
+$$\mathcal{T}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{T}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{T}$$
 Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. 
 
 We then double (TODO: maybe multiply by $\gamma>1$ instead of doubling?) the size of the circuit by padding identity matrices at the end. This is so that the final output has a higher chance to be measured in the final result in the following reduction.
