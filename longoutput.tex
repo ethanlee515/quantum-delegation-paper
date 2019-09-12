@@ -26,12 +26,10 @@ Now $C'$ has size $T'\leq 4T$. The initial state is real, and all the gates are 
 
 \subsection{Properties of the gate set}
 
-Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
-So we can write
-$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
-Extra care must be taken for boundary cases.
-$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+First, we show that Toffoli and Hadamard matrices can be written in terms of Kronecker products of $X$, $Z$, and $I$.
+$$H=\frac{1}{\sqrt{2}}(X+Z)$$
+$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+$$\ket{11}\bra{11}=I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I$$
 
 To this effect, we also define $G=$... TODO define set of tensors of XZI
 
@@ -51,7 +49,7 @@ We do so by ensuring states perpendicular to it have high eigenvalues. The base 
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-We also set $S_{legal}=\ker H_{clock}$. Note that $S_{legal}$ is precisely the valid clock states; that is, valid unary representations in the time register. Note that $H_{clock}$ can also be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates.
+Note that $H_{clock}$ can also be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates.
 $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
 This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
@@ -83,8 +81,15 @@ $$W^\dagger H_{prop} W=
 
 According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks.
 
-TODO maybe say more about this.
+We can also write $H$ as (TODO need to define).
+Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
+Extra care must be taken for boundary cases.
+$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
+TODO maybe say more about this.
+We also set $S_{legal}=\ker H_{clock}$. Note that $S_{legal}$ is precisely the valid clock states; that is, valid unary representations in the time register.
 
 TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
@@ -92,10 +97,6 @@ TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
 
 Here we show that the Hamiltonians above can be written in a simple form.
 
-First, we show that Toffoli and Hadamard matrices can be written in terms of Kronecker products of $X$, $Z$, and $I$.
-$$H=X+Z$$
-$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-$$\ket{11}\bra{11}=I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I$$
 
 
 
