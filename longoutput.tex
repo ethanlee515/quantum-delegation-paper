@@ -100,7 +100,7 @@ $$W^\dagger H_{prop} W=
 	& & & & -\frac{1}{2} & \frac{1}{2}
 \end{pmatrix}$$
 
-According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks.
+According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks. Furthermore, the second eigenvalue of $H_{prop}$ is at least $\frac{1}{2(T+1)^2}$.
 
 We can also write $H=\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
 $$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
@@ -115,20 +115,24 @@ $$K_{prop}=\ker H_{prop}$$
 Notice that (TODO need proof or no?)
 $$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\psi_{circuit}}$$
 We now define
-$$K=(\spn\set{\psi_{circuit}})^\bot$$
-and consider $H_{clock}\big|_K,H_{in}\big|_K,H_{prop}\big|_K$. That is, we restrict the following computations to the subspace $K$. We apply the projection lemma.
-$$\exists J_{clock},
-\lambda(H_{in}\big|_K+J_{clock}H_{clock}\big|_K)\geq
-\lambda(H_{in}\big|_{K\cap K_{clock}})-\frac{1}{8}$$
-$$\exists J_{prop},
-\lambda(H_{in}\big|_K+J_{clock}H_{clock}\big|_K+J_{prop}H_{prop}\big|_K)\geq
-\lambda(H_{in}\big|_{K\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
-$$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_K)\geq\frac{3}{4}$$
+$$S=(\spn\set{\psi_{circuit}})^\bot$$
+and consider $H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$. That is, we restrict the following computations to the subspace $S$. We apply the projection lemma.
+$$\exists J_{clock}
+=\frac{\poly\left(\norm{H_{in}\big|_S}\right)}{\lambda\left(H_{clock}\big|_{S\cap K^\bot_{clock}}\right)}
+=O(1)$$
+$$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S)\geq
+\lambda(H_{in}\big|_{S\cap K_{clock}})-\frac{1}{8}$$
+$$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_S}\right)}{\lambda\left(H_{prop}\big|_{S\cap K^\bot_{prop}}\right)}
+=\frac{O(T)}{\Omega(T^{-2})}=O(T^3)$$
+$$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
+\lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
+$$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$. It has the following properties.
 \begin{itemize}
 	\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
 	\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
 	\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$
+	\item $\norm{H_{circuit}}_{\max}=O(T^3)$
 \end{itemize}
 
 \subsection{Measuring ground state}

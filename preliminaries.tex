@@ -40,7 +40,8 @@ Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
 \subsection{Projection Lemma}
 
 Here is a lemma that we will use, taken from \cite{kempe_kitaev_regev_2006}.
-
-Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$, and $S=\ker H_2$.
-Then $\exists J\in\mathbb{R}$ s.t.
-$\lambda(H_1+JH_2)\geq\lambda(H_1\big|_S)-\frac{1}{8}$
+\begin{theorem}
+	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$.
+	$$\exists J=\frac{\poly(\norm{H_1})}{\lambda(H_2|_{K^\bot})}$$
+	$$\lambda(H_1+JH_2)\geq\lambda(H_1\big|_K)-\frac{1}{8}$$
+\end{theorem}
