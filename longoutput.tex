@@ -22,14 +22,23 @@ $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 Where $\ket{\psi}$ is 1-indexed, and the added qubit is in the 0th position. We modify the circuit as appropriate to obtain $C'$ that has size $T'\leq 4T$. Its initial state is real, and all the gates are real. Which implies all the intermediate states as well as the output are real. Its input $x$ doesn't change, but the initial state $\ket{\psi'}$ is now size $N+1$.
 
-\subsection{More Properties of the Gate Set}
+We prove a theorem about this circuit that we'll use later.
 
-First, we show that Toffoli and Hadamard matrices can be written in terms of Kronecker products of $X$, $Z$, and $I$.
-$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+\begin{definition}
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n|U_i\in\set{I,X,Z}}$.
+\end{definition}
 
-To this effect, we also define $G=$... TODO define set of tensors of XZI
+To simplify the notation, we may only write the qubits with $X$ and $Z$ operators when talking about members of $\mathcal{G}_{XZ}$.
+
+\begin{theorem}
+	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$
+\end{theorem}
+
+\begin{proof}
+	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
+	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+\end{proof}
 
 \subsection{Constructing a local Hamiltonian instance}
 
@@ -47,13 +56,13 @@ We do so by ensuring states perpendicular to it have high eigenvalues. The base 
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-Note that $H_{clock}$ can also be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates.
+Note that $H_{clock}\in\spn\mathcal{G}_{XZ}$
 $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
 This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
 Then, we ensure that the initial condition is set up correctly.
 $$H_{in}=\sum_i^{|x|}(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
-The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, this can be written in terms of linear combinations of tensors of $X$, $Z$, and $I$ gates as
+The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
 $$H_{in}=\frac{1}{4}\sum_{i=1}^{|x|}(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
 
 Then, we ensure that the gates are applied correctly.
@@ -79,38 +88,33 @@ $$W^\dagger H_{prop} W=
 
 According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks.
 
-We can also write $H$ as (TODO need to define).
-Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+We can also write $H=\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
 $$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
 Extra care must be taken for boundary cases.
 $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
 $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-TODO maybe say more about this.
-We also set $S_{legal}=\ker H_{clock}$. Note that $S_{legal}$ is precisely the valid clock states; that is, valid unary representations in the time register.
+TODO
+Now we combine the three Hamiltonians defined. First consider their kernels.
+$$K_{clock}=\ker H_{clock}$$
+$$K_{in}=\ker H_{in}$$
+$$K_{prop}=\ker H_{prop}$$
 
-TODO Write down the final Hamiltonian. Possibly also the eigenvalue gap.
+It is 
 
-\subsection{Measuring}
-
-Here we show that the Hamiltonians above can be written in a simple form.
-
-
-
-
-\subsection{Checking computation}
+\subsection{Measuring ground state}
 
 Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}.
 
-We write $H$ as a linear combination of tensors of $I$, $X$, and $Z$.
-$$H=\sum_S d_S S= \sum_S |d_S|\sgn(d_S)S$$
+Since $H\in\spn\mathcal{G}_{XZ}$, we can write it as follows:
+$$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S= \sum_{S\in\mathcal{G}_{XZ}} |d_S|\sgn(d_S)S$$
 We then scale the Hamiltonian.
-$$D=\sum_S|d_S|$$
+$$D=\sum_{S\in\mathcal{G}_{XZ}}|d_S|$$
 $$p_S=\frac{|d_S|}{D}$$
-$$H'=\frac{H}{D}=\sum_S p_S\sgn(d_S)S$$
+$$H'=\frac{H}{D}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)S$$
 
-Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_S p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
-$$\braket{\phi|H'|\phi}=\sum_S p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
+Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_{S\in\mathcal{G}_{XZ}} p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
+$$\braket{\phi|H'|\phi}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
 Which is simple to estimate by doing the measurements corresponding to $S$.
 Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not have perfect completeness.
 
