@@ -42,7 +42,7 @@ To simplify the notation, we may only write the qubits with $X$ and $Z$ operator
 
 \subsection{Constructing a local Hamiltonian instance}
 
-Let $C$ undergo the above two transforms so it has the following properties
+Let $C$ undergo the above transformations so it has the following properties
 \begin{itemize}
 	\item All states are real (including initial, intermediate states, and output).
 	\item Consists of only Hadamard and Toffoli gates
@@ -51,12 +51,12 @@ Let $C$ undergo the above two transforms so it has the following properties
 
 After these transformations, let $x$ be the new circuit input, and $U_T...U_1$ be the circuit to evaluate. Let $x_i$ denote the $i$th bit of $x$, and $|x|$ denote the number of the qubits in the circuit.
 
-We then attempt to construct a local Hamiltonian with ground state that encodes the history of the computation: $$\phi=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
+We then attempt to construct a local Hamiltonian with ground state that encodes the history of the computation: $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{PhysRevA.78.012352}.
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-Note that $H_{clock}\in\spn\mathcal{G}_{XZ}$
+As it is a sum of projections, $H_{clock}\geq 0$. We also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
 $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
 This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
@@ -94,17 +94,32 @@ Extra care must be taken for boundary cases.
 $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
 $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-TODO
 Now we combine the three Hamiltonians defined. First consider their kernels.
 $$K_{clock}=\ker H_{clock}$$
 $$K_{in}=\ker H_{in}$$
 $$K_{prop}=\ker H_{prop}$$
-
-It is 
+Notice that (TODO need proof or no?)
+$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\psi_{circuit}}$$
+We now define
+$$K=(\spn\set{\psi_{circuit}})^\bot$$
+and consider $H_{clock}\big|_K,H_{in}\big|_K,H_{prop}\big|_K$. That is, we restrict the following computations to the subspace $K$. We apply the projection lemma.
+$$\exists J_{clock},
+\lambda(H_{in}\big|_K+J_{clock}H_{clock}\big|_K)\geq
+\lambda(H_{in}\big|_{K\cap K_{clock}})-\frac{1}{8}$$
+$$\exists J_{prop},
+\lambda(H_{in}\big|_K+J_{clock}H_{clock}\big|_K+J_{prop}H_{prop}\big|_K)\geq
+\lambda(H_{in}\big|_{K\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
+$$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_K)\geq\frac{3}{4}$$
+So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$. It has the following properties.
+\begin{itemize}
+	\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
+	\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
+	\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$
+\end{itemize}
 
 \subsection{Measuring ground state}
 
-Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}.
+Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}. Note that if $\phi=\psi_{circuit}$, then $\braket{\phi|H|\phi}=0$. If $\braket{\phi|\psi_{circuit}}=0$, then $\braket{\phi|H|\phi}>\beta>\frac{1}{\poly(T)}$.
 
 Since $H\in\spn\mathcal{G}_{XZ}$, we can write it as follows:
 $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S= \sum_{S\in\mathcal{G}_{XZ}} |d_S|\sgn(d_S)S$$
@@ -123,7 +138,7 @@ Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not hav
 We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
 The client would keep a single copy for output, and use the other copies to check whether the computation is done properly.
 
-Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=-1$ on $\ket\psi$ and $\ket\phi$ respectively, where $\phi$ is perpendicular to $\psi$. Obviously, $p_0=\frac{1}{2}$, and $p_1<\frac{1}{2}$... TODO Now what? Hypothesis testing...?
+Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=-1$ on $\ket\psi_{circuit}$ and $\ket\phi$ respectively, where $\phi$ is perpendicular to $\psi_{circuit}$. Obviously, $p_0=\frac{1}{2}$, and $p_1<\frac{1}{2}$... TODO Now what? Hypothesis testing...?
 
 \subsection{Getting the Output}
 
