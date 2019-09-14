@@ -62,10 +62,10 @@ Let $C$ be a circuit with the above properties. Define the following quantities.
 	\item Let $x$ be the circuit input. Which is classical.
 	\item Let $y$ denote the initial state. That is, $x$ possibly concatenated with ancillaries.
 	\item Let $y_i$ denote the $i$-th bit of $y$
-	\item Let $n=|y|$ be the number of qubits in $C$
+	\item Let $n$ be the number of qubits in $C$
 \end{itemize}
 
-We then attempt to construct a local Hamiltonian with the following ground state that encodes the history of the computation: $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
+We then attempt to construct a local Hamiltonian with the following ground state that encodes the history of the computation: $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$
 We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{PhysRevA.78.012352}.
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
@@ -75,9 +75,9 @@ $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $
 This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
 Then, we ensure that the initial condition is set up correctly.
-$$H_{in}=\sum_{i=1}^{|y|}(I-\ket{y_i}\bra{y_i})\otimes\ket{0}\bra{0}_1$$
+$$H_{in}=\sum_{i=1}^n(I-\ket{y_i}\bra{y_i})\otimes\ket{0}\bra{0}_1$$
 The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
-$$H_{in}=\frac{1}{4}\sum_{i=1}^{|y|}(I-(-1)^{y_i}Z_i)\otimes(I+Z_1)$$
+$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{y_i}Z_i)\otimes(I+Z_1)$$
 
 Then, we ensure that the gates are applied correctly.
 $$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
@@ -108,31 +108,30 @@ Extra care must be taken for boundary cases.
 $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
 $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-Now we combine the three Hamiltonians defined. First consider their kernels.
+Now we consider the kernels of the Hamiltonians we defined. Notice the following.
 $$K_{clock}=\ker H_{clock}$$
 $$K_{in}=\ker H_{in}$$
 $$K_{prop}=\ker H_{prop}$$
-Notice that (TODO need proof or no?)
 $$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\psi_{circuit}}$$
-We now define
+We now consider the space outside the desired state.
 $$S=(\spn\set{\psi_{circuit}})^\bot$$
-and consider $H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$. That is, we restrict the following computations to the subspace $S$. We apply the projection lemma.
+$$H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$$
+To combine the Hamiltonians, we apply the projection lemma twice.
 $$\exists J_{clock}
 =\frac{\poly\left(\norm{H_{in}\big|_S}\right)}{\lambda\left(H_{clock}\big|_{S\cap K^\bot_{clock}}\right)}
-=O(1)$$
+=O(n)=O(T)$$
 $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}})-\frac{1}{8}$$
 $$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_S}\right)}{\lambda\left(H_{prop}\big|_{S\cap K^\bot_{prop}}\right)}
-=\frac{O(T)}{\Omega(T^{-2})}=O(T^3)$$
+=\frac{O(n+T)}{\Omega(T^{-2})}=O(T^3)$$
 $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
-So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$. It has the following properties.
+So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$ to obtain the following properties.
 \begin{itemize}
 	\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
 	\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
-	\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$
-	\item $\norm{H_{circuit}}_{\max}=O(T^3)$
+	\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$. There are $O(T)$ nonzero components, whose coefficients are each at most $O(T^3)$.
 \end{itemize}
 
 \subsection{Measuring ground state}
@@ -143,7 +142,7 @@ Since $H\in\spn\mathcal{G}_{XZ}$, we can write it as follows:
 $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S= \sum_{S\in\mathcal{G}_{XZ}} |d_S|\sgn(d_S)S$$
 We then scale the Hamiltonian.
 $$D=\sum_{S\in\mathcal{G}_{XZ}}|d_S|$$
-$$p_S=\frac{|d_S|}{D}$$
+$$p_S=\frac{|d_S|}{D}=O(T^4)$$
 $$H'=\frac{H}{D}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)S$$
 
 Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_{S\in\mathcal{G}_{XZ}} p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
@@ -151,12 +150,17 @@ $$\braket{\phi|H'|\phi}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\
 Which is simple to estimate by doing the measurements corresponding to $S$.
 Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not have perfect completeness.
 
+Now let $\ket\phi$ be such that $\braket{\phi|\psi_{circuit}}=0$.
+Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=1$ on $\ket\psi_{circuit}$ and $\ket\phi$ respectively.
+$$p_0=\frac{1}{2}$$
+$$\braket{\phi|H'|\phi}=\frac{1}{O(T^4)}\braket{\phi|H|\phi}=\Omega(T^{-4})$$
+$$\Rightarrow p_1=\frac{1}{2}+\Omega(T^{-4})$$
+
 \subsection{Analysis and amplification}
 
 We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
 The client would keep a single copy for output, and use the other copies to check whether the computation is done properly.
-
-Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=-1$ on $\ket\psi_{circuit}$ and $\ket\phi$ respectively, where $\phi$ is perpendicular to $\psi_{circuit}$. Obviously, $p_0=\frac{1}{2}$, and $p_1<\frac{1}{2}$... TODO Now what? Hypothesis testing...?
+TODO Now what? Hypothesis testing...?
 
 \subsection{Getting the Output}
 
