@@ -9,57 +9,40 @@ Which is proven to be universal in \cite{kitaev_1997}.
 
 \subsection{Preprocessing circuit}
 
-Here we construct a transform that we will use to... TODO Editorial intro.
+Here we construct a way to preprocess and simplify the circuit to a form that's easy for us to work with.
 
 \begin{theorem}
 	Let $C$ be a circuit that:
 	\begin{itemize}
 		\item consists of $T$ gates, each either $H$ or $\Lambda(P(i))$.
-		\item uses $n$ qubit, including ancillaries.
+		\item uses $n$ qubit, counting ancillaries.
 	\end{itemize}
-	Then a classical machine, given $C$ and some classical $x$, can compute a circuit $C'$ and a classical string $x'$ that:
+	Then a classical machine given $C$ can compute a circuit $C'$ that:
 	\begin{itemize}
-		\item $C'$ consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$.
-		\item $C'$ uses $n+1$ qubits.
-		\item All states are real (including initial, intermediate states, and output).
-		\item The measurement results of $C(x)$ and the first $n$ qubits of $C'(x')$ are identically distributed.
+		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$.
+		\item uses $n+1$ qubits, counting ancillaries.
+		\item $\forall x\in\set{0,1}^*$, the $X$ and $Z$ measurement results of $C(x)$ and the first $n$ qubits of $C'(x)$ are identically distributed.
 	\end{itemize}
 \end{theorem}
 
 \begin{proof}
+The proof is taken from \cite{quant-ph/0301040}. We consider the transform
+	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
+where $\Re$ and $\Im$ denote real and imaginary parts respectively. It is easy to check that this preserves $X$ and $Z$ measurement results.
 
-Now consider a circuit $C=U_T\ldots U_1$ with the following properties:
-\begin{itemize}
-	\item $U_i\in\set{H, \Lambda(P(i))}$
-	\item Has initial state $\ket\psi$ with $n$ qubits
-\end{itemize}
-
-We first reduce it to use only real gates and states. The proof is taken from \cite{quant-ph/0301040}. We consider the transform
-$$\mathcal{F}(\ket{\phi})=\ket{0}\otimes\Re\ket{\phi}+\ket{1}\otimes\Im\ket{\phi}$$
-where $\Re$ and $\Im$ denote real and imaginary parts respectively. It has the following properties
-
-\begin{itemize}
-	\item $\forall\ket\phi$, $\mathcal{F}(\ket\phi)$ is real.
-	\item Preserves $X$ and $Z$ measurement results
-\end{itemize}
-
-We now apply $\mathcal{F}$ to $\ket\psi$. To make the notation easier, let $\ket{\psi}$ be 1-indexed, and the $\mathcal{F}\ket{\psi}$ be 0-indexed, so corresponding qubits stay in the same position.
-
-The transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
+This transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
 $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 \end{proof}
 
-Now we also prove a theorem about the circuit after transformation that we'll use later.
+Now we also prove a theorem about the transformed circuit that we'll use later.
 
 \begin{definition}
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n|U_i\in\set{I,X,Z}}$.
 \end{definition}
 
-To simplify the notation, we may only write the qubits with $X$ and $Z$ operators when talking about members of $\mathcal{G}_{XZ}$.
-
 \begin{theorem}
-	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$
+	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
 \end{theorem}
 
 \begin{proof}
@@ -70,16 +53,12 @@ To simplify the notation, we may only write the qubits with $X$ and $Z$ operator
 
 \subsection{Constructing a local Hamiltonian instance}
 
-Here we reduce a circuit into a local Hamiltonian instance with a few additional properties as below.
+Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
 \begin{theorem}
-	Let $C$ be a circuit such that:
+	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance such that:
 	\begin{itemize}
-		\item $C=U_T\ldots U_1$, where $U_i$ are either $H$ or $\Lambda^2(X)$
-	\end{itemize}
-	Let $x$ be a classical string. Then a classical machine can construct in polynomial time a local Hamiltonian instance such that:
-	\begin{itemize}
-		\item its ground state is $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$ where $y$ is $x$ possibly concatenated with ancillaries.
+		\item its ground state is $$\ket{\psi_{circuit}}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$ where $y$ is $x$ possibly concatenated with ancillaries.
 		\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
 		\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
 		\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
@@ -87,16 +66,9 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 \end{theorem}
 
 \begin{proof}
+	We construct the Hamiltonian by ensuring states perpendicular to $\ket{\psi_{circuit}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
-Let $C$ be a circuit with the above properties. Define the following quantities.
-\begin{itemize}
-	\item Let $y$ denote the initial state. That is, $x$ possibly concatenated with ancillaries.
-	\item Let $y_i$ denote the $i$-th bit of $y$
-	\item Let $n$ be the number of qubits in $C$
-\end{itemize}
-
-We then attempt to construct a local Hamiltonian with the following ground state that encodes the history of the computation: $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$
-We do so by ensuring states perpendicular to it have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification is taken from \cite{PhysRevA.78.012352}.
+Let $y_i$ denote the $i$-th bit of $y$, and let $n$ be the number of qubits in $C$.
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
@@ -138,13 +110,14 @@ Extra care must be taken for boundary cases.
 $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
 $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-Now we consider the kernels of the Hamiltonians we defined. Notice the following.
+To properly combine the three Hamiltonians defined, we consider the kernels of the Hamiltonians we defined.
 $$K_{clock}=\ker H_{clock}$$
 $$K_{in}=\ker H_{in}$$
 $$K_{prop}=\ker H_{prop}$$
-$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\psi_{circuit}}$$
+Notice that
+$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$$
 We now consider the space outside the desired state.
-$$S=(\spn\set{\psi_{circuit}})^\bot$$
+$$S=(\spn\set{\ket{\psi_{circuit}}})^\bot$$
 $$H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$$
 To combine the Hamiltonians, we apply the projection lemma twice.
 $$\exists J_{clock}
