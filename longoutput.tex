@@ -2,12 +2,31 @@
 
 Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction for \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck.
 
-\subsection{Preprocessing circuit}
-
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 $$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 Which is proven to be universal in \cite{kitaev_1997}.
+
+\subsection{Preprocessing circuit}
+
+Here we construct a transform that we will use to... TODO Editorial intro.
+
+\begin{theorem}
+	Let $C$ be a circuit that:
+	\begin{itemize}
+		\item consists of $T$ gates, each either $H$ or $\Lambda(P(i))$.
+		\item uses $n$ qubit, including ancillaries.
+	\end{itemize}
+	Then a classical machine, given $C$ and some classical $x$, can compute a circuit $C'$ and a classical string $x'$ that:
+	\begin{itemize}
+		\item $C'$ consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$.
+		\item $C'$ uses $n+1$ qubits.
+		\item All states are real (including initial, intermediate states, and output).
+		\item The measurement results of $C(x)$ and the first $n$ qubits of $C'(x')$ are identically distributed.
+	\end{itemize}
+\end{theorem}
+
+\begin{proof}
 
 Now consider a circuit $C=U_T\ldots U_1$ with the following properties:
 \begin{itemize}
@@ -29,7 +48,9 @@ We now apply $\mathcal{F}$ to $\ket\psi$. To make the notation easier, let $\ket
 The transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
 $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
-We modify the circuit as appropriate to obtain $C'$ that has size $T'\leq 4T$. We prove a theorem about this circuit that we'll use later.
+\end{proof}
+
+Now we also prove a theorem about the circuit after transformation that we'll use later.
 
 \begin{definition}
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n|U_i\in\set{I,X,Z}}$.
@@ -47,19 +68,28 @@ To simplify the notation, we may only write the qubits with $X$ and $Z$ operator
 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 \end{proof}
 
-Let $C$ undergo the above transformations so it has the following properties
-\begin{itemize}
-	\item All states are real (including initial, intermediate states, and output).
-	\item Consists of only Hadamard and Toffoli gates
-	\item The last $\gamma$ of the gates are all identity gates (easily achievable by padding)
-\end{itemize}
-
 \subsection{Constructing a local Hamiltonian instance}
+
+Here we reduce a circuit into a local Hamiltonian instance with a few additional properties as below.
+
+\begin{theorem}
+	Let $C$ be a circuit such that:
+	\begin{itemize}
+		\item $C=U_T\ldots U_1$, where $U_i$ are either $H$ or $\Lambda^2(X)$
+	\end{itemize}
+	Let $x$ be a classical string. Then a classical machine can construct in polynomial time a local Hamiltonian instance such that:
+	\begin{itemize}
+		\item its ground state is $$\psi_{circuit}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$ where $y$ is $x$ possibly concatenated with ancillaries.
+		\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
+		\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
+		\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
+	\end{itemize}
+\end{theorem}
+
+\begin{proof}
 
 Let $C$ be a circuit with the above properties. Define the following quantities.
 \begin{itemize}
-	\item $C=U_T\ldots U_1$
-	\item Let $x$ be the circuit input. Which is classical.
 	\item Let $y$ denote the initial state. That is, $x$ possibly concatenated with ancillaries.
 	\item Let $y_i$ denote the $i$-th bit of $y$
 	\item Let $n$ be the number of qubits in $C$
@@ -127,12 +157,8 @@ $$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_
 $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
-So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$ to obtain the following properties.
-\begin{itemize}
-	\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
-	\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
-	\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$. There are $O(T)$ nonzero components, whose coefficients are each at most $O(T^3)$.
-\end{itemize}
+So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
+\end{proof}
 
 \subsection{Measuring ground state}
 
