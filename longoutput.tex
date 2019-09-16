@@ -135,27 +135,28 @@ So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisf
 
 \subsection{Measuring ground state}
 
-Now we put the above results in term of measurement outputs. TODO Make this a theorem too? Or maybe corollary of last theorem?
+Now we put the above results in term of measurement outputs.
 
-Given $\ket\phi$, now we're interested in the value of $\braket{\phi|H|\phi}$. Here we follow \cite{PhysRevA.93.022326}. Note that if $\phi=\psi_{circuit}$, then $\braket{\phi|H|\phi}=0$. If $\braket{\phi|\psi_{circuit}}=0$, then $\braket{\phi|H|\phi}>\frac{3}{4}$.
+\begin{theorem}
+	Let $$H\in\spn\mathcal{G}_{XZ}$$ with ground state $\psi$ with the following properties:
+	\begin{itemize}
+		\item $\braket{\psi|H|\psi}=0$
+		\item $\forall{\ket\phi}, \braket{\psi|\phi}=0\Rightarrow\braket{\phi|H|\phi}\geq\frac{3}{4}$
+		\item has $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
+	\end{itemize}
+	Then there exists an algorithm that accepts $\ket\psi$ with probabily $\frac{1}{2}$. Furthermore, for $\ket\phi$ where $\braket{\psi|\phi}=0$, it accepts with probability at most $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})$. This algorithm doesn't apply any quantum gates, and performs only $X$ and $Z$ measurements on the input state.
+\end{theorem}
 
-Since $H\in\spn\mathcal{G}_{XZ}$, we can write it as follows:
-$$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S= \sum_{S\in\mathcal{G}_{XZ}} |d_S|\sgn(d_S)S$$
-We then scale the Hamiltonian.
+Here we follow \cite{PhysRevA.93.022326}.
+
+We scale the Hamiltonian.
 $$D=\sum_{S\in\mathcal{G}_{XZ}}|d_S|$$
 $$p_S=\frac{|d_S|}{D}=O(T^4)$$
 $$H'=\frac{H}{D}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)S$$
 
 Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_{S\in\mathcal{G}_{XZ}} p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
 $$\braket{\phi|H'|\phi}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
-Which is simple to estimate by doing the measurements corresponding to $S$.
-Note that $H'=0$, but the measurement result is $\pm1$, so clearly we do not have perfect completeness.
-
-Now let $\ket\phi$ be such that $\braket{\phi|\psi_{circuit}}=0$.
-Take $p_0$ and $p_1$ to be the probability to measure $\sgn(d_S)\braket{\phi|S|\phi}=1$ on $\ket\psi_{circuit}$ and $\ket\phi$ respectively.
-$$p_0=\frac{1}{2}$$
-$$\braket{\phi|H'|\phi}=\frac{1}{O(T^4)}\braket{\phi|H|\phi}=\Omega(T^{-4})$$
-$$\Rightarrow p_1=\frac{1}{2}+\Omega(T^{-4})$$
+Which is simple to estimate by doing the measurements corresponding to $S$. The measurement result is $\pm1$, so it can be modeled as a bernoulli distribution with known expected value. The rest is simple number crunching. Note that $|d_S|=O(\poly(T))$.
 
 \subsection{Analysis and amplification}
 
