@@ -147,6 +147,7 @@ Now we put the above results in term of measurement outputs.
 	\end{itemize}
 	Then there exists an algorithm that accepts $\ket\psi$ with probabily $\frac{1}{2}$. Furthermore, for $\ket\phi$ where $\braket{\psi|\phi}=0$, it accepts with probability at most $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})$. This algorithm doesn't apply any quantum gates, and performs only $X$ and $Z$ measurements on the input state.
 \end{theorem}
+\begin{proof}
 
 Here we follow \cite{PhysRevA.93.022326}.
 
@@ -158,6 +159,8 @@ $$H'=\frac{H}{D}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)S$$
 Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_{S\in\mathcal{G}_{XZ}} p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
 $$\braket{\phi|H'|\phi}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
 Which is simple to estimate by picking and doing the measurements corresponding to $S$. The measurement result is $\pm1$. It can be modeled as a Bernoulli distribution with known expected value. The rest is simple number crunching.
+\end{proof}
+
 \subsection{Analysis and amplification}
 
 We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
