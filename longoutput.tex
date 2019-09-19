@@ -1,6 +1,6 @@
 \section{Our Long Output Scheme}
 
-Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction for \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck.
+Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction of \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck. \hannote{be more explicit}
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
@@ -10,6 +10,8 @@ Which is proven to be universal in \cite{kitaev_1997}.
 \subsection{Preprocessing circuit}
 
 Here we construct a way to preprocess and simplify the circuit to a form that's easy for us to work with.
+
+\KM{just use $n$ qubit input. no need to distinguish input vs ancilla at this point}
 
 \begin{theorem}
 	Let $C$ be a circuit that:
@@ -26,6 +28,8 @@ Here we construct a way to preprocess and simplify the circuit to a form that's 
 \end{theorem}
 
 \begin{proof}
+\KM{prove what you claimed in the theorem.}
+
 The proof is taken from \cite{quant-ph/0301040}. We consider the transform
 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
 where $\Re$ and $\Im$ denote real and imaginary parts respectively. It is easy to check that this preserves $X$ and $Z$ measurement results.
@@ -55,12 +59,13 @@ Now we also prove a theorem about the transformed circuit that we'll use later.
 
 Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
+\KM{again, we don't need to make anccila explicit here}
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance such that:
+	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance $H_{circuit}$ such that:
 	\begin{itemize}
 		\item its ground state is $$\ket{\psi_{circuit}}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$ where $y$ is $x$ possibly concatenated with ancillaries.
 		\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
-		\item $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
+		\item \KM{TODO} $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
 		\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
 	\end{itemize}
 \end{theorem}

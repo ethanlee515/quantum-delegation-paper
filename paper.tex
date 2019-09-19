@@ -10,6 +10,11 @@
 \usepackage{etoolbox}
 \usepackage{hyperref}
 \apptocmd{\thebibliography}{\raggedright}{}{}
+\usepackage{cite,color,float}
+
+
+\newcommand{\KM}[1]{{\footnotesize\color{cyan}[KM: #1]}}
+
 
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
@@ -28,7 +33,7 @@
 	and Joint Center for Quantum Information and Computer Science,
 	University of Maryland, USA
 }
-
+\input{macros.tex}
 \begin{document}
 
 \maketitle
