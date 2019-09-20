@@ -40,6 +40,7 @@ We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following t
 	\item $C'$ uses only Hadamard and Toffoli gates.
 	\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
 	\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple to verify that $F$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+\end{itemize}
 \end{proof}
 
 We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
