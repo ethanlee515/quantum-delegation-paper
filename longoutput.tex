@@ -9,37 +9,40 @@ Which is proven to be universal in \cite{kitaev_1997}.
 
 \subsection{Preprocessing circuit}
 
-Here we construct a way to preprocess and simplify the circuit to a form that's easy for us to work with.
-
-\KM{just use $n$ qubit input. no need to distinguish input vs ancilla at this point}
+In order to estimate the energy of a Hamiltonian using only $X$ and $Z$ measurements, the gates in the circle must be combinations of $X$ and $Z$ matrices. To begin, we apply a transformation to the circuit to use only real states and gates. This transform is taken from \cite{quant-ph/0301040}.
 
 \begin{theorem}
 	Let $C$ be a circuit that:
 	\begin{itemize}
 		\item consists of $T$ gates, each either $H$ or $\Lambda(P(i))$.
-		\item uses $n$ qubit, counting ancillaries.
+		\item uses $n$ qubits
 	\end{itemize}
 	Then a classical machine given $C$ can compute a circuit $C'$ that:
 	\begin{itemize}
 		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$.
-		\item uses $n+1$ qubits, counting ancillaries.
-		\item $\forall x\in\set{0,1}^*$, the $X$ and $Z$ measurement results of $C(x)$ and the first $n$ qubits of $C'(x)$ are identically distributed.
+		\item uses $n+1$ qubits
+		\item Let $x\in\set{0,1}^n$, and $x||0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$. The $X$ and $Z$ measurement results of $C(x)$ and the first $n$ qubits of $C'(x||0)$ are identically distributed.
 	\end{itemize}
 \end{theorem}
 
 \begin{proof}
-\KM{prove what you claimed in the theorem.}
 
-The proof is taken from \cite{quant-ph/0301040}. We consider the transform
+Consider the transform on quantum states
 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
-where $\Re$ and $\Im$ denote real and imaginary parts respectively. It is easy to check that this preserves $X$ and $Z$ measurement results.
+where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
-This transform commutes with Hadamard gates on the respective qubit, but controlled phase gates become a combination of Hadamard and Toffoli gates. Mathematically,
+This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
 $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
 $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
+
+We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
+\begin{itemize}
+	\item $C'$ uses only Hadamard and Toffoli gates.
+	\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
+	\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple to verify that $F$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
 \end{proof}
 
-Now we also prove a theorem about the transformed circuit that we'll use later.
+We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
 
 \begin{definition}
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n|U_i\in\set{I,X,Z}}$.
@@ -59,13 +62,12 @@ Now we also prove a theorem about the transformed circuit that we'll use later.
 
 Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
-\KM{again, we don't need to make anccila explicit here}
 \begin{theorem}
 	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance $H_{circuit}$ such that:
 	\begin{itemize}
-		\item its ground state is $$\ket{\psi_{circuit}}=\sum_{t=0}^TU_t...U_1\ket{y}\otimes\ket{\hat{t}}$$ where $y$ is $x$ possibly concatenated with ancillaries.
+		\item its ground state is $$\ket{\psi_{circuit}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 		\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
-		\item \KM{TODO} $\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$ for $\ket\phi$ such that $\braket{\phi|\psi_{circuit}}=0$
+		\item $\forall\ket\phi,\braket{\phi|\psi_{circuit}}=0\Rightarrow\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$
 		\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
 	\end{itemize}
 \end{theorem}
@@ -73,7 +75,7 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 \begin{proof}
 	We construct the Hamiltonian by ensuring states perpendicular to $\ket{\psi_{circuit}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
-Let $y_i$ denote the $i$-th bit of $y$, and let $n$ be the number of qubits in $C$.
+Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
 
 First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
@@ -82,9 +84,9 @@ $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $
 This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
 Then, we ensure that the initial condition is set up correctly.
-$$H_{in}=\sum_{i=1}^n(I-\ket{y_i}\bra{y_i})\otimes\ket{0}\bra{0}_1$$
+$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
 The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
-$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{y_i}Z_i)\otimes(I+Z_1)$$
+$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
 
 Then, we ensure that the gates are applied correctly.
 $$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
@@ -119,7 +121,7 @@ To properly combine the three Hamiltonians defined, we consider the kernels of t
 $$K_{clock}=\ker H_{clock}$$
 $$K_{in}=\ker H_{in}$$
 $$K_{prop}=\ker H_{prop}$$
-Notice that
+Notice that (TODO Need proof)
 $$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$$
 We now consider the space outside the desired state.
 $$S=(\spn\set{\ket{\psi_{circuit}}})^\bot$$
@@ -134,6 +136,7 @@ $$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_
 =\frac{O(n+T)}{\Omega(T^{-2})}=O(T^3)$$
 $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
+TODO Here are some steps here that need to be spelled out
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 \end{proof}
@@ -164,6 +167,8 @@ $$H'=\frac{H}{D}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)S$$
 Note that $H'$ is now a weighted sum of measurement operators. We also have $0\leq p_S\leq1$ and $\sum_{S\in\mathcal{G}_{XZ}} p_S=1$, so we can treat it as a probability distribution over the choice of $S$.
 $$\braket{\phi|H'|\phi}=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}=\E_S[\sgn(d_S)\braket{\phi|S|\phi}]$$
 Which is simple to estimate by picking and doing the measurements corresponding to $S$. The measurement result is $\pm1$. It can be modeled as a Bernoulli distribution with known expected value. The rest is simple number crunching.
+
+TODO Above is NOT just simple number crunching. Type it out.
 \end{proof}
 
 \subsection{Analysis and amplification}
