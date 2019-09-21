@@ -186,12 +186,9 @@ $$D=O(\poly(T))$$
 
 Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$.
 
-$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=-p+(1-p)$$
-\begin{align*}
-	\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-	&=\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}
-\end{align*}
+Which is simple to estimate by picking and doing the measurements corresponding to $S$. The measurement result is $\pm1$. It can be modeled as a Bernoulli distribution with known expected value. The rest is simple number crunching.
 
+TODO Above is NOT just simple number crunching. Type it out.
 \end{proof}
 
 \subsection{Analysis and amplification}
