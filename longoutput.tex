@@ -147,14 +147,8 @@ So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisf
 Now we put the above results in term of measurement outputs.
 
 \begin{theorem}
-	Let $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$$
-	with ground state $\psi$ with the following properties:
-	\begin{itemize}
-		\item $\braket{\psi|H|\psi}=0$
-		\item $\forall{\ket\phi}, \braket{\psi|\phi}=0\Rightarrow\braket{\phi|H|\phi}\geq\frac{3}{4}$
-		\item has $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
-	\end{itemize}
-	Then there exists an algorithm that accepts $\ket\psi$ with probabily $\frac{1}{2}$. Furthermore, for $\ket\phi$ where $\braket{\psi|\phi}=0$, it accepts with probability at most $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})$. This algorithm doesn't apply any quantum gates, and performs only $X$ and $Z$ measurements on the input state. TODO Wording unclear maybe?
+	Let $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$$ with  $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
+	Then there exists an algorithm that accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. This algorithm performs only $X$ and $Z$ measurements on $\ket\phi$, and is classical otherwise.
 \end{theorem}
 \begin{proof}
 
@@ -175,8 +169,6 @@ Here we follow \cite{PhysRevA.93.022326}.
 	\end{algorithmic}
 \end{algorithm}
 
-$$D=O(\poly(T))$$
-
 \begin{align*}
 	\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
 	&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
@@ -186,7 +178,7 @@ $$D=O(\poly(T))$$
 
 Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$.
 
-$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=-p+(1-p)$$
+$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]=-p+(1-p)$$
 \begin{align*}
 	\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
 	&=\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}
