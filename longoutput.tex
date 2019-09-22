@@ -151,7 +151,7 @@ $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 \begin{align*}
 	S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
-	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{x|y}=0}
+	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{circuit}|y}=0}
 \end{align*}
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
