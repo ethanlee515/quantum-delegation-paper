@@ -46,7 +46,7 @@ We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following t
 We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
 
 \begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n|U_i\in\set{I,X,Z}}$.
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n\colon U_i\in\set{I,X,Z}}$.
 \end{definition}
 
 \begin{theorem}
@@ -124,18 +124,18 @@ $$K_{in}=\ker H_{in}$$
 $$K_{prop}=\ker H_{prop}$$
 It is clear that $K_{clock}$ consists of the states with time registers of the form $\ket{\hat{t}}$.
 
-
-
 \begin{lemma}
-	Some lemma on K clock and K prop
+	$$K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}\colon \ket{y}\in\mathcal{B}^{\otimes n}}$$
 \end{lemma}
 
 \begin{proof}
-	Proof of above lemma
+	Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now nonsider some $\tilde{t}$ such that $\ket\phi\bra{\tilde{t}}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\ket\phi\bra{\tilde{t+1}}=U_{t+1}\ket\phi\bra{\tilde{t}}$ for $t\ne T$, and $\ket\phi\bra{\tilde{t}}=U_t\ket\phi\bra{\tilde{t-1}}$ for $t\ne0$. So we can obtain the required statement by induction.
 \end{proof}
 
-Notice that (TODO Need proof)
-$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$$
+\begin{corollary}
+	$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$
+\end{corollary}
+
 We now consider the space outside the desired state.
 $$S=(\spn\set{\ket{\psi_{circuit}}})^\bot$$
 $$H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$$
@@ -149,7 +149,10 @@ $$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_
 =\frac{O(n+T)}{\Omega(T^{-2})}=O(T^3)$$
 $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
-TODO Here are some steps here that need to be spelled out
+\begin{align*}
+	S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
+	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}\colon\braket{x|y}=0}
+\end{align*}
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 \end{proof}
