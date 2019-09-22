@@ -203,9 +203,19 @@ $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})
 
 \subsection{Analysis and amplification}
 
-We then follow \cite{mahadev_delegation}. That is, the server would commit copies of the ground state of the Hamiltonian for the classical client to measure.
-The client would keep a single copy for output, and use the other copies to check whether the computation is done properly.
-TODO Now what? Hypothesis testing...?
+A honest server can then commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would keep a single copy for output, and use the other copies to check whether the computation is done properly. Here we analyze what happens if the server is dishonest. We assume that the verifier can possess qubits and do $X$ and $Z$ measurements, but is classical otherwise.
+
+\begin{theorem}
+Let $H$ be a local Hamiltonian with the following properties:
+\begin{itemize}
+	\item Ground state...?
+	\item $\frac{3}{4}$?
+\end{itemize}
+Then, (some theorem statement)
+\end{theorem}
+\begin{proof}
+	Let $\phi_i$ be the eigenbasis of $H$. Then we can decomposite what the prover sends the verifier as $$\sum_I \alpha_I \ket{\phi_{i_1}}\otimes\ket{\phi_{i_2}}\otimes\ldots\otimes\ket{\phi_{i_{TODO}}}$$.
+\end{proof}
 
 \subsection{Getting the Output}
 
