@@ -161,7 +161,7 @@ So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisf
 
 Now we put the above results in term of measurement outputs.
 
-\begin{theorem}
+\begin{theorem}\label{ThmXZCheck}
 	Let $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$$ with  $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
 	Then there exists an algorithm that accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. This algorithm performs only $X$ and $Z$ measurements on $\ket\phi$, and is classical otherwise.
 \end{theorem}
@@ -206,15 +206,20 @@ $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})
 A honest server can then commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would keep a single copy for output, and use the other copies to check whether the computation is done properly. Here we analyze what happens if the server is dishonest. We assume that the verifier can possess qubits and do $X$ and $Z$ measurements, but is classical otherwise.
 
 \begin{theorem}
-Let $H$ be a local Hamiltonian with the following properties:
+Let $H$ be a local Hamiltonian with the following properties: TODO $\mathcal{G}_{XZ}$???
 \begin{itemize}
-	\item Ground state...?
-	\item $\frac{3}{4}$?
+	\item has $t$ terms
+	\item acts on $q$ qubits
+	\item Ground state $0$...?
+	\item Something something $\frac{3}{4}$?
 \end{itemize}
-Then, (some theorem statement)
+Then, the prover would send the client $n=O(\poly(t))$ copies... TODO
 \end{theorem}
 \begin{proof}
-	Let $\phi_i$ be the eigenbasis of $H$. Then we can decomposite what the prover sends the verifier as $$\sum_I \alpha_I \ket{\phi_{i_1}}\otimes\ket{\phi_{i_2}}\otimes\ldots\otimes\ket{\phi_{i_{TODO}}}$$.
+Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)}$ for $i\ne1$. We now decomposite what the prover sends in this basis.
+$$\sum_I \alpha_I \ket{\phi_{i_1}}\otimes\ket{\phi_{i_2}}\otimes\ldots\otimes\ket{\phi_{i_q}}$$
+We categorize the indices $I$ into three types, based on how many $1$s it contains. First kind contains all $1$s. Second contains so little $1$s that... something something Chernoff bound... And the third kind contains the rest.
+
 \end{proof}
 
 \subsection{Getting the Output}
