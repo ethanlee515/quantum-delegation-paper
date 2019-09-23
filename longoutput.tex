@@ -196,7 +196,7 @@ Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probabil
 $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]=-p+(1-p)$$
 \begin{align*}
 	\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-	&=\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}
+	&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
 \end{align*}
 
 \end{proof}
@@ -213,15 +213,20 @@ Let $H$ be a local Hamiltonian with the following properties: TODO $\mathcal{G}_
 	\item Ground state $0$...?
 	\item Something something $\frac{3}{4}$?
 \end{itemize}
-Then, the prover would send the client $n=O(\poly(t))$ copies... TODO
+Then, with the input, if honest is $n=O(\poly(t))$... TODO
 \end{theorem}
 \begin{proof}
-Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)}$ for $i\ne1$. We now decomposite what the prover sends in this basis.
-$$\sum_I \alpha_I \ket{\phi_{i_1}}\otimes\ket{\phi_{i_2}}\otimes\ldots\otimes\ket{\phi_{i_q}}$$
-We categorize the indices $I$ into three types, based on how many $1$s it contains. First kind contains all $1$s. Second contains so little $1$s that... something something Chernoff bound... And the third kind contains the rest.
+Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})$ for $i\ne1$. We now decomposite the input in this basis. We consider the Chernoff bound on... Man these variables are a pain to set up. Let's just say the result is $B$.
+Let $\mathcal{I}=\mathbb{Z}_q^n$ be a collection of multi-indices.
+We partition the multi-indices into three types.
+$$\mathcal{I}=\mathcal{I}_1\sqcup \mathcal{I}_2\sqcup \mathcal{I}_3$$
+$$\mathcal{I}_1=\set{(1,1,\ldots,1)}$$
+$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq B}$$
 
-$$TODO SOME STATE$$
-$$TODO SUM UP COEFFS$$
+Then we can write the input (?) as follows.
+$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
+$$b=\sum_{J\in\mathcal{I}_2}\beta_J^2$$
+$$c=\sum_{J\in\mathcal{I}_3}\gamma_J^2$$
 
 Then apply \autoref{ThmXZCheck}. By the linearity of expected values, the number of accepted qubits should be around...
 
