@@ -216,11 +216,11 @@ A honest server can then commit copies of the ground state of the Hamiltonian fo
 	Then, with the input, if honest is $n=O(\poly(t))$... TODO
 \end{theorem}
 \begin{proof}
-	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})=p'$ for $i\ne1$. We now decomposite the input in this basis.
+	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})=p'$ for $i\ne1$. We now decompose the input in this basis.
 
 	Fix $\frac{1}{2}<B<p'$. Consider the Chernoff bound.
 
-	Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices. That is, we decomposite the input as
+	Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices. That is, we decompose the input as
 	$$\sum_{J\in\mathcal{I}}\alpha_J\ket{\phi_J}$$
 
 	We partition the multi-indices into three types.
