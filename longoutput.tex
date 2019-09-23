@@ -161,29 +161,32 @@ So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisf
 
 Now we put the above results in term of measurement outputs.
 
+\begin{algorithm}
+	\caption{Check for ground state}
+	\label{AlgGroundStateCheck}
+	\begin{algorithmic}[1]
+		\Require $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$
+		\Procedure{GroundStateCheck}{$\ket\phi$}
+		\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
+		\State $p_S=\frac{|d_S|}{D}$
+		\State $\widetilde{S}\gets$ Pick weighted using $p_S$
+		\State $\lambda_{\widetilde{S}}\gets$ Measure $\ket\phi$ in the $\widetilde{S}$ basis
+		\If{$\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$}
+		\State Accept
+		\Else
+		\State Reject
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 \begin{theorem}\label{ThmXZCheck}
-	Let $$H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$$ with  $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
-	Then there exists an algorithm that accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. This algorithm performs only $X$ and $Z$ measurements on $\ket\phi$, and is classical otherwise.
+	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
+	Then \autoref{AlgGroundStateCheck} accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$.
 \end{theorem}
 \begin{proof}
 
 	Here we follow \cite{PhysRevA.93.022326}.
-
-	\begin{algorithm}
-		\caption{Check for ground state}
-		\begin{algorithmic}[1]
-			\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-			\State $p_S=\frac{|d_S|}{D}$
-			\State $\widetilde{S}\gets$ Pick weighted using $p_S$
-			\State $\lambda_{\widetilde{S}}\gets$ Measure $\ket\phi$ in the $\widetilde{S}$ basis
-			\If{$\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$}
-			\State Accept
-			\Else
-			\State Reject
-			\EndIf
-		\end{algorithmic}
-	\end{algorithm}
-
 	\begin{align*}
 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
 		&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
@@ -217,20 +220,20 @@ A honest server can then commit copies of the ground state of the Hamiltonian fo
 \begin{proof}
 	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Delta$ for $i\ne1$, where $\Delta=\Omega\left(\frac{1}{\poly(t)}\right)$. We now decompose the input in this basis. Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices.
 	$$\sum_{J\in\mathcal{I}}\alpha_J\ket{\phi_J}$$
-	Fix $\delta<2\Delta$ and partition the multi-indices into three types.
+	Fix $\delta<2\Delta$ and let $B=\frac{1}{2}-\delta$. Partition the multi-indices into three types.
 	$$\mathcal{I}_1=\set{(1,1,\ldots,1)}$$
 	$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq 2\delta n}$$
 	$$\mathcal{I}_2=\mathcal{I}\setminus\mathcal{I}_1\setminus\mathcal{I}_3$$
 
-	Apply Chernoff bound to $\frac{1}{2}-\delta$. There is overwhelming probability that...
-	By Chernoff bound, there is overwhelming probability that...  Then we can write the input (?) as follows.
+	Apply \autoref{AlgGroundStateCheck} to every register of $\ket{\phi_1^{\otimes n}}$. By Chernoff bound, there is overwhelming (as $n$ grows) probability that more than $Bn$ registers are accepted. On the other hand, take $J\in\mathcal{I}_3$ and do the same to every register of $\ket{\phi_J}$. By Chernoff bound, there is overwhelming probability that less than $Bn$ registers are accepted.
+
+	Now also define the following.
 	$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
 	$$b=\sum_{J\in\mathcal{I}_2}\beta_J\overline{\beta_J}$$
 	$$c=\sum_{J\in\mathcal{I}_3}\gamma_J\overline{\gamma_J}$$
 
 	Then apply \autoref{ThmXZCheck}. By the linearity of expected values, the number of accepted qubits should be around...
-
-	TODO What about Chernoffs???
+	TODO Does this actually work?
 
 \end{proof}
 
