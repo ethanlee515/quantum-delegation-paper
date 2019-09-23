@@ -129,7 +129,7 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 	\end{lemma}
 
 	\begin{proof}
-		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now consider some $\tilde{t}$ such that $\ket\phi\bra{\tilde{t}}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\ket\phi\bra{\tilde{t+1}}=U_{t+1}\ket\phi\bra{\tilde{t}}$ for $t\ne T$, and $\ket\phi\bra{\tilde{t}}=U_t\ket\phi\bra{\tilde{t-1}}$ for $t\ne0$. So we can obtain the required statement by induction.
+		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now consider some $\widetilde{t}$ such that $\bra{\widetilde{t}}\ket\phi\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\bra{\widetilde{t+1}}\ket\phi=\bra{\widetilde{t}}U_{t+1}\ket\phi$ for $t\ne T$, and $\bra{\widetilde{t}}\ket\phi=U_t\bra{\widetilde{t-1}}\ket\phi$ for $t\ne0$. So we can obtain the required statement by induction.
 	\end{proof}
 
 	\begin{corollary}
@@ -174,9 +174,9 @@ Now we put the above results in term of measurement outputs.
 		\begin{algorithmic}[1]
 			\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
 			\State $p_S=\frac{|d_S|}{D}$
-			\State $\tilde{S}\gets$ Pick weighted using $p_S$
-			\State $\lambda_{\tilde{S}}\gets$ Measure $\ket\phi$ in the $\tilde{S}$ basis
-			\If{$\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$}
+			\State $\widetilde{S}\gets$ Pick weighted using $p_S$
+			\State $\lambda_{\widetilde{S}}\gets$ Measure $\ket\phi$ in the $\widetilde{S}$ basis
+			\If{$\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$}
 			\State Accept
 			\Else
 			\State Reject
@@ -187,13 +187,13 @@ Now we put the above results in term of measurement outputs.
 	\begin{align*}
 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
 		&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
-		&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\E[\lambda_{\tilde{S}}]]\\
-		&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]
+		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\E[\lambda_{\widetilde{S}}]]\\
+		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]
 	\end{align*}
 
-	Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$.
+	Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
 
-	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]=-p+(1-p)$$
+	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
 	\begin{align*}
 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
 		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
