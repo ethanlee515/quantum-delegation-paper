@@ -168,7 +168,7 @@ Now we put the above results in term of measurement outputs.
 		\Require $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$
 		\Procedure{GroundStateCheck}{$\ket\phi$}
 		\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-		\State $p_S=\frac{|d_S|}{D}$
+		\State $p_S\gets\frac{|d_S|}{D}$
 		\State $\widetilde{S}\gets$ Pick weighted using $p_S$
 		\State $\lambda_{\widetilde{S}}\gets$ Measure $\ket\phi$ in the $\widetilde{S}$ basis
 		\If{$\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$}
