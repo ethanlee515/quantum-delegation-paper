@@ -225,7 +225,7 @@ A honest server can then commit copies of the ground state of the Hamiltonian fo
 	$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq 2\delta n}$$
 	$$\mathcal{I}_2=\mathcal{I}\setminus\mathcal{I}_1\setminus\mathcal{I}_3$$
 
-	Apply \autoref{AlgGroundStateCheck} to every register of $\ket{\phi_1^{\otimes n}}$. By Chernoff bound, there is overwhelming (as $n$ grows) probability that more than $Bn$ registers are accepted. On the other hand, take $J\in\mathcal{I}_3$ and do the same to every register of $\ket{\phi_J}$. By Chernoff bound, there is overwhelming probability that less than $Bn$ registers are accepted.
+	Apply \autoref{AlgGroundStateCheck} to every register of $\ket{\phi_1^{\otimes n}}$. By Chernoff bound, there is overwhelming (as $n$ grows) probability that more than $Bn$ registers are accepted. On the other hand, take $J\in\mathcal{I}_3$ and do the same to every register of $\ket{\phi_J}$. With overwhelming probability, less than $Bn$ registers are accepted.
 
 	Now also define the following.
 	$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
