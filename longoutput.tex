@@ -192,8 +192,7 @@ Now we put the above results in term of measurement outputs.
 	\end{align*}
 
 	Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
-
-	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
+$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
 	\begin{align*}
 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
 		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
@@ -216,19 +215,15 @@ A honest server can then commit copies of the ground state of the Hamiltonian fo
 	Then, with the input, if honest is $n=O(\poly(t))$... TODO
 \end{theorem}
 \begin{proof}
-	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})=p'$ for $i\ne1$. We now decompose the input in this basis.
-
-	Fix $\frac{1}{2}<B<p'$. Consider the Chernoff bound.
-
-	Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices. That is, we decompose the input as
+	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Delta$ for $i\ne1$, where $\Delta=\Omega\left(\frac{1}{\poly(t)}\right)$. We now decompose the input in this basis. Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices.
 	$$\sum_{J\in\mathcal{I}}\alpha_J\ket{\phi_J}$$
-
-	We partition the multi-indices into three types.
+	Fix $\delta<2\Delta$ and partition the multi-indices into three types.
 	$$\mathcal{I}_1=\set{(1,1,\ldots,1)}$$
-	$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq B}$$
+	$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq 2\delta n}$$
 	$$\mathcal{I}_2=\mathcal{I}\setminus\mathcal{I}_1\setminus\mathcal{I}_3$$
 
-	Then we can write the input (?) as follows.
+	Apply Chernoff bound to $\frac{1}{2}-\delta$. There is overwhelming probability that...
+	By Chernoff bound, there is overwhelming probability that...  Then we can write the input (?) as follows.
 	$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
 	$$b=\sum_{J\in\mathcal{I}_2}\beta_J\overline{\beta_J}$$
 	$$c=\sum_{J\in\mathcal{I}_3}\gamma_J\overline{\gamma_J}$$
