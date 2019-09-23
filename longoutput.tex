@@ -229,14 +229,15 @@ A honest server can then commit copies of the ground state of the Hamiltonian fo
 
 	Apply \autoref{AlgGroundStateCheck} to every register of $\ket{\phi_1^{\otimes n}}$. By Chernoff bound, there is overwhelming (as $n$ grows) probability that more than $Bn$ registers are accepted. On the other hand, take $J\in\mathcal{I}_3$ and do the same to every register of $\ket{\phi_J}$. With overwhelming probability, less than $Bn$ registers are accepted.
 
-	Now also define the following.
+	Now we apply \autoref{AlgGroundStateCheck} to every register of the input state. We accept if more than $Bn$ registers are accepted. Clearly a honest prover has overwhelming probability to be accepted. We analyze below the case for a dishonest prover.
+
+	We define the following.
 	$$a=\alpha\overline\alpha$$
 	$$b=\sum_{J\in\mathcal{I}_2}\beta_J\overline{\beta_J}$$
 	$$c=\sum_{J\in\mathcal{I}_3}\gamma_J\overline{\gamma_J}$$
 	Notice that $a+b+c=1$.
 
-	Then apply \autoref{ThmXZCheck}. By the linearity of expected values, the number of accepted qubits should be around...
-	TODO Does this actually work?
+	By the linearity of expected values, the number of accepted qubits should be around... TODO Does this actually work?
 
 \end{proof}
 
