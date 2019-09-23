@@ -4,8 +4,8 @@ Here we describe the scheme between the classical client and an honest quantum s
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
-$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
-Which is proven to be universal in \cite{kitaev_1997}.
+	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+		Which is proven to be universal in \cite{kitaev_1997}.
 
 \subsection{Preprocessing circuit}
 
@@ -27,20 +27,20 @@ In order to estimate the energy of a Hamiltonian using only $X$ and $Z$ measurem
 
 \begin{proof}
 
-Consider the transform on quantum states
+	Consider the transform on quantum states
 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
-where $\Re$ and $\Im$ denote real and imaginary parts respectively.
+	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
-This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
-$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
-$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
+	This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
+	$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
+	$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 
-We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
-\begin{itemize}
-	\item $C'$ uses only Hadamard and Toffoli gates.
-	\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
-	\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple to verify that $F$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
-\end{itemize}
+	We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
+	\begin{itemize}
+		\item $C'$ uses only Hadamard and Toffoli gates.
+		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
+		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple to verify that $F$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+	\end{itemize}
 \end{proof}
 
 We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
@@ -76,65 +76,65 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 \begin{proof}
 	We construct the Hamiltonian by ensuring states perpendicular to $\ket{\psi_{circuit}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
-Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
+	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
 
-First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
-$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-As a sum of projections, clearly $H_{clock}\geq 0$. We shall also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
-$$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
-This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
+	First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
+	$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
+	As a sum of projections, clearly $H_{clock}\geq 0$. We shall also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
+	$$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
+	This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
-Then, we ensure that the initial condition is set up correctly.
-$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
-The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
-$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
+	Then, we ensure that the initial condition is set up correctly.
+	$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
+	The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
+	$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
 
-Then, we ensure that the gates are applied correctly.
-$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
-$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
+	Then, we ensure that the gates are applied correctly.
+	$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
+	$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
 	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
 
-Next, we check that $H_{prop}\geq0$ by the following transform.
+	Next, we check that $H_{prop}\geq0$ by the following transform.
 
-$$W=\sum_{j=0}^L U_j\ldots U_1\otimes\ket{j}\bra{j}$$
-$$W^\dagger\phi=\sum_{t=0}^T\ket{x}\otimes\ket{\hat{t}}$$
-$$W^\dagger H_{prop} W=
-\begin{pmatrix}
-	\frac{1}{2} & -\frac{1}{2} & & & &  \\
-	-\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
-	& -\frac{1}{2} & 1 & \ddots & & \\
-	& & \ddots & \ddots & -\frac{1}{2} & \\
-	& & & -\frac{1}{2} & 1 & -\frac{1}{2} \\
-	& & & & -\frac{1}{2} & \frac{1}{2}
-\end{pmatrix}$$
+	$$W=\sum_{j=0}^L U_j\ldots U_1\otimes\ket{j}\bra{j}$$
+	$$W^\dagger\phi=\sum_{t=0}^T\ket{x}\otimes\ket{\hat{t}}$$
+	$$W^\dagger H_{prop} W=
+	\begin{pmatrix}
+		\frac{1}{2} & -\frac{1}{2} & & & &  \\
+		-\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
+		& -\frac{1}{2} & 1 & \ddots & & \\
+		& & \ddots & \ddots & -\frac{1}{2} & \\
+		& & & -\frac{1}{2} & 1 & -\frac{1}{2} \\
+		& & & & -\frac{1}{2} & \frac{1}{2}
+	\end{pmatrix}$$
 
-According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks. Furthermore, the last nonzero eigenvalue of $H_{prop}$ is at least $\frac{1}{2(T+1)^2}$.
+	According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks. Furthermore, the last nonzero eigenvalue of $H_{prop}$ is at least $\frac{1}{2(T+1)^2}$.
 
-We can also write $H=\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
-$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
-Extra care must be taken for boundary cases.
-$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+	We can also write $H=\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
+	Extra care must be taken for boundary cases.
+	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-To properly combine the three Hamiltonians defined, we consider the kernels of the Hamiltonians we defined.
-$$K_{clock}=\ker H_{clock}$$
-$$K_{in}=\ker H_{in}$$
-$$K_{prop}=\ker H_{prop}$$
-It is clear that $K_{clock}$ consists of the states with time registers of the form $\ket{\hat{t}}$.
+	To properly combine the three Hamiltonians defined, we consider the kernels of the Hamiltonians we defined.
+	$$K_{clock}=\ker H_{clock}$$
+	$$K_{in}=\ker H_{in}$$
+	$$K_{prop}=\ker H_{prop}$$
+	It is clear that $K_{clock}$ consists of the states with time registers of the form $\ket{\hat{t}}$.
 
-\begin{lemma}
-	$$K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
-\end{lemma}
+	\begin{lemma}
+		$$K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
+	\end{lemma}
 
-\begin{proof}
-	Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now nonsider some $\tilde{t}$ such that $\ket\phi\bra{\tilde{t}}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\ket\phi\bra{\tilde{t+1}}=U_{t+1}\ket\phi\bra{\tilde{t}}$ for $t\ne T$, and $\ket\phi\bra{\tilde{t}}=U_t\ket\phi\bra{\tilde{t-1}}$ for $t\ne0$. So we can obtain the required statement by induction.
-\end{proof}
+	\begin{proof}
+		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now nonsider some $\tilde{t}$ such that $\ket\phi\bra{\tilde{t}}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\ket\phi\bra{\tilde{t+1}}=U_{t+1}\ket\phi\bra{\tilde{t}}$ for $t\ne T$, and $\ket\phi\bra{\tilde{t}}=U_t\ket\phi\bra{\tilde{t-1}}$ for $t\ne0$. So we can obtain the required statement by induction.
+	\end{proof}
 
-\begin{corollary}
-	$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$
-\end{corollary}
+	\begin{corollary}
+		$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$
+	\end{corollary}
 
 We now consider the space outside the desired state.
 $$S=(\spn\set{\ket{\psi_{circuit}}})^\bot$$
@@ -167,37 +167,37 @@ Now we put the above results in term of measurement outputs.
 \end{theorem}
 \begin{proof}
 
-Here we follow \cite{PhysRevA.93.022326}.
+	Here we follow \cite{PhysRevA.93.022326}.
 
-\begin{algorithm}
-	\caption{Check for ground state}
-	\begin{algorithmic}[1]
-		\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-		\State $p_S=\frac{|d_S|}{D}$
-		\State $\tilde{S}\gets$ Pick weighted using $p_S$
-		\State $\lambda_{\tilde{S}}\gets$ Measure $\ket\phi$ in the $\tilde{S}$ basis
-		\If{$\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$}
+	\begin{algorithm}
+		\caption{Check for ground state}
+		\begin{algorithmic}[1]
+			\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
+			\State $p_S=\frac{|d_S|}{D}$
+			\State $\tilde{S}\gets$ Pick weighted using $p_S$
+			\State $\lambda_{\tilde{S}}\gets$ Measure $\ket\phi$ in the $\tilde{S}$ basis
+			\If{$\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$}
 			\State Accept
-		\Else
+			\Else
 			\State Reject
-		\EndIf
-	\end{algorithmic}
-\end{algorithm}
+			\EndIf
+		\end{algorithmic}
+	\end{algorithm}
 
-\begin{align*}
-	\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
-	&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
-	&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\E[\lambda_{\tilde{S}}]]\\
-	&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]
-\end{align*}
+	\begin{align*}
+		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
+		&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
+		&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\E[\lambda_{\tilde{S}}]]\\
+		&=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]
+	\end{align*}
 
-Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$.
+	Note that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}=-1$.
 
-$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]=-p+(1-p)$$
-\begin{align*}
-	\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-	&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
-\end{align*}
+	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})\lambda_{\tilde{S}}]=-p+(1-p)$$
+	\begin{align*}
+		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
+		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
+	\end{align*}
 
 \end{proof}
 
@@ -206,36 +206,36 @@ $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\tilde{S}}[\sgn(d_{\tilde{S}})
 A honest server can then commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would keep a single copy for output, and use the other copies to check whether the computation is done properly. Here we analyze what happens if the server is dishonest. We assume that the verifier can possess qubits and do $X$ and $Z$ measurements, but is classical otherwise.
 
 \begin{theorem}
-Let $H$ be a local Hamiltonian with the following properties: TODO $\mathcal{G}_{XZ}$???
-\begin{itemize}
-	\item has $t$ terms
-	\item acts on $q$ qubits
-	\item Ground state $0$...?
-	\item Something something $\frac{3}{4}$?
-\end{itemize}
-Then, with the input, if honest is $n=O(\poly(t))$... TODO
+	Let $H$ be a local Hamiltonian with the following properties: TODO $\mathcal{G}_{XZ}$???
+	\begin{itemize}
+		\item has $t$ terms
+		\item acts on $q$ qubits
+		\item Ground state $0$...?
+		\item Something something $\frac{3}{4}$?
+	\end{itemize}
+	Then, with the input, if honest is $n=O(\poly(t))$... TODO
 \end{theorem}
 \begin{proof}
-Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})=p'$ for $i\ne1$. We now decomposite the input in this basis.
-	
-Fix $\frac{1}{2}<B<p'$. Consider the Chernoff bound.
+	Let $\set{\ket{\phi_1}, \ket{\phi_2},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$. Now apply \autoref{ThmXZCheck} to get an algorithm that accepts $\ket{\phi_1}$ with probability $\frac{1}{2}$ and $\ket{\phi_i}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(t)})=p'$ for $i\ne1$. We now decomposite the input in this basis.
 
-Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices. That is, we decomposite the input as
-$$\sum_{J\in\mathcal{I}}\alpha_J\ket{\phi_J}$$
+	Fix $\frac{1}{2}<B<p'$. Consider the Chernoff bound.
 
-We partition the multi-indices into three types.
-$$\mathcal{I}_1=\set{(1,1,\ldots,1)}$$
-$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq B}$$
-$$\mathcal{I}_2=\mathcal{I}\setminus\mathcal{I}_1\setminus\mathcal{I}_3$$
+	Let $\mathcal{I}=\mathbb{Z}_q^n$ be the collection of possible multi-indices. That is, we decomposite the input as
+	$$\sum_{J\in\mathcal{I}}\alpha_J\ket{\phi_J}$$
 
-Then we can write the input (?) as follows.
-$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
+	We partition the multi-indices into three types.
+	$$\mathcal{I}_1=\set{(1,1,\ldots,1)}$$
+	$$\mathcal{I}_3=\set{(j_1, j_2,\ldots,j_n):\abs{\set{j_k=1}}\leq B}$$
+	$$\mathcal{I}_2=\mathcal{I}\setminus\mathcal{I}_1\setminus\mathcal{I}_3$$
+
+	Then we can write the input (?) as follows.
+	$$\alpha\ket{\phi_1^{\otimes n}}+\sum_{J\in\mathcal{I}_2}\beta_J\ket{\phi_J}+\sum_{J\in\mathcal{I}_3}\gamma_J\ket{\phi_J}$$
 	$$b=\sum_{J\in\mathcal{I}_2}\beta_J\overline{\beta_J}$$
 	$$c=\sum_{J\in\mathcal{I}_3}\gamma_J\overline{\gamma_J}$$
 
-Then apply \autoref{ThmXZCheck}. By the linearity of expected values, the number of accepted qubits should be around...
+	Then apply \autoref{ThmXZCheck}. By the linearity of expected values, the number of accepted qubits should be around...
 
-TODO What about Chernoffs???
+	TODO What about Chernoffs???
 
 \end{proof}
 
