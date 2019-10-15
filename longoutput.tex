@@ -209,12 +209,10 @@ In the case for decision problems, amplifying the gap between acceptance and rej
 
 Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$. We start by considering simpler inputs before moving to the general case.
 
-Pick $\varepsilon>0$ as the error parameter to amplify to.
-
-Pick $n\in\mathbb{N}$ so that by Chernoff bound:
+Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 \begin{itemize}
-	\item $\ket{\psi^{\otimes n}}$ is accepted with overwhelming probability.
-	\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is rejected with overwhelming probability.
+	\item $\ket{\psi^{\otimes n}}$ is rejected with probability at most $1-p$.
+	\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is accepted with probability at most $p$.
 \end{itemize}
 
 \begin{algorithm}
@@ -233,26 +231,28 @@ Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 	\end{algorithmic}
 \end{algorithm}
 
+\begin{observation}
+	If the input is of the form $\ket{\phi^{\otimes n+m}}$, \autoref{AlgAmp1} applies a Chernoff bound to the first $n$ registers.
+\end{observation}
+
 \begin{theorem}
-	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has negligible probability to be rejected by $\mathcal{F}$.
+	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has $\frac{p}{\delta}$ to be rejected by $\mathcal{F}$.
 \end{theorem}
 \begin{proof}
 	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
 
-	Let $q_i$ be the accept probability of $\ket{\rho_i^{\otimes n+m}}$ under \autoref{AlgAmp1}. 
-
-	By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
+	Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
 
 	Let $J=\set{j:\mathcal{F}(\ket{\rho_j})<\frac{1}{2}-\varepsilon}$.
 	
-	$\Rightarrow\forall j\in J$, $q_j$ is negligible.
+	$\Rightarrow\forall j\in J$, $q_j<p$.
 
-	$\Rightarrow\sum_{j\in J} w_j q_j$ is negligible, since $\sum_i w_i=1$.
+	$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
 	
-	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}$ is negligible, since $\sum_i w_i q_i>\delta$ is not negligible.
+	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$.
 \end{proof}
 
-Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $N=k=\poly(l)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily small. That is, with some arbitrarily small error in measurement results, we can assume without the loss of generality that the client receives an input of the simple form above. Hence concludes the proof.
+Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $k=\poly(n)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily small. That is, with some arbitrarily small error in measurement results, we can assume without the loss of generality that the client receives an input of the simple form above. Hence concludes the proof.
 
 \subsection{Getting the Output}
 
