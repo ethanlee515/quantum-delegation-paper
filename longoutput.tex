@@ -243,9 +243,7 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 
 	Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
 
-	Let $J=\set{j:\mathcal{F}(\ket{\rho_j})<\frac{1}{2}-\varepsilon}$.
-	
-	$\Rightarrow\forall j\in J$, $q_j<p$.
+	Let $J=\set{j:q_j<p}$.
 
 	$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
 	
