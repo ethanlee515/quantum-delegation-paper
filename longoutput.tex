@@ -205,35 +205,51 @@ Now we put the above results in term of measurement outputs.
 
 \subsection{Analysis and amplification}
 
-A honest server can then commit copies of the ground state of the Hamiltonian for the classical client to measure. The client would keep a single copy for output, and use the other copies to check whether the computation is done properly. Here we analyze what happens if the server is dishonest. We assume that the verifier can possess qubits and do $X$ and $Z$ measurements, but is classical otherwise.
+In the case for decision problems, amplifying the gap between acceptance and rejection probabilities is trivial. As seen in \cite{kitaev2002classical}, the prover, honest or not, cannot do better than sending $n$ identical copies of some state. As a result, a simple Chernoff bound would suffice. The same reasoning does not generalize trivially to our case, so instead we give the following proof.
+
+Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$. We start by considering simpler inputs before moving to the general case.
+
+Pick $\varepsilon>0$ as the error parameter to amplify to.
+
+Pick $n\in\mathbb{N}$ so that by Chernoff bound:
+\begin{itemize}
+	\item $\ket{\psi^{\otimes n}}$ is accepted with overwhelming probability.
+	\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is rejected with overwhelming probability.
+\end{itemize}
+
+\begin{algorithm}
+	\caption{Amplification with simple input}
+	\label{AlgAmp1}
+	\begin{algorithmic}[1]
+		\Require $\phi=\sum_i w_i\ket{\rho_i^{\otimes n+1}}\bra{\rho_i^{\otimes n+1}}$
+		\Procedure{SimpleAmplification}{$\phi$}
+		\State Apply $\mathcal{F}$ to first $n$ registers of $\phi$
+		\If{number of accepted copies $\geq \frac{1}{2}-\varepsilon$}
+			\State Output the last register
+		\Else
+			\State Reject
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
 
 \begin{theorem}
-	Let $H$ be a local Hamiltonian with the following properties: TODO $\mathcal{G}_{XZ}$???
-	\begin{itemize}
-		\item has $t$ terms
-		\item acts on $q$ qubits
-		\item Ground state $0$...?
-		\item Something something $\frac{3}{4}$?
-	\end{itemize}
-	Then, with the input, if honest is $n=O(\poly(t))$... TODO
-
-	Client sends $N$ copies...
+	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has negligible probability to be rejected by $\mathcal{F}$.
 \end{theorem}
 \begin{proof}
-	Let $\set{\ket{\phi_1},\ldots,\ket{\phi_q}}$ be the eigenbasis of $H$.
-	Then $\ket{\phi_1}$ has eigenvalue $\lambda_1=0$, and $\ket{\phi_j}$ has eigenvalues $\lambda_j\geq\tilde\lambda$ for $j>1$.
+	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+1}}$ with $w_i$ as weights.
 
-	Consider
-	$$\sum_{j=1}^nH^j$$
-	Where $H^j$ denotes $H$ acting on the $j$th qubit. So it has eigenbasis $\ket{\phi_J}$ for some multi-index $J$ with corresponding eigenvalue
-	$$\sum_{i\in J}\lambda_i$$
+	Let $q_i$ be the accept probability of $\ket{\rho_i^{\otimes n+1}}$ under \autoref{AlgAmp1}. 
 
-	Now fix $\delta$ and define $n_c=\delta N$, $n_b=2n_c=2\delta N$.
-	If more than $n_b$ registers reject, then with overwhelming probability bad state...
-	Otherwise eigenvalue < $n_c$?
+	By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_i^{\otimes n+1}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
 
-	Then done?
+	Let $J=\set{j:\mathcal{F}(\ket{\rho_j})<\frac{1}{2}-\varepsilon}$.
+	
+	$\Rightarrow\forall j\in J$, $q_j$ is negligible.
 
+	$\Rightarrow\sum_{j\in J} w_j q_j$ is negligible, since $\sum_i w_i=1$.
+	
+	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}$ is negligible, since $\sum_i w_i q_i>\delta$ is not negligible.
 \end{proof}
 
 \subsection{Getting the Output}
