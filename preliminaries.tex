@@ -45,3 +45,12 @@ Here is a lemma that we will use, taken from \cite{kempe_kitaev_regev_2006}.
 	$$\exists J=\frac{\poly(\norm{H_1})}{\lambda(H_2|_{K^\bot})}$$
 	$$\lambda(H_1+JH_2)\geq\lambda(H_1\big|_K)-\frac{1}{8}$$
 \end{theorem}
+
+\subsection{Quantum de Finetti Theorem under Local Measurements}
+
+Here is a theorem taken from \cite{Brandão2017}.
+\begin{theorem}
+	\label{deFinetti}
+	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state. Then for every $0\leq l\leq k$ there is a measure $\nu$ on $D(A)$ such that
+	$$\max_{\Lambda_2,\ldots,\Lambda_l\in\mathcal{M}}\norm{(id\otimes\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\int \nu(d\sigma)\sigma^{\otimes l}\right)}_1\leq\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$$
+\end{theorem}

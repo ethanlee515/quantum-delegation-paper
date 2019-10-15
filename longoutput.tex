@@ -205,7 +205,7 @@ Now we put the above results in term of measurement outputs.
 
 \subsection{Analysis and amplification}
 
-In the case for decision problems, amplifying the gap between acceptance and rejection probabilities is trivial. As seen in \cite{kitaev2002classical}, the prover, honest or not, cannot do better than sending $n$ identical copies of some state. As a result, a simple Chernoff bound would suffice. The same reasoning does not generalize trivially to our case, so instead we give the following proof.
+In the case for decision problems, amplifying the gap between acceptance and rejection probabilities is trivial. As seen in \cite{kitaev2002classical}, a prover, honest or not, cannot do better than sending $n$ identical copies of some state. As a result, a simple Chernoff bound would suffice. The same reasoning does not generalize to our case, so instead we give the following proof.
 
 Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$. We start by considering simpler inputs before moving to the general case.
 
@@ -252,7 +252,7 @@ Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}$ is negligible, since $\sum_i w_i q_i>\delta$ is not negligible.
 \end{proof}
 
-Now we do some shenanigans as given in \cite{Brandão2017}...
+Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $N=k=\poly(l)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily small. That is, with some arbitrarily small error in measurement results, we can assume without the loss of generality that the client receives an input of the simple form above. Hence concludes the proof.
 
 \subsection{Getting the Output}
 
