@@ -129,7 +129,7 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 	\end{lemma}
 
 	\begin{proof}
-		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now consider some $\widetilde{t}$ such that $\bra{\widetilde{t}}\ket\phi\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\bra{\widetilde{t+1}}\ket\phi=\bra{\widetilde{t}}U_{t+1}\ket\phi$ for $t\ne T$, and $\bra{\widetilde{t}}\ket\phi=U_t\bra{\widetilde{t-1}}\ket\phi$ for $t\ne0$. So we can obtain the required statement by induction.
+		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\bra{\widetilde{t+1}}\ket\phi=\bra{\widetilde{t}}U_{t+1}\ket\phi$ for $t\ne T$, and $\bra{\widetilde{t}}\ket\phi=U_t\bra{\widetilde{t-1}}\ket\phi$ for $t\ne0$. So we can obtain the required statement by induction.
 	\end{proof}
 
 	\begin{corollary}
