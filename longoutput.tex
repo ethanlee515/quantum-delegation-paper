@@ -232,11 +232,11 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 \end{algorithm}
 
 \begin{observation}
-	If the input is of the form $\ket{\phi^{\otimes n+m}}$, \autoref{AlgAmp1} applies a Chernoff bound to the first $n$ registers.
+	\autoref{AlgAmp1} applies a Chernoff bound to the first $n$ registers
 \end{observation}
 
 \begin{theorem}
-	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has $\frac{p}{\delta}$ to be rejected by $\mathcal{F}$.
+	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, conditioned on this acceptance, $\mathcal{F}$ has probability at least $1-\frac{p}{\delta}$ to accept each register of the output.
 \end{theorem}
 \begin{proof}
 	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
