@@ -222,7 +222,7 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 		\Require $\phi=\sum_i w_i\ket{\rho_i^{\otimes n+m}}\bra{\rho_i^{\otimes n+m}}$
 		\Procedure{Amplification}{$\phi$}
 		\State Apply $\mathcal{F}$ to first $n$ registers of $\phi$
-		\If{number of accepted copies $\geq \frac{1}{2}-\varepsilon$}
+		\If{number of accepted copies $\geq (\frac{1}{2}-\frac{\varepsilon}{2})n$}
 			\State Output the last $m$ registers
 		\Else
 			\State Reject
@@ -236,7 +236,7 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 \end{observation}
 
 \begin{theorem}
-	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has $\frac{p}{\delta}$ to be rejected by $\mathcal{F}$.
+	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, its output when accepted has less than $\frac{p}{\delta}$ probability to be rejected by $\mathcal{F}$.
 \end{theorem}
 \begin{proof}
 	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
