@@ -1,8 +1,8 @@
 \section{Our Long Output Scheme}
 
-Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction of \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck. \hannote{be more explicit}
+Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper.
 
-First, for ease of notation, we write
+First, for ease of notation, write
 
 \begin{definition}
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$.
@@ -13,8 +13,8 @@ We define and construct an instance of Local Hamiltonian that encodes the histor
 \begin{definition}
 	Let $C(x)$ be a quantum circuit. Then let $H_{C(x)}$ be with the following properties: TODO
 	\begin{itemize}
-		\item can be written as...
-		\item 0 eigenvalue ground state
+		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$, where each $S$ has at most constantly many non-identity components.
+		\item 0 eigenvalue ground state and has certain form TODO type it out
 		\item at least whatever eigenvalue in all other dimensions
 		\item has ground state of a particular form we like
 	\end{itemize}
@@ -174,6 +174,8 @@ So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisf
 \end{proof}
 
 \subsection{Measuring ground state}
+
+TODO Combine and rewrite the following subsections
 
 Now we put the above results in term of measurement outputs.
 
