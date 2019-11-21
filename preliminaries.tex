@@ -47,21 +47,31 @@ We define $\SampBQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which for all $\varepsilon$ there exists a quantum circuit constructible in time $\poly(n, \frac{1}{\varepsilon})$ that, given $x$ as input, samples from from a probability distribution $\tilde{D}_x$ such that $\norm{\tilde{D}_x-D_x}<\varepsilon$.
 \end{definition}
 
-We then define a model of interation between a classical client and a quantum server. This is taken from \cite{mahadev_delegation}.
+We then define models of interation between a classical client and a quantum server. This is taken from \cite{mahadev_delegation}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to have a Quantum Prover Interactive Proof ($\QPIP$) with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
 	TODO Fix/redefine this to allow $\bbV$ a single qubit and ability to ONLY measure in X/Z
 	\begin{itemize}
-		\item $\bbP$ is a $\BQP$ machine.
+		\item $\bbP$ is a hybrid quantum-classical machine. Its classical part is a $BPP$ machine. Its quantum part is a register of a single qubit, on which the verifier can apply $X$ or $Z$ measurements.
 		\item $\bbV$ is a $\BPP$ machine.
+		\item There is a quantum channel between $\bbP$ and $\bbV$ that can transmit one qubit at a time.
 		\item There is a classical communication channel between $\bbP$ and $\bbV$.
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
 \end{definition}
 
-TODO Specialize above definition? Either ways make another one for purely classical $\bbV$.
+\begin{definition}
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_0$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ defined in the same way as in $\QPIP_{XZ}$ except that $\bbV$ is fully classical and cannot receive or measure qubits.
+\end{definition}
+
+\begin{theorem}
+	$\QPIP_{XZ}=\QPIP_0$
+\end{theorem}
+\begin{proof}
+	See \cite{mahadev_delegation}.
+\end{proof}
 
 \subsection{Projection Lemma}
 
