@@ -2,12 +2,32 @@
 
 Here we describe the scheme between the classical client and an honest quantum server. This is similar to the underlying construction of \cite{mahadev_delegation}. We first preprocess the circuit using tools such as \cite{quant-ph/0301040}. We then follow \cite{kitaev2002classical} to reduce the problem to an instance of local Hamiltonian. Using tools from \cite{PhysRevA.93.022326}, the local Hamiltonian is written in a simple form. Then, NYI cuz we're stuck. \hannote{be more explicit}
 
+First, for ease of notation, we write
+
+\begin{definition}
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$.
+\end{definition}
+
+We define and construct an instance of Local Hamiltonian that encodes the history of the computation.
+
+\begin{definition}
+	Let $C(x)$ be a quantum circuit. Then let $H_{C(x)}$ be with the following properties: TODO
+	\begin{itemize}
+		\item can be written as...
+		\item 0 eigenvalue ground state
+		\item at least whatever eigenvalue in all other dimensions
+		\item has ground state of a particular form we like
+	\end{itemize}
+\end{definition}
+
+TODO Theorem statement for XZ LH and whatnot
+
+\subsection{Preprocessing circuit}
+
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 		Which is proven to be universal in \cite{kitaev_1997}.
-
-\subsection{Preprocessing circuit}
 
 In order to estimate the energy of a Hamiltonian using only $X$ and $Z$ measurements, the gates in the circle must be combinations of $X$ and $Z$ matrices. To begin, we apply a transformation to the circuit to use only real states and gates. This transform is taken from \cite{quant-ph/0301040}.
 
@@ -44,10 +64,6 @@ In order to estimate the energy of a Hamiltonian using only $X$ and $Z$ measurem
 \end{proof}
 
 We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
-
-\begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$.
-\end{definition}
 
 \begin{theorem}
 	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.

@@ -51,6 +51,7 @@ We then define a model of interation between a classical client and a quantum se
 
 \begin{definition}
 	A sampling problem $S=(D_x)$ is said to have a Quantum Prover Interactive Proof ($\QPIP$) with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
+	TODO Fix/redefine this to allow $\bbV$ a single qubit and ability to ONLY measure in X/Z
 	\begin{itemize}
 		\item $\bbP$ is a $\BQP$ machine.
 		\item $\bbV$ is a $\BPP$ machine.
@@ -59,6 +60,8 @@ We then define a model of interation between a classical client and a quantum se
 		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
 \end{definition}
+
+TODO Specialize above definition? Either ways make another one for purely classical $\bbV$.
 
 \subsection{Projection Lemma}
 
