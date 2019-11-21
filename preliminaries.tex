@@ -37,6 +37,16 @@ Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
 	Let $H_1, \ldots, H_n:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitians each acting on at most $k$ qubits, then $$H=\sum_{j=1}^nH_j$$ is called a \emph{$k$-local Hamiltonian}.
 \end{definition}
 
+We define $\SampBQP$ the same way as from \cite{aaronson_2013}.
+
+\begin{definition}
+	A sampling problem $S$ is a collection of probability distributions $(D_x)$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
+\end{definition}
+
+\begin{definition}
+	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which there exists a polynomial-time quantum algorithm that, given $x$ as input, samples from from a probability distribution $C_x$ such that $\norm{C_x-D_x}<\varepsilon$.
+\end{definition}
+
 \subsection{Projection Lemma}
 
 Here is a lemma that we will use, taken from \cite{kempe_kitaev_regev_2006}.
