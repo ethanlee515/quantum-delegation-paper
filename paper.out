@@ -5,10 +5,10 @@
 \BOOKMARK [2][-]{subsection.2.3}{Quantum de Finetti Theorem under Local Measurements}{section.2}% 5
 \BOOKMARK [1][-]{section.3}{Quantum Delegation Schemes}{}% 6
 \BOOKMARK [2][-]{subsection.3.1}{Our contributions}{section.3}% 7
-\BOOKMARK [1][-]{section.4}{Our Long Output Scheme}{}% 8
+\BOOKMARK [1][-]{section.4}{The History XZ Local Hamiltonian}{}% 8
 \BOOKMARK [2][-]{subsection.4.1}{Preprocessing circuit}{section.4}% 9
 \BOOKMARK [2][-]{subsection.4.2}{Constructing a local Hamiltonian instance}{section.4}% 10
 \BOOKMARK [2][-]{subsection.4.3}{Measuring ground state}{section.4}% 11
-\BOOKMARK [2][-]{subsection.4.4}{Analysis and amplification}{section.4}% 12
-\BOOKMARK [2][-]{subsection.4.5}{Getting the Output}{section.4}% 13
-\BOOKMARK [1][-]{section.5}{Conclusion}{}% 14
+\BOOKMARK [1][-]{section.5}{Our QPIP Scheme}{}% 12
+\BOOKMARK [2][-]{subsection.5.1}{Getting the Output}{section.5}% 13
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 14

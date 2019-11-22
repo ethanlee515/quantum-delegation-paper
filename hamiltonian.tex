@@ -1,4 +1,4 @@
-\section{Our Long Output Scheme}
+\section{The History XZ Local Hamiltonian}
 
 Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper.
 
@@ -220,60 +220,3 @@ Now we put the above results in term of measurement outputs.
 	\end{align*}
 
 \end{proof}
-
-\subsection{Analysis and amplification}
-
-In the case for decision problems, amplifying the gap between acceptance and rejection probabilities is trivial. As seen in \cite{kitaev2002classical}, a prover, honest or not, cannot do better than sending $n$ identical copies of some state. As a result, a simple Chernoff bound would suffice. The same reasoning does not generalize to our case, so instead we give the following proof. We start by considering simpler inputs before moving on to the general case.
-
-Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$.
-
-Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
-\begin{itemize}
-	\item $\ket{\psi^{\otimes n}}$ is rejected with probability at most $p$.
-	\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is accepted with probability at most $p$.
-\end{itemize}
-
-\begin{algorithm}
-	\caption{Amplification with simple input}
-	\label{AlgAmp1}
-	\begin{algorithmic}[1]
-		\Require $\phi=\sum_i w_i\ket{\rho_i^{\otimes n+m}}\bra{\rho_i^{\otimes n+m}}$
-		\Procedure{Amplification}{$\phi$}
-		\State Apply $\mathcal{F}$ to first $n$ registers of $\phi$
-		\If{number of accepted copies $\geq (\frac{1}{2}-\frac{\varepsilon}{2})n$}
-			\State Output the last $m$ registers
-		\Else
-			\State Reject
-		\EndIf
-		\EndProcedure
-	\end{algorithmic}
-\end{algorithm}
-
-\begin{observation}
-	\autoref{AlgAmp1} applies a Chernoff bound to the first $n$ registers
-\end{observation}
-
-\begin{theorem}
-	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, conditioned on this acceptance, $\mathcal{F}$ has probability at least $1-\frac{p}{\delta}$ to accept each register of the output.
-\end{theorem}
-\begin{proof}
-	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
-
-	Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
-
-	Let $J=\set{j:q_j<p}$.
-
-	$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
-	
-	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$.
-\end{proof}
-
-Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $k=\poly(n)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily small. That is, with some arbitrarily small error in measurement results, we can assume without the loss of generality that the client receives an input of the simple form above. Hence concludes the proof.
-
-\subsection{Getting the Output}
-
-Thanks to having padded the circuit with identity matrices at the end, if we measured $t>\frac{T}{2}$ on the time register, we would know that the other registers include the output of the required quantum computation. So simply take $m$ to be high enough that it happens at least once with overwhelming probability. When it does, measure the entire register. All the errors up to this point are $O(\varepsilon)$, so will be the distance between this output distribution and the true one.
-
-\Ethan{The above is incredibly handwavy.}
-
-\Ethan{Now use \cite{mahadev_delegation} to turn this into a server-client thing}
