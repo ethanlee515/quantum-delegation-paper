@@ -1,6 +1,8 @@
 \section{The History XZ Local Hamiltonian}
 
-Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper.
+Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. We begin by proving that we can assume without loss of generality that the circuit is of a particular form.
+
+TODO move subsection.
 
 First, for ease of notation, write
 
@@ -8,21 +10,34 @@ First, for ease of notation, write
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$.
 \end{definition}
 
-We define and construct an instance of Local Hamiltonian that encodes the history of the computation.
+We define and construct an instance of Local Hamiltonian that encodes the history of the computation. TODO This only works for circuits of a particular form...
 
 \begin{definition}
-	Let $C(x)$ be a quantum circuit. Then let $H_{C(x)}$ be with the following properties: TODO
+	Let $C(x)$ be a quantum circuit. Then let $H_{C(x)}$ be with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$, where each $S$ has at most constantly many non-identity components.
-		\item 0 eigenvalue ground state and has certain form TODO type it out
-		\item at least whatever eigenvalue in all other dimensions
-		\item has ground state of a particular form we like
+		\item It has an eigenvector $\ket{\psi_{C(x)}}=TODO$ with eigenvalue $0$.
+		\item Let $\ket\phi$ be such that $\braket{\phi|\psi_{C(x)}}=0$, then $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 	\end{itemize}
 \end{definition}
 
-TODO Theorem statement for XZ LH and whatnot
+We'll prove the following theorems in this section.
 
-TODO Corollary that one can measure final state from this?
+\begin{theorem}
+	Given $C$ and $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
+\end{theorem}
+
+\begin{theorem}
+	For any given circuit and input, there exists an algorithm that accepts state with probability... TODO
+\end{theorem}
+
+Before we present their proofs, first we make an observation.
+
+\begin{observation}
+	Given $C$ and $x$, one can first pad $C$ with identity matrices at the end.
+\end{observation}
+
+TODO Observation given circuit, if one pads the circuit to obtain... one can measure final state from this by padding...
 
 \subsection{Preprocessing circuit}
 
