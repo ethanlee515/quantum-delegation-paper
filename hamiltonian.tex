@@ -1,19 +1,27 @@
 \section{The History XZ Local Hamiltonian}
 
-Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. We begin by proving that we can assume without loss of generality that the circuit is of a particular form.
-
-TODO move subsection.
+Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. Here we'll only state the theorems, and prove them later in the subsections.
 
 First, for ease of notation, write
 
 \begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$.
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$. TODO maybe force at most $k$ non-identity components here?
 \end{definition}
 
-We define and construct an instance of Local Hamiltonian that encodes the history of the computation. TODO This only works for circuits of a particular form...
+Then we define a certain form of quantum circuit that is still universal.
 
 \begin{definition}
-	Let $C(x)$ be a quantum circuit. Then let $H_{C(x)}$ be with the following properties:
+	Let $C$ be an XZ-circuit if $C=U_T\ldots U_1$ where $U_i\in\spn\mathcal{G}_{XZ}$.
+\end{definition}
+
+\begin{theorem}
+	Given a circuit $C$ and classical input $x$, a $BPP$ machine can reduce it to an XZ-circuit $C'$ and classical input $x'$.
+\end{theorem}
+
+We define and construct an instance of Local Hamiltonian that encodes the history of the computation.
+
+\begin{definition}
+	Let $C(x)$ be an XZ-circuit. Then let $H_{C(x)}$ be with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$, where each $S$ has at most constantly many non-identity components.
 		\item It has an eigenvector $\ket{\psi_{C(x)}}=TODO$ with eigenvalue $0$.
@@ -21,25 +29,23 @@ We define and construct an instance of Local Hamiltonian that encodes the histor
 	\end{itemize}
 \end{definition}
 
-We'll prove the following theorems in this section.
-
 \begin{theorem}
-	Given $C$ and $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
+	Given XZ-circuit $C$ and classical $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
 \end{theorem}
 
 \begin{theorem}
-	For any given circuit and input, there exists an algorithm that accepts state with probability... TODO
+	Given XZ-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability... TODO that only uses $X$ and $Z$ measurements?
 \end{theorem}
 
-Before we present their proofs, first we make an observation.
+Lastly, before we present their proofs, we make an observation.
 
 \begin{observation}
-	Given $C$ and $x$, one can first pad $C$ with identity matrices at the end.
+	Given XZ-circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the last register of $\psi_{C'(x)}$ and obtain with probabiliy $\frac{1}{2}$ the state $C(x)$.
 \end{observation}
 
-TODO Observation given circuit, if one pads the circuit to obtain... one can measure final state from this by padding...
+\subsection{XZ-circuits}
 
-\subsection{Preprocessing circuit}
+Here we prove that XZ-circuits are universal. After this subsection, we'll be able to assume without loss of generality that all quantum circuits are XZ-circuits.
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
