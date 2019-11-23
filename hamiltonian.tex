@@ -103,17 +103,17 @@ We verify that our new gate set can be written as combinations of $X$ and $Z$ ma
 Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance $H_{circuit}$ such that:
+	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance $H_{C(x)}$ such that:
 	\begin{itemize}
-		\item its ground state is $$\ket{\psi_{circuit}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
-		\item $\braket{\psi_{circuit}|H_{circuit}|\psi_{circuit}}=0$
-		\item $\forall\ket\phi,\braket{\phi|\psi_{circuit}}=0\Rightarrow\braket{\phi|H_{circuit}|\phi}\geq\frac{3}{4}$
-		\item $H_{circuit}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
+		\item its ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
+		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
+		\item $\forall\ket\phi,\braket{\phi|\psi_{C(x)}}=0\Rightarrow\braket{\phi|H_{C(x)}|\phi}\geq\frac{3}{4}$
+		\item $H_{C(x)}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
 	\end{itemize}
 \end{theorem}
 
 \begin{proof}
-	We ensure states perpendicular to $\ket{\psi_{circuit}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
+	We ensure states perpendicular to $\ket{\psi_{C(x)}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
 	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
 
@@ -172,11 +172,11 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 	\end{proof}
 
 	\begin{corollary}
-		$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{circuit}}}$
+		$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$
 	\end{corollary}
 
 We now consider the space outside the desired state.
-$$S=(\spn\set{\ket{\psi_{circuit}}})^\bot$$
+$$S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$$
 $$H_{clock}\big|_S,H_{in}\big|_S,H_{prop}\big|_S$$
 To combine the Hamiltonians, we apply the projection lemma twice.
 $$\exists J_{clock}
@@ -190,10 +190,10 @@ $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 \begin{align*}
 	S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
-	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{circuit}|y}=0}
+	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{C(x)}|y}=0}
 \end{align*}
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
-So we set $H_{circuit}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
+So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 \end{proof}
 
 \subsection{Measuring ground state}
