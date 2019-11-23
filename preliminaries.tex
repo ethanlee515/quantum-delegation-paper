@@ -50,12 +50,10 @@ We define $\SampBQP$ based on \cite{aaronson_2013}.
 We then define models of interation between a classical client and a quantum server. This is taken from \cite{mahadev_delegation}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
-	TODO Fix/redefine this to allow $\bbV$ a single qubit and ability to ONLY measure in X/Z
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_0$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
-		\item $\bbP$ is a hybrid quantum-classical machine. Its classical part is a $BPP$ machine. Its quantum part is a register of a single qubit, on which the verifier can apply $X$ or $Z$ measurements.
+		\item $\bbP$ is a $\BQP$ machine.
 		\item $\bbV$ is a $\BPP$ machine.
-		\item There is a quantum channel between $\bbP$ and $\bbV$ that can transmit one qubit at a time.
 		\item There is a classical communication channel between $\bbP$ and $\bbV$.
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
@@ -65,13 +63,6 @@ We then define models of interation between a classical client and a quantum ser
 \begin{definition}
 	A sampling problem $S=(D_x)$ is said to be in $\QPIP_0$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ defined in the same way as in $\QPIP_{XZ}$ except that $\bbV$ is fully classical and cannot receive or measure qubits.
 \end{definition}
-
-\begin{theorem}
-	$\QPIP_{XZ}=\QPIP_0$
-\end{theorem}
-\begin{proof}
-	See \cite{mahadev_delegation}.
-\end{proof}
 
 \subsection{Projection Lemma}
 
