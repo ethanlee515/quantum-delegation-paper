@@ -35,9 +35,9 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 	\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is accepted with probability at most $p$.
 \end{itemize}
 
+\floatname{algorithm}{Protocol}
 TODO Do something about this
 \begin{algorithm}
-	\floatname{algorithm}{Protocol}
 	\caption{Amplification with simple input}
 	\label{AlgAmp1}
 	\begin{algorithmic}[1]
@@ -59,7 +59,7 @@ TODO Talk about de Finetti's here.
 Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $k=\poly(n)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily inverse-poly small. That is, with some small error in measurement results, we can assume without the loss of generality that the rest of the algorithm acts on an input of the form... TODO.
 
 \begin{theorem}
-	When \autoref{AlgAmp1} accepts an input with probability greater than $\delta$, conditioned on this acceptance, $\mathcal{F}$ has probability at least $1-\frac{p}{\delta}$ to accept each register of the output.
+	When \hyperref[AlgAmp1]{Protocol~\ref*{AlgAmp1}} accepts an input with probability greater than $\delta$, conditioned on this acceptance, $\mathcal{F}$ has probability at least $1-\frac{p}{\delta}$ to accept each register of the output.
 \end{theorem}
 \begin{proof}
 	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
