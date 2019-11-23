@@ -33,10 +33,6 @@ Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian.
 	Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli (CCNOT) gate.
 \end{definition}
 
-\begin{definition}
-	Let $H_1, \ldots, H_n:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitians each acting on at most $k$ qubits, then $$H=\sum_{j=1}^nH_j$$ is called a \emph{$k$-local Hamiltonian}.
-\end{definition}
-
 We define $\SampBQP$ based on \cite{aaronson_2013}.
 
 \begin{definition}
@@ -58,10 +54,6 @@ We then define models of interation between a classical client and a quantum ser
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
-\end{definition}
-
-\begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_0$ with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ defined in the same way as in $\QPIP_{XZ}$ except that $\bbV$ is fully classical and cannot receive or measure qubits.
 \end{definition}
 
 \subsection{Projection Lemma}
