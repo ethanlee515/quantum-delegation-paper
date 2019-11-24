@@ -2,13 +2,15 @@
 
 Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. Here we'll only state the theorems, and prove them later in the subsections.
 
-First, for ease of notation, write
+First, fix $L\in\bbN$ and define the following that implicitly depends on $L$.
 
 \begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}}$. TODO maybe force at most $k$ non-identity components here?
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \norm{\set{i: U_i\ne I}}\leq L}$
 \end{definition}
 
-Then we define a certain form of quantum circuit that is still universal.
+$L$ can be thought of as how ``local" the Hamiltonian is. Taking $L=5$ would easily suffice for this paper.
+
+We define a certain form of quantum circuit that is still universal.
 
 \begin{definition}
 	Let $C$ be an XZ-circuit if $C=U_T\ldots U_1$ where $U_i\in\spn\mathcal{G}_{XZ}$.
@@ -24,7 +26,7 @@ We define and construct an instance of Local Hamiltonian that encodes the histor
 	Let $C(x)$ be an XZ-circuit. Then let $H_{C(x)}$ be with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$, where each $S$ has at most constantly many non-identity components.
-		\item It has an eigenvector $\ket{\psi_{C(x)}}=TODO$ with eigenvalue $0$.
+		\item It has an eigenvector $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$.
 		\item Let $\ket\phi$ be such that $\braket{\phi|\psi_{C(x)}}=0$, then $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 	\end{itemize}
 \end{definition}
@@ -34,10 +36,10 @@ We define and construct an instance of Local Hamiltonian that encodes the histor
 \end{theorem}
 
 \begin{theorem}
-	Given XZ-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability... TODO that only uses $X$ and $Z$ measurements?
+	Given XZ-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
 \end{theorem}
 
-Lastly, before we present their proofs, we make an observation.
+Lastly, before we present proofs for the above theorems, we make an observation.
 
 \begin{observation}
 	Given XZ-circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the last register of $\psi_{C'(x)}$ and obtain with probabiliy $\frac{1}{2}$ the state $C(x)$.
@@ -197,8 +199,6 @@ So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies
 \end{proof}
 
 \subsection{Measuring ground state}
-
-TODO Combine and rewrite the following subsections
 
 Now we put the above results in term of measurement outputs.
 
