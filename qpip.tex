@@ -56,7 +56,7 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 		\State The verifier runs \autoref{AlgGroundStateCheck} on $n$ of the copies
 		\If{over $(\frac{1}{2}-\varepsilon)n$ copies accept}
 			\For{$i\gets 1, m$}
-				\State Measure the time register of a (supposedly) fresh copy of $\ket{\psi_{C(x)}}$ that the prover sent
+				\State Measure the time register of a fresh copy from the prover
 				\If{Measured $t\geq T$}
 					\State Measure and output the other registers
 				\EndIf
@@ -68,13 +68,23 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 	\end{algorithmic}
 \end{algorithm}
 
-We first apply \autoref{deFinetti}. This is justified because... TODO
+This clearly has completeness negligibly close to $1$. Now we analyze soundness, for a possibly cheating prover.
 
-So, with some error $O(\poly(\varepsilon))$ in measurement results, we can assume without the loss of generality that the rest of the algorithm acts on an input of the form... TODO.
+Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state at that point as
 
-Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
+$$\sigma'=\frac{1}{\abs{\Sym(N)}}\sum_{\Pi\in\Sym(N)}\Pi\sigma\Pi^\dagger$$
 
-Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
+Let $\tilde{\Pi}$ be some fixed permutation. Then it is easy to check that
+
+$$\tilde{\Pi}\sigma'\tilde{\Pi}^\dagger=\sigma'$$
+
+So $\sigma'$ is permutation-invariant and we can apply \autoref{deFinetti}:
+
+$$\norm{\sigma'-\sum_i w_i\rho_i^{\otimes n+m}}=O(\poly(\varepsilon))$$
+
+Note that this is a classical probability distribution over inputs $\rho_i^{\otimes n+m}$ with $w_i$ as weights.
+
+Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \hyperref[AlgAmp1]{Protocol~\ref*{AlgAmp1}}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
 
 Let $J=\set{j:q_j<p}$.
 
