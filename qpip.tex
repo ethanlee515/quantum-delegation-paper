@@ -54,7 +54,7 @@ We first give an alternative characterization of $\QPIP_0$.
 			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
 			\State The verifier randomly picks $n+m$ copies in sequence and without replacement
 			\State The verifier runs \autoref{AlgGroundStateCheck} on $n$ of the copies
-			\If{over $(\frac{1}{2}-2\varepsilon)n$ copies accept}
+			\If{over $(\frac{1}{2}-\varepsilon)n$ copies accept}
 			\For{$i\gets 1, m$}
 				\State Measure the time register of a fresh copy from the prover
 				\If{Measured $t\geq T$}
@@ -84,7 +84,7 @@ We first give an alternative characterization of $\QPIP_0$.
 
 	Note that this is a classical probability distribution over inputs $\rho_i^{\otimes n+m}$ with $w_i$ as weights.
 
-	Let $q_i$ be the accept probability of at least $(\frac{1}{2}-2\varepsilon)n$ copies out of $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
+	Let $q_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies out of $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
 
 	Let $J=\set{j:q_j<p}$.
 
