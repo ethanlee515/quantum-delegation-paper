@@ -8,7 +8,7 @@ We first give an alternative characterization of $\QPIP_0$.
 	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$, or has a $\QPIP_{XZ}$ protocol,  with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
 		\item $\bbP$ is a $\BQP$ machine.
-		\item $\bbV$ is a hybrid quantum-classical machine. Its classical part is a $BPP$ machine. Its quantum part is a single-qubit register, on which the verifier can apply only $X$ or $Z$ measurements.
+		\item $\bbV$ is a hybrid quantum-classical machine. Its classical part is a $\BPP$ machine. Its quantum part is a single-qubit register, on which the verifier can apply only $X$ or $Z$ measurements.
 		\item There is a quantum channel between $\bbP$ and $\bbV$ that can transmit one qubit at a time.
 		\item There is a classical communication channel between $\bbP$ and $\bbV$.
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
@@ -24,15 +24,16 @@ We first give an alternative characterization of $\QPIP_0$.
 \end{proof}
 
 \begin{theorem}
-	$\SampBQP$ is in $\QPIP_{XZ}$.
-\end{theorem}
-
-\begin{theorem}
 	There is a $\QPIP_{XZ}$ protocol for \autoref{AlgGroundStateCheck}
 \end{theorem}
 \begin{proof}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is obvious that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
+
+\begin{theorem}
+	$\SampBQP$ is in $\QPIP_{XZ}$.
+\end{theorem}
+\begin{proof}
 
 Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$.
 
@@ -43,43 +44,44 @@ Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
 \end{itemize}
 
 \floatname{algorithm}{Protocol}
-TODO Do something about this
 \begin{algorithm}
-	\caption{Amplification with simple input}
+	\caption{Our $\QPIP_{XZ}$ protocol}
 	\label{AlgAmp1}
 	\begin{algorithmic}[1]
-		\State The prover sends $\poly(n)$ copies of...
-		\State The verifier picks $m+n$ copies...
-		\State The verifier runs Chernoff bound on...
-		\If{number of accepted copies $\geq (\frac{1}{2}-\frac{\varepsilon}{2})n$}
-			\State Measure time step...
-			\State Output the...
+		\State Pick $m$ large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
+		\State Pick $n$ large enough so, $P\left[Bin(n, \frac{1}{2}-\varepsilon)<\left(\frac{1}{2}-2\varepsilon\right)n\right]$ is negligible in $\varepsilon$ by Chernoff bound
+		\State Pick $N$ large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}=O(\poly(\varepsilon))$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
+		\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
+		\State The verifier randomly picks $n+m$ copies in sequence and without replacement
+		\State The verifier runs \autoref{AlgGroundStateCheck} on $n$ of the copies
+		\If{over $(\frac{1}{2}-\varepsilon)n$ copies accept}
+			\For{$i\gets 1, m$}
+				\State Measure the time register of a (supposedly) fresh copy of $\ket{\psi_{C(x)}}$ that the prover sent
+				\If{Measured $t\geq T$}
+					\State Measure and output the other registers
+				\EndIf
+			\EndFor
+			\State Reject
 		\Else
 			\State Reject
 		\EndIf
 	\end{algorithmic}
 \end{algorithm}
-TODO what's $n$?
 
-TODO Talk about de Finetti's here.
+We first apply \autoref{deFinetti}. This is justified because... TODO
 
-Now we consider the general case. We use \autoref{deFinetti}. Let $n=l$ and $k=\poly(n)$, so $\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$ can be arbitrarily inverse-poly small. That is, with some small error in measurement results, we can assume without the loss of generality that the rest of the algorithm acts on an input of the form... TODO.
+So, with some error $O(\poly(\varepsilon))$ in measurement results, we can assume without the loss of generality that the rest of the algorithm acts on an input of the form... TODO.
 
-\begin{theorem}
-	When \hyperref[AlgAmp1]{Protocol~\ref*{AlgAmp1}} accepts an input with probability greater than $\delta$, conditioned on this acceptance, $\mathcal{F}$ has probability at least $1-\frac{p}{\delta}$ to accept each register of the output.
-\end{theorem}
-\begin{proof}
-	Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
+Note that the input is a classical probability distribution over inputs $\ket{\rho_i^{\otimes n+m}}$ with $w_i$ as weights.
 
-	Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
+Let $q_j$ be the accept probability of $\ket{\rho_j^{\otimes n+m}}$ under \autoref{AlgAmp1}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_j^{\otimes n+m}}$ is then $\frac{w_j q_j}{\sum_i w_i q_i}$.
 
-	Let $J=\set{j:q_j<p}$.
+Let $J=\set{j:q_j<p}$.
 
-	$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
-	
-	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$.
-\end{proof}
+$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
+
+$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$.
 
 So we pad the circuit with identity matrices at the end before constructing... TODO, if we measured $t>\frac{T}{2}$ on the time register, we would know that the other registers include the output of the required quantum computation. So simply take $m$ to be high enough that it happens at least once with overwhelming probability. When it does, measure the entire register. All the errors up to this point are $O(\varepsilon)$, so will be the distance between this output distribution and the true one.
 
-\Ethan{The above is incredibly handwavy.}
+\end{proof}
