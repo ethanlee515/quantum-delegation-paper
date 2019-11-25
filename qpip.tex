@@ -30,20 +30,30 @@ We first give an alternative characterization of $\QPIP_0$.
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is obvious that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
 
+TODO the following needs $\delta$ parameter
 \begin{theorem}
 	$\SampBQP$ is in $\QPIP_{XZ}$ with completeness negligible to perfect and soundness $1-O(T^{-c})$ for any constant $c$.
 \end{theorem}
 \begin{proof}
 
+	Set the following variables
+	\begin{itemize}
+		\item $\varepsilon=T^{-c}$
+		\item $m$ large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
+		\item $n$ large enough so by Chernoff bound:
+			\begin{itemize}
+				\item[$\circ$] $q'=P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$ is negligible in $\varepsilon$
+				\item[$\circ$] $P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$ is negligible in $\varepsilon$
+			\end{itemize}
+		\item $N$ large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
+	\end{itemize}
+
+	We claim that the following protocol does what is required:
 	\floatname{algorithm}{Protocol}
 	\begin{algorithm}
 		\caption{Our $\QPIP_{XZ}$ protocol}
 		\label{AlgAmp1}
 		\begin{algorithmic}[1]
-			\State $\varepsilon\gets T^{-c}$
-			\State Pick $m$ large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
-			\State Pick $n$ large enough so, $P\left[Bin(n, \frac{1}{2}-\varepsilon)<\left(\frac{1}{2}-2\varepsilon\right)n\right]$ is negligible in $\varepsilon$ by Chernoff bound
-			\State Pick $N$ large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}=O(\poly(\varepsilon))$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
 			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
 			\State The verifier randomly picks $n+m$ copies in sequence and without replacement
 			\State The verifier runs \autoref{AlgGroundStateCheck} on $n$ of the copies
@@ -51,7 +61,7 @@ We first give an alternative characterization of $\QPIP_0$.
 			\For{$i\gets 1, m$}
 				\State Measure the time register of a fresh copy from the prover
 				\If{Measured $t\geq T$}
-					\State Measure and output the other registers
+					\State Measure and output its data register
 				\EndIf
 			\EndFor
 			\State Reject
@@ -61,9 +71,9 @@ We first give an alternative characterization of $\QPIP_0$.
 		\end{algorithmic}
 	\end{algorithm}
 
-	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover.
+	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover. Let $\sigma$ be the state the prover sends.
 
-	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state at that point as
+	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state after the random permutation as
 
 	$$\sigma'=\frac{1}{\abs{\Sym(N)}}\sum_{\Pi\in\Sym(N)}\Pi\sigma\Pi^\dagger$$
 
@@ -73,24 +83,31 @@ We first give an alternative characterization of $\QPIP_0$.
 
 	So $\sigma'$ is permutation-invariant and we can apply \autoref{deFinetti}:
 
-	$$\norm{\sigma'-\sum_i w_i\rho_i^{\otimes n+m}}=O(\poly(\varepsilon))$$
+	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+n}(\sigma'-\sum_i w_i\rho_i^{\otimes n+m})}=O(\varepsilon)$$
 
-	TODO set $\tilde{\sigma}$ and fix above to be product measure
+	Note that $\tilde\sigma=\sum_i w_i\rho_i^{\otimes n+m}$ is a classical probability distribution over inputs $\rho_i^{\otimes n+m}$ with $w_i$ as weights.
 
-	Note that this is a classical probability distribution over inputs $\rho_i^{\otimes n+m}$ with $w_i$ as weights.
+	Let $p_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}.
+	So the accept chance of this prover is $\sum_j w_j p_j>\delta$
+	By Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i p_i}{\sum_j w_j p_j}$.
 
-	Let $q_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}. By Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
+	Let
+	$$J=\set{j:q_j\leq q'}$$
 
-	Define $J$ to be the set of $j$s where $q_j$ is negligible. TODO negligible shenanigans
-
+	Then the following is clearly negligible:
 	$$\sum_{j\in J} w_j q_j$$
 
-	$$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$$
+	And so is
+	$$\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}$$
 
-	Now let $\rho_i$ be with over probability $1-2\varepsilon$ to be accepted by \autoref{AlgGroundStateCheck}. So it is $O(\poly(\varepsilon))$-close to $\ket{\psi_{C(x)}}$.
+	So by Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otime n+m}$ where $\rho_i$ has over probability $\1-2\varepsilon$ to be accepted by \autoref{AlgGroundStateCheck} is overwhelming.
 
-	So we simply measure the time register until we get a result where we can extract $C(x)$. The probability of failing to do so after all $m$ copies is $\frac{1}{2^m}$ which is negligible.
+	Such $\rho_i$ are $O(\poly(\varepsilon))$-close to $\ket{\psi_{C(x)}}$.
 
-	All errors up to this point is $O(\poly(\varepsilon))$.
+	So we simply measure the time register until we get measurement result $t\geq T$. The probability of failing to do so after all $m$ copies is $\frac{1}{2^m}$ which is negligible.
+	
+	Once we do measure $t\geq T$, the data register is guaranteed to be $O(\poly(\varepsilon))$-close to $C(x)$.
+
+	All errors up to this point is $O(\varepsilon)$.
 
 \end{proof}
