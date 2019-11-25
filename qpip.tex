@@ -31,23 +31,16 @@ We first give an alternative characterization of $\QPIP_0$.
 \end{proof}
 
 \begin{theorem}
-	$\SampBQP$ is in $\QPIP_{XZ}$.
+	$\SampBQP$ is in $\QPIP_{XZ}$ with completeness negligible to perfect and soundness $1-O(T^{-c})$ for any constant $c$.
 \end{theorem}
 \begin{proof}
-
-	Suppose $\mathcal{F}$ accepts $\ket{\psi}$ with probability $\frac{1}{2}$, and any states perpendicular to it with probability $\frac{1}{2}-\Delta$.
-
-	Let $\varepsilon>0$, $p>0$. Pick $n\in\mathbb{N}$ so that by Chernoff bound:
-	\begin{itemize}
-		\item $\ket{\psi^{\otimes n}}$ is rejected with probability at most $p$.
-		\item If $\mathcal{F}(\ket{\phi})$ has less than $\frac{1}{2}-\varepsilon$ accept probability, then $\ket{\phi^{\otimes n}}$ is accepted with probability at most $p$.
-	\end{itemize}
 
 	\floatname{algorithm}{Protocol}
 	\begin{algorithm}
 		\caption{Our $\QPIP_{XZ}$ protocol}
 		\label{AlgAmp1}
 		\begin{algorithmic}[1]
+			\State $\varepsilon\gets T^{-c}$
 			\State Pick $m$ large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
 			\State Pick $n$ large enough so, $P\left[Bin(n, \frac{1}{2}-\varepsilon)<\left(\frac{1}{2}-2\varepsilon\right)n\right]$ is negligible in $\varepsilon$ by Chernoff bound
 			\State Pick $N$ large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}=O(\poly(\varepsilon))$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
@@ -68,7 +61,7 @@ We first give an alternative characterization of $\QPIP_0$.
 		\end{algorithmic}
 	\end{algorithm}
 
-	This clearly has completeness negligibly close to $1$. Now we analyze soundness, for a possibly cheating prover.
+	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover.
 
 	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state at that point as
 
@@ -82,16 +75,22 @@ We first give an alternative characterization of $\QPIP_0$.
 
 	$$\norm{\sigma'-\sum_i w_i\rho_i^{\otimes n+m}}=O(\poly(\varepsilon))$$
 
+	TODO set $\tilde{\sigma}$ and fix above to be product measure
+
 	Note that this is a classical probability distribution over inputs $\rho_i^{\otimes n+m}$ with $w_i$ as weights.
 
-	Let $q_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies out of $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}. By Bayes' theorem, conditioned on acceptance, the probability of the input being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
+	Let $q_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}. By Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\ket{\rho_i^{\otimes n+m}}$ is then $\frac{w_i q_i}{\sum_j w_j q_j}$.
 
-	Let $J=\set{j:q_j<p}$.
+	Define $J$ to be the set of $j$s where $q_j$ is negligible. TODO negligible shenanigans
 
-	$\Rightarrow\sum_{j\in J} w_j q_j<p$, since $\sum_i w_i=1$.
+	$$\sum_{j\in J} w_j q_j$$
 
-	$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$.
+	$$\Rightarrow\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}<\frac{p}{\delta}$$
 
-	So we pad the circuit with identity matrices at the end before constructing... TODO, if we measured $t>\frac{T}{2}$ on the time register, we would know that the other registers include the output of the required quantum computation. So simply take $m$ to be high enough that it happens at least once with overwhelming probability. When it does, measure the entire register. All the errors up to this point are $O(\varepsilon)$, so will be the distance between this output distribution and the true one.
+	Now let $\rho_i$ be with over probability $1-2\varepsilon$ to be accepted by \autoref{AlgGroundStateCheck}. So it is $O(\poly(\varepsilon))$-close to $\ket{\psi_{C(x)}}$.
+
+	So we simply measure the time register until we get a result where we can extract $C(x)$. The probability of failing to do so after all $m$ copies is $\frac{1}{2^m}$ which is negligible.
+
+	All errors up to this point is $O(\poly(\varepsilon))$.
 
 \end{proof}
