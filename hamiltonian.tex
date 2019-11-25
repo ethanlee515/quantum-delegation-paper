@@ -110,12 +110,12 @@ We verify that our new gate set can be written as combinations of $X$ and $Z$ ma
 Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ where $U_i$ are either $H$ or $\Lambda^2(X)$, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time a local Hamiltonian instance $H_{C(x)}$ such that:
+	Let $C=U_T\ldots U_1$ be a XZ-circuit, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
 	\begin{itemize}
 		\item its ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
 		\item $\forall\ket\phi,\braket{\phi|\psi_{C(x)}}=0\Rightarrow\braket{\phi|H_{C(x)}|\phi}\geq\frac{3}{4}$
-		\item $H_{C(x)}\in\spn\mathcal{G}_{XZ}$, with $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
+		\item Has $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
 	\end{itemize}
 \end{theorem}
 
