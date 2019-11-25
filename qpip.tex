@@ -5,7 +5,7 @@ Here we create a QPIP scheme for...  In the case for decision problems, it would
 We first give an alternative characterization of $\QPIP_0$.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$, or has a $\QPIP_{XZ}$ protocol,  with completeness $c$ and soundness $s$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$, or has a $\QPIP_{XZ}$ protocol,  with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
 		\item $\bbP$ is a $\BQP$ machine.
 		\item $\bbV$ is a hybrid quantum-classical machine. Its classical part is a $\BPP$ machine. Its quantum part is a single-qubit register, on which the verifier can apply only $X$ or $Z$ measurements.
@@ -30,12 +30,10 @@ We first give an alternative characterization of $\QPIP_0$.
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is obvious that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
 
-TODO the following needs $\delta$ parameter
 \begin{theorem}
-	$\SampBQP$ is in $\QPIP_{XZ}$ with completeness negligible to perfect and soundness $1-O(T^{-c})$ for any constant $c$.
+	$\SampBQP$ is in $\QPIP_{XZ}$ with completeness negligible to perfect and soundness $(O(T^{-c}), 1-O(T^{-c}))$ for any constant $c$.
 \end{theorem}
 \begin{proof}
-
 	Set the following variables
 	\begin{itemize}
 		\item $\varepsilon=T^{-c}$
@@ -71,7 +69,7 @@ TODO the following needs $\delta$ parameter
 		\end{algorithmic}
 	\end{algorithm}
 
-	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover. Let $\sigma$ be the state the prover sends.
+	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover that has at least $\delta$ probability to be accepted. Let $\sigma$ be the state the prover sends.
 
 	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state after the random permutation as
 
