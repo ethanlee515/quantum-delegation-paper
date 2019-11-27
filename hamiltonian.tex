@@ -2,31 +2,30 @@
 
 Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. Here we'll only state the theorems, and prove them later in the subsections.
 
+We will first show that $\set{H, T}$ is a universal gate set.
+
+\begin{definition}
+	Call $C$ an $HT$-circuit if it consists of only Hadamard and Toffoli gates.
+\end{definition}
+
+\begin{theorem}
+	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to an $HT$-circuit $C'$ and classical input $x'$.
+\end{theorem}
+
+We then define and construct an instance of Local Hamiltonian that encodes the history of the computation.
 First, fix $L\in\bbN$ and define the following that implicitly depends on $L$.
 
 \begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \norm{\set{i: U_i\ne I}}\leq L}$
+	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq L}$
 \end{definition}
 
 $L$ can be thought of as how ``local" the Hamiltonian is. Taking $L=5$ would easily suffice for this paper.
 
-We define a certain form of quantum circuit that is still universal.
-
 \begin{definition}
-	Let $C$ be an XZ-circuit if $C=U_T\ldots U_1$ where $U_i\in\spn\mathcal{G}_{XZ}$.
-\end{definition}
-
-\begin{theorem}
-	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to an XZ-circuit $C'$ and classical input $x'$.
-\end{theorem}
-
-We define and construct an instance of Local Hamiltonian that encodes the history of the computation.
-
-\begin{definition}
-	Let $C(x)$ be an XZ-circuit. Then let $H_{C(x)}$ be with the following properties:
+	Let $C(x)$ be an $HT$-circuit. Then let $H_{C(x)}$ be with the following properties:
 	\begin{itemize}
-		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$, where each $S$ has at most constantly many non-identity components.
-		\item It has an eigenvector $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$.
+		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
+		\item Has an eigenvector $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$.
 		\item Let $\ket\phi$ be such that $\braket{\phi|\psi_{C(x)}}=0$, then $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 	\end{itemize}
 \end{definition}
@@ -36,23 +35,23 @@ We define and construct an instance of Local Hamiltonian that encodes the histor
 \end{definition}
 
 \begin{theorem}
-	Given XZ-circuit $C$ and classical $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
+	Given $HT$-circuit $C$ and classical $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
 \end{theorem}
 
 \begin{theorem}
-	Given XZ-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
+	Given $HT$-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
 \end{theorem}
 
 Lastly, before we present proofs for the above theorems, we make an observation.
 
 \begin{observation}
 	\label{idpadding}
-	Given XZ-circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the last register of $\psi_{C'(x)}$ and obtain with probabiliy $\frac{1}{2}$ the state $C(x)$.
+	Given $HT$-circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the last register of $\psi_{C'(x)}$ and obtain with probabiliy $\frac{1}{2}$ the state $C(x)$.
 \end{observation}
 
-\subsection{XZ-circuits}
+\subsection{$HT$-circuits}
 
-Here we prove that XZ-circuits are universal. After this subsection, we'll be able to assume without loss of generality that all quantum circuits are XZ-circuits.
+Here we prove that $HT$-circuits are universal. After this subsection, we'll be able to assume without loss of generality that all quantum circuits are $HT$-circuits.
 
 We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
@@ -93,7 +92,7 @@ Now we present a construction from \cite{quant-ph/0301040}.
 	\end{itemize}
 \end{proof}
 
-We verify that our new gate set can be written as combinations of $X$ and $Z$ matrices.
+Note that our new gate set can be written as linear combinations of $X$ and $Z$ matrices.
 
 \begin{theorem}
 	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
@@ -110,7 +109,7 @@ We verify that our new gate set can be written as combinations of $X$ and $Z$ ma
 Here we reduce a circuit into a local Hamiltonian instance with a few additional properties.
 
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ be a XZ-circuit, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
+	Let $C=U_T\ldots U_1$ be a $HT$-circuit, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
 	\begin{itemize}
 		\item its ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
@@ -158,7 +157,7 @@ Here we reduce a circuit into a local Hamiltonian instance with a few additional
 
 	According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks. Furthermore, the last nonzero eigenvalue of $H_{prop}$ is at least $\frac{1}{2(T+1)^2}$.
 
-	We can also write $H=\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
 	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
 	Extra care must be taken for boundary cases.
 	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
