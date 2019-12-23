@@ -43,14 +43,15 @@ We define $\SampBQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which for all $\varepsilon$ there exists a quantum circuit constructible in time $\poly(n, \frac{1}{\varepsilon})$ that, given $x$ as input, samples from from a probability distribution $\tilde{D}_x$ such that $\norm{\tilde{D}_x-D_x}<\varepsilon$.
 \end{definition}
 
-We then define models of interation between a classical client and a quantum server. This is taken from \cite{mahadev_delegation}.
+We then define models of interaction between a classical client and a quantum server. This is taken from \cite{mahadev_delegation}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_0$ with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
-		\item $\bbP$ is a $\BQP$ machine.
-		\item $\bbV$ is a $\BPP$ machine.
-		\item There is a classical communication channel between $\bbP$ and $\bbV$.
+		\item $\bbP$ is a $\BQP$ machine, which also has access to a quantum channel which can transmit $\tau$ qubits.
+		\item $\bbV$ is a hybrid machine. Its classical part is a BPP machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical machine.
+		\item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially many bits at any step.
+        \item At any given step, either the verifier or the prover perform computations on their registers and send bits and qubits through the relevant channels to the other party.
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
