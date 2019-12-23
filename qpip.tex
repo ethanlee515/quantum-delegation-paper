@@ -41,7 +41,7 @@ First, we make an observation.
 			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
 			\State The verifier randomly picks $m$ copies for outputting and $n$ copies for checking
 			\State $c\gets0$
-			\State $y\gets$null
+			\State $y\gets\bot$
 			\For{$i\gets1, N$}
 			    \If{Copy is for checking}
 				\State The verifier runs \autoref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
@@ -51,7 +51,7 @@ First, we make an observation.
 			    \ElsIf{Copy is for outputting}
 			    \State The verifier measures the copy in standard basis
 			    \If{measurement result of the clock register $\geq\frac{T}{2}$}
-			        \If{$y=$null}
+			        \If{$y=\bot$}
 			            \State $y\gets$ measurement result of the data register
                     \EndIf
 			    \EndIf
@@ -60,7 +60,7 @@ First, we make an observation.
 			    \EndIf
 			\EndFor
 			\If{$\frac{c}{n}\geq\frac{1}{2}-\varepsilon$}
-			\If{$y\ne$null}
+			\If{$y\ne\bot$}
 			\State output $y$
 			\Else
 			\State Reject
