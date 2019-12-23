@@ -1,37 +1,24 @@
 \section{Our QPIP Scheme}
 
-Here we create a QPIP scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state. In the case for decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not generalize to our case, so instead we give the following construction.
+Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state. In the case for decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not generalize to our case, so instead we give the following construction.
 
-We first give an alternative characterization of $\QPIP_0$.
+We then extend our scheme for $\QPIP_0$, by using results from \cite{mahadev_delegation}.
 
-\begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_{XZ}$, or has a $\QPIP_{XZ}$ protocol,  with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms $(\bbP, \bbV)$ with the following properties with input $x$:
-	\begin{itemize}
-		\item $\bbP$ is a $\BQP$ machine.
-		\item $\bbV$ is a hybrid quantum-classical machine. Its classical part is a $\BPP$ machine. Its quantum part is a single-qubit register, on which the verifier can apply only $X$ or $Z$ measurements.
-		\item There is a quantum channel between $\bbP$ and $\bbV$ that can transmit one qubit at a time.
-		\item There is a classical communication channel between $\bbP$ and $\bbV$.
-		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
-		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$'s outputs has distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
-	\end{itemize}
-\end{definition}
+\subsection{TODO 1 qubit}
 
-\begin{theorem}
-	Assuming TODO some kind of LWE, $\QPIP_{XZ}=\QPIP_0$
-\end{theorem}
+\Ethan{Fix title}
+
+First, we make an observation.
+
+\begin{observation}
+	There is a $\QPIP_1$ protocol for \autoref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
+\end{observation}
 \begin{proof}
-	See \cite{mahadev_delegation}.
+	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
 
 \begin{theorem}
-	There is a $\QPIP_{XZ}$ protocol for \autoref{AlgGroundStateCheck}
-\end{theorem}
-\begin{proof}
-	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is obvious that any attacks on this scheme trivially maps onto an attack on the original scheme.
-\end{proof}
-
-\begin{theorem}
-	$\SampBQP$ is in $\QPIP_{XZ}$ with completeness negligible to perfect and soundness $(O(T^{-c}), 1-O(T^{-c}))$ for any constant $c$.
+	Let $L\in\SampBQP$. Then there exists some $\QPIP_1$ protocol for $L$ with completeness negligible to perfect and soundness $(O(T^{-c}), 1-O(T^{-c}))$ for any constant $c$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{theorem}
 \begin{proof}
 	Set the following variables
@@ -53,22 +40,37 @@ We first give an alternative characterization of $\QPIP_0$.
 		\label{AlgAmp1}
 		\begin{algorithmic}[1]
 			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
-			\State The verifier randomly picks $n+m$ copies in sequence and without replacement
-			\State The verifier runs \autoref{AlgGroundStateCheck} on $n$ of the copies
-			\If{over $(\frac{1}{2}-\varepsilon)n$ copies accept}
-			\For{$i\gets 1, m$}
-				\State Measure the time register of a fresh copy from the prover
-				\If{Measured $t\geq T$}
-					\State Measure and output its data register
-				\EndIf
+			\State The verifier randomly picks $n+m$ copies; $m$ for output and $n$ for checking
+			\State $c\gets0$
+			\For{$i\gets1, N$}
+			    \If{Register is for checking}
+			    \State The verifier runs \autoref{AlgGroundStateCheck} on the register
+			    \If{Test passes}
+			        $c\gets c+1$
+			    \EndIf
+			    \ElsIf{Register is for outputting}
+			    \State The verifier measures the clock register
+			    \If{measurement result $\geq\frac{T}{2}$}
+			        \If{$y$ isn't set}
+			            $y\gets$ Measure the data register
+                    \EndIf
+			    \EndIf
+			    \Else
+			    \State Measure the entire register in standard basis
+			    \EndIf
 			\EndFor
+			\If{$\frac{c}{n}\geq\frac{1}{2}-\varepsilon$}
+			\If{$y$ is set}
+			\State output $y$
+			\Else
 			\State Reject
+			\EndIf
 			\Else
 			\State Reject
 			\EndIf
 		\end{algorithmic}
 	\end{algorithm}
-
+	
 	This clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover that has at least $\delta$ probability to be accepted. Let $\sigma$ be the state the prover sends.
 
 	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers. Denote the state after the random permutation as
@@ -107,5 +109,9 @@ We first give an alternative characterization of $\QPIP_0$.
 	Once we do measure $t\geq T$, the data register is guaranteed to be $O(\poly(\varepsilon))$-close to $C(x)$.
 
 	All errors up to this point is $O(\varepsilon)$.
-
 \end{proof}
+
+\subsection{TODO 0 qubits}
+
+\Ethan{Fix title}
+

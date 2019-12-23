@@ -4,12 +4,8 @@ Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ 
 
 We will first show that $\set{H, T}$ is a universal gate set.
 
-\begin{definition}
-	Call $C$ an $HT$-circuit if it consists of only Hadamard and Toffoli gates.
-\end{definition}
-
 \begin{theorem}
-	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to an $HT$-circuit $C'$ and classical input $x'$.
+	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to another circuit $C'$ and classical input $x'$, where $C'$ contains only Hadamard and Toffoli gates.
 \end{theorem}
 
 We then define and construct an instance of Local Hamiltonian that encodes the history of the computation.
@@ -19,10 +15,10 @@ First, fix $L\in\bbN$ and define the following that implicitly depends on $L$.
 	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq L}$
 \end{definition}
 
-$L$ can be thought of as how ``local" the Hamiltonian is. Taking $L=5$ would easily suffice for this paper.
+$L$ can be thought of as how ``local" a Hamiltonian is. Taking $L=5$ would easily suffice for this paper.
 
 \begin{definition}
-	Let $C(x)$ be an $HT$-circuit. Then let $H_{C(x)}$ be with the following properties:
+	Let $C(x)$ be a circuit consisting of Hadamard and Toffoli gates. Then let $H_{C(x)}$ be with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
 		\item Has an eigenvector $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$.
@@ -35,25 +31,25 @@ $L$ can be thought of as how ``local" the Hamiltonian is. Taking $L=5$ would eas
 \end{definition}
 
 \begin{theorem}
-	Given $HT$-circuit $C$ and classical $x$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
+	Given circuit $C$ consisting of Hadamard and Toffoli gates, and $x\in\set{0,1}^*$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
 \end{theorem}
 
 \begin{theorem}
-	Given $HT$-circuit $C$ and $x$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
+	Given circuit $C$ consisting of Hadamard and Toffoli gates, and $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
 \end{theorem}
 
 Lastly, before we present proofs for the above theorems, we make an observation.
 
 \begin{observation}
 	\label{idpadding}
-	Given $HT$-circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the last register of $\psi_{C'(x)}$ and obtain with probabiliy $\frac{1}{2}$ the state $C(x)$.
+	Given circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the time register of $\ket{\psi_{C'(x)}}$ and obtain with probability $\frac{1}{2}$ the state $C(x)$.
 \end{observation}
 
-\subsection{$HT$-circuits}
+\subsection{Circuits of Toffoli and Hadamard gates}
 
-Here we prove that $HT$-circuits are universal. After this subsection, we'll be able to assume without loss of generality that all quantum circuits are $HT$-circuits.
+Here we first prove that $\set{H, T}$ is a universal gate set. After this subsection, we'll be able to assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates. After doing that, we make a further observation that we'll use later.
 
-We pick our universal gate set to be Hadamard gate and controlled phase gate following \cite{quant-ph/0301040}:
+We know that Hadamard gate and controlled phase gate is universal following \cite{quant-ph/0301040}:
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 		Which is proven to be universal in \cite{kitaev_1997}.
@@ -75,7 +71,6 @@ Now we present a construction from \cite{quant-ph/0301040}.
 \end{theorem}
 
 \begin{proof}
-
 	Consider the transform on quantum states
 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
 	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
@@ -109,7 +104,7 @@ Note that our new gate set can be written as linear combinations of $X$ and $Z$ 
 Here we reduce a circuit into a history XZ local Hamiltonian instance.
 
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ be a $HT$-circuit, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
+	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
 	\begin{itemize}
 		\item its ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
