@@ -1,37 +1,47 @@
 \section{The History XZ Local Hamiltonian}
 
-Here we lay our theoretical fundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. Here we'll only state the theorems, and prove them later in the subsections.
+In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem. \hannote{proofs in later sections?}
 
-We will first show that $\set{H, T}$ is a universal gate set.
+%Here we lay our theoretical foundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. \hannote{?} Here we'll only state the theorems, and prove them later in the subsections.
 
+First note that $\set{H, T}$ is a universal gate set.
+
+
+\hannote{citation}
 \begin{theorem}
 	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to another circuit $C'$ and classical input $x'$, where $C'$ contains only Hadamard and Toffoli gates.
 \end{theorem}
 
-We then define and construct an instance of Local Hamiltonian that encodes the history of the computation.
-First, fix $L\in\bbN$ and define the following that implicitly depends on $L$.
+%We want to define and construct an instance of Local Hamiltonian that encodes the history of the computation.
+ 
+ 
+ We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$.% and define the following that implicitly depends on $L$.
 
 \begin{definition}
-	Let $\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq L}$
+	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
 \end{definition}
 
-$L$ can be thought of as how ``local" a Hamiltonian is. Taking $L=5$ would easily suffice for this paper.
+%We fix $L=5$ for this paper.For any $L\in\bbN$, 
 
-\begin{definition}
-	Let $C(x)$ be a circuit consisting of Hadamard and Toffoli gates. Then let $H_{C(x)}$ be with the following properties:
-	\begin{itemize}
-		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
-		\item Has an eigenvector $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$.
-		\item Let $\ket\phi$ be such that $\braket{\phi|\psi_{C(x)}}=0$, then $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
-	\end{itemize}
-\end{definition}
-
-\begin{definition}
-	We call the first registers of $\psi_{C(x)}$ the data register, and the later registers of $\psi_{C(x)}$ the time register.
-\end{definition}
+\hannote{something?}
 
 \begin{theorem}
-	Given circuit $C$ consisting of Hadamard and Toffoli gates, and $x\in\set{0,1}^*$, a $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
+	Let $C$ be a circuit consisting of $T$ Hadamard or Toffoli gates. For any input string $x$,  there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
+	\begin{itemize}
+		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
+		\item $H_{C(x)}$ has a unique ground state  $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$. We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
+		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
+	\end{itemize}
+\end{theorem}
+
+\iffalse
+\begin{definition}
+	We call the first registers of $\ket{\psi_{C(x)}}$ the data register, and the later registers of $\psi_{C(x)}$ the time register.
+\end{definition}
+\fi
+
+\begin{theorem}
+	Given a circuit $C$ consisting of Hadamard and Toffoli gates, and an input string $x$, there ea $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
 \end{theorem}
 
 \begin{theorem}
