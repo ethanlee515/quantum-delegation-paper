@@ -1,8 +1,8 @@
 \section{Our Delegation Protocols}
 
-Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state. In the case for decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not generalize to our case, so instead we give the following construction.
+Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state. In the case of decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not work in  our case, so  we give the following construction instead.
 
-We then extend our scheme for $\QPIP_0$, by using results from \cite{mahadev_delegation}.
+We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegation}.
 
 \subsection{Protocol for Hybrid Client}
 
@@ -15,9 +15,10 @@ First, we make an observation.
 \begin{proof}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
-
+\hannote{something. pull protocol out?}
 \begin{theorem}
-	Let $L\in\SampBQP$. Then there exists some $\QPIP_1$ protocol for $L$ with completeness negligible to perfect and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
+    \label{QPIP1thm}
+	For any $L\in\SampBQP$,  there exists a $\QPIP_1$ protocol for $L$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{theorem}
 \begin{proof}
 	Set the following variables
@@ -35,7 +36,7 @@ First, we make an observation.
 	With these parameters, we claim that \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}} does what is required.
 	\floatname{algorithm}{Protocol}
 	\begin{algorithm}
-		\caption{Our $\QPIP_1$ protocol}
+		\caption{ $\QPIP_1$ protocol for $\SampBQP$}
 		\label{ProtoQPIP1}
 		\begin{algorithmic}[1]
 			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
@@ -112,20 +113,27 @@ First, we make an observation.
 
 \subsection{Protocol for Fully Classical Client}
 
-Here we combine the above scheme with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients.
+Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients.
 
-We first describe the construction in \cite{mahadev_delegation}.
+We first restate the construction in \cite{mahadev_delegation}.
+
+Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
 
 \begin{theorem}
-	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol that...
+    \label{Mahadev_QPIP0_Protocol_Interface}
+	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ with the following properties:
 	\begin{itemize}
-		\item x
-		\item y
-		\item z
+	    \item The protocol runs either a ``Hadamard round" or a ``test round" with probability $\fot$ each.
+	    \item With a test round, the verifier outputs nothing other than accept/reject
+	    \item With a Hadamard round, for prover $\bbP'$, the verifier also obtains a sample from $D_{\bbP', h}$. We define $D^C_{\bbP', h}$ as that distribution conditioned on acceptance.
+	    \item (completeness) $\forall n\in\mathcal{B}^{\otimes n}, h\in\bbN$ and $h$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_\rho, h$
+	    \item (soundness) Fix $\bbP'$ and $h$. Let $p_{h, H}$ be its rejection probability under a Hadamard round, and $p_{h, T}$ be its rejection probability under a test round. Then $\exists\tilde\bbP$ s.t. $\norm{D^C_{\bbP', h} - D_{\tilde\bbP, h}}\leq p_{h,H} + \sqrt{p_{h, T}}+\mu$ for some negligible $\mu$, and $\exists\rho$ s.t. $D_{\tilde\bbP, h}$ is computationally indistinguishable from $D_{\rho, h}$.
 	\end{itemize}
 \end{theorem}
-\begin{proof}
-	Construction given in \cite{mahadev_delegation}
-\end{proof}
 
-\Ethan{TODO}
+\Ethan{Maybe wrap the below into a protocol?}
+
+Let $\varepsilon>0$. Pick $N$ large enough so that by geometric probability getting a 
+We pick $h$ the same way as we'd decide the measurement basis as in \Ethan{TODO ref protocol 2}.
+
+\Ethan{TODO analyze that the above actually works?}

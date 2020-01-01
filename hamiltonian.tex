@@ -1,6 +1,8 @@
 \section{The History XZ Local Hamiltonian}
 
-In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem. \hannote{proofs in later sections?}
+In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem. \hannote{put proofs back. Adiabatic ref?}
+
+\Ethan{Adiabatic and spectral gap ref = \cite{adiabatic}}
 
 %Here we lay our theoretical foundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. \hannote{?} Here we'll only state the theorems, and prove them later in the subsections.
 
@@ -32,51 +34,59 @@ First note that $\set{H, T}$ is a universal gate set.
 		\item $H_{C(x)}$ has a unique ground state  $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$. We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
 		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 	\end{itemize}
+	
+	Furthermore, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
 \end{theorem}
 
 \iffalse
 \begin{definition}
 	We call the first registers of $\ket{\psi_{C(x)}}$ the data register, and the later registers of $\psi_{C(x)}$ the time register.
 \end{definition}
+
+
+\begin{theorem}
+	Given a circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x$, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
+\end{theorem}
 \fi
 
-\begin{theorem}
-	Given a circuit $C$ consisting of Hadamard and Toffoli gates, and an input string $x$, there ea $\BPP$ machine can construct a description of $H_{C(x)}$ in polynomial time.
-\end{theorem}
 
 \begin{theorem}
-	Given circuit $C$ consisting of Hadamard and Toffoli gates, and $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\psi_{C(x)}}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$. Furthermore, this algorithm doesn't apply any quantum gates, and uses only $X$ and $Z$ measurements.
+	Given circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
 \end{theorem}
 
 Lastly, before we present proofs for the above theorems, we make an observation.
 
 \begin{observation}
 	\label{idpadding}
-	Given circuit $C$ and $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtain $C'$. One can then measure the time register of $\ket{\psi_{C'(x)}}$ and obtain with probability $\frac{1}{2}$ the state $C(x)$.
+	Given a circuit $C$ and an input string $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtaining another circuit $C'$. One can then measure the time register of $\ket{\psi_{C'(x)}}$ and obtain with probability $\frac{1}{2}$ the state $C(x)$.
 \end{observation}
 
 \subsection{Circuits of Toffoli and Hadamard gates}
 
-Here we first prove that $\set{H, T}$ is a universal gate set. After this subsection, we'll be able to assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates. After doing that, we make a further observation that we'll use later.
+\hannote{throw this into appendix?}
+ Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set. Because of this result, we cam assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates.
+ 
+ %After this subsection, we'll be able to assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates. %After doing that, we make a further observation that we'll use later.
 
-We know that Hadamard gate and controlled phase gate is universal following \cite{quant-ph/0301040}:
+\hannote{theorem?} We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
-		Which is proven to be universal in \cite{kitaev_1997}.
 
-Now we present a construction from \cite{quant-ph/0301040}.
+Now we present the construction from \cite{quant-ph/0301040}.
 
 \begin{theorem}
 	Let $C$ be a circuit that:
 	\begin{itemize}
-		\item consists of $T$ gates, each either $H$ or $\Lambda(P(i))$.
+		\item consists of either $H$ or $\Lambda(P(i))$, and the number of gates is $T$.\hannote{confusing?}
 		\item uses $n$ qubits
 	\end{itemize}
 	Then a classical machine given $C$ can compute a circuit $C'$ that:
 	\begin{itemize}
-		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$.
+		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
 		\item uses $n+1$ qubits
-		\item Let $x\in\set{0,1}^n$. Let $x||0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$. The $X$ and $Z$ measurement results of $C(x)$ and the first $n$ qubits of $C'(x||0)$ are identically distributed.
+		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
+		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
+		%The $X$ and $Z$ measurement results of $C(x)$ and the first $n$ qubits of $C'(x||0)$ are identically distributed.
 	\end{itemize}
 \end{theorem}
 
@@ -93,7 +103,7 @@ Now we present a construction from \cite{quant-ph/0301040}.
 	\begin{itemize}
 		\item $C'$ uses only Hadamard and Toffoli gates.
 		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
-		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple to verify that $F$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
 	\end{itemize}
 \end{proof}
 
@@ -109,22 +119,22 @@ Note that our new gate set can be written as linear combinations of $X$ and $Z$ 
 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 \end{proof}
 
-\subsection{Constructing a local Hamiltonian instance}
+\subsection{Reducing $\SampBQP$ to  local Hamiltonian }
 
-Here we reduce a circuit into a history XZ local Hamiltonian instance.
+In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Hamiltonian.
 
 \begin{theorem}
-	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^*$. Then a classical machine can construct in polynomial time descriptions of some $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
+	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^n$. Then there exists a $\BPP$  machine which generates the  description of a $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
 	\begin{itemize}
-		\item its ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
+		\item its unique ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
 		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
 		\item $\forall\ket\phi,\braket{\phi|\psi_{C(x)}}=0\Rightarrow\braket{\phi|H_{C(x)}|\phi}\geq\frac{3}{4}$
-		\item Has $O(T)$ nonzero components whose coefficients are each at most $O(T^3)$.
+		\item $H_{C(x)}$ has $O(T)$ nonzero terms whose coefficients are  at most $O(T^3)$.
 	\end{itemize}
 \end{theorem}
 
 \begin{proof}
-	We ensure states perpendicular to $\ket{\psi_{C(x)}}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
+	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
 	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
 
@@ -174,7 +184,7 @@ Here we reduce a circuit into a history XZ local Hamiltonian instance.
 	$$K_{prop}=\ker H_{prop}$$
 	It is clear that $K_{clock}$ consists of the states with time registers of the form $\ket{\hat{t}}$.
 
-	\begin{lemma}
+	\begin{lemma} \hannote{throw outside? or just merge}
 		$$K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
 	\end{lemma}
 
@@ -207,9 +217,11 @@ $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\fr
 So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 \end{proof}
 
-\subsection{Checking for ground state}
+\subsection{Checking the ground state of the local Hamiltonian}
 
-Now we put the above results in term of measurement outputs.
+%Now we put the above results in term of measurement outputs.\hannote{???}
+
+We present an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$ following~\cite{PhysRevA.93.022326}.
 
 \begin{algorithm}
 	\caption{Check for ground state}
@@ -217,10 +229,10 @@ Now we put the above results in term of measurement outputs.
 	\begin{algorithmic}[1]
 		\Require $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$
 		\Procedure{GroundStateCheck}{$\ket\phi$}
-		\State $D\gets\sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-		\State $p_S\gets\frac{|d_S|}{D}$
-		\State $\widetilde{S}\gets$ Pick weighted using $p_S$
-		\State $\lambda_{\widetilde{S}}\gets$ Measure $\ket\phi$ in the $\widetilde{S}$ basis
+		\State Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
+		\State Set $p_S = \frac{|d_S|}{D}$
+		\State Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
+		\State  Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
 		\If{$\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$}
 		\State Accept
 		\Else
