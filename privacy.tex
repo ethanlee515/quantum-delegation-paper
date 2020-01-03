@@ -1,5 +1,65 @@
 \section{Private Delegation}
 
-We can further generalize the protocol from last section by making the computation private. We do it by combining with \cite{mahadev_qfhe}, that is, homomorphically encrypting...
+\Ethan{TODO Do some kinda intro to the section}
 
-\Ethan{TODO}
+\subsection{Quantum homomorphic encryption scheme}
+
+\Ethan{This subsection is copied and pasted directly from the other QMPC paper and is kinda a mess}
+
+We present the interface of quantum full homomorphic encryption (QFHE) scheme as given in \cite{mahadev_qfhe}.
+
+\begin{dfn}
+	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	\begin{itemize}
+		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, evk, sk)$
+			\begin{itemize}
+				\item $\lambda$: security parameter
+				\item $L$: maximum size of circuits that can be homomorphically evaluated
+			\end{itemize}
+		\item $\mathsf{HE.Enc_{pk}}(\mu)\rightarrow c$
+		\item $\mathsf{HE.Dec_{sk}}(c)\rightarrow \mu^*$
+			\Ethan{Urmila didn't specify that $\mathsf{Dec}\circ\mathsf{Enc}=Id$}
+		\item $\mathsf{HE.Eval_{evk}}(f, c_1, \ldots, c_l)\rightarrow c_f$
+			\begin{itemize}
+				\item $f$: a circuit of depth at most $L$
+				\item Satisfies $$\mathsf{HE.Dec}_{sk}(c_f)=f(\mathsf{HE.Dec}_{sk}(c_1),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$ with all but negligible probability in $\lambda$
+			\end{itemize}
+	\end{itemize}
+	\Ethan{Figure out what else depends on L}
+\end{dfn}
+
+We also recall the security definition for a FHE scheme.
+
+\begin{dfn}
+	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
+	$$\abs{Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(1))=1]}=\mu(\lambda)$$
+	where $(pk, evk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
+	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
+\end{dfn}
+
+\begin{thm}
+	There exists a quantum homomorphic encryption scheme $\mathsf{QHE}$ with the following additional
+	\begin{itemize}
+		\item $\mathsf{QHE.Keygen}$ additionally takes $1^L$ as parameter
+		\item There exists a classical encryption scheme $\mathsf{HE}$ such that $\mathsf{QHE}$'s ciphertexts has the form $TODO$, where $c$ encodes $(x, z)$ under $\mathsf{HE}$.
+		\item It allow finer controls of homomorphically applying a circuit on a gate-by-gate basis. There is, there exists a universal gate set $G$ and function $\mathsf{QHE.EvalGate}(TODO)$ that outputs ``as expected" \Ethan{huh?} as long as the corresponding \Ethan{hmm...} circuit depth isn't over $L$.
+	\end{itemize}
+\end{thm}
+
+\subsection{Generalizing our delegation protocol using QFHE}
+
+\floatname{algorithm}{Protocol}
+\begin{algorithm}
+	\caption{Verifiable, private, and constant round delegation}
+	\label{ProtoQPIP1}
+	\begin{algorithmic}[1]
+		\State $\mathsf{Keygen}\rightarrow(pk, evk, sk)$
+		\State $\mathsf{Enc}_{pk}(x)=c$
+		\State The client encrypts its input
+		\State The server and the client runs the $\QPIP_0$ protocol homomorphically on this encrypted input \Ethan{Maybe say a bit more since it's not exactly a circuit to begin with... Or I guess it has to be written as one}
+	\end{algorithmic}
+\end{algorithm}
+
+TODO prove semantic security (shouldn't be hard)
+
+TODO prove this still has verifiability
