@@ -15,63 +15,59 @@ First, we make an observation.
 \begin{proof}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
-\hannote{something. pull protocol out?}
+
+Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ protocol for any $\SampBQP$ problem with inverse polynomial error in circuit size.
+
+\floatname{algorithm}{Protocol}
+\begin{algorithm}
+	\caption{ $\QPIP_1$ protocol for $\SampBQP$}
+	\label{ProtoQPIP1}
+	\begin{algorithmic}[1]
+		\Procedure{QPIP1}{$C, x, c$}
+		\State Let $\varepsilon=T^{-c}$
+		\State Let $m$ be large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
+		\State Let $n$ be large enough so both $P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$ and $P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$ are negligible in $\varepsilon$ by Chernoff bound
+		\State Let $N$ be large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
+
+		\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
+		\State The verifier randomly picks $m$ copies for outputting and $n$ copies for checking
+		\State $c\gets0$
+		\State $y\gets\bot$
+		\For{$i\gets1, N$}
+			\If{Copy is for checking}
+			\State The verifier runs \autoref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
+			\If{Test passes}
+				$c\gets c+1$
+			\EndIf
+			\ElsIf{Copy is for outputting}
+			\State The verifier measures the copy in standard basis
+			\If{measurement result of the clock register $\geq\frac{T}{2}$}
+				\If{$y=\bot$}
+					\State $y\gets$ measurement result of the data register
+				\EndIf
+			\EndIf
+			\Else
+			\State The verifier measures the entire register in standard basis
+			\EndIf
+		\EndFor
+		\If{$\frac{c}{n}\geq\frac{1}{2}-\varepsilon$}
+		\If{$y\ne\bot$}
+		\State output $y$
+		\Else
+		\State Reject
+		\EndIf
+		\Else
+		\State Reject
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 \begin{theorem}
     \label{QPIP1thm}
-	For any $L\in\SampBQP$,  there exists a $\QPIP_1$ protocol for $L$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
+	For any $L\in\SampBQP$, \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}} is a protocol for $L$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{theorem}
 \begin{proof}
-	Set the following variables
-	\begin{itemize}
-		\item $\varepsilon=T^{-c}$
-		\item $m$ large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
-		\item $n$ large enough so the following quantities are negligible in $\varepsilon$ by the Chernoff bound:
-			\begin{itemize}
-				\item[$\circ$] $P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$
-				\item[$\circ$] $P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$
-			\end{itemize}
-		\item $N$ large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
-	\end{itemize}
-
-	With these parameters, we claim that \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}} does what is required.
-	\floatname{algorithm}{Protocol}
-	\begin{algorithm}
-		\caption{ $\QPIP_1$ protocol for $\SampBQP$}
-		\label{ProtoQPIP1}
-		\begin{algorithmic}[1]
-			\State The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
-			\State The verifier randomly picks $m$ copies for outputting and $n$ copies for checking
-			\State $c\gets0$
-			\State $y\gets\bot$
-			\For{$i\gets1, N$}
-			    \If{Copy is for checking}
-				\State The verifier runs \autoref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
-			    \If{Test passes}
-			        $c\gets c+1$
-			    \EndIf
-			    \ElsIf{Copy is for outputting}
-			    \State The verifier measures the copy in standard basis
-			    \If{measurement result of the clock register $\geq\frac{T}{2}$}
-			        \If{$y=\bot$}
-			            \State $y\gets$ measurement result of the data register
-                    \EndIf
-			    \EndIf
-			    \Else
-			    \State The verifier measures the entire register in standard basis
-			    \EndIf
-			\EndFor
-			\If{$\frac{c}{n}\geq\frac{1}{2}-\varepsilon$}
-			\If{$y\ne\bot$}
-			\State output $y$
-			\Else
-			\State Reject
-			\EndIf
-			\Else
-			\State Reject
-			\EndIf
-		\end{algorithmic}
-	\end{algorithm}
-	
 	It clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover that has at least $\delta$ probability to be accepted. Let $\sigma$ be the state the prover sends to the verifier.
 
 	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers.
