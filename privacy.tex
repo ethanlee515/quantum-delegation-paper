@@ -12,22 +12,15 @@ We present the interface of quantum full homomorphic encryption (QFHE) scheme as
 	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{Keygen}(1^\lambda)\rightarrow(pk, evk, sk)$
-			\begin{itemize}
-				\item $\lambda$: security parameter
-				\item $L$: maximum size of circuits that can be homomorphically evaluated
-			\end{itemize}
 		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
 		\item $\mathsf{Dec}_{sk}(c)\rightarrow \mu^*$
 			\Ethan{Urmila didn't specify that $\mathsf{Dec}\circ\mathsf{Enc}=Id$}
 		\item $\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
-			\begin{itemize}
-				\item $f$: a circuit of depth at most $L$
-				\item Satisfies $$\mathsf{HE.Dec}_{sk}(c_f)=f(\mathsf{HE.Dec}_{sk}(c_1),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$ with all but negligible probability in $\lambda$
-			\end{itemize}
 	\end{itemize}
 \end{dfn}
 
 Everything also has an implicit dependence on $1^L$, where $L$ is the maximum circuit depth for the homomorphic evaluation.
+As this is a homomorphic encryption scheme, it satisfies $$\mathsf{HE.Dec}_{sk}(c_f)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$ with all but negligible probability in $\lambda$
 
 $\mathsf{Keygen}$ and $\mathsf{Enc}$ can be done classically. $\mathsf{Dec}$ commutes with standard basis measurement, and in the event that the result is already a measurement result, can also be done classically.
 
