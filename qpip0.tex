@@ -77,14 +77,15 @@ We present a lemma from \cite{parallelrep}.
 	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
 	Let $\gamma_i\xleftarrow{\$}\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document} for each $i\in[m]$.
 	Then a state $\ket{psi}_{X, Z}$ can be partitioned as follows: \Ethan{Just gonna hard-code $c=0^m$ here for now}
-	$$\ket{\psi}=TODO$$
+	$$\ket{\psi}=\ket{\psi_0}+\ket{\psi_{10}}+\ket{\psi_{110}}+\ldots+\ket{\psi_{11\ldots10}}+\ket{\psi_{11\ldots11}}+\ket{\psi_{err}}$$
 	where the way of partitioning may depend on the choices of $\hat\gamma=(\gamma_i)_{i=1}^m$.
-	Furthermore, the following properties are satisfied.
+	Furthermore, the following properties are satisfied. \Ethan{Takes a bit of parsing to see how is our case different here since $c$ might be defined differently for us}
 	\begin{enumerate}
 		\item stuff
-		\item stuff
-		\item stuff
-		\item stuff
+		\item For any fixed $\hat\gamma$... 
+		\item For any fixed $\hat\gamma$...
+		\item For any fixed $c$,
+			$$\E_{\hat\gamma}\left[\norm{\ket{\psi_{err}}_{X,Z}}^2\right]\leq\frac{6m^2}{T}+\negl(n)$$
 		\item stuff
 	\end{enumerate}
 \end{lem}
