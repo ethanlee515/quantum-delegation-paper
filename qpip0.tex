@@ -4,6 +4,8 @@ We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegat
 
 Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
 
+\subsection{Subprotocol for Quantum Measurements}
+
 We first restate the construction in \cite{mahadev_delegation}.
 
 Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
@@ -12,18 +14,51 @@ Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{b
     \label{Mahadev_QPIP0_Protocol_Interface}
 	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ with the following properties:
 	\begin{itemize}
-	    \item The protocol runs either a ``Hadamard round" or a ``test round" with probability $\fot$ each.
+	    \item The protocol runs either a ``Hadamard round" or a ``test round".
 	    \item With a test round, the verifier outputs nothing other than accept/reject
 	    \item With a Hadamard round, for prover $\bbP'$, the verifier also obtains a sample from $D_{\bbP', h}$. We define $D^C_{\bbP', h}$ as that distribution conditioned on acceptance.
 	    \item (completeness) $\forall n\in\mathcal{B}^{\otimes n}, h\in\bbN$ and $h$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_\rho, h$
 	    \item (soundness) Fix $\bbP'$ and $h$. Let $p_{h, H}$ be its rejection probability under a Hadamard round, and $p_{h, T}$ be its rejection probability under a test round. Then $\exists\tilde\bbP$ s.t. $\norm{D^C_{\bbP', h} - D_{\tilde\bbP, h}}\leq p_{h,H} + \sqrt{p_{h, T}}+\mu$ for some negligible $\mu$, and $\exists\rho$ s.t. $D_{\tilde\bbP, h}$ is computationally indistinguishable from $D_{\rho, h}$.
+		\item This is a 4-round protocol. The prover does not know whether it is a test or Hadamard round until the end of 3rd round.
+		\begin{enumerate}
+			\item The verifier generates $(k, td)$, ``key" and ``trapdoor". It sends the key to the prover.
+			\item The prover computes a classical ``commitment" $y$ and sends it to the verifier.
+			\item The verifier sends $c\in\set{0, 1}$, where $c=0$ corresponds to test round and $c=1$ corresponds to Hadamard round.
+			\item The prover computes and sends a classical string $a$
+		\end{enumerate}
 	\end{itemize}
 \end{theorem}
 
-\Ethan{Maybe wrap the below into a protocol?}
+\subsection{Parallel Repetition of the Measurement Subprotocol}
 
-Let $\varepsilon>0$. Pick $N$ large enough so that by 
+Here we follow \cite{parallelrep}.
 
-We pick $h$ the same way as we'd decide the measurement basis as in \Ethan{TODO ref protocol 2}.
+We characterize a prover by two unitaries $(U_0, U)$ acting on the space $\cH_C\otimes\cH_X\otimes\cH_Z\otimes\cH_Y\otimes\cH_K$.
 
-\Ethan{TODO analyze that the above actually works?}
+\Ethan{I'll elaborate on above later, after figuring out exactly what I need or don't need}
+
+Each coordinate can be accepted and rejected separately, and the entire protocol accepts only if all coordinates accept.
+
+Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test round when the first and second messages are $k_i$ and $y_i$, respectively.
+
+We present a lemma from \cite{parallelrep}.
+
+\begin{lem}
+	Let $(U_0, U)$ be some prover's strategy.
+	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $i\in[m]$, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
+	Let $\gamma$ be sampled uniformly from $\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document}.
+	Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\phi}_{X, Z}$,
+
+	$$TODO-LONG-EQ$$
+
+	where $t$ is the number of qubits in the register $ph$, $z_0, z_1\in\bbC$ such that $\abs{z_0}=\abs{z_1}=1$, and $z_0$, $z_1$, $\ket{\phi_0}_{X, Z}$, $\ket{\phi_1}_{X, Z}$, $\ket{\phi_{err}}_{X, Z}$ may depend on $\gamma$.
+	Furthermore, the following properties are satisfied.
+	\begin{itemize}
+		\item property 1
+		\item property 1
+		\item property 1
+		\item property 1
+		\item property 1
+	\end{itemize}
+\end{lem}
+
