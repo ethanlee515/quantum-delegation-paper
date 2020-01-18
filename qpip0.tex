@@ -1,0 +1,29 @@
+\section{Delegation Protocol for Fully Classical Client}
+
+We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegation}.
+
+Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
+
+We first restate the construction in \cite{mahadev_delegation}.
+
+Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
+
+\begin{theorem}
+    \label{Mahadev_QPIP0_Protocol_Interface}
+	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ with the following properties:
+	\begin{itemize}
+	    \item The protocol runs either a ``Hadamard round" or a ``test round" with probability $\fot$ each.
+	    \item With a test round, the verifier outputs nothing other than accept/reject
+	    \item With a Hadamard round, for prover $\bbP'$, the verifier also obtains a sample from $D_{\bbP', h}$. We define $D^C_{\bbP', h}$ as that distribution conditioned on acceptance.
+	    \item (completeness) $\forall n\in\mathcal{B}^{\otimes n}, h\in\bbN$ and $h$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_\rho, h$
+	    \item (soundness) Fix $\bbP'$ and $h$. Let $p_{h, H}$ be its rejection probability under a Hadamard round, and $p_{h, T}$ be its rejection probability under a test round. Then $\exists\tilde\bbP$ s.t. $\norm{D^C_{\bbP', h} - D_{\tilde\bbP, h}}\leq p_{h,H} + \sqrt{p_{h, T}}+\mu$ for some negligible $\mu$, and $\exists\rho$ s.t. $D_{\tilde\bbP, h}$ is computationally indistinguishable from $D_{\rho, h}$.
+	\end{itemize}
+\end{theorem}
+
+\Ethan{Maybe wrap the below into a protocol?}
+
+Let $\varepsilon>0$. Pick $N$ large enough so that by 
+
+We pick $h$ the same way as we'd decide the measurement basis as in \Ethan{TODO ref protocol 2}.
+
+\Ethan{TODO analyze that the above actually works?}
