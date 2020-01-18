@@ -43,6 +43,8 @@ Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test rou
 
 We present a lemma from \cite{parallelrep}.
 
+\iffalse
+
 \Ethan{Do we even need this lemma 3.5, or can we just use 3.6...}
 
 \begin{lem}
@@ -69,3 +71,20 @@ We present a lemma from \cite{parallelrep}.
 	\end{enumerate}
 \end{lem}
 
+\fi
+
+\begin{lem}
+	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
+	Let $\gamma_i\xleftarrow{\$}\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document} for each $i\in[m]$.
+	Then a state $\ket{psi}_{X, Z}$ can be partitioned as follows: \Ethan{Just gonna hard-code $c=0^m$ here for now}
+	$$\ket{\psi}=TODO$$
+	where the way of partitioning may depend on the choices of $\hat\gamma=(\gamma_i)_{i=1}^m$.
+	Furthermore, the following properties are satisfied.
+	\begin{enumerate}
+		\item stuff
+		\item stuff
+		\item stuff
+		\item stuff
+		\item stuff
+	\end{enumerate}
+\end{lem}
