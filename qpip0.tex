@@ -47,18 +47,23 @@ We present a lemma from \cite{parallelrep}.
 	Let $(U_0, U)$ be some prover's strategy.
 	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $i\in[m]$, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
 	Let $\gamma$ be sampled uniformly from $\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document}.
-	Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\phi}_{X, Z}$,
+	Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{X, Z}$,
 
 	$$TODO-LONG-EQ$$
 
-	where $t$ is the number of qubits in the register $ph$, $z_0, z_1\in\bbC$ such that $\abs{z_0}=\abs{z_1}=1$, and $z_0$, $z_1$, $\ket{\phi_0}_{X, Z}$, $\ket{\phi_1}_{X, Z}$, $\ket{\phi_{err}}_{X, Z}$ may depend on $\gamma$.
+	where $t$ is the number of qubits in the register $ph$ \Ethan{Where is this register defined?},
+	$z_0, z_1\in\bbC$ such that $\abs{z_0}=\abs{z_1}=1$, and $z_0$, $z_1$, $\ket{\psi_0}_{X, Z}$, $\ket{\psi_1}_{X, Z}$, $\ket{\psi_{err}}_{X, Z}$ may depend on $\gamma$.
 	Furthermore, the following properties are satisfied.
-	\begin{itemize}
-		\item property 1
-		\item property 1
-		\item property 1
-		\item property 1
-		\item property 1
-	\end{itemize}
+	\begin{enumerate}
+		\item Let $\ket{\psi_{err}}=\ket{\psi}-\ket{\psi_0}-\ket{\psi_1}$, then
+			$$\E_\gamma[\norm{\ket{\psi_{err}}}^2]\leq\frac{1}{T}+\negl(n)$$
+		\item TODO Some long property
+		\item For any fixed $\gamma$,
+			$$\E_{b\in\set{0, 1}}\left[\norm{\ket{\psi_{b}}_{X, Z}}^2\right]\leq\frac{1}{2}\norm{\ket{\psi}_{X, Z}}^2$$
+		\item For any fixed $\gamma$ and $c\in\set{0, 1}^m$ such that $c_i=0$, \Ethan{Where's this $M_{X_i}$ defined?}
+			$$\Pr\left[M_{X_i}\circ U\frac{\ket{c}_C\ket{\psi_0}_{X,Z}}{\norm{\psi_0}_{X,Z}}\in A_{k_i, y_i}\right]\leq2^{m-1}\gamma+\negl(n)$$
+		\item For any fixed $\gamma$, there exists an efficient quantum algorithm $\cE_i$ such that
+			$$\Pr\left[\cE_i\left(\frac{\ket{0^m}_C\ket{\psi_1}_{X,Z}}{\norm{\psi_1}_{X,Z}}\in A_{k_i, y_i}\right)\right]\leq1-\negl(n)$$
+	\end{enumerate}
 \end{lem}
 
