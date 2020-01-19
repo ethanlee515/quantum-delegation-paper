@@ -6,24 +6,22 @@
 
 \Ethan{This subsection is copied and pasted directly from the other QMPC paper and is kinda a mess}
 
-We present the interface of quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=(\mathsf{QHE.keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$ given in \cite{mahadev_qfhe}. We use this particular QFHE because it allows the use of a classical client. Specifically, it has the following extra properties:
+We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=(\mathsf{QHE.keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$ given in \cite{mahadev_qfhe}. We use this particular QFHE because it allows the use of a classical client. Specifically, it has the following extra properties:
 \begin{itemize}
-	\item $\mathsf{Keygen}$ can be done classically.
-	\item In the case where the plaintext is classical, $\mathsf{Enc}$ can be done classically.
-	\item $\mathsf{Dec}$ commutes with standard basis measurement. If the ciphertext is a measurement result, it can also be done classically.
+	\item $\mathsf{QHE.Keygen}$ can be done classically.
+	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
+	\item $\mathsf{QHE.Dec}$ commutes with standard basis measurement. If the ciphertext is a measurement result, it can also be done classically.
 \end{itemize}
 
 \subsection{Generalizing our delegation protocol using QFHE}
 
-We construct a verifiable, private, and constant round $\QPIP_0$ protocol by combining our $\QPIP_0$ protocol earlier with \cite{mahadev_qfhe}.
-
 \floatname{algorithm}{Protocol}
 \begin{algorithm}
-	\caption{Verifiable, private, and constant round delegation}
+	\caption{Verifiable, secure, and constant round delegation}
 	\label{ProtoPrivateDelegation}
 	\begin{algorithmic}[1]
 		\Procedure{Delegation}{C, x}
-			\State $\mathsf{Keygen}\rightarrow(pk, evk, sk)$
+			\State $\mathsf{QHE.Keygen}\rightarrow(pk, evk, sk)$
 			\State Let $\tilde{x}=\mathsf{Enc}_{pk}(x)$
 			\State Let $\tilde{C}$ to the circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{Eval}_{evk}(C, \tilde{x})$
 			\State The client delegates $\tilde{C}(\tilde{x})$ to the server using our $\QPIP_0$ protocol.
@@ -35,7 +33,7 @@ We construct a verifiable, private, and constant round $\QPIP_0$ protocol by com
 	\autoref{ProtoPrivateDelegation} is IND-CPA secure.
 \end{thm}
 \begin{proof}
-	TODO
+	This is... not so trivial.
 \end{proof}
 
 \begin{thm}
