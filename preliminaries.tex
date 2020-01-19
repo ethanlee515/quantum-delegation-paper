@@ -90,3 +90,34 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state. Then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
 	$$\max_{\Lambda_1,\ldots,\Lambda_l}\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1\leq\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$$
 \end{theorem}
+
+\subsection{Quantum Homomorphic Encryption Schemes}
+
+\begin{dfn}
+	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	\begin{itemize}
+		\item $\mathsf{Keygen}(1^\lambda)\rightarrow(pk, evk, sk)$
+		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
+		\item $\mathsf{Dec}_{sk}(c)\rightarrow \mu^*$
+			\Ethan{Urmila didn't specify that $\mathsf{Dec}\circ\mathsf{Enc}=Id$}
+		\item $\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
+	\end{itemize}
+\end{dfn}
+
+Everything also has an implicit dependence on $1^L$, where $L$ is the maximum circuit depth for the homomorphic evaluation.
+
+As this is a homomorphic encryption scheme, it satisfies $$\mathsf{HE.Dec}_{sk}(c_f)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$ with all but negligible probability in $\lambda$
+
+We also recall the security definition for a FHE scheme.
+
+\begin{dfn}
+	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
+	$$\abs{Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(1))=1]}=\mu(\lambda)$$
+	where $(pk, evk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
+	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
+\end{dfn}
+
+Lastly, we recall the definition of a verifiable quantum FHE scheme:
+\begin{dfn}
+	TODO
+\end{dfn}
