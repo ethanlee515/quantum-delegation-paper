@@ -116,7 +116,19 @@ We also recall the security definition for a FHE scheme.
 Lastly, we generalize the above security definition to interactive schemes.
 
 \begin{dfn}
-	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$. Then it is IND-CPA secure if, for any $x_1, x_2$, any polynomial time adversary $\cA$,
-	$$\abs{\Pr\left[TODO\right]}-TODO$$
-
+	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$. Then it is IND-CPA secure if any polynomial time adversary $\cA$ can't win \protoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$ \Ethan{Check if it's actually lambda}
 \end{dfn}
+
+\floatname{algorithm}{Protocol}
+\begin{algorithm}
+	\caption{ $\QPIP_1$ protocol for $\SampBQP$}
+	\label{ProtoQPIP1}
+	\begin{algorithmic}[1]
+		\State \Ethan{Do we need some kinda generalization of Keygen here...?}
+		\State $\cA$ picks strings $c_1$ and $c_2$ and sends them to the challenger
+		\State The challenger picks $c_b$ at random where $b\in\set{0,1}$
+		\State The challenger runs the protocol with the adversary, acting as the verifier with input $c_b$
+		\State $\cA$ attempts to guess $b$
+	\end{algorithmic}
+\end{algorithm}
+\floatname{algorithm}{Algorithm}
