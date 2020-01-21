@@ -1,0 +1,137 @@
+%\newcommand{\redunderline}[1]{\textcolor{BrickRed}{\underline{\textcolor{black}{#1}}}}
+\def \sample { \overset{\hspace{0.1em}\mathsf{\scriptscriptstyle\$}}{\leftarrow} }
+\def\lapprox{\overset{<}{\sim}}
+% \newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\pro}{P}
+\newcommand{\ver}{V}
+\newcommand{\secpar}{n}
+% \newcommand{\negl}{\mathsf{negl}}
+\newcommand{\lang}{L}
+\newcommand{\key}{k}
+\newcommand{\comy}{y}
+\newcommand{\bfy}{\mathbf{y}}
+\newcommand{\bfk}{\mathbf{k}}
+\newcommand{\bfc}{\mathbf{c}}
+\newcommand{\bfans}{\mathbf{a}}
+\newcommand{\td}{\mathsf{td}}
+\newcommand{\st}{\mathsf{st}}
+\newcommand{\out}{\mathsf{out}}
+ \newcommand{\bit}{\{0,1\}}
+\newcommand{\ans}{a}
+\newcommand{\Ans}{A}
+%\newcommand{\poly}{\mathsf{poly}}
+%\newcommand{\span}{\mathsf{span}}
+%\newcommand{\poly}{\mathsf{poly}}
+\newcommand{\hil}{\mathcal{H}}
+\newcommand{\work}{W}
+\newcommand{\defeq}{:=}
+%\newcommand{\BPP}{\mathsf{BPP}}
+\newcommand{\Succ}{\mathsf{Succ}}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\B}{\mathcal{B}}
+
+\newcommand{\Sgood}{S_{\mathsf{good}}}
+\newcommand{\Sbad}{S_{\mathsf{bad}}}
+\newcommand{\psigood}{\psi_{\mathsf{good}}}
+\newcommand{\psibad}{\psi_{\mathsf{bad}}}
+
+\newcommand{\ext}{\mathsf{Ext}}
+
+\newcommand{\calX}{\mathcal{X}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calD}{\mathcal{D}}
+
+%\newcommand{\ot}{\otimes}
+\newcommand{\fail}{\mathsf{fail}}
+\newcommand{\QTMtoQC}{\mathsf{QTMtoQC}}
+\newcommand{\CRH}{\mathsf{CRH}}
+\newcommand{\func}{\mathsf{Func}}
+\newcommand{\TT}{\mathtt{T}}
+\newcommand{\PRG}{\mathsf{PRG}}
+\newcommand{\famCRH}{\mathcal{C}\mathcal{R}\mathcal{H}}
+\newcommand{\QTM}{\mathsf{QTM}}
+\newcommand{\QTIME}{\mathsf{QTIME}}
+
+\newcommand{\Acc}{\mathsf{Acc}}
+%%%Randomized Encoding%
+\newcommand{\RE}{\mathsf{RE}}
+\newcommand{\crs}{\mathsf{crs}}
+\newcommand{\ek}{\mathsf{ek}}
+\newcommand{\rsetup}{\mathsf{RE}.\mathsf{Setup}}
+\newcommand{\renc}{\mathsf{RE}.\mathsf{Enc}}
+\newcommand{\rdec}{\mathsf{RE}.\mathsf{Dec}}
+\newcommand{\rsim}{\mathsf{RE}.\mathsf{Sim}}
+\newcommand{\inp}{\mathsf{inp}}
+\newcommand{\Time}{\mathsf{Time}}
+\newcommand{\Menc}{\widehat{M_\inp}}
+
+%%%SNARK%
+\newcommand{\SNARK}{\mathsf{SNARK}}
+\newcommand{\snark}{\mathsf{snark}}
+% \newcommand{\NP}{\mathsf{NP}}
+% \newcommand{\NTIME}{\mathsf{NTIME}}
+\newcommand{\rela}{\mathcal{R}}
+
+%FHE%%%
+\newcommand{\FHE}{\mathsf{FHE}}
+\newcommand{\fhe}{\mathsf{fhe}}
+\newcommand{\fhekeygen}{\mathsf{FHE}.\mathsf{KeyGen}}
+\newcommand{\fheenc}{\mathsf{FHE}.\mathsf{Enc}}
+\newcommand{\fhedec}{\mathsf{FHE}.\mathsf{Dec}}
+\newcommand{\fheeval}{\mathsf{FHE}.\mathsf{Eval}}
+\newcommand{\sk}{\mathsf{sk}}
+\newcommand{\pk}{\mathsf{pk}}
+\newcommand{\ct}{\mathsf{ct}}
+
+%%%Efficient Verifier%
+\newcommand{\setupeff}{\setup_{\mathsf{eff}}}
+\newcommand{\vereff}{V_{\mathsf{eff}}}
+\newcommand{\vereffone}{V_{\mathsf{eff},1}}
+\newcommand{\vereffthree}{V_{\mathsf{eff},3}}
+\newcommand{\vereffout}{V_{\mathsf{eff},\mathsf{out}}}
+\newcommand{\proeff}{P_{\mathsf{eff}}}
+\newcommand{\proefftwo}{P_{\mathsf{eff},2}}
+\newcommand{\proefffour}{P_{\mathsf{eff},4}}
+\newcommand{\advPH}{{P^*}^{H}}
+\newcommand{\setup}{\mathsf{Setup}}
+\newcommand{\re}{\mathsf{re}}
+\newcommand{\crh}{\mathsf{CRH}}
+\newcommand{\transcript}{\mathsf{trans}}
+
+\newcommand{\setupefffs}{\setup_{\mathsf{eff}\text{-}\mathsf{fs}}}
+\newcommand{\proefffs}{P_{\mathsf{eff}\text{-}\mathsf{fs}}}
+\newcommand{\proefffstwo}{P_{\mathsf{eff}\text{-}\mathsf{fs},2}}
+\newcommand{\verefffs}{V_{\mathsf{eff}\text{-}\mathsf{fs}}}
+\newcommand{\verefffsone}{V_{\mathsf{eff}\text{-}\mathsf{fs},1}}
+\newcommand{\verefffsout}{V_{\mathsf{eff}\text{-}\mathsf{fs},\out}}
+%Games%
+\newcommand{\game}{\mathsf{Game}}
+
+%\newcommand*{\bra}[1]{\langle#1|}
+%\newcommand*{\ket}[1]{|#1\rangle}
+\newcommand*{\opro}[2]{|#1\rangle\langle#2|}
+\newcommand*{\ipro}[2]{\langle #1|#2\rangle}
+\newcommand{\TD}{\mathsf{TD}}
+
+%%%%% Registers %%%%%%%
+\newcommand*{\regK}{\mathbf{K}}
+\newcommand*{\regI}{\mathbf{I}}
+\newcommand*{\regR}{\mathbf{R}}
+\newcommand*{\regX}{\mathbf{X}}
+\newcommand*{\regY}{\mathbf{Y}}
+\newcommand*{\regZ}{\mathbf{Z}}
+\newcommand{\regW}{\mathbf{W}}
+\newcommand*{\regC}{\mathbf{C}}
+\newcommand*{\regO}{\mathbf{O}}
+\newcommand*{\regF}{\mathbf{F}}
+
+%%%%% Note %%%%%%%%%%%%%
+
+\newcommand{\nai}[1]{{\color{purple}[Nai: #1]}}
+\newcommand{\km}[1]{{\color{brown}[KM: #1]}}
+\newcommand{\takashi}[1]{{\color{red}[Takashi: #1]}}
+
+

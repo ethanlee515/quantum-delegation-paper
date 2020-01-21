@@ -1,0 +1,144 @@
+\section{Preliminaries}
+\paragraph{Notations.}
+For a bit $b\in\bit$, $\bar{b}$ denotes $1-b$.
+For a finite set $\calX$, $x\sample \calX$ means that $x$ is uniformly chosen from $\calX$.
+For finite sets $\calX$ and $\calY$, $\func(\calX,\calY)$ denotes the set of all functions with domain $\calX$ and range $\calY$.
+A function $f:\mathbb{N}\ra [0,1]$ is said to be negligible if for all polynomial $p$ and sufficiently large $\secpar \in \mathbb{N}$, we have $f(\secpar)< 1/p(\secpar)$ and said to be overwhelming if $1-f$ is negligible.
+We denote by $\poly$ an unspecified polynomial and by $\negl$ an unspecified negligible function.
+We say that a classical (resp. quantum) algorithm is efficient if it runs in probabilistic polynomial-time (resp. quantum polynominal time).
+For a quantum or randomized algorithm $\A$, $y\sample \A(x)$ means that $\A$ is run on input $x$ and outputs $y$ and $y \defeq \A(x;r)$  means that $\A$ is run on input $x$ and randomness $r$ and outputs $y$. 
+For an interactive protocol between a ``prover" $P$ and ``verifier" $V$, $y\sample \langle P(x_P),V(x_V)) \rangle(x_P)$ means an interaction between them with prover's private input $x_P$ verifier's private input $x_V$, and common input $x$ outputs $y$.
+For a quantum state $\ket{\psi}$, $M_{\regX}\circ \ket{\psi}$ means a measurement in the computational basis on the register $\regX$ of $\ket{\psi}$.
+We denote by $\QTIME(T)$ a class of languages decided by a quantum algorithm whose running time is at most $T$.
+We use $\secpar$ to denote the security parameter throughout the paper.
+
+\subsection{Learning with Error Problem}
+Roughly speaking, the learning with error (LWE) is a problem to solve system of noisy linear equations.
+Regev \cite{JACM:Regev09} proved that the hardness of LWE can be reduced to hardness of certain worst-case lattice problems via quantum reductions.
+We do not give a definition of LWE in this paper since we use the hardness of LWE only for ensuring the soundness of the Mahadev's protocol (Lemma~\ref{lem:Mah_soundness}), which is used as a black-box manner in the rest of the paper.
+Therefore, we use exactly the same assumption as that used in \cite{FOCS:Mahadev18a}, to which we refer for detailed definitions and parameter settings for LWE.
+
+\subsection{Quantum Random Oracle Model}
+The quantum random oracle model (QROM) \cite{AC:BDFLSZ11} is an idealized model where a real-world hash function is modeled as a quantum oracle that computes a random function.
+More precisely, in the QROM, a random function $H:\calX \ra \cal Y$ of a certain domain $\calX$ and range $\calY$ is uniformly chosen from $\func(\calX,\calY)$ at the beginning, and every party (including an adversary) can access to a quantum oracle $O_H$ that maps $\ket{x}\ket{y}$ to $\ket{x}\ket{y\oplus H(x)}$.
+We often abuse notation to denote $\A^{H}$ to mean a quantum algorithm $\A$ is given oracle $O_H$.  
+
+\subsection{Cryptographic Primitives}
+Here, we give definitions of cryptographic primitives that are used in this paper.
+We note that they are only used in Sec~\ref{sec:efficient} where we construct an efficient verifier variant.
+
+\subsubsection{Pseudorandom Generator}
+A post-quantum pseudorandom generator (PRG) is an efficient deterministic classical algorithm $\PRG:\bit^{\ell} \ra \bit^{m}$ such that for any efficient quantum algorithm $\A$, we have
+\begin{align*}
+    \left|\Pr_{s\sample \bit^{\ell}}[\A(\PRG(s))]-\Pr_{y\sample \bit^{m}}[\A(y)]\right|\leq \negl(\secpar).
+\end{align*}
+
+It is known that there exists a post-quantum PRG for any $\ell=\Omega(\secpar)$ and $m=\poly(\secpar)$ assuming post-quantum one-way function \cite{SIAM:HILL99,FOCS:Zhandry12}.
+Especially, a post-quantum PRG exists assuming the quantum hardness of LWE.
+
+%\subsubsection{Collision Resistant Hash}
+%A family $\famCRH$ of post-quantum collision resistant hash functions (CRH) is a set of functions $\CRH:\bit^{*}\ra \bit^{m}$ such that for any efficient quantum algorithm $\A$, we have 
+%\begin{align*}
+%    \Pr_{\CRH\sample \famCRH}[\CRH(x)=\CRH(x')\land x\neq x'): (x,x')\sample \A(\CRH)]\leq \negl(\secpar).
+%\end{align*}
+
+%It is known that a post-quantum CRH for any $m=\Omega(\secpar)$ assuming quantum hardness of LWE \cite{STOC:Ajtai96}.\footnote{In fact, a weaker assumption which is quantum hardness of the short integer solution (SIS) problem suffices.}
+
+\subsubsection{Fully Homomorphic Encryption}
+A post-quantum fully homomorphic encryption consists of four efficient classical algorithm $\Pi_\FHE=\allowbreak (\fhekeygen,\fheenc,\fheeval,\fhedec)$.
+\begin{description}
+\item[$\fhekeygen(1^\secpar)$:] The key generation algorithm takes the security parameter $1^\secpar$ as input and outputs a public key $\pk$ and a secret key $\sk$.
+\item[$\fheenc(\pk,m)$:] The encryption algorithm takes a public key $\pk$ and a message $m$ as input, and outputs a ciphertext $\ct$.
+\item[$\fheeval(\pk,C,\ct)$:] The evaluation algorithm takes a public key $\pk$, a classical circuit $C$, and a ciphertext $\ct$, and outputs a evaluated ciphertext $\ct'$.
+\item[$\fhedec(\sk,\ct)$:] The decryption algorithm takes secret key $\sk$ and a ciphertext $\ct$ as input and outputs a message $m$ or $\bot$. 
+\end{description}
+\paragraph{Correctness.}
+For all $\secpar\in \mathbb{N}$, $(\pk,\sk)\sample \fhekeygen(1^\secpar)$, $m$ and $C$, we have
+\begin{align*}
+    \Pr[\fhedec(\sk,\fheenc(\pk,m))=m]=1
+\end{align*}
+and
+\begin{align*}
+    \Pr[\fhedec(\sk,\fheeval(\pk,C,\fheenc(\pk,m)))=C(m)]=1.
+\end{align*}
+\paragraph{Post-Quantum CPA-Security.}
+For any efficient quantum adversary $\A=(\A_1,\A_2)$, we have  
+\begin{align*}
+    &|\Pr[1\sample  \A_2(\ket{\st_{\A}},\ct):(\pk,\sk)\sample \fhekeygen(1^\secpar),(m_0,m_1,\ket{\st_{\A}})\sample \A_1(\pk), \ct\sample \fheenc(\pk,m_0)]\\
+    &-\Pr[1\sample  \A_2(\ket{\st_{\A}},\ct):(\pk,\sk)\sample \fhekeygen(1^\secpar),(m_0,m_1,\ket{\st_{\A}})\sample \A_1(\pk), \ct\sample \fheenc(\pk,m_1)]|\\
+&\leq \negl(\secpar).
+\end{align*}
+
+FHE is usually constructed by first constructing \textit{leveled} FHE, where we have to upper bound the depth of a circuit to evaluate at the setup, and then converting it to FHE by the technique called bootstrapping~\cite{STOC:Gentry09}. 
+There have been many constructions of leveled FHE whose (post-quantum) security can be reduced to the (quantum) hardness of LWE \cite{FOCS:BraVai11,ITCS:BraGenVai12,C:Brakerski12,C:GenSahWat13}.
+FHE can be obtained assuming that any of these schemes is \textit{circular secure} \cite{EC:CamLys01} so that it can be upgraded into FHE via bootstrapping.
+%which requires that the scheme remains secure even if an adversary sees an encryption of the secret key.
+We note that Canetti et al. \cite{TCC:CLTV15} gave an alternative transformation from leveled FHE to FHE based on subexponentially secure iO.
+
+
+
+
+\subsubsection{Strong Output-Compressing Randomized Encoding}
+A strong output-compressing randomized encoding \cite{AC:BFKSW19} consists of three efficient classical  algorithms $(\rsetup,\renc,\rdec)$.
+\begin{description}
+\item[$\rsetup(1^\secpar,1^\ell,\crs)$]: It takes the security parameter $1^\secpar$, output-bound $\ell$, and a common reference string $\crs\in\bit^{\ell}$ and outputs a encoding key $\ek$. 
+\item[$\renc(\ek,M,\inp,T)$:] It takes an encoding key $\ek$, Turing machine $M$, an input $\inp\in \bit^*$, and a time-bound $T\leq 2^{\secpar}$ (in binary) as input and outputs an encoding $\Menc$.
+\item[$\rdec(\crs,\Menc)$:] It takes a common reference string $\crs$ and an encoding $\Menc$ as input and outputs $\out \in \bit^* \cup \{\bot\}$.
+\end{description}
+
+\paragraph{Correctness.}
+For any $\secpar\in\mathbb{N}$, $\ell,T\in \mathbb{N}$, $\crs\in \bit^{\ell}$, Turing machine $M$ and input $\inp\in \bit^*$ such that $M(\inp)$ halts in at most $T$ steps and returns a string whose length is at most $\ell$, we have 
+\begin{align*}
+    \Pr\left[\rdec(\Menc,\crs)=M(\inp): \ek\sample\rsetup(1^\secpar,1^\ell,\crs), \Menc\sample\renc(\ek,M,\inp,T)\right]=1.
+\end{align*}
+
+\paragraph{Efficiency.}
+There exists polynomials $p_1,p_2,p_3$ such that for all $\secpar\in \mathbb{N}$, $\ell\in \mathbb{N}$, $\crs\sample \bit^{\ell}$:
+\begin{itemize}
+    \item If $\ek\sample \rsetup(1^\secpar,1^\ell,\crs)$, $|\ek|\leq p_1(\secpar, \log \ell)$.
+    \item For every Turing machine $M$, time bound $T$, input $\inp\in \bit^{*}$, if  $\Menc\sample\renc(\ek,M,\inp,T)$, then $|\Menc|\leq p_2(|M|,|\inp|,\log T, \log \ell, \secpar)$,
+    \item The running time of $\rdec(\crs,\Menc)$ is at most $\min(T,\Time(M,x))\cdot p_3(\secpar,\log T)$
+\end{itemize}
+
+\paragraph{Post-Quantum Security.}
+%For any efficient classical adversary $\A=(\A_1,\A_2)$, there exists a simulator $\calS$ such that for all efficient quantum distinguisher $\calD$ such that... 
+
+There exists a simulator $\calS$ such that for any $M$ and $\inp$ such that $M(\inp)$ halts in $T^*\leq T$ steps and $|M(\inp)|\leq \ell$ and efficient quantum adversary $\A$,
+\begin{align*}
+    &|\Pr[1 \sample \A(\crs,\ek,\Menc):\crs\sample \bit^{\ell},\ek\sample\rsetup(1^\secpar,1^\ell,\crs),\Menc\sample\renc(\ek,M,\inp,T)]\\
+    &-\Pr[1 \sample \A(\crs,\ek,\Menc):(\crs,\Menc)\sample \calS(1^{\secpar},1^{|M|},1^{|\inp|},M(\inp),T^*),\ek\sample\rsetup(1^\secpar,1^\ell,\crs)]|\leq \negl(\secpar).
+\end{align*}
+
+Badrinarayanan et al.~\cite{AC:BFKSW19} gave a construction of strong output-compressing randomized encoding based on iO and the LWE assumption. 
+
+\subsubsection{SNARK in the QROM}
+Let $H:\bit^{2\secpar}\ra \bit^{\secpar}$ be a quantum random oracle.
+A SNARK for an $\NP$ language $\lang$ associated with a relation $\rela$ in the QROM consists of two efficient oracle-aided classical algorithms $\pro_\snark^H$ and $\ver_\snark^H$.
+\begin{description}
+\item[$\pro_\snark^H$:] It is an instance $x$ and a witness $w$ as input and outputs a proof $\pi$.
+\item[$\ver_\snark^H$:] It is an instance $x$ and a proof $\pi$ as input and outputs $\top$ indicating acceptance or $\bot$ indicating rejection.
+\end{description}
+We require SNARK to satisfy the following properties:
+
+\noindent\textbf{Completeness.}
+For any $(x,w)\in\rela$, we have 
+\begin{align*}
+    \Pr_{H}[\ver_\snark^H(x,\pi)=\top:\pi\sample \pro_\snark^H(x,w)]=1.
+\end{align*}
+
+\noindent\textbf{Extractability.}
+There exists an efficient quantum extractor $\ext$ such that
+for any $x$ and a malicious quantum prover $\tilde{\pro}_\snark^{H}$ making at most $q=\poly(\secpar)$ queries, if 
+\begin{align*}
+    \Pr_H[\ver_\snark^H(x,\pi):\pi \sample \tilde{\pro}_\snark^H(x)]
+\end{align*}
+is non-negligible in $\secpar$, then 
+\begin{align*}
+    \Pr_H[(x,w)\in \rela: w\sample \ext^{\tilde{\pro}_\snark}(x,1^q,1^\secpar)]
+\end{align*}
+is non-negligible in $\secpar$.\\
+
+\noindent\textbf{Efficient Verification.}
+If we can verify that $(x,w)\in \rela$ in classical time $T$, then for any $\pi \sample \tilde{\pro}_\snark^H(x)$, $\ver_\snark^H(x,\pi)$ runs in classical time $\poly(\secpar,|x|,\log T)$.
+
+Chiesa et al.~\cite{TCC:ChiManSpo19} showed that there exists SNARK in the QROM that satisfies the above properties.
