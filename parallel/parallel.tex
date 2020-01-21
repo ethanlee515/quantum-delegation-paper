@@ -1,0 +1,565 @@
+\section{Parallel Repetition of Mahadev's Protocol}
+
+\subsection{Overview of Mahadev's Protocol}
+Here, we recall the Mahadev's protocol \cite{FOCS:Mahadev18a}. We only give a high-level description of the protocol and properties of it and omit the details since they are not needed to show our result. 
+
+The protocol is run between a quantum prover $\pro$ and a classical verifier $\ver$ on a common input $x$. The aim of the protocol is to enable a verifier to classically verify $x\in \lang$ for a BQP language $\lang$ with the help of interactions with a quantum prover.
+The protocol is a 4-round protocol where the first message is sent from $\ver$ to $\pro$. 
+We denote the $i$-th message generation algorithm by $\ver_i$ for $i\in\{1,3\}$ or $\pro_i$ for $i\in \{2,4\}$ and denote the verifier's final decision algorithm by $\ver_\out$.
+Then a high-level description of the protocol is given below.
+\begin{description}
+\item[$\ver_1$:] On input the security parameter $1^\secpar$ and $x$, it generates a pair $(\key,\td)$ of a``key" and ``trapdoor", sends $\key$ to $\pro$, and keeps $\td$ as its internal state.
+\item[$\pro_2$:] On input $x$ and $\key$, it generates a classical ``commitment" $\comy$ along with a quantum state $\ket{\st_\pro}$, sends $\comy$ to $\pro$, and keeps $\ket{\st_\pro}$ as its internal state.
+\item[$\ver_3$:] It randomly picks $c\sample \bit$ and sends $c$ to $\pro$.\footnote{The third message is just a public-coin, and does not depend on the transcript so far or $x$.}
+For a knowledgeable reader, the case of $c=0$ corresponds to the ``test round" and the case of $c=1$ corresponds to the ``Hadamard round" in the terminology in \cite{FOCS:Mahadev18a}.
+\item[$\pro_4$:] On input $\ket{\st_\pro}$ and $c$, it generates a classical string $\ans$ and sends $\ans$ to $\pro$.
+\item[$\ver_\out$:] On input $\key$, $\td$, $y$, $c$, and $\ans$, it returns $\top$ indicating acceptance or $\bot$ indicating rejection.
+In case $c=0$, the verification can be done publicly, that is, $\ver_\out$ need not take $\td$ as input.
+\end{description}
+
+For the protocol, we have the following properties:\\
+\noindent\textbf{Completeness:}
+For all $x\in \lang$, we have $\Pr[\langle \pro,\ver \rangle(x)]=\bot]= \negl(\secpar)$.\\
+\noindent\textbf{Soundness:}
+If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$, we have  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot]\leq 3/4$.
+
+We need a slightly different form of soundness implicitly shown in \cite{FOCS:Mahadev18a}, which roughly says that if a cheating prover can pass the ``test round" (i.e., the case of $c=0$) with overwhelming probability, then it can pass the ``Hadamard round" (i.e., the case of $c=1$) only with a negligible probability. 
+\begin{lemma}[implicit in \cite{FOCS:Mahadev18a}]\label{lem:Mah_soundness}
+If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$ such that  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot\mid c=0]=\negl(\secpar)$, we have $\Pr[\langle \pro^*,\ver \rangle(x)]=\top\mid c=1]=\negl(\secpar)$.
+\end{lemma}
+
+\subsection{Parallel Repetition}
+Here, we prove that the parallel repetition of the Mahadev's protocol decrease the soundness bound to be negligible.
+Let $\pro^m$ and $\ver^m$ be $m$-parallel repetitions of the honest prover $\pro$ and verifier $\ver$ in the Mahadev's protocol. Then we have the following:
+\begin{theorem}[Completeness]\label{thm:rep_completeness}
+For all $x\in \lang$ and $m= \poly(\secpar)$, we have $\Pr[\langle \pro^m,\ver^m \rangle(x)]=\bot]= \negl(\secpar)$.\\
+\end{theorem}
+\begin{theorem}[Soundness]\label{thm:rep_soundness}
+If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$, we have  $\Pr[\langle \pro^*,\ver^m \rangle(x)]=\top]\leq \negl(\secpar)$ for $m=\poly(\secpar)$.
+\end{theorem}
+
+The completeness (Theorem~\ref{thm:rep_completeness}) easily follows from the completeness of the Mahadev's protocol.
+In the next subsection, we prove the soundness (Theorem~\ref{thm:rep_soundness}).
+
+\subsection{Proof of Soundness}
+\noindent\textbf{Characterization of cheating prover.}
+Any cheating prover can be characterized by a tuple $(U_0,\{U_c\}_{c\in \bit^n})$ of unitaries over Hilbert space $\hil_{\regX}\otimes \hil_{\regZ} \otimes \hil_{\regY}  \otimes \hil_{\regK} $. 
+A prover characterized by $(U_0,\{U_{\bfc}\}_{\bfc\in \bit^n})$ works as follows.\footnote{Here, we hardwire into the cheating prover the instance $x\notin \lang$ on which it will cheat instead of giving it as an input.}
+\begin{description}
+\item[Second Message:] Upon receiving $k=(\key_1,...,\key_m)$, it applies $U_0$ to the state $\ket{0}\otimes\ket{0}\otimes\ket{0}\otimes  \ket{k}$, and then measures the $Y$ register to obtain $y=(\comy_1,...,\comy_m)$. Then it sends $\bfy$ to $\ver$ and keeps the resulting state $\ket{\psi_{k,y}}$ over  $\hil_{\regX,\regZ}$.
+\item [Forth Message:] Upon receiving $c\in \bit^{m}$, it applies $U_c$ to $\ket{\psi}_{\pro^*}$ and then measures the $\regX$ register in computational basis to obtain $a=(a_1,...,a_m)$. We denote the designated register for $a_i$ by $\regX_i$ 
+\end{description}
+
+%Let $\ket{\psi_{k,y}}$ be the prover's state over $\hil_{\regX,\regZ}$ after sending $y=(y_1,...,y_m)$ conditioned on a fixed value of $k$ and $y$.
+For $i\in[m]$ and $c_i\in \bit$, let $\Pi_{i,c_i}^{out}$ be the projection to the space spanned by states that 
+contains a accepting message in $\regX_i$ w.r.t. the challenge $c_i$.
+Then we have
+\begin{align*}
+\Pr[\langle P^*,V \rangle=accept]=\mathbb{E}_{k,y,c}[\|\Pi_{m,c_m}^{out}...\Pi_{1,c_1}^{out}U_{c}\ket{\psi_{k,y}}\|^{2}]
+\end{align*}
+We prove this is negligible in the following.
+
+First, we observe that it suffices to show that for any polynomial $p$, there exists $m=O(\log(\secpar))$ such that we have 
+\begin{align*}
+\mathbb{E}_{k,y,c}[\|\Pi_{m,c_m}^{out}...\Pi_{1,c_1}^{out}U_{c}\ket{\psi_{k,y}}\|^{2}]\leq 1/p(\secpar).
+\end{align*}
+This is because if we set $m=O(\secpar)$, then we can consider the first $m'=O(\log \secpar)$ coordinates and do the same analysis ignoring the rest of coordinates.
+\takashi{Is this correct?}
+
+In the following, we fix a polynomial $p$, and set $m$ and $\epsilon$ so that 
+$\epsilon=1/\poly(\secpar)$ and  $(m+1)m2^{m-1}2\epsilon+2^{-m}\leq 1/2p(\secpar)$.
+
+
+
+%\begin{lemma}
+%Let $U$ be an efficient unitary acting on registers $\regX$, $\regY$, and $\regZ$.
+%Let $f:\calX \ra \bit$ be an efficiently computable function and $\Pi_f$ be a projector that projects $\regZ$ register onto the space spanned by $\{\ket{x}\}_{X\in S_f}$
+%where $S_f\defeq {x\in \calX \text{~s.t.~}f(x)=1}$ (i.e., we let $\Pi\defeq \sum_{x\in S_f}I\ot I\ot\ket{x}\bra{x})$.
+%Then for any $\epsilon=1/\poly(\secpar)$, there exists a decomposition of $\hil_\regX$ into two subspaces $\Sgood$ and $\Sbad$ and an efficient quantum algorithm $\ext$ such that the following is satisfied:
+%\begin{enumerate}
+%    \item $\ext$ outputs $x\in S_f$ with probability $1$ on any input $\ket{\psigood}\in \Sgood$.    
+%    \item For any $\ket{\psibad}\in \Sbad$, we have $\|\Pi_f U\ket{\psibad}\ket{0}\ket{0}\|^2\leq \epsilon$
+    %\item If there is an efficient quantum algorithm with input $z$ to generate $\ket{\psi}$ such that $\|\Pi_{\Sgood}\ket{\psi}\|$ is non-negligible where $\Pi_{\Sgood}$ denotes the projection onto $\Sgood$, then there exists an efficient quantum algorithm with input $z$ to generate $\Pi_{\Sgood}\ket{\psi}$ with overwhelming probability. 
+%\end{enumerate}
+%\end{lemma}
+
+For proving the soundness, we prepare several lemmas.
+\begin{lemma}\label{lem:decomp}
+Let $\A_i$ be a quantum algorithm that takes a quantum state $\ket{\psi}\in \hil$, picks random $c\sample \bit^m$ such that $c_i=0$, applies a unitary $U_c$ to $\ket{\psi}$ and finally measures $\regX$ to output a classical string $a_i\in \calX$.
+%Let $f_i:\calX \ra \bit$ be a function such that $f(x_i)=1$ if and only if $\ver_\out(k_i,y_i,0,x_i)=\top$. 
+%Then for any $\epsilon=1/\poly(\secpar)$, 
+Then there exist a decomposition of $\hil_{\regX,\regZ}$ into two subspaces $T_{i,0}$ and $T_{i,1}$ and an efficient quantum algorithm $\ext_i$ such that for any fixed $k,y$ and any state $\ket{\psi}$ the followings are satisfied: Let $\Pi_{i,b}^{in}$ be the projection to $T_{i,b}$.
+\begin{enumerate}
+    \item
+    We have $\Pr[\ver_\out(k_i,y_i,0,a_i)=\top: a_i\sample \ext_i(\Pi_{i,0}^{in}\ket{\psi})]=1-\negl(\secpar)$.
+    \item We have $\Pr[\ver_\out(k_i,y_i,0,a_i)=\top:a_i\sample \A_i(\Pi_{i,1}^{in}\ket{\psi})]\leq \epsilon$.
+    \item Measurement w.r.t. $\{\Pi_{i,0}^{in}, \Pi_{i,1}^{in}\}$ can be done efficiently.
+    \takashi{approximately?}
+\end{enumerate}
+\end{lemma}
+
+
+\begin{lemma}\label{lem:decomp2}
+%For any adversary's second stage strategy $\{U_c\}_{v\in\bit^{m}}$,
+%we can define partition $\hil_{\regX,\regZ}$ into $T_{i,0}$ and $T_{i,1}$ for each $i\in[m]$, such that the following properties are satisfied.
+For the partitions $(T_{i,0},T_{i,1})_{i\in[m]}$ as defined in Lemma~\ref{lem:decomp}, the following is satisfied:
+Assuming LWE, for all $i\in[m]$ and $c\in \bit^{m}$, we have 
+    \begin{align*}
+     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,c_i}^{out}U_c\Pi_{i,1-c_i}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]\leq  2^{m-1}\epsilon +\negl(\secpar).
+    \end{align*}
+%  \item We have 
+%    \begin{align*}
+%     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}^{out}U_c\Pi_{i,1}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|\right]\leq  (2^m\epsilon)^{1/2}
+%    \end{align*}
+    
+%  \item Assuming LWE, we have 
+%    \begin{align*}
+%     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|\right]\leq  \negl(\secpar)
+%    \end{align*}
+\end{lemma}
+
+\begin{proof}
+%For each $i\in [m]$, we apply Lemma~\ref{lem:decomp} w.r.t $\A_i$ 
+%that applies the second stage $\A$ with a random $c$ such that $c_i=0$ and then measures $\regX_i$ and $f$ that performs the verification on the $i$-th coordinate in the test round. 
+%More precisely, given an input $\ket{\psi}$, it picks random $c_{-i}$, set $c_i\defeq 0$ to define $c$, applies $U_c$ to $\ket{\psi}$, measures $\regX_i$, and outputs the measurement outcome. 
+%We define $f(x)=1$ if and only if $\ver_{\out}(k,y,0,x)=accept$.
+%By Lemma~\ref{lem:decomp}, there exist a partition ($T_{i,0},T_{i,1}$) of $\hil_{\regX,\regZ}$ and an efficient quantum algorithm $\ext_i$ such that for any state $\ket{\psi}$, 
+%\begin{itemize} 
+%  \item
+%    We have $\Pr[f(x)=1: x\sample \ext_i(\Pi_{i,0}^{in}\ket{\psi})]=1-\negl(\secpar)$.
+%    \item We have $\Pr[f(x)=1:x\sample \A_i(\Pi_{i,1}^{in}\ket{\psi})]\leq \epsilon$.
+%    \item Measurement w.r.t. $\{\Pi_{i,0}^{in}, \Pi_{i,1}^{in}\}$ can be done efficiently.
+%\end{itemize}
+First, we show the inequality for the case of $c_i=0$.
+For any fixed $k$, $y$, the second claim of Lemma~\ref{lem:decomp} implies 
+\begin{align*}
+    &~~~\mathbb{E}_{c_{-i}}\left[\left\|\Pi_{i,0}^{out}U_c\Pi_{i,1}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right] \leq \epsilon,
+\end{align*}
+which implies 
+\begin{align*}
+    \left\|\Pi_{i,0}^{out}U_c\Pi_{i,1}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\leq 2^{m-1}\epsilon
+\end{align*}
+for all $c_{-i}\in \bit^{m-1}$.
+Averaging over all $(k,y)$, we obtain the inequality with the case $c_i=0$.
+
+We move on to the proof of the case of $c_i=1$.
+To prove this, we assume that 
+\begin{align*}
+     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]\geq 1/\poly(\secpar). 
+\end{align*}
+for some polynomial $\poly$, and construct an adversary $\B$ that breaks Lemma~\ref{lem:Mah_soundness}.
+
+$\B$ is given $k_i$ as the first round message, and repeats the following procedure $\Theta(\poly(\secpar))$ times:
+\begin{enumerate}
+\item Pick $k_{-i}$ according to the protocol to complete $k=(k_1,...,k_m)$
+\item Pick $c\sample \bit^{m}$ such that $c_i=1$.
+\item Run the first stage of $\A$ to obtain $y$ along with its internal state $\ket{\psi_{k,y}}$.
+\item Apply a projector $\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}$ to $\ket{\psi_{k,y}}$ by applying iterative projective measurements and unitary $U_c$. We note that these projective measurements can be implemented efficiently by the third claim of  Lemma~\ref{lem:decomp}. 
+\takashi{Here, we assume perfect projection. In the actual proof, we have to think about the approximate version.}
+If it fails in any of the projection, then it immediately aborts this trial and goes back to the 1st step of the loop.
+Otherwise, it goes out the loop to continue the attack.
+\end{enumerate}
+Since we assume \begin{align*}
+    \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]\geq 1/\poly(\secpar),
+\end{align*}
+we especially have  
+\begin{align*}
+\mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]\geq 1/\poly(\secpar).
+\end{align*}
+Therefore, in each trial in the loop, the probability that $\B$ does not abort is at least $1/\poly(\secpar)$. 
+Thus, $\B$ goes out the loop within $\Theta(\poly(\secpar))$ times repetitions with overwhelming probability.
+Assuming this happens, $\B$ now has $k,y$ along with the state $\ket{\psi_{\B}}\defeq\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}/\left\|\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|$.
+Then it sends $y_i$ to the verifier.
+Then verifier returns $c'_i$.
+\begin{itemize}
+\item If $c'_i=0$, $\B$ runs $\ext_i(\ket{\psi_{\B}})$ to obtain $a_i$. This is an accepting answer with probability $1-\negl(\secpar)$ by the first claim of  Lemma~\ref{lem:decomp}.
+\item If $c'_i=1$, $\B$ applies $U_c$ to $\ket{\psi_{\B}}$ and then measures $\regX_i$ to obtain $a_i$. 
+Let $\fail$ be the event that $\B$ fails to generate $\ket{\psi_{\B}}$ within $\Theta(\poly(\secpar))$ times of trials.
+Then we have 
+%The probability that $\B$ fails to generate $\ket{\psi_{\B}}$ within $\Theta(\poly(\secpar))$ times of trials and $a_i$ is accepted is 
+\begin{align*}
+% &~~~\mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\left(\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}/\left\|\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|\right)\right\|^2\right]\\
+%&\leq 
+ &~~~\Pr\left[\ver_{\out}(k_i,\td,y_i,1,a_i) \mid \overline{\fail}\right]\\
+ &\leq \Pr\left[\ver_{\out}(k_i,\td,y_i,1,a_i) \wedge \overline{\fail}\right]-\Pr[\fail]\\
+ &\leq \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]-\negl(\secpar)\\
+ &\geq 1/\poly(\secpar)-\negl(\secpar).
+\end{align*}
+\end{itemize}
+\takashi{More careful analysis needed.}
+
+Overall, $\B$ succeeds in answering a correct answer with overwhelming probability for the case of $c_i=0$ and with non-negligible probability for the case of $c_i=1$, which contradicts Lemma~\ref{lem:Mah_soundness}.
+Therefore, under the LWE assumption, we have
+\begin{align*}
+   \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}^{out}U_c\Pi_{i,0}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi_{k,y}}\right\|^2\right]=\negl(\secpar), 
+\end{align*}
+which concludes the proof of the proof of Lemma~\ref{lem:decomp2}.
+\end{proof}
+
+\begin{lemma}\label{lem:decomp3}
+For any $\ket{\psi}\in \hil_{\regX,\regZ}$ %and decompositions of $\hil_{\regX,\regZ}$ into $T_{i,0}$ and $T_{i,1}$ for $i\in[m]$ 
+and $c\in[m]$, we define
+\begin{align*}
+ \ket{\psi_i^{c}}\defeq \Pi_{i,1-c_i}^{in}\Pi_{i-1,c_{i-1}}^{in}...\Pi_{1,c_1}^{in}\ket{\psi} 
+\end{align*}
+and 
+\begin{align*}
+ \ket{\psi_{m+1}^{c}}\defeq \ket{\psi}-\sum_{i=1}^{m}\ket{\psi_{i}^{c}}.
+\end{align*}
+Then we have
+\begin{align*}
+ \mathbb{E}_{c}\left[\left\|\ket{\psi_{m+1}^{c}}\right\|^{2}\right]=2^{-m}.
+\end{align*}
+\end{lemma}
+\begin{proof}
+\takashi{easy induction?}
+\end{proof}
+
+\begin{lemma}\label{lem:parallel_soundness}
+\begin{align*}
+\mathbb{E}_{k,y,c}\left[\left\|\Pi_{m,c_m}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\right\|^{2}\right]\leq 2^{-m} + (m+1)m 2^{m-1}\epsilon +\negl(\secpar).
+\end{align*}
+\end{lemma}
+\begin{proof}
+Fix $c$.
+We decompose $\ket{\psi_{k,y}}$ as in Lemma~\ref{lem:decomp3} to write 
+\begin{align*}
+\ket{\psi_{k,y}}=\sum_{i=1}^{m+1}\ket{\psi_{k,y,i}^{c}}.
+\end{align*}
+Then we have 
+\begin{align*}
+&~~~\mathbb{E}_{k,y}\left[\left\|\Pi_{m,c_m}^{out}...\Pi_{1,c_1}^{out}U_{c}\ket{\psi_{k,y}}\right\|^2\right]\\
+&\leq \mathbb{E}_{k,y}\left[\left(\sum_{i=1}^{m+1}\left\|\Pi_{m,c_m}^{out}...\Pi_{1,c_1}^{out}U_{c}\ket{\psi_{k,y,i}}\right\|\right)^2\right]\\
+&\leq \mathbb{E}_{k,y}\left[(m+1)\sum_{i=1}^{m+1}\left\|\Pi_{m,c_m}^{out}...\Pi_{1,c_1}^{out}U_{c}\ket{\psi_{k,y,i}}\right\|^2\right]\\
+&\leq (m+1)\left(\sum_{i=1}^{m}\mathbb{E}_{k,y}\left[\left\|\Pi_{i,c_i}^{out}U_{c}\ket{\psi_{k,y,i}}\right\|^2\right]+\mathbb{E}_{k,y}\left[\left\|\ket{\psi_{m+1}^{c}}\right\|^2\right]\right)\\
+&\leq (m+1)m 2^{m-1}\epsilon+\negl(\secpar)+ \mathbb{E}_{k,y}\left[\left\|\ket{\psi_{m+1}^{c}}\right\|^2\right]
+\end{align*}
+by Lemma~\ref{lem:decomp2}.
+By taking average over all $c$, we have 
+\begin{align*}
+&~~~\mathbb{E}_{k,y,c}\left[\left\|\Pi_{m,c_m}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\right\|^2\right]\\
+&\leq (m+1)m 2^{m-1}\epsilon+\negl(\secpar) +\mathbb{E}_{k,y,c}\left[\left\|\ket{\psi_{m+1}^{c}}\right\|^2\right]\\
+&\leq (m+1)m 2^{m-1}\epsilon+\negl(\secpar) +2^{-m}
+\end{align*}
+by Lemma~\ref{lem:decomp3}.
+\end{proof}
+
+By Lemma~\ref{lem:parallel_soundness} and $(m+1)m2^{m-1}2\epsilon+2^{-m}\leq 1/2p(\secpar)$, we have 
+\begin{align*}
+    \mathbb{E}_{k,y,c}\left[\left\|\Pi_{m,c_m}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\right\|^{2}\right]\leq 1/p(\secpar).
+\end{align*}
+As discussed in the beginning of this subsection, this suffices to show the soundness of the parallel repetition of the Mahadev's protocol (Theorem~\ref{thm:rep_soundness}).
+
+\subsection{Jordan's Lemma and the Subspace Supporting Test Round}
+
+
+%In this section, for each trial $i\in [m]$, we will use Jordan's lemma to partition the the Prover's space $\hil$ into $T_i$ and $T^{\bot}_i$, which satisfies the following properties. 
+%\begin{itemize}
+%    \item $T^{\bot}_i$ is the orthogonal complement of $T_i$ in $\hil$.  
+%    \item For $\ket{s} \in T_i$, there exists an efficient quantum algorithm $U_T$, such that $U_T\ket{s}$ can pass the test round with probability $1-\frac{1}{\poly(n)}$; but there is no efficient quantum algorithm $U_H$, such that $U_H\ket{s}$ can pass the Hadamard round. 
+%\end{itemize}
+
+
+Let $m$ be the number of repetitions. We consider the prover's state after sending $y_1,\dots,y_m$. We let the prover's state space be $\hil_{\regX,\regZ}$, where $\regX$ is the register corresponding to the last message and $\regZ$ is the prover's working qubits. We can decompose $\regX$ into $\regX_1,\dots,\regX_m$ without loss of generality, where $\regX_i$ is corresponding to the output message of the $i$th trial.     
+
+
+\begin{lemma}\label{lem:test_subspace}
+For $i\in [m]$, we can partition $\hil_{\regX,\regZ}$ into $T_i$, $T^{\bot}_i$, and $T^{err}_i$, such that the following properties are satisfied. 
+\begin{itemize}
+    \item $T^{\bot}_i$ is the orthogonal complement of $T_i$ in $\hil_{\regX,\regZ}$.
+    \item For $\ket{\psi}\in T_i$, for any efficient quantum algorithm $A$ used in Hadamard round, 
+    \begin{align*}
+        &\Pr[V\left(A(\ket{\psi})\right)=accept]\leq \delta. 
+    \end{align*} 
+    \takashi{This holds only if $\ket{\psi}$ is generated efficiently.}
+    \item For $\ket{\psi^{\bot}}\in T^{\bot}_i$, 
+    \begin{align*}
+        &\Pr[f^{-1}(y_i)=M_{\regX_i}\circ\ket{\psi^{\bot}}]\leq \epsilon,  
+    \end{align*}
+    where $M_{\regX_i}$ is the standard-basis measurement in the register $\regX_i$, 
+\end{itemize}
+\end{lemma}
+\nai{Need to specify the relation between $\epsilon$ and $\delta$.}
+%\nai{I want to say that $T_i$ is the subspace where the prover can pass the text round but must fail in the Hadamard round. Needs to be more formal.}
+
+%\nai{For $T_i^{\bot}$, do we need to say it cannot pass the test round with high probability? Or, we only need to care $T_i$.}
+
+\begin{lemma}[Jordan's lemma]~\label{lemma:Jordan}
+Given any two projectors $\Pi_1$ and $\Pi_2$. There exists a decomposition of the Hilbert space into one-dimensional and two-dimensional subspaces, which satisfy the following properties: 
+\begin{itemize}
+    \item All subspaces are orthogonal to each other.
+    \item For any two-dimensional subspace $S$, for all $\ket{s}\in S$, $\Pi_1 \ket{s} \in S$ and $\Pi_2 \ket{s} \in S$.
+    \item For any two-dimensional subspace $S$, $\Pi_1$ and $\Pi_2$ are rank-one projectors, i.e., there exist two vectors $\ket{v_1}$ and $\ket{v_2}$ in $S$ such that for all $ \ket{s}\in S$,  $\Pi_1 \ket{s} = \ipro{v_1}{s}\ket{v_1}$ and $\Pi_2 |s\rangle =\ipro{v_2}{s}\ket{v_2}$. 
+\end{itemize}
+\end{lemma}
+\begin{proof}
+We defer the proof to the Appendix. 
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:test_subspace}]
+
+Let $\regC$ be the register for the messages $c_1,\dots,c_m$ from the verifier. We define two projectors
+\begin{align*}
+    &\Pi_{in} := \opro{0}{0}_{\regC}\otimes I_{\regX,\regZ}\quad and \\
+    &\Pi_{out} := H_{\regC_{-i}}U_T^{\dag}\left(I_{\regC}\otimes(\opro{f^{-1}(y_i)}{f^{-1}(y_i)})_{\regX_i}\otimes I_{\regX_{-i},\regZ}\right)U_T H_{\regC_{-i}}.  
+\end{align*}
+\nai{Need to clarify why we set $\regC_{-i}$ be uniform superposition.}
+
+By Jordan's lemma, we can decompose the space $\hil_{\regC,\regX,\regZ}$ into one-dimensional and two-dimensional subspaces. Let $S_1,\dots,S_{\ell}$ be the two-dimensional subspaces from decomposition. Then, $\Pi_{in}$ on $S_1,\dots,S_{\ell}$ can be represented as $\ket{v_1},\dots,\ket{v_{\ell}}$. We can represent $\ket{v_i}$ as $\ket{0}_{\regC}\ket{v'_j}_{\regX,\regZ}$ for all $j\in [\ell]$ since $\Pi_{in}$ has register $\regC$ be all-zero state. Similarly, we represent $\Pi_{out}$ on $S_1,\dots,S_{\ell}$ as $\ket{w}_1,\dots,\ket{w}_{\ell}$. 
+
+Now, we define a basis 
+\begin{align*}
+    B_i := \{\ket{v'_j}_{\regX,\regZ}:\; |\ipro{v_j}{w_j}|^2\geq \epsilon\}. 
+\end{align*}
+We let $T_i := span(B_i)$ and $T_i^{\bot}$ be the orthogonal complement of $T_i$ in $\hil_{\regX,\regZ}$. It is obvious that $\ket{\psi^{\bot}}\in T_i^{\bot}$ accepted with probability at most $\epsilon$. 
+
+
+Finally, for $\ket{\psi}\in T_i$, we can use amplitude amplification to amplify the accepting probability in the test round to $1$. This implies that the prover only has negligible probability to be rejected in the test round, the probability the prover passes the test round is negligible according to Lemma~\ref{lem:Mah_soundness}. 
+\nai{Make it clear how to do amplitude amplification here. We need to ``call the verifier'' to implement the projector $\Pi_{out}$ or the rotation $I-2\Pi_{out}$ since only the verifier knows $f^{-1}(y_i)$.}
+\takashi{Lemma~\ref{lem:Mah_soundness} can be applied only if $\ket{\psi}$ is generated by an efficient algorithm. On the other hand, we cannot implement the projection onto $T_i$ efficiently. So here is somehow tricky to argue.}
+
+\end{proof}
+
+\subsection{Approximate and efficient subspace}
+
+For $i\in [k]$, we define $T_i$, $T_i^{err}$, and $T_i^{\bot}$ on space $\hil_{X,Z,C_{-i}}$. Here, $T_i$ is the subspace where  
+
+
+The following procedure define a projector $G_{i\gamma}$. Let $\epsilon = 1/poly$, $T = poly$, and $T << 1/\epsilon$. 
+\begin{itemize}
+    \item Let $U = V_i P H_{C_{-i}}$. 
+    \item $\Pi_{in} := \opro{0}{0}\otimes I_A$. 
+    \item $\Pi_{out}$, $R_1$, $R_2$. 
+    \item $Q = R_2R_1$. 
+    \item Do phase estimation $E$ with precision $\epsilon/2$. 
+    \item i.e. $Q\ket{u} = e^{i\hat{\theta}}\ket{u}$. 
+    \begin{align*}
+        E\ket{u}\ket{0} \rightarrow \sum_{\theta} \alpha_{\theta} \ket{u}\ket{\theta}. 
+    \end{align*}
+    such that 
+    \begin{align*}
+        \sum_{\theta\notin \hat{\theta}+\epsilon/2}|\alpha_{\theta}|^2\leq 2^{-n}. 
+    \end{align*}
+    \item Sample $\gamma$ from $j\epsilon$ for $j\in [T]$
+    \begin{align*}
+        \ket{u}\ket{\theta}\ket{0} \rightarrow \ket{u}\ket{\theta}\ket{b}
+    \end{align*}
+    $b=1$ iff $2\pi -(\gamma-\epsilon/2)>\theta>\gamma-\frac{\epsilon}{2}$. 
+    \item Uncompute $E$. 
+    \item Measure the last qubit (the index of the threshold). 
+\end{itemize}
+
+\begin{align*}
+    S_{in}:= \opro{0}{0}\otimes I_A \mbox{ wrt }Q_i
+\end{align*}
+decompose to $\{\ket{u_j}, \theta_j\}$. Here $u_j$ is given by Jordan's Lemma. 
+
+for $\ket{\psi}\in S_{in}$
+let 
+\begin{align*}
+    \ket{\psi} = \sum_{j} \alpha_j \ket{u_j}. 
+\end{align*}
+Fix $\gamma$ define 
+\begin{align*}
+    &\ket{\psi_0} = \sum_{j: \theta_j <\gamma-\epsilon} \alpha_j\ket{u_j} = \Pi_{\geq \gamma} \ket{\psi}\\
+    &\ket{\psi_1} = \sum_{j: \theta_j >\gamma }\alpha_j\ket{u_j} = \Pi_{\leq \gamma-\epsilon} \ket{\psi} \\
+    &\ket{\psi_{err}} = \sum_{j: others} \alpha_j\ket{u_j} 
+\end{align*}
+
+\begin{align*}
+    G_{i,\gamma} (\ket{\psi_0} + \ket{\psi_1}) 
+\end{align*}
+project to $\ket{\psi_0}$ or $\ket{\psi_1}$ with small error from phase estimation. 
+
+\begin{align*}
+    &G_{i,\gamma} \ket{\psi} \rightarrow \ket{\tilde{\psi}_0}\mbox{ or }\ket{\tilde{\psi}_1}.\\ 
+    &\ket{\tilde{\psi}_b} = \ket{\psi_b}+G_{i,\gamma}\ket{\psi_{err}}.
+\end{align*}
+
+Need to prove the following inequality. 
+\begin{align*}
+    \|\ket{\tilde{\psi}_b} - \ket{\psi_b}\|<\|\ket{\psi_{err}}\|.
+\end{align*}
+
+\begin{align*}
+    E[\|\ket{\psi_{err}}\|] \leq \sqrt{1/T} \mbox{ or } 1/T. 
+\end{align*}
+
+Note: 
+\begin{align*}
+    \ket{\tilde{\psi}_1}\mbox{ reject by Hadamard round w.h.p}. 
+\end{align*}
+It seems that we can just analyze $\ket{\tilde{\psi}_b}$ instead of $\ket{\psi_b}$. 
+
+
+
+\subsection{older proof}
+\begin{lemma}
+For $i\in [m]$, we can partition $\hil_{\regX,\regZ}$ into $T_{i}$ and $T_{i}^{\bot}$, such that the following properties are satisfied. 
+For all $i\in[m]$, $c_{<i}\in \bit^{i-1}$, and efficiently implementable unitary $U$,
+\begin{itemize}
+    \item $T_{i}^{\bot}$ is the orthogonal complement of $T_{i}$ in $\hil_{\regX,\regZ}$.
+
+    \item We have 
+    \begin{align*}
+     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^2\right]\leq   \mathbb{E}_{k,y}\left[\left\|\Pi_{T_{i}}U^{\dagger}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^{2}\right]+\left(2^{m+4}\epsilon\right)^{1/2}
+    \end{align*}
+    
+     \item Assuming LWE, we have 
+    \begin{align*}
+     \mathbb{E}_{k,y}\left[\left\|\Pi_{i,1}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^{2}\right]\leq   \mathbb{E}_{k,y}\left[\left\|\Pi_{T_{i}^{\bot}}U^{\dagger}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^{2}\right]+\negl(\secpar)
+    \end{align*}
+\end{itemize}
+\end{lemma}
+\begin{proof}
+In the following, we denote $\ket{\psi_{k,y,i}}\defeq U^{\dagger}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}$.
+For each $i\in [m]$, we apply Lemma~\ref{lem:decomp} w.r.t $\A_i$ 
+%that applies the second stage $\A$ with a random $c$ and then measures $\regX_i$. 
+%More precisely, 
+that, given an input $\ket{\psi}$, applies $U$ to $\ket{\psi}$, measures $\regX_i$, and outputs the measurement outcome. 
+By Lemma~\ref{lem:decomp}, there exist a partition ($T_i,T_i^{\bot}$) of $\hil_{\regX,\regZ}$ and an efficient quantum algorithm $\ext_i$ such that for any state $\ket{\psi}$, 
+\begin{itemize} 
+  \item
+    We have $\Pr[f(x)=1: x\sample \ext_i(\Pi_{T_i}\ket{\psi})]=1$.
+    \item We have $\Pr[f(x)=1:x\sample \A_i(\Pi_{T_i^{\bot}}\ket{\psi})]\leq \epsilon$.
+    \item Measurement w.r.t. $\{\Pi_{T_i}, \Pi_{T_i^{\bot}}\}$ can be done efficiently.
+\end{itemize}
+For any fixed $k$, $y$, and $c$, we have
+\begin{align*}
+    &~~~\left\|\Pi_{i,1}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|\\
+    &=\left\|\Pi_{i,1}U\ket{\psi_{k,y,i}}\right\|\\
+    &\leq \left\|\Pi_{i,1}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|+\left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|\\
+    &\leq  \left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|+\left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|.
+\end{align*}
+By squaring both sides of the inequality, we obtain
+\begin{align*}
+    &~~~\left\|\Pi_{i,1}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^2\\
+    &\leq  \left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|^2+\left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|^2+2\left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|.
+\end{align*}
+
+By the second property above, we have
+\begin{align*}
+    \mathbb{E}_{c}\left[\left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|^{2}\right]\leq \epsilon
+\end{align*}
+which implies 
+\begin{align*}
+    \left\|\Pi_{i,1}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|^{2}\leq 2^{m}\epsilon
+\end{align*}
+for all $c\in \bit^{m}$.
+In addition, it is trivial that we have
+\begin{align*}
+    \left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\leq 1.
+\end{align*}
+Then we obtain
+\begin{align*}
+    &~~~\left\|\Pi_{i,1}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^2\\
+    &\leq  \left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|^2+2^{m}\epsilon+2\left(2^{m}\epsilon\right)^{1/2}\\
+    &\leq \left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|^2+\left(2^{m+4}\epsilon\right)^{1/2}
+\end{align*}
+
+Summing up over all $(k,y)$, we obtain the first inequality.
+
+We move on to the proof of the second inequality.
+%First, if $\mathbb{E}_{k,y}[\|\ket{\psi_{k,y,i}}\|]=\negl(\secpar)$, then we have 
+%\begin{align*}
+%\mathbb{E}_{k,y}[\|\Pi_{i,1}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\|]\leq \mathbb{E}_{k,y}[\|\ket{\psi_{k,y,i}}\|]=\negl(\secpar)   
+%\end{align*}
+%and thus the inequality trivially holds.
+%In the following, we assume that $\mathbb{E}_{k,y}[\|\ket{\psi_{k,y,i}}\|]$ is non-negligible.
+Similarly to the above, we have 
+\begin{align*}
+    &~~~~\mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|\right]\\
+    &=\mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\ket{\psi_{k,y,i}}\right\|\right]\\
+    &\leq \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]+\mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|\right]\\
+    &\leq \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]+\mathbb{E}_{k,y}\left[\left\|\Pi_{T_i^\bot}\ket{\psi_{k,y,i}}\right\|\right]
+\end{align*}
+Thus it suffices to show 
+\begin{align*}
+   \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]=\negl(\secpar). 
+\end{align*}
+To prove this, we assume that 
+\begin{align*}
+   \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]\geq 1/\poly(\secpar). 
+\end{align*}
+for some polynomial $\poly$, and construct an adversary $\B$ that breaks Lemma~\ref{lem:Mah_soundness}.
+
+$\B$ is given $k_i$ as the first round message, and repeats the following procedure $\Theta(\poly(\secpar))$ times:
+\begin{enumerate}
+\item Pick $k_{-i}$ according to the protocol to complete $k=(k_1,...,k_m)$
+\item Pick $c_{<i}\sample \bit^{i-1}$.
+\item Run the first stage of $\A$ to obtain $y$ along with its internal state $\ket{\psi_{k,y}}$.
+\item Apply $U$ to $\ket{\psi_{k,y}}$ and measures $\regX_1,..,\regX_{i-1}$ to obtain $a_{1}$,...,$a_{i-1}$.
+\item If at least one of $a_1$,...,$a_{i-1}$ is not an accepting answer w.r.t. the transcript of the corresponding coordinate, then immediately abort this trial and go back to the 1st step of the loop. 
+\item Apply $U^{\dagger}$ to the post-measurement state to obtain $\ket{\psi_{k,y,i}}$.
+\item Apply a measurement $\{\Pi_{T_i},\Pi_{T_i^{\bot}}\}$ to $\ket{\psi_{k,y,i}}$. 
+If the measurement gives  $\Pi_{T_i^{\bot}}\ket{\psi_{k,y,i}}$, then it immediately aborts this trial and goes back to the 1st step of the loop. Otherwise, it goes out the loop to continue the attack.
+\end{enumerate}
+Since we assume \begin{align*}
+   \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]\geq 1/\poly(\secpar),
+\end{align*}
+we especially have 
+\begin{align*}
+   \mathbb{E}_{k,y}\left[\left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right]\geq 1/\poly(\secpar).    
+\end{align*}
+Therefore in each trial in the loop, the probability that $\B$ does not abort is at least $1/\poly(\secpar)$. 
+Thus, $\B$ goes out the loop within $\Theta(\poly(\secpar))$ times repetitions with overwhelming probability.
+Assuming this happens, $\B$ now has $k,y$ along with the corresponding state $\ket{\psi_{\B}}\defeq \Pi_{T_i}\ket{\psi_{k,y,i}}/\left\|\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|$.
+Then it sends $y_i$ to the verifier.
+Then verifier returns $c_i$.
+\begin{itemize}
+\item If $c_i=0$, $\B$ runs $\ext_i(\ket{\psi_{\B}})$ to obtain $a_i$. This is an accepting answer with probability 1 by the first property above.
+\item If $c_i=1$, $\B$ applies $U$ to  $\ket{\psi_{\B}}$ and then measures $\regX_i$ to obtain $a_i$. The probability that $a_i$ is accepted is 
+\begin{align*}
+   &~~~~\mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\left(\Pi_{T_i}\ket{\psi_{k,y,i}}/\|\Pi_{T_i}\ket{\psi_{k,y,i}}\|\right)\right\|\right]\\
+    &\leq \mathbb{E}_{k,y}\left[\left\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\right\|\right],
+\end{align*}
+which is assumed to be non-negligible.
+
+\takashi{More careful analysis may be needed here since non-aborting probability in the loop depends on $(k,y)$.}
+\end{itemize}
+
+Overall, $\B$ succeeds in answering a correct answer with overwhelming probability for the case of $c_i=0$ and with non-negligible probability for the case of $c_i=1$, which contradicts Lemma~\ref{lem:Mah_soundness}.
+Therefore, under the LWE assumption, we have
+\begin{align*}
+   \mathbb{E}_{k,y}[\|\Pi_{i,0}U\Pi_{T_i}\ket{\psi_{k,y,i}}\|]=\negl(\secpar), 
+\end{align*}
+which concludes the proof of the proof of Lemma~\ref{lem:decomp2}.
+
+
+
+
+
+\end{proof}
+
+\begin{theorem}
+\begin{align*}
+\Pr[\langle P^*,V \rangle=accept]=\mathbb{E}_{k,y,c}\left[\left\|\Pi_{m,c_m}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\right\|^{2}\right]\leq 2^{-m}+(2^{m+4}\epsilon)^{1/2} +\negl(\secpar).
+\end{align*}
+\end{theorem}
+\begin{proof}
+Let $N_{k,y,i,c}\defeq \left\|\Pi_{i,c_i}...\Pi_{1,c_1}U_{c}\ket{\psi_{k,y}}\right\|^{2}$ for notational simplicity.
+Summing up the two inequalities in Lemma~\ref{lem:decomp2} and dividing it by $2$, under the LWE assumption, for any $i$, $c_{<i}$, and $U$, we have 
+\begin{align*}
+     \mathbb{E}_{k,y,c_i}\left[\left\|\Pi_{i,c_i}\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^{2}\right]\leq \frac{1}{2}\left(\mathbb{E}_{k,y}\left[\left\|\Pi_{i-1,c_{i-1}}...\Pi_{1,c_1}U\ket{\psi_{k,y}}\right\|^{2}\right]+\left(2^{m+4}\epsilon\right)^{1/2}+\negl(\secpar)\right).  
+\end{align*}
+By setting $U\defeq U_c$, for any fixed choice of $c_{-i}$, we have
+\begin{align*}
+\mathbb{E}_{k,y,c_{i}}\left[N_{k,y,i,c}\right]\leq \frac{1}{2}\left(\mathbb{E}_{k,y,c_i}\left[N_{k,y,i-1,c}\right]+\left(2^{m+4}\epsilon\right)^{1/2}+\negl(\secpar)\right).
+\end{align*}
+\takashi{Should check if $U$ can depend on $c$. I guess the current argument is wrong.}
+
+Then we have
+\begin{align*}
+ &~~~~\mathbb{E}_{k,y,c}\left[N_{k,y,i,c}\right]\\
+ &=  \mathbb{E}_{c_{-i}}\left[\mathbb{E}_{k,y,c_i}\left[N_{k,y,m,c}\right]\right]\\
+ &\leq \mathbb{E}_{c_{-i}}\left[\frac{1}{2}\left(\mathbb{E}_{k,y,c_i}\left[N_{k,y,m-1,c}\right]+\left(2^{m+4}\epsilon\right)^{1/2}+\negl(\secpar)\right)\right]\\
+ &=\frac{1}{2}\mathbb{E}_{k,y,c}\left[N_{k,y,i-1,c}\right]+\frac{1}{2}\left(\left(2^{m+4}\epsilon\right)^{1/2}+\negl(\secpar)\right)
+\end{align*}
+
+Applying this ineuqality for each $i=m,...,1$, we obtain
+\begin{align*}
+\mathbb{E}_{k,y,c}\left[N_{k,y,m,c}\right]\leq 2^{-m}+\left(2^{m+4}\epsilon\right)^{1/2}+\negl(\secpar).
+\end{align*}
+\end{proof}
+
+

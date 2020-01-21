@@ -1,12 +1,14 @@
 \section{Delegation Protocol for Fully Classical Client}
 
+\hannote{In this section, we modify the construction of \cite{mahadev_delegation} to show that a $\QPIP_1$ protocol for $\SampBQP$ implies a $\QPIP_0$ for $\SampBQP$.}
+
 We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegation}.
 
 Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
 
 \subsection{Subprotocol for Quantum Measurements}
-
-We first restate the construction in \cite{mahadev_delegation}.
+%\hannote{what is this for?}
+As a warm-up, we  restate the construction in \cite{mahadev_delegation}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
 
 Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
 
@@ -41,10 +43,46 @@ Each coordinate can be accepted and rejected separately, and the entire protocol
 
 Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test round when the first and second messages are $k_i$ and $y_i$, respectively.
 
-We present a lemma from \cite{parallelrep}.
+
 
 \Ethan{Do we even need this lemma 3.5, or can we just use 3.6...}
 
+
+\hannote{import 3.5. didn't import the proof, too long.}
+
+First, We present a lemma from \cite{parallelrep}  that gives a decomposition of a cheating prover's state. We omit the proof here.
+
+\begin{lemma}[Lemma 3.5 of \cite{parallelrep}]\label{lem:partition}
+Let $(U_0,U)$ be any prover's strategy. Let $m=O(\log \secpar)$, $i\in[m]$, 
+$\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\frac{\gamma_0}{T}=1/\poly(\secpar)$. Let $\gamma$ be sampled uniformly randomly from $[\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}]$. Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{\regX,\regZ}$,  
+\begin{align*}
+    G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = z_0\ket{0^m}_{\regC}\ket{\psi_{0}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+ z_1\ket{0^m}_{\regC}\ket{\psi_{1}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
+\end{align*}
+where $t$ is the number of qubits in the register $ph$, $z_0,z_1\in \mathbb{C}$ such that $|z_0|=|z_1|=1$, and 
+$z_0$, $z_1$, $\ket{\psi_0}_{\regX,\regZ}$, $\ket{\psi_1}_{\regX,\regZ}$, and $\ket{\psi_{err}}_{\regX,\regZ}$ may depend on $\gamma$.
+
+Furthermore, the following properties are satisfied.
+%
+\begin{enumerate}
+%\item There exist (sub-normalized) states $\ket{\psi_0}_{\regX,\regZ}$ and $\ket{\psi_1}_{\regX,\regZ}$ such that when $G_{i,\gamma}$ runs on input $\ket{\psi}_{\regX,\regZ}$, the output is  $(0,\ket{\psi_0}_{\regX,\regZ}/\|\ket{\psi_0}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_0}_{\regX,\regZ}\|^2$, $(1,\ket{\psi_1}_{\regX,\regZ}/\|\ket{\psi_1}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_1}_{\regX,\regZ}\|^2$, and $\bot$ with probability  $1-\|\ket{\psi_0}_{\regX,\regZ}\|^2- \|\ket{\psi_1}_{\regX,\regZ}\|^2$,
+    \item If we define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$, then we have  $E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$.
+\item For any fixed $\gamma$, $\Pr[M_{ph,th,in}\circ \ket{\psi'_{err}} \in \{0^t01,0^t11\}] =0$. %where $M_{ph,th,in}$ is the computational-basis measurement in the register $(ph,th,in)$. %and $t$ is the number of qubits in $ph$.   
+This implies that if we apply the measurement $M_{ph,th,in}$ on $\frac{G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in}}{\|\ket{\psi}_{\regX,\regZ}\|}$, then the outcome is $0^tb1$ with probability $\|\ket{\psi_b}_{\regX,\regZ}\|^2$ and the resulting state in the register $(\regX,\regZ)$  is $\frac{\ket{\psi_b}_{\regX,\regZ}}{\|\ket{\psi_b}_{\regX,\regZ}\|}$ ignoring a global phase factor.
+    \item For any fixed $\gamma$, $E_{b\in \{0,1\}} [\|\ket{\psi_b}_{\regX,\regZ}\|^2]\leq \frac{1}{2}\|\ket{\psi}_{\regX,\regZ}\|^2$. 
+        \item 
+For any fixed $\gamma$ and $c\in \bit^m$ such that $c_i=0$, we have 
+\begin{align*}
+\Pr\left[M_{\regX_i}\circ U\frac{\ket{c}_{\regC}\ket{\psi_0}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{k_i,y_i}\right]\leq 2^{m-1}\gamma+\negl(\secpar).
+\end{align*}
+    \item 
+For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ such that 
+\begin{align*}  
+  \Pr\left[\ext_i\left(\frac{\ket{0^m}_{\regC}\ket{\psi_1}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)\in \Acc_{k_i,y_i}\right]=1-\negl(\secpar).
+  \end{align*}   
+\end{enumerate}
+\end{lemma}
+
+\hannote{duplicate version by ethan..}
 \begin{lem}
 	Let $(U_0, U)$ be some prover's strategy.
 	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $i\in[m]$, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
@@ -70,6 +108,16 @@ We present a lemma from \cite{parallelrep}.
 \end{lem}
 
 \Ethan{Below is 3.6. Looks kinda useful but I need to think through this $c$ thing to make sure it'll be fine even if it's not randomly generated.}
+\hannote{How about include 3.6 in the theorem}
+
+\begin{theorem}
+    
+ If there exists a $\QPIP_1$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah there exists a $\QPIP_0$ protocol $(\bbV', \bbP')$ for $\SampBQP$ with soundness blah' and completeness blah'
+	
+\end{theorem}
+\begin{proof}
+We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce the soundness error.
+\end{proof}
 
 \begin{lem}
 	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
@@ -87,3 +135,9 @@ We present a lemma from \cite{parallelrep}.
 		\item stuff
 	\end{enumerate}
 \end{lem}
+    asdf
+\begin{theorem}
+    
+	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah
+	
+\end{theorem}
