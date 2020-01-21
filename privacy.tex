@@ -53,5 +53,8 @@ Here's what the client should do.
 	\autoref{ProtoPrivateDelegation} is IND-CPA secure.
 \end{thm}
 \begin{proof}
-	This is... not so trivial?
+	The verifier's first message is encrypted into $\tilde{x}$ in an IND-CPA way as a ciphertext.
+	The verifier's second message is the basis choice of Hadamard or test rounds, which can be done using public coins.
+
+	The verifier only sends the prover these two messages, so it follows \Ethan{hopefully?} easily that the protocol itself is also IND-CPA. \Ethan{Maybe not rigorous enough?}
 \end{proof}
