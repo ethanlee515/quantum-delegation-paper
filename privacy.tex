@@ -2,6 +2,14 @@
 
 \Ethan{TODO Do some kinda intro to the section}
 
+First we give a definition of CPA security for delegation schemes... TODO
+
+\begin{dfn}
+	A $\QPIP_\tau$ protocol is IND-CPA secure if, for any polynomial time prover $\cA$,
+	$$\abs{\Pr[\cA]}$$
+	where $x$ is the input of the verifier.
+\end{dfn}
+
 \subsection{Quantum homomorphic encryption scheme}
 
 \Ethan{This subsection is copied and pasted directly from the other QMPC paper and is kinda a mess}
@@ -15,30 +23,35 @@ We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=
 
 \subsection{Generalizing our delegation protocol using QFHE}
 
-\floatname{algorithm}{Protocol}
+\Ethan{TODO intro}
+
+Here's what the client should do.
+
 \begin{algorithm}
 	\caption{Verifiable, secure, and constant round delegation}
 	\label{ProtoPrivateDelegation}
 	\begin{algorithmic}[1]
 		\Procedure{Delegation}{C, x}
-			\State $\mathsf{QHE.Keygen}\rightarrow(pk, evk, sk)$
-			\State Let $\tilde{x}=\mathsf{Enc}_{pk}(x)$
-			\State Let $\tilde{C}$ to the circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{Eval}_{evk}(C, \tilde{x})$
-			\State The client delegates $\tilde{C}(\tilde{x})$ to the server using our $\QPIP_0$ protocol.
+			\State Compute $\mathsf{QHE.Keygen}\rightarrow(pk, evk, sk)$
+			\State Compute $\tilde{x}=\mathsf{Enc}_{pk}(x)$
+			\State Let $\tilde{C}$ be the quantum circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{Eval}_{evk}(C, \tilde{x})$
+			\State Delegate $\tilde{C}(\tilde{x})$ to the server using our $\QPIP_0$ protocol.
+			\State Get $y$ from the server
+			\State \Return $\mathsf{QHE.Dec}(y)$
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
-
-\begin{thm}
-	\autoref{ProtoPrivateDelegation} is IND-CPA secure.
-\end{thm}
-\begin{proof}
-	This is... not so trivial.
-\end{proof}
 
 \begin{thm}
 	\autoref{ProtoPrivateDelegation} is a $\QPIP$ scheme for... (TODO) \Ethan{Just copy from earlier and hope I don't need to rewrite too much}
 \end{thm}
 \begin{proof}
 	TODO
+\end{proof}
+
+\begin{thm}
+	\autoref{ProtoPrivateDelegation} is IND-CPA secure.
+\end{thm}
+\begin{proof}
+	This is... not so trivial?
 \end{proof}

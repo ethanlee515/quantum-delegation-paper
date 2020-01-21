@@ -30,7 +30,6 @@ Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathc
 \end{definition}
 \fi
 
-
 The phase gate and Pauli matrices are denoted as follows.
 
 \begin{definition}
@@ -39,14 +38,11 @@ The phase gate and Pauli matrices are denoted as follows.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
-
-
 We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
 	A sampling problem $S$ is a collection of probability distributions $(D_x)$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
 \end{definition}
-
     
 \begin{rmk}
 \hannote{sampling generalize decision blah}
@@ -57,7 +53,7 @@ We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013
 \end{definition}
 
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
-We  classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{mahadev_delegation}.
+We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{mahadev_delegation}.
 
 \begin{definition}
 	A sampling problem $S=(D_x)$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms \hannote{ protocols?} $(\bbP, \bbV)$ with the following properties with input $x$:
@@ -117,7 +113,10 @@ We also recall the security definition for a FHE scheme.
 	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
 \end{dfn}
 
-Lastly, we recall the definition of a verifiable quantum FHE scheme:
+Lastly, we generalize the above security definition to interactive schemes.
+
 \begin{dfn}
-	TODO
+	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$. Then it is IND-CPA secure if, for any $x_1, x_2$, any polynomial time adversary $\cA$,
+	$$\abs{\Pr\left[TODO\right]}-TODO$$
+
 \end{dfn}
