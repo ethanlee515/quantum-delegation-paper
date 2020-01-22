@@ -18,7 +18,7 @@ We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=
 \begin{itemize}
 	\item $\mathsf{QHE.Keygen}$ can be done classically.
 	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-	\item $\mathsf{QHE.Dec}$ commutes with standard basis measurement. If the ciphertext is a measurement result, it can also be done classically.
+	\item $\mathsf{QHE.Dec}$ ``commutes" with measurements. \Ethan{Need to elaborate just a bit more here; i.e. need to mention X/Z only} If the ciphertext is a measurement result, it can also be done classically.
 \end{itemize}
 
 \subsection{Generalizing our delegation protocol using QFHE}
@@ -43,10 +43,15 @@ Here's what the client should do.
 \end{algorithm}
 
 \begin{thm}
-	\autoref{ProtoPrivateDelegation} is a $\QPIP$ scheme for... (TODO) \Ethan{Just copy from earlier and hope I don't need to rewrite too much}
+    \label{QPIP1thm}
+	\protoref{ProtoPrivateDelegation} can evaluate any $L\in\SampBQP$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$.
 \end{thm}
 \begin{proof}
-	TODO
+	The client will receive a sample from $\mathsf{Eval}_{evk}(C, \tilde{x})$. \Ethan{Errors terms?}
+
+	Which by the properties of homomoprhic encryption should decode to $\rho$ that is $\varepsilon$-indistinguishable to $C(x)$ \Ethan{Fill in error terms}
+
+	As decoding commutes with measurements, the verifier requests its desired measurements of $\rho$ and decode it.
 \end{proof}
 
 \begin{thm}
