@@ -1,24 +1,20 @@
-\section{Blind and Verifiable Delegation}
+\section{Constant-Round, Blind, and Verifiable Delegation}
 
 \Ethan{TODO Do some kinda intro to the section}
 
-First we give a definition of CPA security for delegation schemes... TODO
+We now present a constant-round, blind, and verifiable delegation scheme for $\SampBQP$ as an application of our $\QPIP_0$ construction for $\SampBQP$,
+which we achieve by using the homomorphic encryption scheme from \cite{mahadev_qfhe} together with our construction.
 
-\begin{dfn}
-	A $\QPIP_\tau$ protocol is IND-CPA secure if, for any polynomial time prover $\cA$,
-	$$\abs{\Pr[\cA]}$$
-	where $x$ is the input of the verifier.
-\end{dfn}
-
-\subsection{Quantum homomorphic encryption scheme}
+\subsection{Homomorphic Encryption with Classical Client}
 
 \Ethan{This subsection is copied and pasted directly from the other QMPC paper and is kinda a mess}
 
-We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=(\mathsf{QHE.keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$ given in \cite{mahadev_qfhe}. We use this particular QFHE because it allows the use of a classical client. Specifically, it has the following extra properties:
+We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=(\mathsf{QHE.keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$ given in \cite{mahadev_qfhe} which allows the use of a classical client. Specifically, it has the following extra properties:
 \begin{itemize}
 	\item $\mathsf{QHE.Keygen}$ can be done classically.
 	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-	\item $\mathsf{QHE.Dec}$ ``commutes" with measurements. \Ethan{Need to elaborate just a bit more here; i.e. need to mention X/Z only} If the ciphertext is a measurement result, it can also be done classically.
+	\item Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
+		$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 \end{itemize}
 
 \subsection{Generalizing our delegation protocol using QFHE}
