@@ -7,7 +7,7 @@ We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegat
 Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
 
 \subsection{Subprotocol for Quantum Measurements}
-%\hannote{what is this for?}
+\hannote{Ethan old description before parallel rep.}
 As a warm-up, we  restate the construction in \cite{mahadev_delegation}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
 
 Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
@@ -19,7 +19,7 @@ Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{b
 	    \item The protocol runs either a ``Hadamard round" or a ``test round".
 	    \item With a test round, the verifier outputs nothing other than accept/reject
 	    \item With a Hadamard round, for prover $\bbP'$, the verifier also obtains a sample from $D_{\bbP', h}$. We define $D^C_{\bbP', h}$ as that distribution conditioned on acceptance.
-	    \item (completeness) $\forall n\in\mathcal{B}^{\otimes n}, h\in\bbN$ and $h$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_\rho, h$
+	    \item (completeness) $\forall\rho\in\mathcal{B}^{\otimes n}$ and $h\in\set{0,1}^n$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_{\rho, h}$
 	    \item (soundness) Fix $\bbP'$ and $h$. Let $p_{h, H}$ be its rejection probability under a Hadamard round, and $p_{h, T}$ be its rejection probability under a test round. Then $\exists\tilde\bbP$ s.t. $\norm{D^C_{\bbP', h} - D_{\tilde\bbP, h}}\leq p_{h,H} + \sqrt{p_{h, T}}+\mu$ for some negligible $\mu$, and $\exists\rho$ s.t. $D_{\tilde\bbP, h}$ is computationally indistinguishable from $D_{\rho, h}$.
 		\item This is a 4-round protocol. The prover does not know whether it is a test or Hadamard round until the end of 3rd round.
 		\begin{enumerate}
@@ -30,6 +30,41 @@ Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{b
 		\end{enumerate}
 	\end{itemize}
 \end{theorem}
+
+\hannote{import urmila protocol description.. up}
+Here, we recall the Mahadev's protocol \cite{FOCS:Mahadev18a}. We only give a high-level description of the protocol and properties of it and omit the details since they are not needed to show our result. 
+
+The protocol is run between a quantum prover $\pro$ and a classical verifier $\ver$ on a common input $x$. The aim of the protocol is to enable a verifier to classically verify $x\in \lang$ for a BQP language $\lang$ with the help of interactions with a quantum prover.
+The protocol is a 4-round protocol where the first message is sent from $\ver$ to $\pro$. 
+We denote the $i$-th message generation algorithm by $\ver_i$ for $i\in\{1,3\}$ or $\pro_i$ for $i\in \{2,4\}$ and denote the verifier's final decision algorithm by $\ver_\out$.
+Then a high-level description of the protocol is given below.
+\begin{description}
+\item[$\ver_1$:] On input the security parameter $1^\secpar$ and $x$, it generates a pair $(\key,\td)$ of a``key" and ``trapdoor", sends $\key$ to $\pro$, and keeps $\td$ as its internal state.
+\item[$\pro_2$:] On input $x$ and $\key$, it generates a classical ``commitment" $\comy$ along with a quantum state $\ket{\st_\pro}$, sends $\comy$ to $\pro$, and keeps $\ket{\st_\pro}$ as its internal state.
+\item[$\ver_3$:] It randomly picks $c\sample \bit$ and sends $c$ to $\pro$.\footnote{The third message is just a public-coin, and does not depend on the transcript so far or $x$.}
+Following the terminology in \cite{FOCS:Mahadev18a}, we call the case of $c=0$ the ``test round" and the case of $c=1$ the ``Hadamard round".
+\item[$\pro_4$:] On input $\ket{\st_\pro}$ and $c$, it generates a classical string $\ans$ and sends $\ans$ to $\pro$.
+\item[$\ver_\out$:] On input $\key$, $\td$, $y$, $c$, and $\ans$, it returns $\top$ indicating acceptance or $\bot$ indicating rejection.
+In case $c=0$, the verification can be done publicly, that is, $\ver_\out$ need not take $\td$ as input.
+\end{description}
+
+For the protocol, we have the following properties:\\
+\noindent\textbf{Completeness:}
+For all $x\in \lang$, we have $\Pr[\langle \pro,\ver \rangle(x)]=\bot]= \negl(\secpar)$.\\
+\noindent\textbf{Soundness:}
+If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$, we have  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot]\leq 3/4$.
+
+We need a slightly different form of soundness implicitly shown in \cite{FOCS:Mahadev18a}, which roughly says that if a cheating prover can pass the ``test round" (i.e., the case of $c=0$) with overwhelming probability, then it can pass the ``Hadamard round" (i.e., the case of $c=1$) only with a negligible probability. 
+\begin{lemma}[implicit in \cite{FOCS:Mahadev18a}]\label{lem:Mah_soundness}
+If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$ such that  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot\mid c=0]=\negl(\secpar)$, we have $\Pr[\langle \pro^*,\ver \rangle(x)]=\top\mid c=1]=\negl(\secpar)$.
+\end{lemma}
+
+We will also use the following simple lemma:
+\begin{lemma}\label{fact:perfectly_pass_test}
+There exists an efficient prover that passes the test round with probability $1$ (but passes the Hadamard round with probability $0$) even if $x\notin \lang$. 
+\end{lemma}
+
+
 
 \subsection{Parallel Repetition of the Measurement Subprotocol}
 
@@ -82,6 +117,7 @@ For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ suc
 \end{enumerate}
 \end{lemma}
 
+\iffalse
 \hannote{duplicate version by ethan..}
 \begin{lem}
 	Let $(U_0, U)$ be some prover's strategy.
@@ -106,6 +142,7 @@ For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ suc
 			$$\Pr\left[\cE_i\left(\frac{\ket{0^m}_C\ket{\psi_1}_{X,Z}}{\norm{\psi_1}_{X,Z}}\in A_{k_i, y_i}\right)\right]\leq1-\negl(n)$$
 	\end{enumerate}
 \end{lem}
+\fi
 
 \Ethan{Below is 3.6. Looks kinda useful but I need to think through this $c$ thing to make sure it'll be fine even if it's not randomly generated.}
 \hannote{How about include 3.6 in the theorem}
@@ -116,8 +153,10 @@ For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ suc
 	
 \end{theorem}
 \begin{proof}
-We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce the soundness error.
+We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce the soundness error. \hannote{describe $N$ time para rep}. 
 \end{proof}
+
+
 
 \begin{lem}
 	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
@@ -136,8 +175,8 @@ We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce t
 	\end{enumerate}
 \end{lem}
     asdf
-\begin{theorem}
+\begin{cor}
     
 	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah
 	
-\end{theorem}
+\end{cor}
