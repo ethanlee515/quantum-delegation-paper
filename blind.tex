@@ -13,9 +13,14 @@ We present the quantum full homomorphic encryption (QFHE) scheme, $\mathsf{QHE}=
 \begin{itemize}
 	\item $\mathsf{QHE.Keygen}$ can be done classically.
 	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-	\item Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
-		$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 \end{itemize}
+
+Furthermore, one could either decode or measure first, in the following sense:
+\begin{lemma}
+	\label{decodeMeasureOrder}
+	Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
+		$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
+\end{lemma}
 
 \subsection{Generalizing our delegation protocol using QFHE}
 
@@ -25,33 +30,40 @@ Here's what the client should do.
 
 \begin{algorithm}
 	\caption{Verifiable, secure, and constant round delegation}
-	\label{ProtoPrivateDelegation}
+	\label{ProtoPriv}
 	\begin{algorithmic}[1]
 		\Procedure{Delegation}{C, x}
 			\State Compute $\mathsf{QHE.Keygen}\rightarrow(pk, evk, sk)$
 			\State Compute $\tilde{x}=\mathsf{Enc}_{pk}(x)$
-			\State Let $\tilde{C}$ be the quantum circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{Eval}_{evk}(C, \tilde{x})$
+			\State Let $\tilde{C}$ be the quantum circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{QHE.Eval}_{evk}(C, \tilde{x})$
 			\State Delegate $\tilde{C}(\tilde{x})$ to the server using our $\QPIP_0$ protocol.
-			\State Get $y$ from the server
-			\State \Return $\mathsf{QHE.Dec}(y)$
+			\State Request $\Lambda'$ based on \autoref{decodeMeasureOrder}, where $\Lambda$ is the basis choice if $C(x)$ were delegated.
+			\State Let $y$ be the measurement results from the server
+			\State \Return $\widehat{\mathsf{QHE.Dec}_{sk}}(y)$
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
 \begin{thm}
     \label{QPIP1thm}
-	\protoref{ProtoPrivateDelegation} can evaluate any $L\in\SampBQP$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$.
+	\myprotoref{ProtoPriv} can evaluate any $L\in\SampBQP$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$.
 \end{thm}
 \begin{proof}
-	The client will receive a sample from $\mathsf{Eval}_{evk}(C, \tilde{x})$. \Ethan{Errors terms?}
+	Suppose $\bbV$ accepts $\bbP'$ at least $\delta$ of the time.
 
-	Which by the properties of homomoprhic encryption should decode to $\rho$ that is $\varepsilon$-indistinguishable to $C(x)$ \Ethan{Fill in error terms}
+	Then the $\QPIP_0$ delegation must accept at least that often too,
+	so the client will receive a sample from $\mathsf{Eval}_{evk}(C, \tilde{x})$ with at most inverse poly error. \Ethan{security param?}
 
-	As decoding commutes with measurements, the verifier requests its desired measurements of $\rho$ and decode it.
+	The verifier ends up with a state within inverse poly distance to
+		$$\widehat{\mathsf{QHE.Dec}_{sk}}\circ\Lambda'(\tilde{C}(\tilde{x}))$$
+		$$=\Lambda\circ\mathsf{QHE.Dec}_{sk}(\tilde{C}(\tilde{x}))$$
+		$$=\Lambda\circ\mathsf{QHE.Dec}_{sk}(\mathsf{QHE.Eval}_{evk}(C, \tilde{x}))$$
+
+	By the properties of homomoprhic encryption, with overwhelming probability this is indistinguishable to \Ethan{Check if it's true} $\Lambda(C(x))$
 \end{proof}
 
 \begin{thm}
-	\autoref{ProtoPrivateDelegation} is IND-CPA secure.
+	\myprotoref{ProtoPriv} is IND-CPA secure.
 \end{thm}
 \begin{proof}
 	The verifier's first message is encrypted into $\tilde{x}$ in an IND-CPA way as a ciphertext.
