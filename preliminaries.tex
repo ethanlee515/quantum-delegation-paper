@@ -18,9 +18,7 @@ We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013
 	A sampling problem $S$ is a collection of probability distributions $(D_x)$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
 \end{definition}
     
-\begin{rmk}
-\hannote{sampling generalize decision blah}
-\end{rmk}
+\hannote{sampling generalize decision blah} \Ethan{That doesn't sound right}
 
 \begin{definition} [$\SampBQP$]
 	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which for all $\varepsilon$ there exists a quantum circuit constructible in time $\poly(|x|, \frac{1}{\varepsilon})$ that, given $x$ as input, samples from from a probability distribution $\tilde{D}_x$ such that $\norm{\tilde{D}_x-D_x}<\varepsilon$.
@@ -69,14 +67,14 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 		\item $\mathsf{Keygen}(1^\lambda)\rightarrow(pk, evk, sk)$
 		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
 		\item $\mathsf{Dec}_{sk}(c)\rightarrow \mu^*$
-			\Ethan{Urmila didn't specify that $\mathsf{Dec}\circ\mathsf{Enc}=Id$}
 		\item $\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
 	\end{itemize}
 \end{dfn}
 
 Everything also has an implicit dependence on $1^L$, where $L$ is the maximum circuit depth for the homomorphic evaluation.
 
-As this is a homomorphic encryption scheme, it satisfies $$\mathsf{HE.Dec}_{sk}(c_f)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$ with all but negligible probability in $\lambda$
+$\mathsf{HE}$ also satisfies, with all but negligible probability in $\lambda$, that
+$$\mathsf{HE.Dec}_{sk}(\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
 
 We also recall the security definition for a FHE scheme.
 
@@ -87,18 +85,19 @@ We also recall the security definition for a FHE scheme.
 	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
 \end{dfn}
 
-Lastly, we generalize the above security definition to interactive schemes.
+\subsection{Security definition for interactive protocols}
 
 \begin{dfn}
-	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$. Then it is IND-CPA secure if any polynomial time adversary $\cA$ can't win \protoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$ \Ethan{Check if it's actually lambda}
+	Let $\lambda$ be a security parameter.
+	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$.
+	Then it is IND-CPA secure if any polynomial time adversary $\cA$ can't win \myprotoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$ \Ethan{Check if it's actually lambda}
 \end{dfn}
 
 \floatname{algorithm}{Protocol}
 \begin{algorithm}
 	\caption{ $\QPIP_1$ protocol for $\SampBQP$}
-	\label{ProtoQPIP1}
+	\label{ProtoIndCPA}
 	\begin{algorithmic}[1]
-		\State \Ethan{Do we need some kinda generalization of Keygen here...?}
 		\State $\cA$ picks strings $c_1$ and $c_2$ and sends them to the challenger
 		\State The challenger picks $c_b$ at random where $b\in\set{0,1}$
 		\State The challenger runs the protocol with the adversary, acting as the verifier with input $c_b$
@@ -106,3 +105,7 @@ Lastly, we generalize the above security definition to interactive schemes.
 	\end{algorithmic}
 \end{algorithm}
 \floatname{algorithm}{Algorithm}
+
+\begin{rmk}
+	\Ethan{Maybe something about this being (hopefully) equivalent to simulator-based security?}
+\end{rmk}
