@@ -89,8 +89,8 @@ We also recall the security definition for a FHE scheme.
 
 \begin{dfn}
 	Let $\lambda$ be a security parameter.
-	Let $(\bbP, \bbV)(x)$ be an interactive protocol with the verifier's initial input being $x$.
-	Then it is IND-CPA secure if any polynomial time adversary $\cA$ can't win \myprotoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$ \Ethan{Check if it's actually lambda}
+	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
+	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \myprotoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$
 \end{dfn}
 
 \floatname{algorithm}{Protocol}
@@ -98,14 +98,13 @@ We also recall the security definition for a FHE scheme.
 	\caption{ $\QPIP_1$ protocol for $\SampBQP$}
 	\label{ProtoIndCPA}
 	\begin{algorithmic}[1]
-		\State $\cA$ picks strings $c_1$ and $c_2$ and sends them to the challenger
-		\State The challenger picks $c_b$ at random where $b\in\set{0,1}$
-		\State The challenger runs the protocol with the adversary, acting as the verifier with input $c_b$
+		\State The challenge picks $b\in\set{0,1}$ at random
+		\If{b=1}
+			\State The challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
+		\Else
+			\State The challenger runs the protocol with the adversary, acting as the verifier with input $x$
+		\EndIf
 		\State $\cA$ attempts to guess $b$
 	\end{algorithmic}
 \end{algorithm}
 \floatname{algorithm}{Algorithm}
-
-\begin{rmk}
-	\Ethan{Maybe something about this being (hopefully) equivalent to simulator-based security?}
-\end{rmk}
