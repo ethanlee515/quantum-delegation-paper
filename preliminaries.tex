@@ -35,7 +35,7 @@ We classify the interaction between a (almost classical) client and a quantum se
 		 \item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially\hannote{poly in what} many bits to either direction. 
 		 \item The protocol\hannote{?} is run by steps. At any given step, either the verifier or the prover performs computations on their registers and send bits and qubits through the relevant channels to the other party.	\hannote{redundant?} 
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
-		\item (Soundness) Given $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$ outputs a distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
+		\item (Soundness) For all $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$ outputs a distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
 \end{definition}
 
