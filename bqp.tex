@@ -1,4 +1,4 @@
-\section{Constant-round blind delegation of BQP}
+\section{Constant-Round Blind Delegation for BQP}
 
 \Ethan{Need to define QPIP for both decision and sampling problems and point out the differences then}
 
@@ -32,11 +32,12 @@ We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2
 	\caption{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
 	\begin{algorithmic}[1]
-		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$. \Ethan{Security param?}
+		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$.
 		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
 		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ to the prover
 		\State The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
-		\State The verifier decodes qubit-by-qubit \Ethan{hmm?}
+		\State The verifier measures the incoming ciphertext according to \autoref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates
+		\State The verifier decodes the measurement results
 		\State The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
 	\end{algorithmic}
 \end{algorithm}

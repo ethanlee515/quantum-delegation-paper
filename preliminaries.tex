@@ -61,8 +61,10 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
+We also use the quantum full homomorphic encryption (QFHE) scheme given in \cite{mahadev_qfhe} which allows the use of a classical client.
+
 \begin{dfn}
-	A quantum homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{Keygen}(1^\lambda)\rightarrow(pk, evk, sk)$
 		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
@@ -85,6 +87,20 @@ We also recall the security definition for a FHE scheme.
 	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
 \end{dfn}
 
+The constructions in \cite{mahadev_qfhe}, $\mathsf{QHE}=(\mathsf{QHE.Keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$, has the following extra properties:
+\begin{itemize}
+	\item $\mathsf{QHE.Keygen}$ can be done classically.
+	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
+\end{itemize}
+
+Furthermore, one could either decode or measure first, in the following sense:
+\begin{lemma}
+	\label{decodeMeasureOrder}
+	Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
+		$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
+\end{lemma}
+To the knowledgable reader, this is done simply by storing the so-called quantum-capable ciphertext also as qubits.
+
 \subsection{Security definition for interactive protocols}
 
 \begin{dfn}
@@ -99,7 +115,7 @@ We also recall the security definition for a FHE scheme.
 	\label{ProtoIndCPA}
 	\begin{algorithmic}[1]
 		\State The challenge picks $b\in\set{0,1}$ at random
-		\If{b=1}
+		\If{$b=1$}
 			\State The challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
 		\Else
 			\State The challenger runs the protocol with the adversary, acting as the verifier with input $x$
