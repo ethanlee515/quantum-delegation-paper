@@ -1,3 +1,73 @@
 \section{Constant-round blind delegation of BQP}
 
-lol
+\Ethan{Need to define QPIP for both decision and sampling problems and point out the differences then}
+
+We'll define the following protocol for $\BQP$ which we later generalize.
+
+Let $L\in\BQP$, and $x\in\set{0,1}^*$.
+
+There exists some certificate for both $x\in L$ and $x\notin L\Rightarrow x\in\overline{L}$, since $L, \overline{L}\in\QMA$.
+In fact, they have the same certificate, and the certificate can be check using only $X$ and $Z$ measurements, which we'll call $\ket{\psi_x}$. \Ethan{TODO cite textbook for this}
+
+\begin{thm}
+	Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
+	Then \protoref{proto:BQP} is a $\QPIP_1$ and constant round protocol for $\BQP$ with negligible completeness and soundness.
+\end{thm}
+
+\floatname{algorithm}{Protocol}
+\begin{algorithm}
+	\caption{Protocol for $\BQP$}
+	\label{proto:BQP}
+	\begin{algorithmic}[1]
+		\State The verifier sends $x$ to the prover
+		\State The prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
+		\State The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+	\end{algorithmic}
+\end{algorithm}
+
+Now we generalize the previous construction to achieve blindness.
+We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
+
+\begin{algorithm}
+	\caption{Blind Protocol for $\BQP$}
+	\label{proto:BlindBQP}
+	\begin{algorithmic}[1]
+		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$. \Ethan{Security param?}
+		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
+		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ to the prover
+		\State The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
+		\State The verifier decodes qubit-by-qubit \Ethan{hmm?}
+		\State The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{thm}
+	Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
+	Let $\lambda$ be the security parameter.
+	Then \protoref{proto:BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
+\end{thm}
+\begin{proof}
+	I promise this is true...
+\end{proof}
+
+Now we can simply apply the following results from \Ethan{TODO cite}...
+
+\begin{thm}
+	compiles $\QPIP_1$ protocol with the following properties:
+	\begin{itemize}
+		\item classical inputs
+		\item only X/Z measurements
+		\item negl. completeness and soundness
+	\end{itemize}
+	into a $\QPIP_0$ protocol with negl. completeness and soundness
+\end{thm}
+
+With this result, we now achieve...
+\begin{thm}
+	There exists...
+\end{thm}
+\begin{proof}
+	Just compile A through B...
+\end{proof}
+
+\floatname{algorithm}{Algorithm}
