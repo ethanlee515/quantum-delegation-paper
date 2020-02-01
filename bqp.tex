@@ -32,6 +32,8 @@ We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2
 	\caption{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
 	\begin{algorithmic}[1]
+		\State Let $\lambda$ be the security parameter.
+		\State Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
 		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$.
 		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
 		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ to the prover
@@ -42,19 +44,33 @@ We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2
 	\end{algorithmic}
 \end{algorithm}
 
+As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
+
 \begin{thm}
-	Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
-	Let $\lambda$ be the security parameter.
-	Then \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
+	\protoref{BlindBQP} has negligible completeness
 \end{thm}
 \begin{proof}
-	I promise this is true...
+	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{Well, we'll pretend it's true...}
+\end{proof}
+
+\begin{thm}
+	\protoref{BlindBQP} has negligible soundness
+\end{thm}
+\begin{proof}
+	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{It sounds good, so it must be true.}
+\end{proof}
+
+\begin{thm}
+	\protoref{BlindBQP} is IND-CPA
+\end{thm}
+\begin{proof}
+	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{I have this gut feeling.}
 \end{proof}
 
 Now we can simply apply the following results from \Ethan{TODO cite}...
 
 \begin{thm}
-	compiles $\QPIP_1$ protocol with the following properties:
+	There is a way to compile a $\QPIP_1$ protocol with the following properties:
 	\begin{itemize}
 		\item classical inputs
 		\item only X/Z measurements
