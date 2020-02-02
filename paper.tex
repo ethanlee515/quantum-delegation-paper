@@ -15,11 +15,18 @@
 \apptocmd{\thebibliography}{\raggedright}{}{}
 \usepackage{cite,color,float}
 \usepackage{mdframed} 
-
+\usepackage{cleveref}
+\crefname{protocol}{Protocol}{Protocols}
 
 %\pagecolor{black}
 %\color{white}
 
+\newcounter{protocol}
+\newcommand{\linefill}{\rule{\linewidth}{0.8pt}}
+
+\newenvironment{protocol}[1]{\begingroup\setlength\parindent{0pt}\medskip\noindent\linefill\\
+\refstepcounter{protocol}\textbf{Protocol \theprotocol} #1\\\noindent\linefill}
+{\vspace{-\topsep}\noindent\linefill\endgroup}
 
 \newcommand{\KM}[1]{{\footnotesize\color{cyan}[KM: #1]}}
 \newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
