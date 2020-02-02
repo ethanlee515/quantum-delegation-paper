@@ -5,31 +5,17 @@ which we achieve by using the homomorphic encryption scheme from \cite{mahadev_q
 
 \subsection{Our Delegation Protocol}
 
-Now we compile \cref{proto:QPIP0samp}...
+Now we compile our $\QPIP_1$ protocol \myprotoref{protoQPIP1} using the quantum homomorphic encryption $\mathsf{QHE}$ \Ethan{TODO maybe wrap this as a def} in a similar way as what we did for our blind $\BQP$ delegation protocol in \cref{sec:BlindQBP}
 
-Now we're ready to construct our delegation protocol.
-
-\begin{algorithm}
-	\caption{Verifiable, secure, and constant round delegation}
-	\label{ProtoPriv}
-	\begin{algorithmic}[1]
-		\Procedure{Delegation}{C, x}
-			\State Compute $\mathsf{QHE.Keygen}\rightarrow(pk, evk, sk)$
-			\State Compute $\tilde{x}=\mathsf{Enc}_{pk}(x)$
-			\State Let $\tilde{C}$ be the quantum circuit that takes $\tilde{x}$ as input to evaluate $\mathsf{QHE.Eval}_{evk}(C, \tilde{x})$
-			\State Delegate $\tilde{C}(\tilde{x})$ to the server using our $\QPIP_0$ protocol.
-			\State Request $\Lambda'$ based on \autoref{decodeMeasureOrder}, where $\Lambda$ is the basis choice if $C(x)$ were delegated.
-			\State Let $y$ be the measurement results from the server
-			\State \Return $\widehat{\mathsf{QHE.Dec}_{sk}}(y)$
-		\EndProcedure
-	\end{algorithmic}
-\end{algorithm}
+The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} so we directly go into analysis.
 
 \begin{thm}
-    \label{QPIP1thm}
-	\myprotoref{ProtoPriv} can evaluate any $L\in\SampBQP$ with negligible completeness and soundness $(O(T^{-c}), O(T^{-c}))$ for any constant $c$.
+	Compiling \cref{proto:QPIP0samp} using $\mathsf{QHE}$ preserves its completeness and soundness.
 \end{thm}
 \begin{proof}
+	A honest prover still gets accepted with overwhelming probability by the correctness of $\mathsf{QHE}$. \Ethan{Not sure if too hand-wavy}
+
+	\Ethan{Check how much of the following still applies before erasing}
 	Suppose $\bbV$ accepts $\bbP'$ at least $\delta$ of the time.
 
 	Then the $\QPIP_0$ delegation must accept at least that often too,
