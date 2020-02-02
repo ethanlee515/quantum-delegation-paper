@@ -19,40 +19,37 @@ According to \cite{PhysRevA.93.022326}, the certificate can be check using only 
 We'll also summarize said proofs in \cref{sec:Hamiltonian} for our $\SampBQP$ construction.
 
 \begin{thm}
-	Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
-	Then \protoref{BQP} is a $\QPIP_1$ and constant round protocol for $\BQP$ with negligible completeness and soundness.
+	\protoref{BQP} is a $\QPIP_1$ and constant round protocol for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 
-\floatname{algorithm}{Protocol}
-\begin{algorithm}
-	\caption{Protocol for $\BQP$}
+\begin{protocol}{Protocol for $\BQP$}
 	\label{proto:BQP}
-	\begin{algorithmic}[1]
-		\State The verifier sends $x$ to the prover
-		\State The prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
-		\State The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
-	\end{algorithmic}
-\end{algorithm}
+	Let $n$ be the number of repetitions required to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
+	\begin{enumerate}
+		\item The verifier sends $x$ to the prover
+		\item The prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
+		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+	\end{enumerate}
+\end{protocol}
 
-Now we generalize the previous construction to achieve blindness.
-We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
+Now we compile \cref{proto:BQP} using $\mathsf{QHE}$ in order to achieve blindness.
+We denote the honest prover's action in $\cref{proto:BQP}$ as $\cF$; that is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
 
-\begin{algorithm}
-	\caption{Blind Protocol for $\BQP$}
+\begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
-	\begin{algorithmic}[1]
-		\State Let $\lambda$ be the security parameter.
-		\State Let $L$ be the depth of the circuit corresponding to $\cF$
-		\State Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
-		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda, L)$ to get $pk, sk$.
-		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
-		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
-		\State The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
-		\State The verifier measures the incoming ciphertext according to \autoref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates
-		\State The verifier decodes the measurement results
-		\State The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
-	\end{algorithmic}
-\end{algorithm}
+	Let $\lambda$ be the security parameter.
+	Let $L$ be the depth of the circuit corresponding to $\cF$.
+	Let $n$ be number of repetitions required to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
+	\begin{enumerate}
+		\item The verifier runs $\mathsf{QHE.Keygen}(\lambda, L)$ to get $pk, sk$.
+		\item The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
+		\item The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
+		\item The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
+		\item The verifier measures the incoming ciphertext according to \autoref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates \Ethan{Not sure if rigorous enough}
+		\item The verifier decodes the measurement results
+		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+	\end{enumerate}
+\end{protocol}
 
 As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
 
