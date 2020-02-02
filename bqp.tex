@@ -36,7 +36,7 @@ We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2
 		\State Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
 		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$.
 		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
-		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ to the prover
+		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
 		\State The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
 		\State The verifier measures the incoming ciphertext according to \autoref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates
 		\State The verifier decodes the measurement results
@@ -50,21 +50,26 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	\protoref{BlindBQP} has negligible completeness
 \end{thm}
 \begin{proof}
-	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{Well, we'll pretend it's true...}
+	Based on the correctness of $\mathsf{QHE}$, the verifier would successfully decode $\cF(c)$ with overwhelming probability.
+	The subsequent underlying QMA check also has overwhelming probability of acceptance.
 \end{proof}
 
 \begin{thm}
 	\protoref{BlindBQP} has negligible soundness
 \end{thm}
 \begin{proof}
-	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{It sounds good, so it must be true.}
+	The verifier's actions is equivalent to first decoding the prover's message then measuring it.
+
+	Suppose the prover's message decodes to some $\rho$. Since it is a quantum state, the soundness of the underlying $\QMA$ instance can be used.
+	
+	That is, there doesn't exists a valid certificate $\rho$ that has non-negligible probability of acceptance.
 \end{proof}
 
 \begin{thm}
 	\protoref{BlindBQP} is IND-CPA
 \end{thm}
 \begin{proof}
-	\href{http://jwilson.coe.uga.edu/EMT668/EMAT6680.F99/Challen/proof/proof.html}{I have this gut feeling.}
+	The only thing the prover learns is $c$ and $pk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{proof}
 
 Now we can simply apply the following results from \Ethan{TODO cite}...
