@@ -1,16 +1,22 @@
 \section{Constant-Round Blind Delegation for BQP}
 \label{sec:BlindBQP}
 
-\Ethan{Intro and mention that sample problem will follow the same flow except with more analysis}
+In this section we present our constant-round blind delegation protocol for $\BQP$.
+We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
-\Ethan{Need to define QPIP for both decision and sampling problems and point out the differences then}
+\begin{thm}
+	\Ethan{Main theorem of the section}
+	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
+\end{thm}
 
-We'll define the following protocol for $\BQP$ which we later generalize.
+We'll construct this protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 
 Let $L\in\BQP$, and $x\in\set{0,1}^*$.
 
 There exists some certificate for both $x\in L$ and $x\notin L\Rightarrow x\in\overline{L}$, since $L, \overline{L}\in\QMA$.
-In fact, they have the same certificate, and the certificate can be check using only $X$ and $Z$ measurements, which we'll call $\ket{\psi_x}$. \Ethan{TODO cite textbook for this}
+In fact, they have the same certificate, which we'll call $\ket{\psi_x}$. See the excellent text \cite{kitaev2002classical} for details.
+According to \cite{PhysRevA.93.022326}, the certificate can be check using only $X$ and $Z$ measurements.
+We'll also summarize said proofs in \cref{sec:Hamiltonian} for our $\SampBQP$ construction.
 
 \begin{thm}
 	Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
@@ -36,8 +42,9 @@ We denote the prover's action as $\cF$. That is, $\cF(x)=\ket{\psi_x}^{\otimes 2
 	\label{proto:BlindBQP}
 	\begin{algorithmic}[1]
 		\State Let $\lambda$ be the security parameter.
+		\State Let $L$ be the depth of the circuit corresponding to $\cF$
 		\State Let $n$ be large enough to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
-		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda)$ to get $pk, sk$.
+		\State The verifier runs $\mathsf{QHE.Keygen}(\lambda, L)$ to get $pk, sk$.
 		\State The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
 		\State The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
 		\State The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
@@ -75,24 +82,15 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	The only thing the prover learns is $c$ and $pk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{proof}
 
-Now we can simply apply the following results from \Ethan{TODO cite}...
-
+Now we can simply apply the following results from \cite{parallelrep} to obtain a blind and constant-round for $\QPIP_0$ with negligible completeness and soundness.
 \begin{thm}
-	There is a way to compile a $\QPIP_1$ protocol with the following properties:
+	There is a compiler that takes a $\QPIP_1$ protocol with the following properties:
 	\begin{itemize}
 		\item classical inputs
-		\item only X/Z measurements
+		\item client uses only X/Z measurements
 		\item negl. completeness and soundness
 	\end{itemize}
-	into a $\QPIP_0$ protocol with negl. completeness and soundness
+	and outputs a corresponding $\QPIP_0$ protocol with negl. completeness and soundness \Ethan{same inputs...?}
 \end{thm}
-
-With this result, we now achieve...
-\begin{thm}
-	There exists...
-\end{thm}
-\begin{proof}
-	Just compile A through B...
-\end{proof}
 
 \floatname{algorithm}{Algorithm}

@@ -7,7 +7,7 @@ which we achieve by using the homomorphic encryption scheme from \cite{mahadev_q
 
 Now we compile our $\QPIP_1$ protocol \myprotoref{protoQPIP1} using the quantum homomorphic encryption $\mathsf{QHE}$ \Ethan{TODO maybe wrap this as a def} in a similar way as what we did for our blind $\BQP$ delegation protocol in \cref{sec:BlindQBP}
 
-The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} so we directly go into analysis.
+The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} so we directly go into analysis. \Ethan{Need to remember security param if we write this out}
 
 \begin{thm}
 	Compiling \cref{proto:QPIP0samp} using $\mathsf{QHE}$ preserves its completeness and soundness.
@@ -15,18 +15,10 @@ The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} 
 \begin{proof}
 	A honest prover still gets accepted with overwhelming probability by the correctness of $\mathsf{QHE}$. \Ethan{Not sure if too hand-wavy}
 
-	\Ethan{Check how much of the following still applies before erasing}
-	Suppose $\bbV$ accepts $\bbP'$ at least $\delta$ of the time.
+	As for soundness, a cheating prover cannot do better under this compiliation, since each message still decodes to some plaintext.
 
-	Then the $\QPIP_0$ delegation must accept at least that often too,
-	so the client will receive a sample from $\mathsf{Eval}_{evk}(C, \tilde{x})$ with at most inverse poly error. \Ethan{security param?}
-
-	The verifier ends up with a state within inverse poly distance to
-		$$\widehat{\mathsf{QHE.Dec}_{sk}}\circ\Lambda'(\tilde{C}(\tilde{x}))$$
-		$$=\Lambda\circ\mathsf{QHE.Dec}_{sk}(\tilde{C}(\tilde{x}))$$
-		$$=\Lambda\circ\mathsf{QHE.Dec}_{sk}(\mathsf{QHE.Eval}_{evk}(C, \tilde{x}))$$
-
-	By the properties of homomoprhic encryption, with overwhelming probability this is indistinguishable to \Ethan{Check if it's true} $\Lambda(C(x))$
+	In other words, anything a cheating prover can do after the compiliation, there exists a corresponding strategy in the version before.
+	\Ethan {Ahhhh this is not rigorous at all}
 \end{proof}
 
 \begin{thm}

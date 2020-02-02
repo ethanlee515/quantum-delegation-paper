@@ -66,16 +66,18 @@ We also use the quantum full homomorphic encryption (QFHE) scheme given in \cite
 \begin{dfn}
 	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
-		\item $\mathsf{Keygen}(1^\lambda, 1^D)\rightarrow(pk, evk, sk)$
+		\item $\mathsf{Keygen}(1^\lambda, 1^L)\rightarrow(pk, evk, sk)$
 		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
 		\item $\mathsf{Dec}_{sk}(c)\rightarrow \mu^*$
 		\item $\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
 	\end{itemize}
 \end{dfn}
 
-$\mathsf{HE}$ also satisfies, with all but negligible probability in $\lambda$, that
+\Ethan{TODO Check if Dec has to work all the time or just overwhelming probability (and if so, over what)}
+
+$\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
 $$\mathsf{HE.Dec}_{sk}(\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
-where $f$ is specified by a circuit of depth at most $D$.
+where $f$ is specified by a circuit of depth at most $L$.
 
 We also recall the security definition for a FHE scheme.
 
