@@ -66,7 +66,32 @@ There exists an efficient prover that passes the test round with probability $1$
 
 
 
-\subsection{Parallel Repetition of the Measurement Subprotocol}
+\subsection{$\QPIP_0$ protocol for $\SampBQP$}
+%Parallel Repetition of the Measurement Subprotocol
+
+The following protocol is a $\QPIP_0$ protocol for $\SampBQP$
+
+$\forall c\in\bbN$ Soundness = $O(T^{-c})$
+
+Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
+
+
+%	\label{ProtoQPIP1}
+
+
+\begin{protocol}{$\QPIP_0$ for $\SampBQP$}
+\label{proto:QPIP0samp}
+\begin{enumerate}
+    \item Verifier start with description of quantum circuit $C$, input string $x$ 
+    \item Both verifier and prover start with a soundness parameter $\varepsilon$.
+    \item Run $N=O(1/\varepsilon)$ copies of [[urmilla protocol]] of in parallel.  On the testing round, the verifier uniformly randomly pick one copy and Hadamard round and has all other copies as test round.
+    \item Verified reject if any of the test round result is wrong. Otherwise, decode the Hadamard run desult and run \cref{ProtoQPIP1} on it
+    . 
+\end{enumerate}
+\end{protocol}
+
+
+
 
 Here we follow \cite{parallelrep}.
 
