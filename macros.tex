@@ -49,6 +49,7 @@
 \DeclareMathOperator{\QPIP}{\mathsf{QPIP}}
 \DeclareMathOperator{\SampBQP}{\mathsf{SampBQP}}
 \DeclareMathOperator{\BQP}{\mathsf{BQP}}
+\DeclareMathOperator{\FBQP}{\mathsf{FBQP}}
 \DeclareMathOperator{\cnot}{\normalfont\textsc{cnot}}
 \DeclareMathOperator{\DTIME}{\mathsf{DTIME}}
 \DeclareMathOperator{\NTIME}{\mathsf{NTIME}}
@@ -86,15 +87,14 @@
 \def\ra{\rightarrow}
 \def\ot{\otimes}
 
-\newtheorem{thm}{Theorem}
+\newtheorem{thm}{Theorem}[section]
 %\newtheorem*{thm*}{Theorem}
 %\newtheorem{claim}[thm]{Claim}
-\newtheorem{cor}[thm]{Corollary}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{rmk}[thm]{Remark}
+\newtheorem{cor}{Corollary}[thm]
+\newtheorem{lem}{Lemma}[section]
+\newtheorem{rmk}{Remark}[thm]
 %\newtheorem{prop}[thm]{Proposition}
-\newtheorem{dfn}{Definition}
-\newtheorem{proto}{Protocol}
+\newtheorem{dfn}{Definition}[section]
 %\newtheorem{con}[thm]{Conjecture}
 
 %\makeatletter

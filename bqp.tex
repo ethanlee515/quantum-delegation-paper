@@ -1,4 +1,4 @@
-\section{Constant-Round Blind Delegation for BQP}
+\section{Delegation for BQP}
 \label{sec:BlindBQP}
 
 In this section we present our constant-round blind delegation protocol for $\BQP$.
@@ -6,7 +6,7 @@ We'll later construct a protocol for $\SampBQP$ following the same flow of logic
 
 \begin{thm}
 	\Ethan{Main theorem of the section}
-	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
+	There exists a constant-round and blind $\QPIP_0$ protocol with a classical client for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 
 We'll construct this protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
@@ -14,9 +14,10 @@ We'll construct this protocol piece by piece, starting with the following $\QPIP
 Let $L\in\BQP$, and $x\in\set{0,1}^*$.
 
 There exists some certificate for both $x\in L$ and $x\notin L\Rightarrow x\in\overline{L}$, since $L, \overline{L}\in\QMA$.
-In fact, they have the same certificate, which we'll call $\ket{\psi_x}$. See the excellent text \cite{kitaev2002classical} for details.
+In fact, they have the same certificate $\ket{\psi_x}$ with some inverse polynomial gap between the completeness and soundness parameters.
+See the excellent text \cite{kitaev2002classical} for details.
 According to \cite{PhysRevA.93.022326}, the certificate can be check using only $X$ and $Z$ measurements.
-We'll also summarize said proofs in \cref{sec:Hamiltonian} for our $\SampBQP$ construction.
+We'll also summarize said proofs in \cref{sec:Hamiltonian} for our construction for $\SampBQP$.
 
 \begin{thm}
 	\protoref{BQP} is a $\QPIP_1$ and constant round protocol for $\BQP$ with negligible completeness and soundness.
@@ -27,7 +28,7 @@ We'll also summarize said proofs in \cref{sec:Hamiltonian} for our $\SampBQP$ co
 	Let $n$ be the number of repetitions required to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
 	\begin{enumerate}
 		\item The verifier sends $x$ to the prover
-		\item The prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
+		\item The honest prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
 		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
 	\end{enumerate}
 \end{protocol}
@@ -90,4 +91,6 @@ Now we can simply apply the following results from \cite{parallelrep} to obtain 
 	and outputs a corresponding $\QPIP_0$ protocol with negl. completeness and soundness \Ethan{same inputs...?}
 \end{thm}
 
-\floatname{algorithm}{Algorithm}
+\begin{rmk}
+	The same construction works for $\FBQP$ too. \Ethan{maybe say more?}
+\end{rmk}

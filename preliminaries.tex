@@ -28,12 +28,11 @@ We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013
 We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{mahadev_delegation}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a pair of algorithms \hannote{ protocols?} $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a protocol $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
 		\item $\bbP$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
 		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
-		 \item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially\hannote{poly in what} many bits to either direction. 
-		 \item The protocol\hannote{?} is run by steps. At any given step, either the verifier or the prover performs computations on their registers and send bits and qubits through the relevant channels to the other party.	\hannote{redundant?} 
+		\item There is also a classical communication channel between the prover and the verifier, which can transmit $\poly(\abs{x})$ many bits to either direction. 
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) For all $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$ outputs a distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
 	\end{itemize}
@@ -66,18 +65,18 @@ We also use the quantum full homomorphic encryption (QFHE) scheme given in \cite
 \begin{dfn}
 	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
-		\item $\mathsf{Keygen}(1^\lambda, 1^L)\rightarrow(pk, evk, sk)$
-		\item $\mathsf{Enc}_{pk}(\mu)\rightarrow c$
-		\item $\mathsf{Dec}_{sk}(c)\rightarrow \mu^*$
-		\item $\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
+		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, evk, sk)$
+		\item $\mathsf{HE.Enc}_{pk}(\mu)\rightarrow c$
+		\item $\mathsf{HE.Dec}_{sk}(c)\rightarrow \mu^*$
+		\item $\mathsf{HE.Eval}_{evk}(f, c_1, \ldots, c_l)\rightarrow c_f$
 	\end{itemize}
 \end{dfn}
 
-\Ethan{TODO Check if Dec has to work all the time or just overwhelming probability (and if so, over what)}
-
 $\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
-$$\mathsf{HE.Dec}_{sk}(\mathsf{Eval}_{evk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
+$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{evk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
 where $f$ is specified by a circuit of depth at most $L$.
+
+\Ethan{To be pedantic, the above doesn't imply Dec undoes Enc even if we sub in $f=\id$.}
 
 We also recall the security definition for a FHE scheme.
 
@@ -85,24 +84,22 @@ We also recall the security definition for a FHE scheme.
 	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
 	$$\abs{Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, evk, \mathsf{HE.Enc}_{pk}(1))=1]}=\mu(\lambda)$$
 	where $(pk, evk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
-	\Ethan{Urmila didn't specify quantum adversary here? Also dropped the $1^L$.}
 \end{dfn}
 
-The constructions in \cite{mahadev_qfhe}, $\mathsf{QHE}=(\mathsf{QHE.Keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$, has the following extra properties:
-\begin{itemize}
-	\item $\mathsf{QHE.Keygen}$ can be done classically.
-	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-\end{itemize}
+Now we present the quantum homomorphic encryption scheme in \cite{mahadev_qfhe}.
+It admits a classical client; one could do the encryption classically, and the decryption is compatible with $X$ and $Z$ measurements.
+In general, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then it can be used as a compiler to achieve blindness.
 
-Furthermore, one could either decode or measure first, in the following sense:
-\begin{lemma}
+\begin{thm}
 	\label{decodeMeasureOrder}
-	Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
-		$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
-\end{lemma}
-To the knowledgable reader, this is done simply by storing the so-called quantum-capable ciphertext also as qubits.
-
-In general, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then this can be used as a compiler to achieve blindness.
+	There exists a QFHE $\mathsf{QHE}=(\mathsf{QHE.Keygen}, \mathsf{QHE.Enc}, \mathsf{QHE.Dec}, \mathsf{QHE.Eval})$ with the following extra properties:
+	\begin{itemize}
+		\item $\mathsf{QHE.Keygen}$ can be done classically.
+		\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
+		\item \Ethan{I think this point is obvious?} Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
+			$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
+	\end{itemize}
+\end{thm}
 
 \subsection{Security definition for interactive protocols}
 
