@@ -16,14 +16,20 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 
 \begin{protocol}{$\QPIP_1$ protocol for $\SampBQP$}
 	\label{ProtoQPIP1}
-	Take $\varepsilon>0$
-	Let $m$ be large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
-	Let $n$ be large enough so both $P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$ and $P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$ are negligible in $\varepsilon$ by Chernoff bound
-	Let $N$ be large enough so that $\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$, where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$.
+	\begin{itemize}
+		\item Let $\varepsilon>0$
+		\item Let $m$ be large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
+		\item Let $n$ be large enough so both
+			$$P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$$
+			and
+			$$P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$$ are negligible in $\varepsilon$ by Chernoff bound
+		\item Let $N$ be large enough so that $$\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$$
+			where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$
+	\end{itemize}
 	\begin{enumerate}
 		\item The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
 		\item The verifier randomly picks $m$ copies for outputting and $n$ copies for checking
-		\item Set up a counter $c=0$
+		\item Set counter $c=0$
 		\item Set $y=\bot$
 		\item For $i$ from $1$ to $N$:
 		\begin{enumerate}
