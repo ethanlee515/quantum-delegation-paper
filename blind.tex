@@ -7,7 +7,7 @@ which we achieve by using the homomorphic encryption scheme from \cite{mahadev_q
 
 Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homomorphic encryption $\mathsf{QHE}$ from \cref{decodeMeasureOrder} in the same way as what we did for our blind $\BQP$ delegation protocol (\cref{proto:BlindBQP}) in \cref{sec:BlindBQP}.
 
-\begin{protocol}{\cref{ProtoQPIP1} compiled using \cref{decodeMeasureOrder}}
+\begin{protocol}{Compiling \cref{ProtoQPIP1} using $\mathsf{QHE}$}
 	\label{proto:QPIP1Samp}
 	\begin{enumerate}
 		\item The verifier runs $\mathsf{QHE.keygen}(1^\lambda, 1^L)$ where $L$ is the depth of circuit corresponding to the honest prover's action in \cref{ProtoQPIP1}
@@ -33,5 +33,5 @@ Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homo
 	\cref{proto:QPIP1Samp} is IND-CPA secure.
 \end{thm}
 \begin{proof}
-	\Ethan{TODO after nailing down protocol}
+	The only thing the prover gets is $\mathsf{QHE.Enc}_{pk}(x)$, $pk$, and $evk$. So this follows directly from the security of $\mathsf{QHE}$.
 \end{proof}
