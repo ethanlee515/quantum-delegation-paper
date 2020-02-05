@@ -6,11 +6,16 @@ We then extend our scheme for $\QPIP_0$ using results from \cite{mahadev_delegat
 
 Here we combine \autoref{QPIP1thm} with results from \cite{mahadev_delegation} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
 
-\subsection{Subprotocol for Quantum Measurements}
+
+%Subprotocol for Quantum Measurements
+\subsection{$\QPIP_0$ for BQP?}
 \hannote{Ethan old description before parallel rep.}
 As a warm-up, we  restate the construction in \cite{mahadev_delegation}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
 
 Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
+
+
+
 
 \begin{theorem}
     \label{Mahadev_QPIP0_Protocol_Interface}
@@ -65,6 +70,33 @@ There exists an efficient prover that passes the test round with probability $1$
 \end{lemma}
 
 
+\subsection{Mahadev's classical "commitment" of $XZ$ measurement}
+
+In her groundbreaking work, Mahadev~\cite{mahadev_delegation} gave the following 4-round interactive protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine. 
+
+\begin{protocol}{Mahadev's 4 round commitment}
+\label{proto:urmila4}
+\begin{enumerate}
+    \item Verifier $\bbV$ is a classical machine. Prover $\bbP$ is a $\BQP$ machine. 
+%    \item Both the verifier and the prover know a $\BQP$ circuit $C$ and an input string $x$.
+    \item Both party know the number of qubits $n$ and a security parameter $\lambda=o(n)$.
+    \item Verifier has a string $h \in \{0,1\}^n$ that specifies the measurement he wants to make: if $h_i=0$, he wants a $X$ measurement on $i$-th qubit. If $h_i=1$, he wants a $Z$ measurement on $i$-th qubit.  
+    \item In the first round, the verifier generate a secret key and  public key pair $(sk,pk)$ from $h$ and $\lambda$ and sent $pk$ to the prover.
+    \item In the second round, the prover pick some $n$-qubit quantum state $\rho$ and generate a "commitment" $y$ from $pk$ and $\rho$. He send $y$ to the verifier and keep the leftover quantum state $\sigma$.
+    \item In the third round, the verifier send a uniformly random challenge bit $c\in \{0,1\}$. The prover needs to do a "Testing round" if $c=0$. The prover needs to do a "Hadamard round" if $c=1$.
+    \item In the fourth round. The prover generates a classical string $a$ from $c$ and $\sigma$ and send to back to the prover.
+    \item If $c=0$, the verifier decides whether he is going to reject from $(pk,a,y)$. If $c=1$ the verifier computes an $n$-bit string $z$ from $(sk,h,y,a)$.
+\end{enumerate}
+\end{protocol}
+
+
+\begin{lemma}[binding property of  Protocol~\ref{proto:urmila4}\cite{mahadev_delegation}]
+If a prover's strategy result in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that $z$ is computationally indistinguishable with $\negl(n)$ error \hannote{add notation for comp indist.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
+\end{lemma}
+
+\begin{rmk}
+Note that even a honest prover has complete freedom in choosing $\rho$, so protocol~\ref{proto:urmila4} didn't make the prover commit to a particular state. What it actually does is let the prover commit to a particular $XZ$ measurement on $\rho$. This is good enough for our application, since we will feed the $XZ$ measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$.
+\end{rmk}
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$}
 %Parallel Repetition of the Measurement Subprotocol
@@ -82,15 +114,25 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \begin{protocol}{$\QPIP_0$ for $\SampBQP$}
 \label{proto:QPIP0samp}
 \begin{enumerate}
-    \item Verifier start with description of quantum circuit $C$, input string $x$ 
-    \item Both verifier and prover start with a soundness parameter $\varepsilon$.
-    \item Run $N=O(1/\varepsilon)$ copies of [[urmilla protocol]] of in parallel.  On the testing round, the verifier uniformly randomly pick one copy and Hadamard round and has all other copies as test round.
-    \item Verified reject if any of the test round result is wrong. Otherwise, decode the Hadamard run desult and run \cref{ProtoQPIP1} on it
-    . 
+%    \item Verifier start with description of quantum circuit $C$, input string $x$ 
+    \item Both verifier and prover start with the description of number of qubits $n$, quantum circuit $C$, input string $x$, and  a soundness parameter $\varepsilon$.
+    \item Run $N=O(1/\varepsilon)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. On the second round, for each copy, the prover choose the state specified by Protocol~\ref{ProtoQPIP1} as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [N]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies.
+    \item \label{step:multi-testing}Verifier rejects if the results on any of the test rounds is wrong. 
+    \item Verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
 \end{protocol}
 
+\begin{theorem}\label{thm:urmila-binding}
+    Protocol~\ref{proto:QPIP0samp} is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and $\eps$ computational soundness error\hannote{definition}. 
+\end{theorem}
 
+\begin{proof}
+
+ [[partition lemma -> Parallel repetition]], except for probability $\eps$, either the verifier reject at step~\ref{step:multi-testing} or $z$ has binding property of Theorem~\ref{thm:urmila-binding}. 
+ 
+ 
+\end{proof}
+===========
 
 
 Here we follow \cite{parallelrep}.
