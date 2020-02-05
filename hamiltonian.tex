@@ -5,8 +5,6 @@ In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian prob
 
 \Ethan{Adiabatic and spectral gap ref = \cite{adiabatic}}
 
-%Here we lay our theoretical foundation by describing a reduction from $\SampBQP$ that we'll use throughout this paper. \hannote{?} Here we'll only state the theorems, and prove them later in the subsections.
-
 First note that $\set{H, T}$ is a universal gate set.
 
 
@@ -14,17 +12,12 @@ First note that $\set{H, T}$ is a universal gate set.
 \begin{thm}
 	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to another circuit $C'$ and classical input $x'$, where $C'$ contains only Hadamard and Toffoli gates.
 \end{thm}
-
-%We want to define and construct an instance of Local Hamiltonian that encodes the history of the computation.
- 
  
  We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$.% and define the following that implicitly depends on $L$.
 
 \begin{definition}
 	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
 \end{definition}
-
-%We fix $L=5$ for this paper.For any $L\in\bbN$, 
 
 \hannote{something?}
 
@@ -38,18 +31,6 @@ First note that $\set{H, T}$ is a universal gate set.
 	
 	Furthermore, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
 \end{thm}
-
-\iffalse
-\begin{definition}
-	We call the first registers of $\ket{\psi_{C(x)}}$ the data register, and the later registers of $\psi_{C(x)}$ the time register.
-\end{definition}
-
-
-\begin{thm}
-	Given a circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x$, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
-\end{thm}
-\fi
-
 
 \begin{thm}
 	Given circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
@@ -67,8 +48,6 @@ Lastly, before we present proofs for the above theorems, we make an observation.
 \hannote{throw this into appendix?}
  Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set. Because of this result, we cam assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates.
  
- %After this subsection, we'll be able to assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates. %After doing that, we make a further observation that we'll use later.
-
 \hannote{theorem?} We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
@@ -216,8 +195,6 @@ So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies
 \end{proof}
 
 \subsection{Checking the ground state of the local Hamiltonian}
-
-%Now we put the above results in term of measurement outputs.\hannote{???}
 
 We present an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$ following~\cite{PhysRevA.93.022326}.
 

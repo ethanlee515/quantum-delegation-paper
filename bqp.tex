@@ -33,7 +33,7 @@ We'll also summarize said proofs in \cref{sec:Hamiltonian} for our construction 
 \end{protocol}
 
 Now we compile \cref{proto:BQP} using $\mathsf{QHE}$ in order to achieve blindness.
-We denote the honest prover's action in $\cref{proto:BQP}$ as $\cF$; that is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
+We denote the honest prover's action in \cref{proto:BQP} as $\cF$; that is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
 
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
@@ -45,7 +45,7 @@ We denote the honest prover's action in $\cref{proto:BQP}$ as $\cF$; that is, $\
 		\item The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
 		\item The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
 		\item The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
-		\item The verifier measures the incoming ciphertext according to \autoref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates \Ethan{Not sure if rigorous enough}
+		\item The verifier measures the incoming ciphertext according to \cref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates \Ethan{Not sure if rigorous enough}
 		\item The verifier decodes the measurement results
 		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
 	\end{enumerate}
