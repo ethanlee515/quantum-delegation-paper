@@ -5,12 +5,20 @@ which we achieve by using the homomorphic encryption scheme from \cite{mahadev_q
 
 \subsection{Our Delegation Protocol}
 
-Now we compile our $\QPIP_1$ protocol \myprotoref{protoQPIP1} using the quantum homomorphic encryption $\mathsf{QHE}$ \Ethan{TODO maybe wrap this as a def} in a similar way as what we did for our blind $\BQP$ delegation protocol in \cref{sec:BlindQBP}
+Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homomorphic encryption $\mathsf{QHE}$ from \cref{decodeMeasureOrder} in the same way as what we did for our blind $\BQP$ delegation protocol (\cref{proto:BlindBQP}) in \cref{sec:BlindBQP}.
 
-The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} so we directly go into analysis. \Ethan{Need to remember security param if we write this out}
+\begin{protocol}{\cref{ProtoQPIP1} compiled using \cref{decodeMeasureOrder}}
+	\label{proto:QPIP1Samp}
+	\begin{enumerate}
+		\item The verifier runs $\mathsf{QHE.keygen}(1^\lambda, 1^L)$ where $L$ is the depth of circuit corresponding to the honest prover's action in \cref{ProtoQPIP1}
+		\item The verifier encrypts its input and runs \cref{ProtoQPIP1} with the prover homomorphically
+		\item The verifier measures the incoming ciphertext according to \cref{decodeMeasureOrder}
+		\item The verifier decodes the measurement results to get its output
+	\end{enumerate}
+\end{protocol}
 
 \begin{thm}
-	Compiling \cref{proto:QPIP0samp} using $\mathsf{QHE}$ preserves its completeness and soundness.
+	\cref{proto:QPIP1Samp} has the same completeness and soundness guarantees as \cref{ProtoQPIP1}
 \end{thm}
 \begin{proof}
 	A honest prover still gets accepted with overwhelming probability by the correctness of $\mathsf{QHE}$. \Ethan{Not sure if too hand-wavy}
@@ -22,11 +30,8 @@ The construction is obvious, \Ethan{Maybe still write it out...? Or maybe not?} 
 \end{proof}
 
 \begin{thm}
-	\myprotoref{ProtoPriv} is IND-CPA secure.
+	\cref{proto:QPIP1Samp} is IND-CPA secure.
 \end{thm}
 \begin{proof}
-	The verifier's first message is encrypted into $\tilde{x}$ in an IND-CPA way as a ciphertext.
-	The verifier's second message is the basis choice of Hadamard or test rounds, which can be done using public coins.
-
-	The verifier only sends the prover these two messages, so it follows \Ethan{hopefully?} easily that the protocol itself is also IND-CPA. \Ethan{Maybe not rigorous enough?}
+	\Ethan{TODO after nailing down protocol}
 \end{proof}

@@ -1,15 +1,14 @@
 \section{The History XZ Local Hamiltonian}
 \label{sec:Hamiltonian}
 
-In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem.
+In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian instance.
 
-\Ethan{TODO Give a bit of overview on what is this (I.e. QMA-completeness and whatnot)}
+The local Hamiltonian problem is $\QMA$-complete, which means it's $\BQP$-hard.
+Protocols to delegate $\BQP$ computations such as \cite{mahadev_delegation} \Ethan{Are there any more?} take advantage of this fact and require the prover to send the corresponding $\QMA$ certificate.
+We take a similar approach to delegate $\SampBQP$ computations; however, we need to extract more information from the certificates.
+Local Hamiltonians have been extensively studied in contexts of adiabatic quantum computations, so we will summarize known results from sources such as \cite{adiabatic}. \Ethan{This source was given to us by Yu-Ching; I haven't read it. Also I probably should cite more sources here.}
 
-This section will mostly be a summarization of known results related to adiabatic quantum computation found in sources such as \cite{adiabatic}. \Ethan{This source was given to us by Yu-Ching; I haven't read it}
-
-\Ethan{TODO Say something about wanting to do more with $\QMA$ certificates than just check yes/no-instances}
-
-Recall the following form that $\QMA$ certificates take:
+We begin by recalling the form that local Hamiltonian certificates:
 
 \begin{dfn}
 	\label{dfn:groundstate}	
@@ -24,16 +23,16 @@ Recall the following form that $\QMA$ certificates take:
 	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
 \end{rmk}
 
-\Ethan{Now say something about QMA here...}
-
-We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$. \Ethan{mention it's the basis for 5-local Hamiltonians?}
-
+We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
 \begin{dfn}
 	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
 \end{dfn}
 
+Now we state the main theorems that we'll work towards in this section.
+The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, with some additional properties that will be convenient for us:
 \begin{thm}
-	Let $C$ be a circuit of size $T$. For any input string $x$,  there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
+	\label{thm:LHReduction}
+	Let $C$ be a circuit of size $T$. For any input string $x$, there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
 		\item $H_{C(x)}$ has $\ket{\psi_{C(x)}}$ as the unique ground state with eigenvalue $0$.
@@ -42,22 +41,27 @@ We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal
 	\end{itemize}
 \end{thm}
 
+The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
 \begin{thm}
-	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
+	\label{ThmXZCheck}
+	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
 \end{thm}
 
 \subsection{Circuits of Toffoli and Hadamard gates}
 
-\hannote{throw this into appendix?}
 Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
 Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
- 
-\hannote{theorem?} We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
-$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
-	$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
+\begin{thm}
+	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
+\end{thm}
+\begin{proof}
+	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
+	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+\end{proof}
 
-Now we present the construction from \cite{quant-ph/0301040}.
-
+Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
 \begin{thm}
 	Let $C$ be a circuit that:
 	\begin{itemize}
@@ -72,9 +76,12 @@ Now we present the construction from \cite{quant-ph/0301040}.
 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
 	\end{itemize}
 \end{thm}
-
 \begin{proof}
-	Consider the transform on quantum states
+	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
+	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
+		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+
+	Now consider the transform on quantum states
 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
 	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
@@ -90,33 +97,10 @@ Now we present the construction from \cite{quant-ph/0301040}.
 	\end{itemize}
 \end{proof}
 
-Note that our new gate set can be written as linear combinations of $X$ and $Z$ matrices.
-
-\begin{thm}
-	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
-\end{thm}
-
-\begin{proof}
-	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
-\end{proof}
-
 \subsection{Reducing quantum circuit to local Hamiltonian}
 
-In this section, we show how to reduce a $\SampBQP$ circuit to a local-$XZ$-Hamiltonian.
+In this subsection, we prove \cref{thm:LHReduction} by showing how to reduce a $\SampBQP$ circuit to a local-$XZ$-Hamiltonian.
 
-\begin{thm}
-	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^n$. Then there exists a $\BPP$  machine which generates the  description of a $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
-	\begin{itemize}
-		\item its unique ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
-		\item $\braket{\psi_{C(x)}|H_{C(x)}|\psi_{C(x)}}=0$
-		\item $\forall\ket\phi,\braket{\phi|\psi_{C(x)}}=0\Rightarrow\braket{\phi|H_{C(x)}|\phi}\geq\frac{3}{4}$
-		\item $H_{C(x)}$ has $O(T)$ nonzero terms whose coefficients are  at most $O(T^3)$.
-	\end{itemize}
-\end{thm}
-
-\begin{proof}
 	The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
 	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
@@ -185,17 +169,17 @@ $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 \end{align*}
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
-\end{proof}
 
 \subsection{Checking the ground state of the local Hamiltonian}
 
-We present an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$ following~\cite{PhysRevA.93.022326}.
+In this subsection, we prove \cref{ThmXZCheck}.
+That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
 
 \begin{algorithm}
 	\caption{Check for ground state}
 	\label{AlgGroundStateCheck}
 		Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
-		Let $\ket\phi$ be the potential ground state to check
+		Let $\ket\phi$ be the potential ground state to check.
 		\begin{itemize}
 			\item Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
 			\item Set $p_S = \frac{|d_S|}{D}$
@@ -205,12 +189,11 @@ We present an algorithm that checks whether a given state is the ground state of
 		\end{itemize}
 \end{algorithm}
 
-\begin{thm}\label{ThmXZCheck}
-	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
-	Then \autoref{AlgGroundStateCheck} accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$.
+\begin{thm}
+	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients at most $O(\poly(T))$.
+	Then \cref{AlgGroundStateCheck} accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$.
 \end{thm}
 \begin{proof}
-
 	Here we follow \cite{PhysRevA.93.022326}.
 	\begin{align*}
 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
@@ -225,5 +208,4 @@ We present an algorithm that checks whether a given state is the ground state of
 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
 		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
 	\end{align*}
-
 \end{proof}
