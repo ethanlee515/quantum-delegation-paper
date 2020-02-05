@@ -122,7 +122,7 @@ The quantum homomorphic encryption scheme in \cite{mahadev_qfhe} has additional 
 	\begin{itemize}
 		\item $\mathsf{QHE.Keygen}$ can be done classically.
 		\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-		\item \Ethan{Is this obvious from the construction or do we need proof here?} Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ so that
+		\item \Ethan{Is this obvious from the construction or do we need proof here?} Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists product of $X$ and $Z$ measurements $\Lambda'$ and $\BPP$ algorithm $\widehat{\mathsf{QHE.Dec}}$ such that
 			$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 	\end{itemize}
 \end{thm}

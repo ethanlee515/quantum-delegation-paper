@@ -1,52 +1,56 @@
 \section{The History XZ Local Hamiltonian}
 \label{sec:Hamiltonian}
 
-In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem. \hannote{put proofs back. Adiabatic ref?}
+In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian problem.
 
-\Ethan{Adiabatic and spectral gap ref = \cite{adiabatic}}
+\Ethan{TODO Give a bit of overview on what is this (I.e. QMA-completeness and whatnot)}
 
-First note that $\set{H, T}$ is a universal gate set.
+This section will mostly be a summarization of known results related to adiabatic quantum computation found in sources such as \cite{adiabatic}. \Ethan{This source was given to us by Yu-Ching; I haven't read it}
 
+\Ethan{TODO Say something about wanting to do more with $\QMA$ certificates than just check yes/no-instances}
 
-\hannote{citation}
-\begin{thm}
-	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to another circuit $C'$ and classical input $x'$, where $C'$ contains only Hadamard and Toffoli gates.
-\end{thm}
- 
- We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$.% and define the following that implicitly depends on $L$.
+Recall the following form that $\QMA$ certificates take:
 
-\begin{definition}
+\begin{dfn}
+	\label{dfn:groundstate}	
+	Let $C=U_T\ldots U_1$ be a quantum circuit consisting of $T$ gates, and let $x\in\set{0,1}^n$. Then we denote
+	$$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$$
+	We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
+\end{dfn}
+
+\begin{rmk}
+	\label{idpadding}
+	One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
+	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
+\end{rmk}
+
+\Ethan{Now say something about QMA here...}
+
+We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$. \Ethan{mention it's the basis for 5-local Hamiltonians?}
+
+\begin{dfn}
 	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
-\end{definition}
-
-\hannote{something?}
+\end{dfn}
 
 \begin{thm}
-	Let $C$ be a circuit consisting of $T$ Hadamard or Toffoli gates. For any input string $x$,  there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
+	Let $C$ be a circuit of size $T$. For any input string $x$,  there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
-		\item $H_{C(x)}$ has a unique ground state  $\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$ with eigenvalue $0$. We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
+		\item $H_{C(x)}$ has $\ket{\psi_{C(x)}}$ as the unique ground state with eigenvalue $0$.
 		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
+		\item Its descriptions can be constructed by a $\BPP$ machine in polynomial time.
 	\end{itemize}
-	
-	Furthermore, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
 \end{thm}
 
 \begin{thm}
-	Given circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
+	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
 \end{thm}
-
-Lastly, before we present proofs for the above theorems, we make an observation.
-
-\begin{observation}
-	\label{idpadding}
-	Given a circuit $C$ and an input string $x$, one can first pad $C$ with identity matrices at the end, doubling its number of gates and obtaining another circuit $C'$. One can then measure the time register of $\ket{\psi_{C'(x)}}$ and obtain with probability $\frac{1}{2}$ the state $C(x)$.
-\end{observation}
 
 \subsection{Circuits of Toffoli and Hadamard gates}
 
 \hannote{throw this into appendix?}
- Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set. Because of this result, we cam assume without loss of generality that all quantum circuits consists of only Toffoli and Hadamard gates.
+Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
+Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
  
 \hannote{theorem?} We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
 $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
@@ -57,7 +61,7 @@ Now we present the construction from \cite{quant-ph/0301040}.
 \begin{thm}
 	Let $C$ be a circuit that:
 	\begin{itemize}
-		\item consists of either $H$ or $\Lambda(P(i))$, and the number of gates is $T$.\hannote{confusing?}
+		\item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
 		\item uses $n$ qubits
 	\end{itemize}
 	Then a classical machine given $C$ can compute a circuit $C'$ that:
@@ -100,7 +104,7 @@ Note that our new gate set can be written as linear combinations of $X$ and $Z$ 
 
 \subsection{Reducing quantum circuit to local Hamiltonian}
 
-In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Hamiltonian.
+In this section, we show how to reduce a $\SampBQP$ circuit to a local-$XZ$-Hamiltonian.
 
 \begin{thm}
 	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^n$. Then there exists a $\BPP$  machine which generates the  description of a $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
@@ -113,9 +117,11 @@ In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Ham
 \end{thm}
 
 \begin{proof}
-	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
+	The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
 	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
+
+	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues.
 
 	First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
 	$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
@@ -135,23 +141,10 @@ In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Ham
 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
 
-	Next, we check that $H_{prop}\geq0$ by the following transform.
+	We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least nonzero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
 
-	$$W=\sum_{j=0}^L U_j\ldots U_1\otimes\ket{j}\bra{j}$$
-	$$W^\dagger\phi=\sum_{t=0}^T\ket{x}\otimes\ket{\hat{t}}$$
-	$$W^\dagger H_{prop} W=
-	\begin{pmatrix}
-		\frac{1}{2} & -\frac{1}{2} & & & &  \\
-		-\frac{1}{2} & 1 & -\frac{1}{2} & & & \\
-		& -\frac{1}{2} & 1 & \ddots & & \\
-		& & \ddots & \ddots & -\frac{1}{2} & \\
-		& & & -\frac{1}{2} & 1 & -\frac{1}{2} \\
-		& & & & -\frac{1}{2} & \frac{1}{2}
-	\end{pmatrix}$$
-
-	According to \cite{2002quant.ph.10077A}, $H_{prop}\geq 0$ due to the above form being relevant to random walks. Furthermore, the last nonzero eigenvalue of $H_{prop}$ is at least $\frac{1}{2(T+1)^2}$.
-
-	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since the gates are either Hadamard or Toffoli. Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since our gates are either Hadamard or Toffoli.
+	Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
 	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
 	Extra care must be taken for boundary cases.
 	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
