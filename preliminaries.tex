@@ -12,13 +12,17 @@ The phase gate and Pauli matrices are denoted as follows.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
+\subsection{Basic complexity classes}
+
+\begin{dfn}
+	TODO Need to define $\BQP$, $\QMA$, and $\FBQP$.
+\end{dfn}
+
 We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
 	A sampling problem $S$ is a collection of probability distributions $(D_x)$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
 \end{definition}
-    
-\hannote{sampling generalize decision blah} \Ethan{That doesn't sound right}
 
 \begin{definition} [$\SampBQP$]
 	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which for all $\varepsilon$ there exists a quantum circuit constructible in time $\poly(|x|, \frac{1}{\varepsilon})$ that, given $x$ as input, samples from from a probability distribution $\tilde{D}_x$ such that $\norm{\tilde{D}_x-D_x}<\varepsilon$.
