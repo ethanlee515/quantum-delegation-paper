@@ -38,9 +38,29 @@ We classify the interaction between a (almost classical) client and a quantum se
 	\end{itemize}
 \end{definition}
 
+\subsection{Semantic security for interactive protocols}
+
+We present the security definition for interactive protocols:
+
+\begin{dfn}
+	Let $\lambda$ be a security parameter.
+	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
+	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
+\end{dfn}
+
+\begin{protocol}{Attack against semantic security}
+	\label{proto:indcpa}
+	\begin{enumerate}
+		\item The challenge picks $b\in\set{0,1}$ at random
+		\item If $b=0$, the challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
+		\item Otherwise, the challenger runs the protocol with the adversary, acting as the verifier with input $x$
+		\item $\cA$ attempts to guess $b$
+	\end{enumerate}
+\end{protocol}
+
 \subsection{Projection Lemma}
 
-We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which states the condition under which one can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
+We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
 
 \begin{thm}
 	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
@@ -68,7 +88,7 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
-We also use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client.
+We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the interface of a homomorphic encryption scheme:
 
 \begin{dfn}
 	A leveled homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
@@ -94,9 +114,7 @@ We also recall the security definition for a FHE scheme.
 	where $(pk, evk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
 \end{dfn}
 
-Now we present the quantum homomorphic encryption scheme in \cite{mahadev_qfhe}.
-It admits a classical client; one could do the encryption classically, and the decryption is compatible with $X$ and $Z$ measurements.
-In general, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then it can be used as a compiler to achieve blindness.
+The quantum homomorphic encryption scheme in \cite{mahadev_qfhe} has additional properties that facilitates the use of a classical clients as below:
 
 \begin{thm}
 	\label{decodeMeasureOrder}
@@ -109,20 +127,4 @@ In general, if a given protocol has classical inputs and uses only $X$ and $Z$ m
 	\end{itemize}
 \end{thm}
 
-\subsection{Security definition for interactive protocols}
-
-\begin{dfn}
-	Let $\lambda$ be a security parameter.
-	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
-	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
-\end{dfn}
-
-\begin{protocol}{$\QPIP_1$ protocol for $\SampBQP$}
-	\label{proto:indcpa}
-	\begin{enumerate}
-		\item The challenge picks $b\in\set{0,1}$ at random
-		\item If $b=0$, the challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
-		\item Otherwise, the challenger runs the protocol with the adversary, acting as the verifier with input $x$
-		\item $\cA$ attempts to guess $b$
-	\end{enumerate}
-\end{protocol}
+As we will see, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then $\mathsf{QHE}$ can be used as a compiler to achieve blindness.
