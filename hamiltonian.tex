@@ -11,9 +11,9 @@ First note that $\set{H, T}$ is a universal gate set.
 
 
 \hannote{citation}
-\begin{theorem}
+\begin{thm}
 	Given a circuit $C$ and classical input $x$, a $\BPP$ machine can reduce it to another circuit $C'$ and classical input $x'$, where $C'$ contains only Hadamard and Toffoli gates.
-\end{theorem}
+\end{thm}
 
 %We want to define and construct an instance of Local Hamiltonian that encodes the history of the computation.
  
@@ -28,7 +28,7 @@ First note that $\set{H, T}$ is a universal gate set.
 
 \hannote{something?}
 
-\begin{theorem}
+\begin{thm}
 	Let $C$ be a circuit consisting of $T$ Hadamard or Toffoli gates. For any input string $x$,  there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
 	\begin{itemize}
 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
@@ -37,7 +37,7 @@ First note that $\set{H, T}$ is a universal gate set.
 	\end{itemize}
 	
 	Furthermore, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
-\end{theorem}
+\end{thm}
 
 \iffalse
 \begin{definition}
@@ -45,15 +45,15 @@ First note that $\set{H, T}$ is a universal gate set.
 \end{definition}
 
 
-\begin{theorem}
+\begin{thm}
 	Given a circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x$, there exists a $\BPP$ machine that can construct a description of $H_{C(x)}$ in polynomial time.
-\end{theorem}
+\end{thm}
 \fi
 
 
-\begin{theorem}
+\begin{thm}
 	Given circuit $C$ consisting of Hadamard and Toffoli gates and an input string $x\in\set{0,1}^*$, there exists an quantum algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. In particular, it accepts the $\ket{psi_{C(x)}}$ with probability $\fot$. Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
-\end{theorem}
+\end{thm}
 
 Lastly, before we present proofs for the above theorems, we make an observation.
 
@@ -75,7 +75,7 @@ $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 
 Now we present the construction from \cite{quant-ph/0301040}.
 
-\begin{theorem}
+\begin{thm}
 	Let $C$ be a circuit that:
 	\begin{itemize}
 		\item consists of either $H$ or $\Lambda(P(i))$, and the number of gates is $T$.\hannote{confusing?}
@@ -88,7 +88,7 @@ Now we present the construction from \cite{quant-ph/0301040}.
 		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
 	\end{itemize}
-\end{theorem}
+\end{thm}
 
 \begin{proof}
 	Consider the transform on quantum states
@@ -109,9 +109,9 @@ Now we present the construction from \cite{quant-ph/0301040}.
 
 Note that our new gate set can be written as linear combinations of $X$ and $Z$ matrices.
 
-\begin{theorem}
+\begin{thm}
 	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
-\end{theorem}
+\end{thm}
 
 \begin{proof}
 	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
@@ -123,7 +123,7 @@ Note that our new gate set can be written as linear combinations of $X$ and $Z$ 
 
 In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Hamiltonian.
 
-\begin{theorem}
+\begin{thm}
 	Let $C=U_T\ldots U_1$ be a circuit consisting of Hadamard and Toffoli gates, and let $x\in\set{0, 1}^n$. Then there exists a $\BPP$  machine which generates the  description of a $H_{C(x)}\in\spn\mathcal{G}_{XZ}$ such that:
 	\begin{itemize}
 		\item its unique ground state is $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t...U_1\ket{x}\otimes\ket{\hat{t}}$$
@@ -131,7 +131,7 @@ In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Ham
 		\item $\forall\ket\phi,\braket{\phi|\psi_{C(x)}}=0\Rightarrow\braket{\phi|H_{C(x)}|\phi}\geq\frac{3}{4}$
 		\item $H_{C(x)}$ has $O(T)$ nonzero terms whose coefficients are  at most $O(T^3)$.
 	\end{itemize}
-\end{theorem}
+\end{thm}
 
 \begin{proof}
 	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues. The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
@@ -237,10 +237,10 @@ We present an algorithm that checks whether a given state is the ground state of
 		\end{itemize}
 \end{algorithm}
 
-\begin{theorem}\label{ThmXZCheck}
+\begin{thm}\label{ThmXZCheck}
 	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients are each at most $O(\poly(T))$.
 	Then \autoref{AlgGroundStateCheck} accepts $\ket\phi$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H|\phi}$.
-\end{theorem}
+\end{thm}
 \begin{proof}
 
 	Here we follow \cite{PhysRevA.93.022326}.

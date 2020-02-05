@@ -50,10 +50,10 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 	\end{enumerate}
 \end{protocol}
 
-\begin{theorem}
+\begin{thm}
     \label{QPIP1thm}
 	For any $L\in\SampBQP$, \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}} is a protocol for $L$ with negligible completeness. $\forall c\in\bbN$, it achieves soundness $(\varepsilon, \varepsilon)$ where $\varepsilon=T^{-c}$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
-\end{theorem}
+\end{thm}
 \begin{proof}
 	It clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover that has at least $\delta$ probability to be accepted. Let $\sigma$ be the state the prover sends to the verifier.
 

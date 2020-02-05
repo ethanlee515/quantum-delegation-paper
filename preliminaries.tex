@@ -43,20 +43,20 @@ We classify the interaction between a (almost classical) client and a quantum se
 We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which projects the ground state of the Hamiltonian $H_1$ to the ground space of a Hamiltonian $H_2$ with a large gap.
 
 \hannote{original text?}
-\begin{theorem}
+\begin{thm}
 	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$.
 	$$\exists J=\frac{\poly(\norm{H_1})}{\lambda(H_2|_{K^\bot})}$$
 	$$\lambda(H_1+JH_2)\geq\lambda(H_1\big|_K)-\frac{1}{8}$$
-\end{theorem}
+\end{thm}
 
 \subsection{Quantum de Finetti Theorem under Local Measurements}
 
 There are many formulations of quantum de Finetti theorems. We use the one from \cite{Brandão2017} because we need logarithmic dependence on $|A|$.
-\begin{theorem}
+\begin{thm}
 	\label{deFinetti}
 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state. Then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
 	$$\max_{\Lambda_1,\ldots,\Lambda_l}\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1\leq\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$$
-\end{theorem}
+\end{thm}
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
