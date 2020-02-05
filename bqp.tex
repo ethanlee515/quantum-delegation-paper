@@ -73,7 +73,7 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 \end{proof}
 
 \begin{thm}
-	\protoref{BlindBQP} is IND-CPA
+	\protoref{BlindBQP} is IND-CPA secure.
 \end{thm}
 \begin{proof}
 	The only thing the prover learns is $c$ and $pk$, so this follows directly from $\mathsf{QHE}$'s security.
@@ -83,14 +83,14 @@ Now we can simply apply the following results from \cite{parallelrep} to obtain 
 \begin{thm}
 	There is a compiler that takes a $\QPIP_1$ protocol with the following properties:
 	\begin{itemize}
-		\item classical inputs
-		\item client uses only X/Z measurements
-		\item negl. completeness and soundness
+		\item client's inputs are classical
+		\item client doesn't applies any quantum gates, and uses only $X$ and $Z$ measurements
+		\item completeness and soundness parameters are both negligible
 	\end{itemize}
-	and outputs a corresponding $\QPIP_0$ protocol with negl. completeness and soundness \Ethan{same inputs...?}
+	and outputs a corresponding $\QPIP_0$ protocol with negligible completeness and soundness.
 \end{thm}
 
 \begin{rmk}
 	The same construction works for $\FBQP$ too.
-	\Ethan{Maybe say more? Where should I define $\FBQP$?}
+	\Ethan{Need to say more about amplification and doing this bit-by-bit. Also, where should I define $\FBQP$?}
 \end{rmk}
