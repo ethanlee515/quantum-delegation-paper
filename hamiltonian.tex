@@ -119,7 +119,7 @@ Note that our new gate set can be written as linear combinations of $X$ and $Z$ 
 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 \end{proof}
 
-\subsection{Reducing quantum circuit to  local Hamiltonian }
+\subsection{Reducing quantum circuit to local Hamiltonian}
 
 In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Hamiltonian.
 
@@ -178,23 +178,21 @@ In this section, we show how to reduce a $\SampBQP$ circuit to a  local-$XZ$-Ham
 	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
 	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-	To properly combine the three Hamiltonians defined, we consider the kernels of the Hamiltonians we defined.
+	To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
 	$$K_{clock}=\ker H_{clock}$$
 	$$K_{in}=\ker H_{in}$$
 	$$K_{prop}=\ker H_{prop}$$
-	It is clear that $K_{clock}$ consists of the states with time registers of the form $\ket{\hat{t}}$.
 
-	\begin{lemma} \hannote{throw outside? or just merge}
-		$$K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
-	\end{lemma}
+	Clearly,
+	$$K_{clock}=\set{\sum_{t=1}^T \ket{\phi_t}\otimes\ket{\hat{t}}:\ket{\phi_t}\in\cB^{\otimes n}}$$
+	Let $\ket\phi\in K_{clock}\cap K_{prop}$.
+	Consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$.
+	As $\ket\phi\in K_{prop}$, we can then do induction using $\widetilde{t}$ as base case to get the relations between the $\ket{\phi_t}$s and conclude that $\ket\phi$ must have the form:
+	$$\ket\phi=\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}$$
+	$$\Rightarrow K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
 
-	\begin{proof}
-		Let $\ket\phi\in K_{clock}\cap K_{prop}$. As $\ket\phi\in K_{clock}$, the time register components are always valid unary representations. Now consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$. As $\ket\phi\in K_{prop}$, we can then say that $\bra{\widetilde{t+1}}\ket\phi=\bra{\widetilde{t}}U_{t+1}\ket\phi$ for $t\ne T$, and $\bra{\widetilde{t}}\ket\phi=U_t\bra{\widetilde{t-1}}\ket\phi$ for $t\ne0$. So we can obtain the required statement by induction.
-	\end{proof}
-
-	\begin{corollary}
-		$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$
-	\end{corollary}
+	As a direct result, we get
+	$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$$
 
 We now consider the space outside the desired state.
 $$S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$$

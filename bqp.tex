@@ -5,11 +5,10 @@ In this section we present our constant-round blind delegation protocol for $\BQ
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
 \begin{thm}
-	\Ethan{Main theorem of the section}
 	There exists a constant-round and blind $\QPIP_0$ protocol with a classical client for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 
-We'll construct this protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
+We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 
 Let $L\in\BQP$, and $x\in\set{0,1}^*$.
 
@@ -92,5 +91,6 @@ Now we can simply apply the following results from \cite{parallelrep} to obtain 
 \end{thm}
 
 \begin{rmk}
-	The same construction works for $\FBQP$ too. \Ethan{maybe say more?}
+	The same construction works for $\FBQP$ too.
+	\Ethan{Maybe say more? Where should I define $\FBQP$?}
 \end{rmk}
