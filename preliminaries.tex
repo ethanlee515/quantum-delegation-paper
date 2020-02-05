@@ -40,13 +40,21 @@ We classify the interaction between a (almost classical) client and a quantum se
 
 \subsection{Projection Lemma}
 
-We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which projects the ground state of the Hamiltonian $H_1$ to the ground space of a Hamiltonian $H_2$ with a large gap.
+We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which relates the ground state of Hamiltonians $H_1 + H_2$ with the ground state of $H_1\big|_{\ker H_2}$.
 
-\hannote{original text?}
 \begin{thm}
-	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$.
-	$$\exists J=\frac{\poly(\norm{H_1})}{\lambda(H_2|_{K^\bot})}$$
-	$$\lambda(H_1+JH_2)\geq\lambda(H_1\big|_K)-\frac{1}{8}$$
+	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
+	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
+	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
+\end{thm}
+
+We will instead use the following formulation, which can be obtained by relabeling variables from above.
+
+\begin{thm}
+	\label{thm:projection}
+	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$. Then,
+	$$\exists J=\frac{\poly(\norm{H_1})}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
 \end{thm}
 
 \subsection{Quantum de Finetti Theorem under Local Measurements}
@@ -60,10 +68,10 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
-We also use the quantum full homomorphic encryption (QFHE) scheme given in \cite{mahadev_qfhe} which allows the use of a classical client.
+We also use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client.
 
 \begin{dfn}
-	A homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	A leveled homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, evk, sk)$
 		\item $\mathsf{HE.Enc}_{pk}(\mu)\rightarrow c$
@@ -96,7 +104,7 @@ In general, if a given protocol has classical inputs and uses only $X$ and $Z$ m
 	\begin{itemize}
 		\item $\mathsf{QHE.Keygen}$ can be done classically.
 		\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-		\item \Ethan{Is this obvious from the construction or do we need proof here?} Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ a BPP algorithm so that
+		\item \Ethan{Is this obvious from the construction or do we need proof here?} Let $\Lambda$ be a product of $X$ and $Z$ measurements. Then there exists $\Lambda'$ product of $X$ and $Z$ measurements and $\widehat{\mathsf{QHE.Dec}}$ so that
 			$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 	\end{itemize}
 \end{thm}
@@ -106,11 +114,11 @@ In general, if a given protocol has classical inputs and uses only $X$ and $Z$ m
 \begin{dfn}
 	Let $\lambda$ be a security parameter.
 	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
-	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \myprotoref{protoIndCPA} with probability better than $\frac{1}{2}+\negl(\lambda)$
+	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
 \end{dfn}
 
 \begin{protocol}{$\QPIP_1$ protocol for $\SampBQP$}
-	\label{ProtoIndCPA}
+	\label{proto:indcpa}
 	\begin{enumerate}
 		\item The challenge picks $b\in\set{0,1}$ at random
 		\item If $b=0$, the challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
