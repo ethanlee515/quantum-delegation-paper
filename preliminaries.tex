@@ -12,10 +12,16 @@ The phase gate and Pauli matrices are denoted as follows.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
-\subsection{Basic complexity classes}
+\subsection{Relevant complexity classes}
+
+We define a few relevant complexity classes. \Ethan{Do we need to define $\BPP$ and $\BQP$ too?}
 
 \begin{dfn}
-	TODO Need to define $\BQP$, $\QMA$, and $\FBQP$.
+	$\QMA$ is the quantum analogue of the class $\MA$. The verifier in $\QMA$ is now a $\BQP$ machine.
+\end{dfn}
+
+\begin{dfn}
+	$\FBQP$ is the functional analogue of the class $\BQP$. That is, every instance corresponds to a string rather than a yes/no bit. The error probability is still bounded above away from $\fot$ for some uniform quantum circuit family.
 \end{dfn}
 
 We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013}.
@@ -83,8 +89,8 @@ We will instead use the following formulation, which can be obtained by relabeli
 
 \subsection{Quantum de Finetti Theorem under Local Measurements}
 
-There are many formulations of quantum de Finetti theorems. We use the one from \cite{Brandão2017} because we need logarithmic dependence on $|A|$.
-\Ethan{TODO maybe describe what it does? There was some catch-phrase in one of the paper that says ``??? implies independence" I think}
+De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
+There are many formulations; we use the one from \cite{Brandão2017} because we need logarithmic dependence on $|A|$.
 \begin{thm}
 	\label{deFinetti}
 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state. Then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
@@ -94,7 +100,6 @@ There are many formulations of quantum de Finetti theorems. We use the one from 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
 We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the interface of a homomorphic encryption scheme:
-
 \begin{dfn}
 	A leveled homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
