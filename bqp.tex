@@ -1,103 +1,68 @@
 \section{Delegation for BQP}
 \label{sec:BlindBQP}
 
-In this section we present our constant-round blind delegation protocol for $\BQP$.
-We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
-
+In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
 	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
 \end{thm}
-
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
+We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
 Let $L\in\BQP$, and $x\in\set{0,1}^n$.
+We start with an overview of the $\QPIP_1$ scheme from \cite{mahadev_delegation}, which was in turn taken from \cite{mf16}.
+We'll summarize some more relevant details of this construction in \cref{sec:Hamiltonian} for our construction for $\SampBQP$.
 
-\Ethan{TODO cite MF instead}
-There exists some certificate for both $x\in L$ and $x\notin L\Rightarrow x\in\overline{L}$, since $L, \overline{L}\in\QMA$.
-In fact, they have the same certificate $\ket{\psi_x}$ with some inverse polynomial gap between the completeness and soundness parameters.
-See the excellent text \cite{kitaev2002classical} for details.
-According to \cite{PhysRevA.93.022326}, the certificate can be check using only $X$ and $Z$ measurements.
-We'll also summarize said proofs in \cref{sec:Hamiltonian} for our construction for $\SampBQP$.
-
-\Ethan{Consider citing Mahadev protocol 8.3 or theorem 8.4 instead}
-\Ethan{Rewrite according to definition of $\BQP$ and yes/no instances}
-\begin{thm}
-	\protoref{BQP} is a $\QPIP_1$ protocol for $\BQP$ with negligible completeness and soundness.
-\end{thm}
-
-\begin{protocol}{Protocol for $\BQP$}
+\begin{protocol}{Verifying yes-instances for $\BQP$}
 	\label{proto:BQP}
-	Let $n$ be the number of repetitions required to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
 	\begin{enumerate}
-		\item The verifier sends $x$ to the prover
-		\item The honest prover sends $2n$ copies of $\ket{\psi_x}$ to the verifier
-		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+		\item The verifier chooses some tensor product of $X$ and $Z$ measurements $\Lambda$
+		\item The prover sends the verifier some state $\rho\in\cB^{\otimes m}$ qubit-by-qubit.
+		\item The verifier measures $\rho$ according to $S$
+		\item The verifier decides whether to accept based on the measurement results.
 	\end{enumerate}
 \end{protocol}
 
+\cref{proto:BQP} has negligible completeness and soundness. \Ethan{Elaborate or no?}
+
 Now we compile \cref{proto:BQP} using $\mathsf{QHE}$ in order to achieve blindness.
-We denote the honest prover's action in \cref{proto:BQP} as $\cF$; that is, $\cF(x)=\ket{\psi_x}^{\otimes 2n}$.
+We denote the honest prover's action in \cref{proto:BQP} as $\cF$.
 
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
-	Let $\lambda$ be the security parameter.
-	Let $L$ be the depth of the circuit corresponding to $\cF$.
-	Let $n$ be number of repetitions required to achieve negligible completeness and soundness for the corresponding $\QMA$ certificate checks.
+	Let $d$ be the depth of the circuit corresponding to $\cF$.
 	\begin{enumerate}
-		\item The verifier runs $\mathsf{QHE.Keygen}(\lambda, L)$ to get $pk, sk$.
-		\item The verifier encrypts $x$ to get $\mathsf{QHE.Enc}_{pk}(x)$
-		\item The verifier sends $c=\mathsf{QHE.Enc}_{pk}(x)$ and $pk$ to the prover
-		\item The prover sends $\mathsf{QHE.Eval}(\cF, c)$ to the verifier
-		\item The verifier measures the incoming ciphertext according to \cref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates \Ethan{Not sure if rigorous enough}
-		\item The verifier decodes the measurement results
-		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
-		\Ethan{No need; $\BQP$ is one-sided}
+		\item The verifier chooses $\Lambda$ and computes $\Lambda'$ using \cref{decodeMeasureOrder}
+		\item The verifier runs $\mathsf{QHE.Keygen}(1^n, 1^d)$ to get $pk, sk, evk$.
+		\item The verifier computes $c=\mathsf{QHE.Enc}_{pk}(x)$
+		\item The verifier sends $c$ and $evk$ to the prover
+		\item The prover computes $\mathsf{QHE.Eval}(\cF, c)$ and sends it to the verifier qubit-by-qubit.
+		\item The verifier measures the incoming ciphertext according to $\Lambda'$
+		\item The verifier applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to the measurement results
+		\item The verifier decides whether to accept based on \cref{proto:BQP}
 	\end{enumerate}
 \end{protocol}
 
 As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
 
 \begin{thm}
-	\protoref{BlindBQP} has negligible completeness in both $T$ and $\lambda$
-	\Ethan{$\lambda$ and $T$ are poly. related, so keep $\lambda$ only.}
+	\cref{proto:BlindBQP} preserves the completeness and soundness of \cref{proto:BQP}
 \end{thm}
 \begin{proof}
-	Based on the correctness of $\mathsf{QHE}$, the verifier would successfully decode $\cF(c)$ with overwhelming probability.
-	The subsequent underlying QMA check also has overwhelming probability of acceptance.
+	Based on the correctness of $\mathsf{QHE}$, any prover strategy in \cref{proto:BlindBQP} has a corresponding strategy in \cref{proto:BQP}.
 \end{proof}
 
 \begin{thm}
-	\protoref{BlindBQP} has negligible soundness in both $T$ and $\lambda$
+	\cref{proto:BlindBQP} is IND-CPA secure.
 \end{thm}
 \begin{proof}
-	The verifier's actions is equivalent to first decoding the prover's message then measuring it.
-
-	Suppose the prover's message decodes to some $\rho$. Since it is a quantum state, the soundness of the underlying $\QMA$ instance can be used.
-	
-	That is, there doesn't exists a valid certificate $\rho$ that has non-negligible probability of acceptance.
+	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{proof}
 
-\begin{thm}
-	\protoref{BlindBQP} is IND-CPA secure.
-\end{thm}
-\begin{proof}
-	The only thing the prover learns is $c$ and $pk$, so this follows directly from $\mathsf{QHE}$'s security.
-\end{proof}
-
-Now we can simply apply the following results from \cite{parallelrep} to obtain a blind and constant-round for $\QPIP_0$ with negligible completeness and soundness.
-\Ethan{Drop the theorem and explain in words. Mahadev's protocol compiles QPIP1 to QPIP0 but deteriorates soundness, and \cite{parallelrep} says parallel repetition works to recover good soundness guarantees.}
-\begin{thm}
-    \Ethan{TODO Not rigorous enough}
-	There is a compiler that takes a $\QPIP_1$ protocol with the following properties:
-	\begin{itemize}
-		\item client's inputs are classical
-		\item client doesn't applies any quantum gates, and uses only $X$ and $Z$ measurements
-		\item completeness and soundness parameters are both negligible
-	\end{itemize}
-	and outputs a corresponding $\QPIP_0$ protocol with negligible completeness and soundness.
-\end{thm}
+Mahadev's protocol compiles QPIP1 to QPIP0 but deteriorates soundness, and \cite{parallelrep} says parallel repetition works to recover good soundness guarantees.
+\Ethan{TODO elaborate}
 
 \begin{rmk}
-	Everything in this section easily generalizes to $\FBQP$. One simply repeats the process for every output bit.
-	\Ethan{actually need 2 copies per bit now}
+	Our protocol for $\BQP$ can easily be generalized to $\FBQP$ too in the following way:
+	\Ethan{TODO actually need 2 copies per bit now}
 \end{rmk}
+
