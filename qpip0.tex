@@ -116,9 +116,9 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
     \item Both verifier and prover start with the description of number of qubits $n$, quantum circuit $C$, input string $x$, and  a soundness parameter $\varepsilon$.
-    \item Run $N=O(1/\varepsilon)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. On the second round, for each copy, the prover choose the state specified by Protocol~\ref{ProtoQPIP1} as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [N]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies.
-    \item \label{step:multi-testing}Verifier rejects if the results on any of the test rounds is wrong. 
-    \item Verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
+    \item Run $N=O(1/\varepsilon)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. On the second round, for each copy, the prover choose the state specified by Protocol~\ref{ProtoQPIP1}  (with error $\eps$) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [N]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies.
+    \item \label{step:multi-testing}Verifier rejects if the results on any of the test rounds is rejected. 
+    \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
 \end{protocol}
 
@@ -126,9 +126,26 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
     Protocol~\ref{proto:QPIP0samp} is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and $\eps$ computational soundness error\hannote{definition}. 
 \end{theorem}
 
+\begin{definition}[computationally indistinguishable]
+\hannote{move later}
+Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes a sample from $D_1$ as part of its input. 
+\end{definition}
+%Let $O^{D_1}$ and $O^{D_2}$ be oracles giving samples from $D_1$ and $D_2$.
+
+\begin{rmk}
+If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally indistinguishable.
+\end{rmk}
+
+
+
 \begin{proof}
 
- [[partition lemma -> Parallel repetition]], except for probability $\eps$, either the verifier reject at step~\ref{step:multi-testing} or $z$ has binding property of Theorem~\ref{thm:urmila-binding}. 
+By Lemma~\label{lem:partition}
+
+
+ [[Partition lemma -> Parallel repetition]], except for probability $\eps$, either the verifier reject at step~\ref{step:multi-testing} or $z$ is $\negl(n)$-computationally indistinguishable to $M_{XZ}(\rho,h)$ by Theorem~\ref{thm:urmila-binding}. 
+ 
+ By theorem~\ref{QPIP1thm}, $M_{XZ}(\rho,h)$  $\eps$-close to $C(x)$. Therefore\hannote{?}, $M_{XZ}(\rho,h)$  and  $C(x)$ $z$ are $\eps$-Q-computationally indistinguishable, and thus $z$ and $C(x)$ are  $2\eps$-Q-computationally indistinguishable.
  
  
 \end{proof}
@@ -154,8 +171,8 @@ Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test rou
 
 First, We present a lemma from \cite{parallelrep}  that gives a decomposition of a cheating prover's state. We omit the proof here.
 
-\begin{lemma}[Lemma 3.5 of \cite{parallelrep}]\label{lem:partition}
-Let $(U_0,U)$ be any prover's strategy. Let $m=O(\log \secpar)$, $i\in[m]$, 
+\begin{lemma}[Slight adaption from Lemma 3.5 of \cite{parallelrep}]\label{lem:partition}
+Let $(U_0,U)$ be any prover's strategy in Protocol~\ref{proto:QPIP0samp}. Let $m=O(\log \secpar)$, $i\in[m]$, 
 $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\frac{\gamma_0}{T}=1/\poly(\secpar)$. Let $\gamma$ be sampled uniformly randomly from $[\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}]$. Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{\regX,\regZ}$,  
 \begin{align*}
     G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = z_0\ket{0^m}_{\regC}\ket{\psi_{0}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+ z_1\ket{0^m}_{\regC}\ket{\psi_{1}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
