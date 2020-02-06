@@ -5,21 +5,24 @@ In this section we present our constant-round blind delegation protocol for $\BQ
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
 \begin{thm}
-	There exists a constant-round and blind $\QPIP_0$ protocol with a classical client for $\BQP$ with negligible completeness and soundness.
+	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 
-Let $L\in\BQP$, and $x\in\set{0,1}^*$.
+Let $L\in\BQP$, and $x\in\set{0,1}^n$.
 
+\Ethan{TODO cite MF instead}
 There exists some certificate for both $x\in L$ and $x\notin L\Rightarrow x\in\overline{L}$, since $L, \overline{L}\in\QMA$.
 In fact, they have the same certificate $\ket{\psi_x}$ with some inverse polynomial gap between the completeness and soundness parameters.
 See the excellent text \cite{kitaev2002classical} for details.
 According to \cite{PhysRevA.93.022326}, the certificate can be check using only $X$ and $Z$ measurements.
 We'll also summarize said proofs in \cref{sec:Hamiltonian} for our construction for $\SampBQP$.
 
+\Ethan{Consider citing Mahadev protocol 8.3 or theorem 8.4 instead}
+\Ethan{Rewrite according to definition of $\BQP$ and yes/no instances}
 \begin{thm}
-	\protoref{BQP} is a $\QPIP_1$ and constant round protocol for $\BQP$ with negligible completeness and soundness.
+	\protoref{BQP} is a $\QPIP_1$ protocol for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 
 \begin{protocol}{Protocol for $\BQP$}
@@ -48,6 +51,7 @@ We denote the honest prover's action in \cref{proto:BQP} as $\cF$; that is, $\cF
 		\item The verifier measures the incoming ciphertext according to \cref{decodeMeasureOrder} and how it would've checked the $\QMA$ certificates \Ethan{Not sure if rigorous enough}
 		\item The verifier decodes the measurement results
 		\item The verifier uses $n$ copies to check for $x\in L$, and the other $n$ copies to check for $x\in\overline{L}$
+		\Ethan{No need; $\BQP$ is one-sided}
 	\end{enumerate}
 \end{protocol}
 
@@ -55,6 +59,7 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 
 \begin{thm}
 	\protoref{BlindBQP} has negligible completeness in both $T$ and $\lambda$
+	\Ethan{$\lambda$ and $T$ are poly. related, so keep $\lambda$ only.}
 \end{thm}
 \begin{proof}
 	Based on the correctness of $\mathsf{QHE}$, the verifier would successfully decode $\cF(c)$ with overwhelming probability.
@@ -80,7 +85,9 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 \end{proof}
 
 Now we can simply apply the following results from \cite{parallelrep} to obtain a blind and constant-round for $\QPIP_0$ with negligible completeness and soundness.
+\Ethan{Drop the theorem and explain in words. Mahadev's protocol compiles QPIP1 to QPIP0 but deteriorates soundness, and \cite{parallelrep} says parallel repetition works to recover good soundness guarantees.}
 \begin{thm}
+    \Ethan{TODO Not rigorous enough}
 	There is a compiler that takes a $\QPIP_1$ protocol with the following properties:
 	\begin{itemize}
 		\item client's inputs are classical
@@ -92,4 +99,5 @@ Now we can simply apply the following results from \cite{parallelrep} to obtain 
 
 \begin{rmk}
 	Everything in this section easily generalizes to $\FBQP$. One simply repeats the process for every output bit.
+	\Ethan{actually need 2 copies per bit now}
 \end{rmk}
