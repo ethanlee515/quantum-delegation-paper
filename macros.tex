@@ -97,30 +97,6 @@
 \newtheorem{dfn}{Definition}[section]
 %\newtheorem{con}[thm]{Conjecture}
 
-%\makeatletter
-%\newtheorem*{rep@theorem}{\rep@title}
-%\newcommand{\newreptheorem}[2]{%
-%\newenvironment{rep#1}[1]{%
-% \def\rep@title{#2 \ref{##1} (restatement)}%
-% \begin{rep@theorem}}%
-% {\end{rep@theorem}}}
-%\makeatother
-
-\iffalse
-\makeatletter
-\newtheorem*{rep@theorem}{\rep@title}
-\newcommand{\newreptheorem}[2]{%
-\newenvironment{rep#1}[1]{%
- \def\rep@title{#2 \ref{##1}}%
- \begin{rep@theorem}}%
- {\end{rep@theorem}}}
-\makeatother
-
-\newreptheorem{thm}{Theorem}
-\newreptheorem{lem}{Lemma}
-
-\fi
-
 \def\eps{\epsilon}
 \def\va{{\vec{a}}}
 \def\vb{{\vec{b}}}
