@@ -1,6 +1,30 @@
 \section{Delegation for BQP}
 \label{sec:BlindBQP}
 
+\Ethan{More feedback notes go here to be implemented later}
+
+\Ethan{Read other papers and see if I can copy their tones and phrasing}
+
+\Ethan{Important lemmas such as 2.4 should be emphasized more and especially this one shouldn't be in prelim.}
+
+\Ethan{2.4 should be a key obsv.}
+
+\Ethan{protocol 2 should say 1 message QPIP1 for BQP}
+
+\Ethan{``choose some tensor"? need distribution info and some basis choice}
+
+\Ethan{Try copying from https://arxiv.org/pdf/1911.08101.pdf pg 11?}
+
+\Ethan{Or parallel rep with efficient ver.}
+
+\Ethan{If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
+
+\Ethan{Two main problems; 1. not professional enough, 2. flow}
+
+\Ethan{Just syntax of QFHE in the preliminary; move the theorem here}
+
+\Ethan{end of notes}
+
 In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
 	\label{thm:QPIP0BQP}
@@ -9,18 +33,24 @@ In this section we present our constant-round blind delegation protocol for $\BQ
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
+\Ethan{Take out the following and take from google docs}
+
 Let $L\in\BQP$, and $x\in\set{0,1}^n$.
 We start with an overview of the $\QPIP_1$ scheme from \cite{mahadev_delegation}, which was in turn taken from \cite{mf16}.
 
 \begin{protocol}{Verifying yes-instances for $\BQP$}
 	\label{proto:BQP}
 	We give only a high-level description here.
+	\Ethan{Don't say this}
 	For more details, see \cref{AlgGroundStateCheck} where we generalize this for $\SampBQP$.
+	\Ethan{Reference something else; referencing $\SampBQP$ is a bad idea here}
 	\begin{enumerate}
+	    \Ethan{Phrase like ``for some input x, generate y"}
 		\item The verifier chooses some tensor product of $X$ and $Z$ measurements $\Lambda$
-		\item The prover sends the verifier some state $\rho\in\cB^{\otimes m}$ qubit-by-qubit.
-		\item The verifier measures $\rho$ according to $S$
-		\item The verifier decides whether to accept based on the measurement results.
+		\Ethan{just say there's some certain distribution that $\Lambda$ was sampled from}
+		\item The prover sends the verifier some state $\rho\in\cB^{\otimes m}$ qubit-by-qubit. \Ethan{quantify m?}
+		\item The verifier measures $\rho$ according to $S$ \Ethan{give measurement outcome notation}
+		\item The verifier decides whether to accept based on the measurement results. \Ethan{``Takes measurement outcome and generates acc/rej"}
 	\end{enumerate}
 \end{protocol}
 
@@ -30,9 +60,11 @@ Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
+	\Ethan{Define/quantify $x$ and whatnot}
 	Let $d$ be the depth of the circuit corresponding to $\cF$.
 	\begin{enumerate}
 		\item The verifier chooses $\Lambda$ and computes $\Lambda'$ using \cref{decodeMeasureOrder}
+		\Ethan{Reference to particular steps of the last protocol}
 		\item The verifier runs $\mathsf{QHE.Keygen}(1^n, 1^d)$ to get $pk, sk, evk$.
 		\item The verifier computes $c=\mathsf{QHE.Enc}_{pk}(x)$
 		\item The verifier sends $c$ and $evk$ to the prover
@@ -49,10 +81,12 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	\cref{proto:BlindBQP} preserves the completeness and soundness of \cref{proto:BQP}
 \end{thm}
 \begin{proof}
+    \Ethan{Completeness is trivial, but soundness isn't as trivial as this makes it look like}
 	Based on the correctness of $\mathsf{QHE}$, any prover strategy in \cref{proto:BlindBQP} has a corresponding strategy in \cref{proto:BQP}.
 \end{proof}
 
 \begin{thm}
+    \Ethan{Use ``blind", not IND-CPA for protocols}
 	\cref{proto:BlindBQP} is IND-CPA secure.
 \end{thm}
 \begin{proof}
