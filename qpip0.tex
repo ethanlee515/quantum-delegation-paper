@@ -116,7 +116,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
     \item Both verifier and prover start with the description of number of qubits $n$, quantum circuit $C$, input string $x$, and  a soundness parameter $\varepsilon$.
-    \item Run $N=O(1/\varepsilon)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. On the second round, for each copy, the prover choose the state specified by Protocol~\ref{ProtoQPIP1}  (with error $\eps$) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [N]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies.
+    \item Run $m=O(1/\varepsilon)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. On the second round, for each copy, the prover choose the state specified by Protocol~\ref{ProtoQPIP1}  (with error $\eps$) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies.
     \item \label{step:multi-testing}Verifier rejects if the results on any of the test rounds is rejected. 
     \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
@@ -140,7 +140,16 @@ If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally ind
 
 \begin{proof}
 
-By Lemma~\label{lem:partition}
+Choose the $T$ in Lemma~\ref{lem:partition} to be $\Theta(m^3)$ \hannote{$\gamma_0$?}. By Property~\ref{partition-property-1} of Lemma~\ref{lem:partition}, 
+$$\forall i, \L(1- 1/m^2\R)\text{fraction of }\gamma$$ 
+satisfies that 
+$$\norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
+Therefore, there exist an $\gamma$ such that 
+$$\forall i,\, \norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
+
+Denote $G_{i,\gamma}$ with  $\gamma$ found above as $G_i$.
+
+
 
 
  [[Partition lemma -> Parallel repetition]], except for probability $\eps$, either the verifier reject at step~\ref{step:multi-testing} or $z$ is $\negl(n)$-computationally indistinguishable to $M_{XZ}(\rho,h)$ by Theorem~\ref{thm:urmila-binding}. 
@@ -172,7 +181,7 @@ Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test rou
 First, We present a lemma from \cite{parallelrep}  that gives a decomposition of a cheating prover's state. We omit the proof here.
 
 \begin{lemma}[Slight adaption from Lemma 3.5 of \cite{parallelrep}]\label{lem:partition}
-Let $(U_0,U)$ be any prover's strategy in Protocol~\ref{proto:QPIP0samp}. Let $m=O(\log \secpar)$, $i\in[m]$, 
+Let $(U_0,U)$ be any prover's strategy in Protocol~\ref{proto:QPIP0samp}.  $i\in[m]$, 
 $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\frac{\gamma_0}{T}=1/\poly(\secpar)$. Let $\gamma$ be sampled uniformly randomly from $[\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}]$. Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{\regX,\regZ}$,  
 \begin{align*}
     G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = z_0\ket{0^m}_{\regC}\ket{\psi_{0}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+ z_1\ket{0^m}_{\regC}\ket{\psi_{1}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
@@ -184,7 +193,7 @@ Furthermore, the following properties are satisfied.
 %
 \begin{enumerate}
 %\item There exist (sub-normalized) states $\ket{\psi_0}_{\regX,\regZ}$ and $\ket{\psi_1}_{\regX,\regZ}$ such that when $G_{i,\gamma}$ runs on input $\ket{\psi}_{\regX,\regZ}$, the output is  $(0,\ket{\psi_0}_{\regX,\regZ}/\|\ket{\psi_0}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_0}_{\regX,\regZ}\|^2$, $(1,\ket{\psi_1}_{\regX,\regZ}/\|\ket{\psi_1}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_1}_{\regX,\regZ}\|^2$, and $\bot$ with probability  $1-\|\ket{\psi_0}_{\regX,\regZ}\|^2- \|\ket{\psi_1}_{\regX,\regZ}\|^2$,
-    \item If we define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$, then we have  $E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$.
+    \item \label{partition-property-1} If we define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$, then we have  $E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$. 
 \item For any fixed $\gamma$, $\Pr[M_{ph,th,in}\circ \ket{\psi'_{err}} \in \{0^t01,0^t11\}] =0$. %where $M_{ph,th,in}$ is the computational-basis measurement in the register $(ph,th,in)$. %and $t$ is the number of qubits in $ph$.   
 This implies that if we apply the measurement $M_{ph,th,in}$ on $\frac{G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in}}{\|\ket{\psi}_{\regX,\regZ}\|}$, then the outcome is $0^tb1$ with probability $\|\ket{\psi_b}_{\regX,\regZ}\|^2$ and the resulting state in the register $(\regX,\regZ)$  is $\frac{\ket{\psi_b}_{\regX,\regZ}}{\|\ket{\psi_b}_{\regX,\regZ}\|}$ ignoring a global phase factor.
     \item For any fixed $\gamma$, $E_{b\in \{0,1\}} [\|\ket{\psi_b}_{\regX,\regZ}\|^2]\leq \frac{1}{2}\|\ket{\psi}_{\regX,\regZ}\|^2$. 
