@@ -97,30 +97,22 @@ Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 	\end{enumerate}
 \end{protocol}
 
-As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
-
-\Ethan{Combine the following two theorems}
+As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and blind protocol for $\BQP$ with negligible completeness and soundness.
 
 \begin{thm}
-	\cref{proto:BlindBQP} has negligible completeness and soundness.
+	\cref{proto:BlindBQP} has negligible completeness and soundness, and is blind.
 \end{thm}
 \begin{prf}
 	The completeness follows by inspection.
-
-	For soundness, suppose the prover sends $\sigma$.
+	For blindness, the only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 
     \Ethan{rewrite the following as a reduction. If exists adversary $P*$ that breaks soundness of this protocol, construct $P**$ that breaks the other one...}
+
+	For soundness, suppose the prover sends $\sigma$.
     
 	The verifier's actions, by \cref{decodeMeasureOrder}, is $\negl(n)$-close to to decoding $\sigma$ to get some $\rho$ then applying $\Lambda$ to get $w$.
 	In other words, the verifier's outputs is $\negl(n)$-close to the verifer of \cref{proto:BQP} under the same input and receiving $\rho$ from the prover.
 	So the conclusion follows from the negligible soundness of \cref{proto:BQP}.
-\end{prf}
-
-\begin{thm}
-	\cref{proto:BlindBQP} is blind.
-\end{thm}
-\begin{prf}
-	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{prf}
 
 \Ethan{Below is copied from google docs}
