@@ -1,13 +1,16 @@
-\section{Delegation for BQP}
+\section{Blind Delegation for BQP and FBQP}
 \label{sec:BlindBQP}
 
 \Ethan{TODO Read other papers and see if I can copy their tones and phrasing}
 
 \Ethan{Note to self: If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
 
-\Ethan{Cut into two subsections, one for BQP and one for FBQP}
+\Ethan{TODO Intro this section}
 
-In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
+\subsection{Blind Delegation for BQP}
+\label{subsec:BlindBQP}
+
+In this subsection we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
 	\label{thm:QPIP0BQP}
 	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
@@ -58,7 +61,7 @@ We state this observation as the following theorem:
 	There exists $\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$ where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and polynomial-time algorithm $\widehat{\mathsf{QHE.Dec}}$ such that:
 	$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 \end{thm}
-\begin{proof}
+\begin{prf}
 	This is a proof by construction.
 	We require $\Lambda'$ and $\widehat{\mathsf{QHE.Dec}}$ such that $\forall\sigma=(X^xZ^z\rho Z^zX^x, c_{x,z})$,
 	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'(\sigma)$$
@@ -70,7 +73,7 @@ We state this observation as the following theorem:
 
 	Note that the Pauli one-time pad on $u$ commutes with $X$ and $Z$ measurements.
 	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
-\end{proof}
+\end{prf}
 
 \cref{proto:BQP} has negligible completeness and soundness.
 Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
@@ -101,43 +104,76 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 \begin{thm}
 	\cref{proto:BlindBQP} has negligible completeness and soundness.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	The completeness follows by inspection.
 
 	For soundness, suppose the prover sends $\sigma$.
 
-    \Ethan{rewrite the following as a reduction. If exists adversary $P*$ that breaks soundness of this protocol, it breaks the other one...}
+    \Ethan{rewrite the following as a reduction. If exists adversary $P*$ that breaks soundness of this protocol, construct $P**$ that breaks the other one...}
     
 	The verifier's actions, by \cref{decodeMeasureOrder}, is $\negl(n)$-close to to decoding $\sigma$ to get some $\rho$ then applying $\Lambda$ to get $w$.
 	In other words, the verifier's outputs is $\negl(n)$-close to the verifer of \cref{proto:BQP} under the same input and receiving $\rho$ from the prover.
 	So the conclusion follows from the negligible soundness of \cref{proto:BQP}.
-\end{proof}
+\end{prf}
 
 \begin{thm}
 	\cref{proto:BlindBQP} is blind.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
-\end{proof}
+\end{prf}
 
-\Ethan{Use google docs to replace below}
+\Ethan{Below is copied from google docs}
 
-\cite{mahadev_delegation} gives a compiler from $\QPIP_1$ protocols of the form in \cref{proto:BQP} to $\QPIP_0$ but deteriorates soundness.
-Note that \cref{proto:BlindBQP} can also be collapsed into the same form \Ethan{Actually specify QPIP1 one-message use only XZ measurements}, so the same compiler can also be applied to it to obtain a $\QPIP_0$ protocol.
+Finally, we prove Thm 3.1 by applying Mahadev's measurement protocol~\cite{mahadev_delegation} to Protocol 3 to compile it into a $\QPIP_0$ protocol $(P', V')$ \Ethan{fix name}.
+Note that Mahadev's measurement protocol can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol, and Protocol 3 is a $\QPIP_1$ protocol with X, Z measurement and negligible soundness.
+Thus the resulting protocol $(P', V')$ is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl$ \Ethan{Write what is it negl in}. (preserve blindness)
 
-We can then use results from \cite{parallelrep} to apply parallel repetition and recover the negligible soundness.
+\Ethan{State compiled protocol and prove soundness that way}
+
+\begin{protocol}{\Cref{proto:BlindBQP} compiled using Mahadev's measurement protocol}
+	\label{proto:QPIP0BQP}
+	TODO
+
+\end{protocol}
+
+We then apply the recent result parallel repetition to reduce soundness error...
+
+\Ethan{cite both parallel rep papers}
+
+\begin{protocol}{Parallel repetition of}
+	\label{proto:repQPIP0BQP}
+	Run $n$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if...? TODO some kind of standard procedure here.
+
+\end{protocol}
+
+\subsection{Blind delegation of FBQP}
 
 \Ethan{Need more notation}
 
 Our results for $\BQP$ can also be generalized to $\FBQP$ by applying $2n$ copies of \cref{thm:QPIP0BQP} in parallel.
 
+Let $f\in\FBQP$.
+
+Define the language $L_{f, i, b}$ s.t. $x\in L_{f, i, b}$ if the $i$th bit of $f(x)$ is $b$.
+
 \begin{protocol}{Blind and verifiable $\QPIP_0$ delegation for $\FBQP$}
 	\label{QPIP0FBQP}
-	Suppose $y\in\set{0,1}^m$ is the output of our $\FBQP$ instance.
+	Input: $x\in\set{0, 1}^n$
+
+	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how}
+	Let $\cL = \set{L_{f, i, b}: i\in[m], b\in\set{0, 1}}$
 	\begin{enumerate}
-		\item Apply \cref{thm:QPIP0BQP} to every $y_i=0$ and $y_i=1$ case in parallel, resulting in a total of $2m$ cases.
-		\item Output $y$ if for each $i$ precisely one of the $y_i=0$ and $y=i=1$ cases accepts.
+		\item Run \cref{proto:repQPIP0BQP} for all languages $L\in\cL$ in parallel
+		\item If $\exists i$ s.t. $x\in L_{f, i, 0}$ and $x\in L_{f, i, 1}$ gives the same output, reject.
+		\item Otherwise, define $y_i = b$ where $x\in L_{f, i, b}$. This gives $y\in\set{0,1}^m$
+		\item Verifier outputs $y$
 	\end{enumerate}
 \end{protocol}
 
-\Ethan{TODO prove that \cref{QPIP0FBQP} actually works as expected}
+\begin{theorem}
+	\cref{QPIP0FBQP} has negligible completeness and soundness, and is blind.
+\end{theorem}
+\begin{prf}
+	TODO
+\end{prf}

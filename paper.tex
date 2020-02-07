@@ -1,6 +1,7 @@
 \documentclass[runningheads, envcountsect]{llncs}
 %\usepackage{authblk}
 \pagestyle{plain}
+
 \usepackage{amsmath, amssymb}
 \usepackage{braket}
 \usepackage{algorithm}
@@ -17,10 +18,14 @@
 \usepackage{cite,color,float}
 \usepackage{mdframed} 
 \usepackage{cleveref}
-\crefname{protocol}{Protocol}{Protocols}
-\crefname{thm}{Theorem}{Theorems}
-\crefname{rmk}{Remark}{Remarks}
-\crefname{lem}{Lemma}{Lemmata}
+\crefname{protocol}{protocol}{protocols}
+\Crefname{protocol}{Protocol}{Protocols}
+\crefname{thm}{theorem}{theorems}
+\Crefname{thm}{Theorem}{Theorems}
+\crefname{rmk}{remark}{remarks}
+\Crefname{rmk}{Remark}{Remarks}
+\crefname{lem}{lemma}{lemmata}
+\Crefname{lem}{Lemma}{Lemmata}
 
 %\pagecolor{black}
 %\color{white}
@@ -31,6 +36,7 @@
 \newenvironment{protocol}[1]{\begingroup\setlength\parindent{0pt}\medskip\noindent\linefill\\
 \refstepcounter{protocol}\textbf{Protocol \theprotocol} #1\\\noindent\linefill}
 {\vspace{-\topsep}\noindent\linefill\endgroup}
+
 
 \newcommand{\KM}[1]{{\footnotesize\color{cyan}[KM: #1]}}
 \newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
