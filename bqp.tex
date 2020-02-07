@@ -147,18 +147,20 @@ Our results for $\BQP$ can also be generalized to $\FBQP$ by applying $2n$ copie
 
 Let $f\in\FBQP$.
 
-Define the language $L_{f, i, b}$ s.t. $x\in L_{f, i, b}$ if the $i$th bit of $f(x)$ is $b$.
+For any input $x\in\set{0, 1}^*$, define $f_i(x)$ to be the $i$-th bit of $f(x)$.
+
+Define the language $L_{i, b}=\set{x:f_i(x)=b}$.
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ delegation for $\FBQP$}
 	\label{QPIP0FBQP}
 	Input: $x\in\set{0, 1}^n$
 
 	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how}
-	Let $\cL = \set{L_{f, i, b}: i\in[m], b\in\set{0, 1}}$
+	Let $\cL = \set{L_{i, b}: i\in[m], b\in\set{0, 1}}$
 	\begin{enumerate}
 		\item Run \cref{proto:repQPIP0BQP} for all languages $L\in\cL$ in parallel
-		\item If $\exists i$ s.t. $x\in L_{f, i, 0}$ and $x\in L_{f, i, 1}$ gives the same output, reject.
-		\item Otherwise, define $y_i = b$ where $x\in L_{f, i, b}$. This gives $y\in\set{0,1}^m$
+		\item If $\exists i$ s.t. $x\in L_{f, i, 0}$ and $x\in L_{i, 1}$ gives the same output, reject.
+		\item Otherwise, define $y_i = b$ where $x\in L_{i, b}$. This gives $y\in\set{0,1}^m$
 		\item Verifier outputs $y$
 	\end{enumerate}
 \end{protocol}
@@ -167,5 +169,8 @@ Define the language $L_{f, i, b}$ s.t. $x\in L_{f, i, b}$ if the $i$th bit of $f
 	\cref{QPIP0FBQP} has negligible completeness and soundness, and is blind.
 \end{theorem}
 \begin{prf}
-	TODO
+	Completeness is follows by inspection.
+	Blindness follows because the executions of \cref{proto:repQPIP0BQP} are blind.
+
+	Soundness... TODO
 \end{prf}
