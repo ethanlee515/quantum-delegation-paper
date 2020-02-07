@@ -3,6 +3,7 @@
 
 In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
+	\label{thm:QPIP0BQP}
 	There exists a constant-round and blind $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness.
 \end{thm}
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
@@ -14,20 +15,18 @@ We start with an overview of the $\QPIP_1$ scheme from \cite{mahadev_delegation}
 \begin{protocol}{Verifying yes-instances for $\BQP$}
 	\label{proto:BQP}
 	We give only a high-level description here.
+	For more details, see \cref{AlgGroundStateCheck} where we generalize this for $\SampBQP$.
 	\begin{enumerate}
 		\item The verifier chooses some tensor product of $X$ and $Z$ measurements $\Lambda$
 		\item The prover sends the verifier some state $\rho\in\cB^{\otimes m}$ qubit-by-qubit.
 		\item The verifier measures $\rho$ according to $S$
 		\item The verifier decides whether to accept based on the measurement results.
 	\end{enumerate}
-	More details are given later in \cref{AlgGroundStateCheck} where we generalize this protocol for $\SampBQP$.
-	\Ethan{TODO clear up details regarding amplification}
 \end{protocol}
 
-\cref{proto:BQP} has negligible completeness and soundness. \Ethan{Elaborate or no?}
-
-Now we compile \cref{proto:BQP} using $\mathsf{QHE}$ in order to achieve blindness.
+Differently from \cref{AlgGroundStateCheck}, \cref{proto:BQP} has negligible completeness and soundness, due to parallel repetition.
 We denote the honest prover's action in \cref{proto:BQP} as $\cF$.
+Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
@@ -60,14 +59,20 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{proof}
 
-Mahadev's protocol compiles $\QPIP_1$ protocols of the form in \cref{proto:BQP} to $\QPIP_0$ but deteriorates soundness.
-Note that \cref{proto:BlindBQP} can also be written in the four-step form, so the compiler can also be applied to it.
-\cite{parallelrep} says parallel repetition works to recover the soundness guarantees.
+\cite{mahadev_delegation} gives a compiler from $\QPIP_1$ protocols of the form in \cref{proto:BQP} to $\QPIP_0$ but deteriorates soundness.
+Note that \cref{proto:BlindBQP} can also be collapsed into the same form, so the same compiler can also be applied to it to obtain a $\QPIP_0$ protocol.
 
-So we get...
+We can then use results from \cite{parallelrep} to apply parallel repetition and recover the negligible soundness.
 
-\begin{rmk}
-	Our protocol for $\BQP$ can easily be generalized to $\FBQP$ too in the following way:
-	\Ethan{TODO actually need 2 copies per bit now}
-\end{rmk}
+Our results for $\BQP$ can also be generalized to $\FBQP$ by applying $2n$ copies of \cref{thm:QPIP0BQP} in parallel.
 
+\begin{protocol}{Blind and verifiable $\QPIP_0$ delegation for $\FBQP$}
+	\label{QPIP0FBQP}
+	Suppose $y\in\set{0,1}^m$ is the output of our $\FBQP$ instance.
+	\begin{enumerate}
+		\item Apply \cref{thm:QPIP0BQP} to every $y_i=0$ and $y_i=1$ case in parallel, resulting in a total of $2m$ cases.
+		\item Output $y$ if for each $i$ precisely one of the $y_i=0$ and $y=i=1$ cases accepts.
+	\end{enumerate}
+\end{protocol}
+
+\Ethan{TODO prove that \cref{QPIP0FBQP} actually works as expected}
