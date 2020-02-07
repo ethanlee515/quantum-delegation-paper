@@ -1,29 +1,17 @@
 \section{Delegation for BQP}
 \label{sec:BlindBQP}
 
-\Ethan{More feedback notes go here to be implemented later}
-
 \Ethan{Read other papers and see if I can copy their tones and phrasing}
 
 \Ethan{Important lemmas such as 2.4 should be emphasized more and especially this one shouldn't be in prelim.}
 
 \Ethan{2.4 should be a key obsv.}
 
-\Ethan{protocol 2 should say 1 message QPIP1 for BQP}
-
-\Ethan{``choose some tensor"? need distribution info and some basis choice}
-
-\Ethan{Try copying from https://arxiv.org/pdf/1911.08101.pdf pg 11?}
-
-\Ethan{Or parallel rep with efficient ver.}
-
 \Ethan{If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
 
 \Ethan{Two main problems; 1. not professional enough, 2. flow}
 
 \Ethan{Just syntax of QFHE in the preliminary; move the theorem here}
-
-\Ethan{end of notes}
 
 In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
@@ -33,52 +21,63 @@ In this section we present our constant-round blind delegation protocol for $\BQ
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
-\Ethan{Take out the following and take from google docs}
+We start with a high-level description of the $\QPIP_1$ scheme from \cite{mahadev_delegation}, which was in turn taken from \cite{mf16}.
 
-Let $L\in\BQP$, and $x\in\set{0,1}^n$.
-We start with an overview of the $\QPIP_1$ scheme from \cite{mahadev_delegation}, which was in turn taken from \cite{mf16}.
+\Ethan{below is copied and pasted from google docs and might need a bit of rephrasing}
+Thm 8.4 in Urmila's paper gives a one-message $\QPIP_1$ protocol with XZ measurement for deciding BQP language L.
+Roughly, on input $x \in\set{0,1}^n$,  P will send a m = poly(n) qubit certificate state $\rho$ to V qubit by qubit.
+V will sample a measurement setting $h \in \set{0,1}^m$ according to certain distribution $\pi_x$, and use h to determine how to measure $\rho$.
+Specifically, if $h_i = 0$ (resp., 1), then V will measure the i-th qubit using  X (resp., Z) measurement, and verify the measurement outcome.
 
 \begin{protocol}{Verifying yes-instances for $\BQP$}
 	\label{proto:BQP}
-	We give only a high-level description here.
-	\Ethan{Don't say this}
-	For more details, see \cref{AlgGroundStateCheck} where we generalize this for $\SampBQP$.
-	\Ethan{Reference something else; referencing $\SampBQP$ is a bad idea here}
-	    \Ethan{Phrase like ``for some input x, generate y"}
+	Let $L\in\BQP$, and $x\in\set{0,1}^n$. Let $m=\poly(n)$
 	\begin{enumerate}
-		\item The verifier chooses some tensor product of $X$ and $Z$ measurements $\Lambda$
-		\Ethan{just say there's some certain distribution that $\Lambda$ was sampled from}
-		\item The prover sends the verifier some state $\rho\in\cB^{\otimes m}$ qubit-by-qubit. \Ethan{quantify m?}
-		\item The verifier measures $\rho$ according to $S$ \Ethan{give measurement outcome notation}
-		\item The verifier decides whether to accept based on the measurement results. \Ethan{``Takes measurement outcome and generates acc/rej"}
+		\item On input $L$ and $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_{L, x}$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is single-qubit $X$ or $Z$ measurements.
+		\item The verifier sends $x$ to the prover.
+		\item The prover applies a certain CPTP $\cF$ on $x$ to generate $\rho\in\cB^{\otimes m}$.
+			\Ethan{Now we need to define CPTP in prelim...}
+		\item The prover sends $\rho$ to the verifier qubit-by-qubit.
+		\item The verifier measures the incoming qubits of $\rho$ according to $\Lambda$ to get $c$.
+		\item The verifier runs some $\BPP$ algorithm $\cV$ on input $c$ and outputs either accept or reject.
 	\end{enumerate}
 \end{protocol}
 
-Differently from \cref{AlgGroundStateCheck}, \cref{proto:BQP} has negligible completeness and soundness, due to parallel repetition.
-We denote the honest prover's action in \cref{proto:BQP} as $\cF$.
+\Ethan{below is copied from google docs and need rephrasing}
+
+compile this protocol using QFHE to obtain a blind one message $\QPIP_1$ protocol for BQP with XZ measurement.
+High level idea:  run the protocol under Urmila’s QFHE. Namely, $\tilde{V}$ sends $ct = Enc(x)$ to $\tilde{P}$, then $\tilde{P}$ homomorphically evaluate $P_1$ on ct to produce $\tilde{rho} = Enc(\rho)$ and send the encrypted certificate state to $\tilde{V}$.
+Discussion: Now $\tilde{V}$ need to obtain the measurement outcome w from the encrypted state $\tilde{rho}$ using qubit-by-qubit XZ measurements. This may not be possible in general. 
+Key observation: Our key observation is that Urmila’s QFHE scheme allows this. 
+Explain why: Urmila’s QFHE ciphertext has the form of  QOTP on quantum msg + classical FHE ciphertext. So $\tilde{V}$ can do blah blah XZ measurement on $\tilde{rho}$, and recover w from the measurement outcome. We state this as the following fact/key observation: ...
+
+
+\cref{proto:BQP} has negligible completeness and soundness.
 Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
 	\Ethan{Define/quantify $x$ and whatnot}
 	Let $d$ be the depth of the circuit corresponding to $\cF$.
+	Take $\pi_{L, x}$, $\cF$, and $\cV$ to be the same as in \cref{proto:BQP}
 	\begin{enumerate}
-		\item The verifier chooses $\Lambda$ and computes $\Lambda'$ using \cref{decodeMeasureOrder}
-		\Ethan{Reference to particular steps of the last protocol}
+		\item The verifier samples $\Lambda$ from $\pi_{L, x}$
+		\item The verifier computes $\Lambda'$ using \cref{decodeMeasureOrder}
 		\item The verifier runs $\mathsf{QHE.Keygen}(1^n, 1^d)$ to get $pk, sk, evk$.
 		\item The verifier computes $c=\mathsf{QHE.Enc}_{pk}(x)$
 		\item The verifier sends $c$ and $evk$ to the prover
-		\item The prover computes $\mathsf{QHE.Eval}(\cF, c)$ and sends it to the verifier qubit-by-qubit.
-		\item The verifier measures the incoming ciphertext according to $\Lambda'$
-		\item The verifier applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to the measurement results
-		\item The verifier decides whether to accept based on \cref{proto:BQP}
+		\item The prover computes $\sigma=\mathsf{QHE.Eval}(\cF, c)$
+		\item The prover sends $\sigma$ to the verifier qubit-by-qubit.
+		\item The verifier measures the incoming ciphertext according to $\Lambda'$, getting $ct$
+		\item The verifier applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to $ct$, getting $c$.
+		\item The verifier applies $\cV$ to $c$ and outputs its result.
 	\end{enumerate}
 \end{protocol}
 
 As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
 
 \begin{thm}
-	\cref{proto:BlindBQP} preserves the completeness and soundness of \cref{proto:BQP}
+	\cref{proto:BlindBQP} has negligible completeness and soundness.
 \end{thm}
 \begin{proof}
     \Ethan{Completeness is trivial, but soundness isn't as trivial as this makes it look like}
@@ -86,8 +85,7 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 \end{proof}
 
 \begin{thm}
-    \Ethan{Use ``blind", not IND-CPA for protocols}
-	\cref{proto:BlindBQP} is IND-CPA secure.
+	\cref{proto:BlindBQP} is blind.
 \end{thm}
 \begin{proof}
 	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
