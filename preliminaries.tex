@@ -23,6 +23,10 @@ We define a few relevant complexity classes.
 	$\QMA$ is the quantum analogue of the class $\MA$. The verifier in $\QMA$ is now a $\BQP$ machine.
 \end{dfn}
 
+\begin{definition} [$\FBQP$]
+	TODO copy from https://www.csa.iisc.ac.in/~chandan/courses/complexity15/notes/lec23.pdf and add in overwhelming prob.
+\end{definition}
+
 \begin{dfn}
     \Ethan{TODO Negligible errors}
 	$\FBQP$ is the functional analogue of the class $\BQP$. That is, every instance corresponds to a string rather than a yes/no bit. The error probability is still bounded above away from $\fot$ for some uniform quantum circuit family.
@@ -133,8 +137,7 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
 \begin{itemize}
 	\item $\mathsf{QHE.Keygen}$ can be done classically.
 	\item In the case where the plaintext is classical, $\mathsf{QHE.Enc}$ can be done classically.
-	\item Its ciphertext takes the form $(X^xZ^z\ket\rho Z^zX^x, c_{x, z})$, where $\rho$ is the plaintext and $c_{x, z}$ is a ciphertext that decodes to $(x, z)$ under a certain classical homomorphic encryption scheme.
-	We assume without loss of generality that the length of $c_{x, z}$ is only dependent on the length of $\ket\phi$ by padding $0$s if necessary.
+	\item Its ciphertext takes the form $(X^xZ^z\rho Z^zX^x, c_{x, z})$, where $\rho$ is the plaintext and $c_{x, z}$ is a ciphertext that decodes to $(x, z)$ under a certain classical homomorphic encryption scheme.
 \end{itemize}
 
 As we will see, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then $\mathsf{QHE}$ can be used as a compiler to achieve blindness.

@@ -5,6 +5,8 @@
 
 \Ethan{Note to self: If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
 
+\Ethan{Cut into two subsections, one for BQP and one for FBQP}
+
 In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
 	\label{thm:QPIP0BQP}
@@ -20,21 +22,22 @@ Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate st
 The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to certain distribution to apply to $\rho$
 The verifier then, using the measurement results, decides whether to accept or reject.
 
-\begin{protocol}{1-message $\QPIP_1$ protocol for $\BQP$}
+\begin{protocol}{1-message $\QPIP_1$ protocol for $\BQP$ language $L$}
 	\label{proto:BQP}
-	Let $L\in\BQP$, and $x\in\set{0,1}^n$. Let $m=\poly(n)$
+	Input: $x\in\set{0,1}^n$.
+	\Ethan{Consider more notation $V_1$, $P_2$... See parallel rep paper. Numbering like this works better for compilers}
+	\Ethan{Use terms like ``generate" or arrows; see google docs}
 	\begin{enumerate}
-		\item On input $L$ and $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_{L, x}$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is single-qubit $X$ or $Z$ measurements.
+		\item On input $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_x$, where $m=\poly(n)$, $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
 		\item The verifier sends $x$ to the prover.
-		\item The prover applies a certain CPTP $\cF$ on $x$ to generate $\rho\in\cB^{\otimes m}$.
-			\Ethan{Now we need to define CPTP in prelim...}
+		\item The prover applies an algorithm $\cF$ \Ethan{Probably P3 or maybe a ``meaningful" name} on $x$ to generate $\rho\in\cB^{\otimes m}$.
 		\item The prover sends $\rho$ to the verifier qubit-by-qubit.
 		\item The verifier measures the incoming qubits of $\rho$ according to $\Lambda$ to get $w$.
-		\item The verifier runs some $\BPP$ algorithm $\cV$ on input $w$ and outputs either accept or reject.
+		\item The verifier runs some polynomial-time algorithm $\cV$ on input $w$ and outputs either accept or reject.
 	\end{enumerate}
 \end{protocol}
 
-We compile this protocol using $\mathsf{QHE}$ to obtain a blind 1-message $\QPIP_1$ protocol for $\BQP$, again with only $X$ and $Z$ measurements.
+We compile this protocol using Mahadev's $\mathsf{QHE}$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol for $\BQP$, again with only $X$ and $Z$ measurements.
 The high level idea is to run \cref{proto:BQP} under $\mathsf{QHE}$.
 Namely, the verifier encrypts its original input $x$ and sends $y=\mathsf{QHE.Enc}(x)$ to the prover.
 The prover then homomorphically evaluate $\cF$ on $y$ to produce $\sigma=\mathsf{QHE.Enc}(\rho)$ \Ethan{Is this actually ok? $\sigma$ is a ciphertext corresponding to $\rho$, but it wasn't encrypted. In fact it's deteriorated due to homomorphic eval} and send it back to the verifier.
@@ -52,7 +55,7 @@ We state this observation as the following theorem:
 	Let $m\in\bbN$ be the length of the ciphertexts under $\mathsf{QHE}$ corresponding to plaintexts of length $n$.
 	Let $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$, where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
 
-	There exists $\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$ where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and $\BPP$ algorithm $\widehat{\mathsf{QHE.Dec}}$ such that:
+	There exists $\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$ where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and polynomial-time algorithm $\widehat{\mathsf{QHE.Dec}}$ such that:
 	$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
 \end{thm}
 \begin{proof}
@@ -63,10 +66,10 @@ We state this observation as the following theorem:
 	Clearly,
 	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\Lambda(\rho)$$
 	
-	Let $\Lambda'$ applies $\Lambda$ to the first register, getting $ct=\Lambda(X^xZ^z\rho Z^zX^x)$, and applies computational basis measurement to the second register, getting $c_{x, z}$.
+	Let $\Lambda'$ applies $\Lambda$ to the first register, getting $u=\Lambda(X^xZ^z\rho Z^zX^x)$, and applies computational basis measurement to the second register, getting $c_{x, z}$.
 
-	Note that the Pauli one-time pad on $ct$ commutes with $X$ and $Z$ measurements.
-	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $ct$ to get $\Lambda(\rho)$.
+	Note that the Pauli one-time pad on $u$ commutes with $X$ and $Z$ measurements.
+	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
 \end{proof}
 
 \cref{proto:BQP} has negligible completeness and soundness.
@@ -80,7 +83,7 @@ Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 	\begin{enumerate}
 		\item The verifier samples $\Lambda$ from $\pi_{L, x}$
 		\item The verifier computes $\Lambda'$ using \cref{decodeMeasureOrder}
-		\item The verifier runs $\mathsf{QHE.Keygen}(1^n, 1^d)$ to get $pk, sk, evk$.
+		\item The verifier computes $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$.
 		\item The verifier computes $y=\mathsf{QHE.Enc}_{pk}(x)$
 		\item The verifier sends $y$ and $evk$ to the prover
 		\item The prover computes $\sigma=\mathsf{QHE.Eval}(\cF, y)$
@@ -93,6 +96,8 @@ Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
 As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and IND-CPA protocol for $\BQP$ with negligible completeness and soundness.
 
+\Ethan{Combine the following two theorems}
+
 \begin{thm}
 	\cref{proto:BlindBQP} has negligible completeness and soundness.
 \end{thm}
@@ -101,6 +106,8 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 
 	For soundness, suppose the prover sends $\sigma$.
 
+    \Ethan{rewrite the following as a reduction. If exists adversary $P*$ that breaks soundness of this protocol, it breaks the other one...}
+    
 	The verifier's actions, by \cref{decodeMeasureOrder}, is $\negl(n)$-close to to decoding $\sigma$ to get some $\rho$ then applying $\Lambda$ to get $w$.
 	In other words, the verifier's outputs is $\negl(n)$-close to the verifer of \cref{proto:BQP} under the same input and receiving $\rho$ from the prover.
 	So the conclusion follows from the negligible soundness of \cref{proto:BQP}.
@@ -113,10 +120,14 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	The only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 \end{proof}
 
+\Ethan{Use google docs to replace below}
+
 \cite{mahadev_delegation} gives a compiler from $\QPIP_1$ protocols of the form in \cref{proto:BQP} to $\QPIP_0$ but deteriorates soundness.
-Note that \cref{proto:BlindBQP} can also be collapsed into the same form, so the same compiler can also be applied to it to obtain a $\QPIP_0$ protocol.
+Note that \cref{proto:BlindBQP} can also be collapsed into the same form \Ethan{Actually specify QPIP1 one-message use only XZ measurements}, so the same compiler can also be applied to it to obtain a $\QPIP_0$ protocol.
 
 We can then use results from \cite{parallelrep} to apply parallel repetition and recover the negligible soundness.
+
+\Ethan{Need more notation}
 
 Our results for $\BQP$ can also be generalized to $\FBQP$ by applying $2n$ copies of \cref{thm:QPIP0BQP} in parallel.
 
