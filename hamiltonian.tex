@@ -56,11 +56,11 @@ Which is significant because this gate set is a linear combinations of tensor pr
 \begin{thm}
 	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
 	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
-\end{proof}
+\end{prf}
 
 Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
 \begin{thm}
@@ -77,7 +77,7 @@ Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate
 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
 	\end{itemize}
 \end{thm}
-\begin{proof}
+\begin{prf}
 	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
 	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
 		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
@@ -96,7 +96,7 @@ Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate
 		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
 		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
 	\end{itemize}
-\end{proof}
+\end{prf}
 
 \subsection{Reducing quantum circuit to local Hamiltonian}
 
@@ -194,7 +194,7 @@ That is, we present and analyze an algorithm that checks whether a given state i
 	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients at most $O(\poly(T))$.
 	Then \cref{AlgGroundStateCheck} accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	Here we follow \cite{PhysRevA.93.022326}.
 	\begin{align*}
 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
@@ -209,4 +209,4 @@ That is, we present and analyze an algorithm that checks whether a given state i
 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
 		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
 	\end{align*}
-\end{proof}
+\end{prf}

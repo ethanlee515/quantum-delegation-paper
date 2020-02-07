@@ -8,9 +8,9 @@ First, we make an observation.
 	\label{ProtoGroundStateCheck}
 	There is a $\QPIP_1$ protocol for \autoref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{lemma}
-\begin{proof}
+\begin{prf}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
-\end{proof}
+\end{prf}
 
 Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ protocol for any $\SampBQP$ problem with inverse polynomial error in circuit size.
 
@@ -58,7 +58,7 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
     \label{QPIP1thm}
 	For any $L\in\SampBQP$, \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}} is a protocol for $L$ with negligible completeness. $\forall c\in\bbN$, it achieves soundness $(\varepsilon, \varepsilon)$ where $\varepsilon=T^{-c}$. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	It clearly has completeness negligibly close to $1$. Now we analyze soundness against a possibly cheating prover that has at least $\delta$ probability to be accepted. Let $\sigma$ be the state the prover sends to the verifier.
 
 	Picking $n+m$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+m$ registers.
@@ -96,5 +96,5 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 	Once we do measure $t\geq T$, the data register is $C(x)$.
 
 	All errors up to this point is $O(\varepsilon)$.
-\end{proof}
+\end{prf}
 

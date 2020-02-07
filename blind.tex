@@ -15,18 +15,18 @@ Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homo
 \begin{thm}
 	\cref{proto:QPIP1Samp} has the same completeness and soundness guarantees as \cref{ProtoQPIP1}
 \end{thm}
-\begin{proof}
+\begin{prf}
 	A honest prover still gets accepted with overwhelming probability by the correctness of $\mathsf{QHE}$. \Ethan{Not sure if too hand-wavy}
 
 	As for soundness, a cheating prover cannot do better under this compiliation, since each message still decodes to some plaintext.
 
 	In other words, anything a cheating prover can do after the compiliation, there exists a corresponding strategy in the version before.
 	\Ethan {Ahhhh this is not rigorous at all}
-\end{proof}
+\end{prf}
 
 \begin{thm}
 	\cref{proto:QPIP1Samp} is IND-CPA secure.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	The only thing the prover gets is $\mathsf{QHE.Enc}_{pk}(x)$, $pk$, and $evk$. So this follows directly from the security of $\mathsf{QHE}$.
-\end{proof}
+\end{prf}
