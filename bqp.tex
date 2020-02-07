@@ -11,8 +11,6 @@
 
 \Ethan{Two main problems; 1. not professional enough, 2. flow}
 
-\Ethan{Just syntax of QFHE in the preliminary; move the theorem here}
-
 In this section we present our constant-round blind delegation protocol for $\BQP$. That is, proving this theorem:
 \begin{thm}
 	\label{thm:QPIP0BQP}
@@ -51,6 +49,30 @@ Discussion: Now $\tilde{V}$ need to obtain the measurement outcome w from the en
 Key observation: Our key observation is that Urmila’s QFHE scheme allows this. 
 Explain why: Urmila’s QFHE ciphertext has the form of  QOTP on quantum msg + classical FHE ciphertext. So $\tilde{V}$ can do blah blah XZ measurement on $\tilde{rho}$, and recover w from the measurement outcome. We state this as the following fact/key observation: ...
 
+
+\begin{thm}
+	\label{decodeMeasureOrder}
+	Let $sk$ be some secret key of $\mathsf{QHE}$.
+	Let $n\in\bbN$.
+	Let $m\in\bbN$ be the length of the ciphertexts under $\mathsf{QHE}$ corresponding to plaintexts of length $n$.
+	Let $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$, where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
+
+	There exists $\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$ where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and $\BPP$ algorithm $\widehat{\mathsf{QHE.Dec}}$ such that:
+	$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
+\end{thm}
+\begin{proof}
+	This is a proof by construction.
+	We require $\Lambda'$ and $\widehat{\mathsf{QHE.Dec}}$ such that $\forall\sigma=(X^xZ^z\rho Z^zX^x, c_{x,z})$,
+	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'(\sigma)$$
+
+	Clearly,
+	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\Lambda(\rho)$$
+	
+	Let $\Lambda'$ applies $\Lambda$ to the first register, getting $ct=\Lambda(X^xZ^z\rho Z^zX^x)$, and applies computational basis measurement to the second register, getting $c_{x, z}$.
+
+	Note that the Pauli one-time pad on $ct$ commutes with $X$ and $Z$ measurements.
+	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $ct$ to get $\Lambda(\rho)$.
+\end{proof}
 
 \cref{proto:BQP} has negligible completeness and soundness.
 Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
