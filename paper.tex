@@ -1,6 +1,6 @@
-\documentclass{article}
-\usepackage{authblk}
-\usepackage{amsmath, amssymb, amsthm}
+\documentclass[runningheads]{llncs}
+%\usepackage{authblk}
+\usepackage{amsmath, amssymb}
 \usepackage{braket}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -35,15 +35,9 @@
 \newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
 
 
-\newtheorem{theorem}{Theorem}[section]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{observation}[theorem]{Observation}
-
 \title{On Secure Delegation of SampBQP with a Classical Client}
 
+\iffalse
 \author[1]{Kai-Min Chung}
 \author[2]{Yi Lee}
 \author[3]{Han-Hsuan Lin}
@@ -55,6 +49,10 @@
 	and Joint Center for Quantum Information and Computer Science,
 	University of Maryland, USA
 }
+\fi
+\author{}
+\institute{}
+
 \input{macros.tex}
 \input{./parallel/macros.tex}
 \begin{document}

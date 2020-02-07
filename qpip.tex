@@ -4,10 +4,10 @@ Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ lo
 
 First, we make an observation.
 
-\begin{observation}
+\begin{lemma}
 	\label{ProtoGroundStateCheck}
 	There is a $\QPIP_1$ protocol for \autoref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
-\end{observation}
+\end{lemma}
 \begin{proof}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
 \end{proof}
