@@ -25,18 +25,23 @@ Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate st
 The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to certain distribution to apply to $\rho$
 The verifier then, using the measurement results, decides whether to accept or reject.
 
+\Ethan{TODO PROOFREAD ME}
+
 \begin{protocol}{1-message $\QPIP_1$ protocol for $\BQP$ language $L$}
 	\label{proto:BQP}
 	Input: $x\in\set{0,1}^n$.
-	\Ethan{Consider more notation $V_1$, $P_2$... See parallel rep paper. Numbering like this works better for compilers}
-	\Ethan{Use terms like ``generate" or arrows; see google docs}
 	\begin{enumerate}
-		\item On input $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_x$, where $m=\poly(n)$, $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
+		\item $\cV_1$:
+			On input $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_x$, where $m=\poly(n)$, $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement. 
+
+			\Ethan{How does this $\cV_1$ thing work?}
 		\item The verifier sends $x$ to the prover.
-		\item The prover applies an algorithm $\cF$ \Ethan{Probably P3 or maybe a ``meaningful" name} on $x$ to generate $\rho\in\cB^{\otimes m}$.
+		\item $\cP_2$:
+			On input $x$, the prover applies an algorithm to generate $\rho\in\cB^{\otimes m}$.
 		\item The prover sends $\rho$ to the verifier qubit-by-qubit.
 		\item The verifier measures the incoming qubits of $\rho$ according to $\Lambda$ to get $w$.
-		\item The verifier runs some polynomial-time algorithm $\cV$ on input $w$ and outputs either accept or reject.
+		\item $\cV_3$:
+			On input $w$, the verifier generates and outputs either accept or reject using a classical polynomial-time algorithm.
 	\end{enumerate}
 \end{protocol}
 
@@ -78,22 +83,22 @@ We state this observation as the following theorem:
 \cref{proto:BQP} has negligible completeness and soundness.
 Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
+\Ethan{TODO PROOFREAD ME}
+
 \begin{protocol}{Blind Protocol for $\BQP$}
 	\label{proto:BlindBQP}
 	Let $x\in\set{0,1}^n$.
 	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cF$.
-	Take $\pi_{L, x}$, $\cF$, and $\cV$ to be the same as in \cref{proto:BQP}
 	\begin{enumerate}
-		\item The verifier samples $\Lambda$ from $\pi_{L, x}$
-		\item The verifier computes $\Lambda'$ using \cref{decodeMeasureOrder}
-		\item The verifier computes $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$.
-		\item The verifier computes $y=\mathsf{QHE.Enc}_{pk}(x)$
-		\item The verifier sends $y$ and $evk$ to the prover
-		\item The prover computes $\sigma=\mathsf{QHE.Eval}(\cF, y)$
-		\item The prover sends $\sigma$ to the verifier qubit-by-qubit.
-		\item The verifier measures the incoming ciphertext according to $\Lambda'$, getting $ct$
-		\item The verifier applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to $ct$, getting $w$.
-		\item The verifier applies $\cV$ to $w$ and outputs its result.
+		\item The verifier, on input $x$ generates $\Lambda$ using $\cV_1$ of \cref{proto:BQP}.
+			On input $\Lambda$, it computes $\Lambda'$ using \cref{decodeMeasureOrder}.
+			It computes $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, and $y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$.
+			Finally, it sends $y$ and $evk$ to the prover
+		\item The prover homomorphically evaluates $\cP_2$ of \cref{proto:BQP} on input $y$, generating $\sigma=\mathsf{QHE.Eval}(\cP_2, y)$.
+			The prover sends $\sigma$ to the verifier qubit-by-qubit.
+		\item The verifier measures the incoming ciphertext $\sigma$ according to $\Lambda'$, getting $ct$
+			It applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to $ct$, getting $w$.
+			On input $w$, it applies $\cV_3$ of \cref{proto:BQP} and outputs its result.
 	\end{enumerate}
 \end{protocol}
 
@@ -106,71 +111,95 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	The completeness follows by inspection.
 	For blindness, the only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 
-    \Ethan{rewrite the following as a reduction. If exists adversary $P*$ that breaks soundness of this protocol, construct $P**$ that breaks the other one...}
+	\Ethan{TODO PROOFREAD ME}
+	Suppose for the sake of contradiction that some prover $\bbP'$ breaks the soundness of \cref{proto:BlindBQP}.
 
-	For soundness, suppose the prover sends $\sigma$.
-    
-	The verifier's actions, by \cref{decodeMeasureOrder}, is $\negl(n)$-close to to decoding $\sigma$ to get some $\rho$ then applying $\Lambda$ to get $w$.
-	In other words, the verifier's outputs is $\negl(n)$-close to the verifer of \cref{proto:BQP} under the same input and receiving $\rho$ from the prover.
-	So the conclusion follows from the negligible soundness of \cref{proto:BQP}.
+	We construct $\tilde\bbP$ a prover against the soundness guarantees in \cref{proto:BQP} as $(\bbV, \tilde\bbP)$.
+
+	$\tilde\bbP$ simulates \cref{proto:BlindBQP} as $(\bbV', \bbP')$.
+
+	When $\bbP'$ sends $\sigma$, $\tilde\bbP$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to $\bbV$.
+
+	$\bbV'$ has a non-negligible chance to accept after receiving $\sigma$.
+	When that happens, $\cV(w)=\cV(\Lambda(\rho))=Acc$, so $\bbV$ would also accept after receiving $\rho$.
 \end{prf}
 
-\Ethan{Below is copied from google docs}
+\Ethan{TODO Below is copied from google docs; fix phrasing later}
 
 Finally, we prove Thm 3.1 by applying Mahadev's measurement protocol~\cite{mahadev_delegation} to Protocol 3 to compile it into a $\QPIP_0$ protocol $(P', V')$ \Ethan{fix name}.
 Note that Mahadev's measurement protocol can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol, and Protocol 3 is a $\QPIP_1$ protocol with X, Z measurement and negligible soundness.
-Thus the resulting protocol $(P', V')$ is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl$ \Ethan{Write what is it negl in}. (preserve blindness)
+Thus the resulting protocol $(P', V')$ is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$
 
-\Ethan{State compiled protocol and prove soundness that way}
+\Ethan{TODO PROOFREAD ME}
+We give a high-level overview of the compiliation results.
 
 \begin{protocol}{\Cref{proto:BlindBQP} compiled using Mahadev's measurement protocol}
 	\label{proto:QPIP0BQP}
-	TODO
-
+	\begin{enumerate}
+		\item The verifier generates $\Lambda, \Lambda', pk, sk, evk, y$ the same way as in \cref{proto:BlindBQP}.
+			On input $\Lambda'$, it generates $k, td$.
+			It sends $k, evk, y$ to the prover.
+		\item The prover, on inputs $k, evk, y$, generates classical ``commitment" $m$ and internal state $\ket{st}$.
+			It sends $m$ to the verifier.
+		\item The verifier sends the prover a public fair coin $c\in{0,1}$.
+		\item The prover, on inputs $c$ and $\ket{st}$, generates classical $a$ and sends it to the verifier.
+		\item The verifier, on inputs $k, td, m, c, a, sk$, generates and outputs either $acc$ or $rej$.
+	\end{enumerate}
 \end{protocol}
 
-We then apply the recent result parallel repetition to reduce soundness error...
+$k$ has the additional properties to not leak information on $\Lambda'$, so the compliation preserves blindness. \Ethan{How to make this more rigorous?}
 
-\Ethan{cite both parallel rep papers}
+We then apply the recent result parallel repetition get negligible soundness again:
 
-\begin{protocol}{Parallel repetition of}
+\begin{protocol}{Parallel repetition of \cref{proto:QPIP0BQP}}
 	\label{proto:repQPIP0BQP}
-	Run $n$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if...? TODO some kind of standard procedure here.
+	\Ethan{TODO PROOFREAD ME}
+	Run $m=\poly(n)$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if the proportion of accepted copies is over some certain threshold $p(n)\in(0, 1)$.
 
 \end{protocol}
+
+\begin{thm}
+	\cref{proto:repQPIP0BQP} has negligible completeness and soundness
+\end{thm}
+\begin{prf}
+	See \cite{parallelrep} \Ethan{TODO FIND AND CITE the other parallel rep. paper}
+\end{prf}
 
 \subsection{Blind delegation of FBQP}
 
-\Ethan{Need more notation}
+\Ethan{TODO PROOFREAD ME}
 
-Our results for $\BQP$ can also be generalized to $\FBQP$ by applying $2n$ copies of \cref{thm:QPIP0BQP} in parallel.
+Our results for $\BQP$ can be generalized to $\FBQP$.
 
 Let $f\in\FBQP$.
-
 For any input $x\in\set{0, 1}^*$, define $f_i(x)$ to be the $i$-th bit of $f(x)$.
-
-Define the language $L_{i, b}=\set{x:f_i(x)=b}$.
+For $i\in\bbN, b\in\set{0,1}$, define the language $L_{i, b}=\set{x:f_i(x)=b}$.
+Define $\cL$ to be the collection of these languages: $\cL = \set{L_{i, b}: i\in[m], b\in\set{0, 1}}$.
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ delegation for $\FBQP$}
-	\label{QPIP0FBQP}
+	\label{proto:QPIP0FBQP}
 	Input: $x\in\set{0, 1}^n$
 
-	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how}
-	Let $\cL = \set{L_{i, b}: i\in[m], b\in\set{0, 1}}$
+	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how?}
 	\begin{enumerate}
-		\item Run \cref{proto:repQPIP0BQP} for all languages $L\in\cL$ in parallel
-		\item If $\exists i$ s.t. $x\in L_{f, i, 0}$ and $x\in L_{i, 1}$ gives the same output, reject.
-		\item Otherwise, define $y_i = b$ where $x\in L_{i, b}$. This gives $y\in\set{0,1}^m$
+		\item Run \cref{proto:repQPIP0BQP} for all $L\in\cL$ in parallel using input $x$. The verifier gets outputs $v_{i, b}\in\set{Acc, Rej}$.
+		\item If $\exists i$ s.t. $v_{i,0}=v_{i,1}$, reject.
+		\item Otherwise, define $y_i = b$ where $v_{i, b}=Acc$. This gives $y\in\set{0,1}^m$
 		\item Verifier outputs $y$
 	\end{enumerate}
 \end{protocol}
 
 \begin{theorem}
-	\cref{QPIP0FBQP} has negligible completeness and soundness, and is blind.
+	\Cref{proto:QPIP0FBQP} has negligible completeness and soundness, and is blind.
 \end{theorem}
 \begin{prf}
 	Completeness is follows by inspection.
 	Blindness follows because the executions of \cref{proto:repQPIP0BQP} are blind.
 
-	Soundness... TODO
+	Based on the soundness of \cref{proto:BlindBQP}, $v_{i, b}=Acc$ implies that $x\in L_{i, b}\Rightarrow f_i(x)=b$ with overwhelming probability.
+	In other words, $y_i$ is correct with probability $1-\varepsilon_i$ where $\varepsilon_i=\negl(n)$. 
+	
+	By union bound over all output bits, the soundness of \cref{proto:QPIP0FBQP} is then
+	$\sum_{i=1}^m \varepsilon_i$
+	which is clearly negligible.
 \end{prf}
