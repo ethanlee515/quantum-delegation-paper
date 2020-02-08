@@ -7,7 +7,7 @@
 
 \Ethan{TODO Intro this section}
 
-\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf for conventions. Mal. parties have stars, protos use Pi. Stuff like $r[(P(w), V )(1n ,(M, x, t))$ }
+\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf for conventions. Mal. parties have stars, protos use Pi. Stuff like $r(P(w), V )(1n ,(M, x, t))$ }
 
 \Ethan{More notation, fix interfaces}
 
@@ -121,7 +121,7 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	
 	\Ethan{Fix interface; $P_{blind}^*$ expects some message from $V$}
 
-	When $\bbP_{blind}^*$ sends $\sigma$, $\bbP_{MF}^*$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to the verifier. \Ethan{Make observation that $P_{blind}^*$ has $sk$
+	When $\bbP_{blind}^*$ sends $\sigma$, $\bbP_{MF}^*$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to the verifier. \Ethan{Make observation that $P_{blind}^*$ has $sk$}
 
 	By assumption, $\bbV_{Blind}$ has a non-negligible chance to accept after receiving $\sigma$.
 	When that happens, $\cV(w)=\cV(\Lambda(\rho))=Acc$.
