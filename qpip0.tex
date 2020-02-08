@@ -91,7 +91,7 @@ In her groundbreaking work, Mahadev~\cite{mahadev_delegation} gave the following
 
 
 \begin{lemma}[binding property of  Protocol~\ref{proto:urmila4}\cite{mahadev_delegation}]
-If a prover's strategy result in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that $z$ is computationally indistinguishable with $\negl(n)$ error \hannote{add notation for comp indist.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
+If a prover's strategy\hannote{need clarification} result in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that $z$ is computationally indistinguishable with $\negl(n)$ error \hannote{add notation for comp indist.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
 
 \begin{rmk}
@@ -140,15 +140,6 @@ If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally ind
 
 \begin{proof}
 
-Choose the $T$ in Lemma~\ref{lem:partition} to be $\Theta(m^3)$ \hannote{$\gamma_0$?}. By Property~\ref{partition-property-1} of Lemma~\ref{lem:partition}, 
-$$\forall i, \L(1- 1/m^2\R)\text{fraction of }\gamma$$ 
-satisfies that 
-$$\norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
-Therefore, there exist an $\gamma$ such that 
-$$\forall i,\, \norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
-
-Denote $G_{i,\gamma}$ with  $\gamma$ found above as $G_i$.
-
 
 
 
@@ -161,52 +152,43 @@ Denote $G_{i,\gamma}$ with  $\gamma$ found above as $G_i$.
 ===========
 
 
-Here we follow \cite{parallelrep}.
-
-We characterize a prover by two unitaries $(U_0, U)$ acting on the space $\cH_C\otimes\cH_X\otimes\cH_Z\otimes\cH_Y\otimes\cH_K$.
-
-\Ethan{I'll elaborate on above later, after figuring out exactly what I need or don't need}
-
-Each coordinate can be accepted and rejected separately, and the entire protocol accepts only if all coordinates accept.
-
-Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test round when the first and second messages are $k_i$ and $y_i$, respectively.
-
-
-
-\Ethan{Do we even need this lemma 3.5, or can we just use 3.6...}
-
-
 \hannote{import 3.5. didn't import the proof, too long.}
 
-First, We present a lemma from \cite{parallelrep}  that gives a decomposition of a cheating prover's state. We omit the proof here.
+First, We present a slight adaption of Lemma 3.5 of \cite{parallelrep}  that partitions the prover's internal state. We omit the proof here.
 
-\begin{lemma}[Slight adaption from Lemma 3.5 of \cite{parallelrep}]\label{lem:partition}
-Let $(U_0,U)$ be any prover's strategy in Protocol~\ref{proto:QPIP0samp}.  $i\in[m]$, 
-$\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\frac{\gamma_0}{T}=1/\poly(\secpar)$. Let $\gamma$ be sampled uniformly randomly from $[\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}]$. Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{\regX,\regZ}$,  
+
+%$\frac{\gamma_0}{T}=1/\poly(\secpar)$
+\begin{lemma}[partition lemma]\label{lem:partition}
+Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}.  Let $i\in[m]$, 
+$\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$. Let $\gamma$ be a random number sampled uniformly from $\L[\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R]$. 
+
+There exists an $\poly(n)$-sized quantum circuit $G_{i,\gamma}$ such that for all (possibly sub-normalized) \hannote{$n$-qubit?} quantum state $\ket{\psi}_{\regX,\regZ}$,  
 \begin{align*}
-    G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = z_0\ket{0^m}_{\regC}\ket{\psi_{0}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+ z_1\ket{0^m}_{\regC}\ket{\psi_{1}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
+    G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = \\ z_0\ket{0^m}_{\regC}\ket{\psi_{0}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+  z_1\ket{0^m}_{\regC}\ket{\psi_{1}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
 \end{align*}
-where $t$ is the number of qubits in the register $ph$, $z_0,z_1\in \mathbb{C}$ such that $|z_0|=|z_1|=1$, and 
-$z_0$, $z_1$, $\ket{\psi_0}_{\regX,\regZ}$, $\ket{\psi_1}_{\regX,\regZ}$, and $\ket{\psi_{err}}_{\regX,\regZ}$ may depend on $\gamma$.
+\hannote{what's wrong with all these registers} where $t$ is the number of qubits in the register $ph$, $z_0,z_1\in \mathbb{C}$ such that $|z_0|=|z_1|=1$, and 
+$z_0$, $z_1$, \hannote{$Z$ just phase factor?}$\ket{\psi_0}_{\regX,\regZ}$, $\ket{\psi_1}_{\regX,\regZ}$, and $\ket{\psi_{err}}_{\regX,\regZ}$ may depend on $\gamma$.
 
 Furthermore, the following properties are satisfied.
 %
 \begin{enumerate}
-%\item There exist (sub-normalized) states $\ket{\psi_0}_{\regX,\regZ}$ and $\ket{\psi_1}_{\regX,\regZ}$ such that when $G_{i,\gamma}$ runs on input $\ket{\psi}_{\regX,\regZ}$, the output is  $(0,\ket{\psi_0}_{\regX,\regZ}/\|\ket{\psi_0}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_0}_{\regX,\regZ}\|^2$, $(1,\ket{\psi_1}_{\regX,\regZ}/\|\ket{\psi_1}_{\regX,\regZ}\|)$ with probability $\|\ket{\psi_1}_{\regX,\regZ}\|^2$, and $\bot$ with probability  $1-\|\ket{\psi_0}_{\regX,\regZ}\|^2- \|\ket{\psi_1}_{\regX,\regZ}\|^2$,
-    \item \label{partition-property-1} If we define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$, then we have  $E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$. 
+    \item \label{partition-property-1}  Define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$.\hannote{?} We have  $$E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$$. 
+    $$E_{\gamma}[\|\ket{\psi}_{\regX,\regZ}\|^2 -\|\ket{\psi_0}_{\regX,\regZ}\|^2 -\|\ket{\psi_1}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$$
 \item For any fixed $\gamma$, $\Pr[M_{ph,th,in}\circ \ket{\psi'_{err}} \in \{0^t01,0^t11\}] =0$. %where $M_{ph,th,in}$ is the computational-basis measurement in the register $(ph,th,in)$. %and $t$ is the number of qubits in $ph$.   
 This implies that if we apply the measurement $M_{ph,th,in}$ on $\frac{G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in}}{\|\ket{\psi}_{\regX,\regZ}\|}$, then the outcome is $0^tb1$ with probability $\|\ket{\psi_b}_{\regX,\regZ}\|^2$ and the resulting state in the register $(\regX,\regZ)$  is $\frac{\ket{\psi_b}_{\regX,\regZ}}{\|\ket{\psi_b}_{\regX,\regZ}\|}$ ignoring a global phase factor.
-    \item For any fixed $\gamma$, $E_{b\in \{0,1\}} [\|\ket{\psi_b}_{\regX,\regZ}\|^2]\leq \frac{1}{2}\|\ket{\psi}_{\regX,\regZ}\|^2$. 
+
+    % \item For any fixed $\gamma$, $E_{b\in \{0,1\}} [\|\ket{\psi_b}_{\regX,\regZ}\|^2]\leq \frac{1}{2}\|\ket{\psi}_{\regX,\regZ}\|^2$. \hannote{redundant?}
+    
         \item 
-For any fixed $\gamma$ and $c\in \bit^m$ such that $c_i=0$, we have 
+For any fixed $\gamma$ and $c\in [m]$ such that $c\neq i$\hannote{check}\hannote{for all k, y}, we have 
 \begin{align*}
-\Pr\left[M_{\regX_i}\circ U\frac{\ket{c}_{\regC}\ket{\psi_0}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{k_i,y_i}\right]\leq 2^{m-1}\gamma+\negl(\secpar).
+\Pr\left[M_{\regX_i}\circ U\frac{\ket{c}_{\regC}\ket{\psi_0}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{k_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
 \end{align*}
     \item 
 For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ such that 
 \begin{align*}  
   \Pr\left[\ext_i\left(\frac{\ket{0^m}_{\regC}\ket{\psi_1}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)\in \Acc_{k_i,y_i}\right]=1-\negl(\secpar).
-  \end{align*}   
+  \end{align*}   \hannote{$M_x?$}
 \end{enumerate}
 \end{lemma}
 
@@ -235,20 +217,49 @@ For any fixed $\gamma$, there exists an efficient quantum algorithm $\ext_i$ suc
 			$$\Pr\left[\cE_i\left(\frac{\ket{0^m}_C\ket{\psi_1}_{X,Z}}{\norm{\psi_1}_{X,Z}}\in A_{k_i, y_i}\right)\right]\leq1-\negl(n)$$
 	\end{enumerate}
 \end{lem}
-\fi
 
-\Ethan{Below is 3.6. Looks kinda useful but I need to think through this $c$ thing to make sure it'll be fine even if it's not randomly generated.}
-\hannote{How about include 3.6 in the theorem}
+
 
 \begin{theorem}
     
  If there exists a $\QPIP_1$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah there exists a $\QPIP_0$ protocol $(\bbV', \bbP')$ for $\SampBQP$ with soundness blah' and completeness blah'
 	
 \end{theorem}
-\begin{proof}
-We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce the soundness error. \hannote{describe $N$ time para rep}. 
-\end{proof}
 
+
+\fi
+==========
+
+Choose the $T$ in Lemma~\ref{lem:partition} to be $\Theta(m^3)$ \hannote{$\gamma_0$?}. By Property~\ref{partition-property-1} of Lemma~\ref{lem:partition}, 
+$$\forall i, \L(1- 1/m^2\R)\text{fraction of }\gamma$$ 
+satisfies that 
+$$\norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
+Therefore, there exist an $\gamma$ such that 
+$$\forall i,\, \norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
+
+Denote $G_{i,\gamma}$ with  $\gamma$ found above as $G_i$. \hannote{finding $\gamma$ is not computationally efficient.}
+
+====
+
+
+\Ethan{Below is 3.6. Looks kinda useful but I need to think through this $c$ thing to make sure it'll be fine even if it's not randomly generated.}
+\hannote{How about include 3.6 in the theorem}
+
+
+
+Here we follow \cite{parallelrep}.
+
+We characterize a prover by two unitaries $(U_0, U)$ acting on the space $\cH_C\otimes\cH_X\otimes\cH_Z\otimes\cH_Y\otimes\cH_K$.
+
+\Ethan{I'll elaborate on above later, after figuring out exactly what I need or don't need}
+
+Each coordinate can be accepted and rejected separately, and the entire protocol accepts only if all coordinates accept.
+
+Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test round when the first and second messages are $k_i$ and $y_i$, respectively.
+
+
+
+\Ethan{Do we even need this lemma 3.5, or can we just use 3.6...}
 
 
 \begin{lem}
@@ -268,6 +279,10 @@ We run Mahadev's 4-round protocol \ref{} and use parallel repetition to reduce t
 	\end{enumerate}
 \end{lem}
     asdf
+
+
+
+
 \begin{cor}
     
 	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah
