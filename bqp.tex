@@ -1,6 +1,22 @@
 \section{Blind Delegation for BQP and FBQP}
 \label{sec:BlindBQP}
 
+\def\MF{\mathsf{MF}}
+\nc{\PiMF}{\ensuremath{\Pi_\MF}}
+\nc{\VMF}{\ensuremath{V_\MF}}
+\nc{\PMF}{\ensuremath{P_\MF}}
+\nc{\PMFstar}{\ensuremath{P_\MF^*}}
+\nc{\cVMF}[1]{\ensuremath{\cV_{\MF,#1}}}
+\nc{\cPMF}[1]{\ensuremath{\cP_{\MF,#1}}}
+
+\def\blind{\mathsf{blind}}
+\nc{\Piblind}{\ensuremath{\Pi_\blind}}
+\nc{\Vblind}{\ensuremath{V_\blind}}
+\nc{\Pblind}{\ensuremath{P_\blind}}
+\nc{\Pblindstar}{\ensuremath{P_\blind^*}}
+\nc{\cVblind}[1]{\ensuremath{\cV_{\blind,#1}}}
+\nc{\cPblind}[1]{\ensuremath{\cP_{\MF,#1}}}
+
 \Ethan{TODO Read other papers and see if I can copy their tones and phrasing}
 
 \Ethan{Note to self: If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
@@ -31,14 +47,15 @@ Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate st
 The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to certain distribution to apply to $\rho$
 The verifier then, using the measurement results, decides whether to accept or reject.
 
-\begin{protocol}{1-message $\QPIP_1$ protocol $\Pi_{MF} = (P_{MF}, V_{MF})$ for $\BQP$ language $L$ \Ethan{TODO use macros}}
+\begin{protocol}{1-message $\QPIP_1$ protocol $\PiMF = (\PMF, \VMF)$ for $\BQP$ language $L$}
 	\label{proto:BQP}
 	Common input: $x\in\set{0,1}^n$. 
 	\begin{enumerate}
-		\item The verifier generates $\Lambda \leftarrow \cV_1(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement and $m=\poly(n)$ is the length of the prover's certificate state.
-		\Ethan{change $\cV_1$ to $\cV_{MF, 1}$}
-		\item The prover generates a certificate state $\rho\leftarrow\cP_2(x)$  and sends $\rho$ to the verifier qubit-by-qubit.
-		\item The verifier applies the measurement $\Lambda$ to $\rho$ qubit-by-qubit. Let $w \in \set{0,1}^n$ denote the measurement outcome. It verifies the measurement outcome and produces a decision  $o\leftarrow\cV_3(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cV_3$ is a classical polynomial-time algorithm.
+		\item The verifier generates $\Lambda \leftarrow \cVMF{1}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement and $m=\poly(n)$ is the length of the prover's certificate state.
+		\item The prover generates a certificate state $\rho\leftarrow\cPMF{2}(x)$  and sends $\rho$ to the verifier qubit-by-qubit.
+		\item The verifier applies the measurement $\Lambda$ to $\rho$ qubit-by-qubit.
+			Let $w \in \set{0,1}^n$ denote the measurement outcome.
+			It verifies the measurement outcome and produces a decision $o\leftarrow\cVMF{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVMF{3}$ is a classical polynomial-time algorithm.
 	\end{enumerate}
 \end{protocol}
 
@@ -80,52 +97,56 @@ We state this observation as the following theorem:
 \cref{proto:BQP} has negligible completeness and soundness.
 Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
-\Ethan{TODO PROOFREAD ME}
-
-\begin{protocol}{Blind Protocol $\Pi_{blind} = (P_{blind}, V_{blind}$) for $\BQP$ \Ethan{Define and use macros later}}
+\begin{protocol}{Blind protocol $\Piblind = (\Pblind, \Vblind)$ for $\BQP$}
 	\label{proto:BlindBQP}
-	Let $x\in\set{0,1}^n$.
-	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cF$.
+	Let $x\in\set{0,1}^n$ be an input for $\Vblind$.
+	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cPMF{2}$.
 	\begin{enumerate}
-		\item The verifier, on input $x$ generates $\Lambda$ using $\cV_1$ of \cref{proto:BQP}.
+		\item The verifier generates $\Lambda\leftarrow\cVMF{1}(x)$.
 			On input $\Lambda$, it computes $\Lambda'$ using \cref{decodeMeasureOrder}.
-			It computes $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, and $y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$.
-			Finally, it sends $y$ and $evk$ to the prover
-		\item The prover homomorphically evaluates $\cP_2$ of \cref{proto:BQP} on input $y$, generating $\sigma=\mathsf{QHE.Eval}(\cP_2, y)$.
-			The prover sends $\sigma$ to the verifier qubit-by-qubit.
-		\item The verifier measures the incoming ciphertext $\sigma$ according to $\Lambda'$, getting $ct$
-			It applies $\widehat{\mathsf{QHE.Dec}_{sk}}$ to $ct$, getting $w$.
-			On input $w$, it applies $\cV_3$ of \cref{proto:BQP} and outputs its result.
+			Then it generates $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$ and $y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$.
+			It sends $y$ and $evk$ to the prover.
+		\item The prover homomorphically evaluates $\cPMF{2}$ on input $y$, generating $\sigma\leftarrow\mathsf{QHE.Eval}(\cPMF{2}, y)$.
+			It sends $\sigma$ to the verifier qubit-by-qubit.
+		\item The verifier generates $ct\leftarrow\Lambda'(\sigma)$,
+			$w\leftarrow\widehat{\mathsf{QHE.Dec}_{sk}}(ct)$,
+			and then $o\leftarrow\cVMF{3}(x, \Lambda, w)$.
+			It outputs $o$.
 	\end{enumerate}
 \end{protocol}
 
-As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, constant round, and blind protocol for $\BQP$ with negligible completeness and soundness.
+As we will prove, $\Piblind$ is a $\QPIP_1$, constant round, and blind protocol for $\BQP$ with negligible completeness and soundness.
 
 \begin{thm}
-	\cref{proto:BlindBQP} has negligible completeness and soundness, and is blind.
+	$\Piblind$ has negligible completeness and soundness, and is blind.
 \end{thm}
 \begin{prf}
 	The completeness follows by inspection.
 	For blindness, the only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
-
-	\Ethan{TODO PROOFREAD ME}
-	\Ethan{Convention: malicious parties have stars}
 	
-	\Ethan{Don't use blackboard bold for provers/verifiers}
-	
-	Suppose for the sake of contradiction that some prover $\bbP_{blind}^*$ breaks the soundness of \cref{proto:BlindBQP}.
+	Suppose for the sake of contradiction that there exists some cheating prover $\Pblindstar$ violating the soundness guarantees of $\Piblind$,
+	then we can use it to construct a prover $\PMFstar$ violating the soundness guarantees of $\PiMF$.
 
-	Then we use it to construct a prover $\bbP_{MF}^*$ against the soundness guarantees in \cref{proto:BQP}.
+	\Ethan{This construction is too small for a separate box but maybe still be too big to just write it like this?}
 
-	$\bbP_{MF}^*$ simulates \cref{proto:BlindBQP} as $(V_{blind}(x), P_{blind}^*)()$
-	
-	\Ethan{Fix interface; $P_{blind}^*$ expects some message from $V$}
+	We define $\PMFstar$ to first generate
+	$$(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}$$
+	and
+	$$y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$$
+	It then sends $y$ and $evk$ to $\Pblindstar$ and gets $\sigma$ back.
+	Finally, it generates
+	$$\rho\leftarrow\mathsf{QHE.Dec}_{sk}(\sigma)$$
+	and sends it to $\VMF$ qubit-by-qubit.
 
-	When $\bbP_{blind}^*$ sends $\sigma$, $\bbP_{MF}^*$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to the verifier. \Ethan{Make observation that $P_{blind}^*$ has $sk$}
+	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
 
-	By assumption, $\bbV_{Blind}$ has a non-negligible chance to accept after receiving $\sigma$.
-	When that happens, $\cV(w)=\cV(\Lambda(\rho))=Acc$.
-	So $\bbV_{MF}$ has the same probability to accept after receiving $\rho$.
+	By assumption, $\Vblind$ has a non-negligible probability to accept after receiving $\sigma$.
+	In other words, let $\Lambda\leftarrow\cVMF{1}$, and define $\Lambda'$ by \cref{decodeMeasureOrder},
+	then with non-negligible probability
+	$$\cVMF{3}(x, \Lambda, \widehat{\mathsf{QHE.Dec}_{sk}}(\Lambda'(\sigma))=acc$$
+	which is equivalent to
+	$$\cVMF{3}(x, \Lambda, \Lambda(\rho))=acc$$
+	That is, $\PMFstar$ violates the soundness of $\PiMF$.
 \end{prf}
 
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
@@ -134,13 +155,12 @@ Finally, we prove Thm 3.1 by applying Mahadev's measurement protocol~\cite{mahad
 Note that Mahadev's measurement protocol can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol, and Protocol 3 is a $\QPIP_1$ protocol with X, Z measurement and negligible soundness.
 Thus the resulting protocol $(P', V')$ is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$
 
-\Ethan{TODO PROOFREAD ME}
 We give a high-level overview of the compiliation results.
 
-\begin{protocol}{\Cref{proto:BlindBQP} compiled using Mahadev's measurement protocol}
+\begin{protocol}{\Cref{proto:BlindBQP} compiled using Mahadev's measurement protocol \Ethan{Give this a name}}
 	\label{proto:QPIP0BQP}
 	\begin{enumerate}
-		\item The verifier generates $\Lambda, \Lambda', pk, sk, evk, y$ the same way as in \cref{proto:BlindBQP}.
+		\item The verifier generates $\Lambda, \Lambda', pk, sk, evk, y$ the same way as in \cref{proto:BlindBQP}. \Ethan{Need more notation? But how?}
 			On input $\Lambda'$, it generates $k, td$.
 			It sends $k, evk, y$ to the prover.
 		\item The prover, on inputs $k, evk, y$, generates classical ``commitment" $m$ and internal state $\ket{st}$.
