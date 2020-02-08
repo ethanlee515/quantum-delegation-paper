@@ -7,6 +7,12 @@
 
 \Ethan{TODO Intro this section}
 
+\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf for conventions. Mal. parties have stars, protos use Pi. Stuff like $r[(P(w), V )(1n ,(M, x, t))$ }
+
+\Ethan{More notation, fix interfaces}
+
+\Ethan{Fix up to proto 3 and proofs}
+
 \subsection{Blind Delegation for BQP}
 \label{subsec:BlindBQP}
 
@@ -25,23 +31,14 @@ Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate st
 The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to certain distribution to apply to $\rho$
 The verifier then, using the measurement results, decides whether to accept or reject.
 
-\Ethan{TODO PROOFREAD ME}
-
-\begin{protocol}{1-message $\QPIP_1$ protocol for $\BQP$ language $L$}
+\begin{protocol}{1-message $\QPIP_1$ protocol $\Pi_{MF} = (P_{MF}, V_{MF})$ for $\BQP$ language $L$ \Ethan{TODO use macros}}
 	\label{proto:BQP}
-	Input: $x\in\set{0,1}^n$.
+	Common input: $x\in\set{0,1}^n$. 
 	\begin{enumerate}
-		\item $\cV_1$:
-			On input $x$, the verifier samples $\Lambda$ from a certain distribution $\pi_x$, where $m=\poly(n)$, $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement. 
-
-			\Ethan{How does this $\cV_1$ thing work?}
-		\item The verifier sends $x$ to the prover.
-		\item $\cP_2$:
-			On input $x$, the prover applies an algorithm to generate $\rho\in\cB^{\otimes m}$.
-		\item The prover sends $\rho$ to the verifier qubit-by-qubit.
-		\item The verifier measures the incoming qubits of $\rho$ according to $\Lambda$ to get $w$.
-		\item $\cV_3$:
-			On input $w$, the verifier generates and outputs either accept or reject using a classical polynomial-time algorithm.
+		\item The verifier generates $\Lambda \leftarrow \cV_1(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$; each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement and $m=\poly(n)$ is the length of the prover's certificate state.
+		\Ethan{change $\cV_1$ to $\cV_{MF, 1}$}
+		\item The prover generates a certificate state $\rho\leftarrow\cP_2(x)$  and sends $\rho$ to the verifier qubit-by-qubit.
+		\item The verifier applies the measurement $\Lambda$ to $\rho$ qubit-by-qubit. Let $w \in \set{0,1}^n$ denote the measurement outcome. It verifies the measurement outcome and produces a decision  $o\leftarrow\cV_3(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cV_3$ is a classical polynomial-time algorithm.
 	\end{enumerate}
 \end{protocol}
 
@@ -85,7 +82,7 @@ Now we compile it using $\mathsf{QHE}$ in order to also achieve blindness:
 
 \Ethan{TODO PROOFREAD ME}
 
-\begin{protocol}{Blind Protocol for $\BQP$}
+\begin{protocol}{Blind Protocol $\Pi_{blind} = (P_{blind}, V_{blind}$) for $\BQP$ \Ethan{Define and use macros later}}
 	\label{proto:BlindBQP}
 	Let $x\in\set{0,1}^n$.
 	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cF$.
@@ -112,16 +109,23 @@ As we will see in the theorems below, \protoref{BlindBQP} is a $\QPIP_1$, consta
 	For blindness, the only thing the prover sees is $c$ and $evk$, so this follows directly from $\mathsf{QHE}$'s security.
 
 	\Ethan{TODO PROOFREAD ME}
-	Suppose for the sake of contradiction that some prover $\bbP'$ breaks the soundness of \cref{proto:BlindBQP}.
+	\Ethan{Convention: malicious parties have stars}
+	
+	\Ethan{Don't use blackboard bold for provers/verifiers}
+	
+	Suppose for the sake of contradiction that some prover $\bbP_{blind}^*$ breaks the soundness of \cref{proto:BlindBQP}.
 
-	We construct $\tilde\bbP$ a prover against the soundness guarantees in \cref{proto:BQP} as $(\bbV, \tilde\bbP)$.
+	Then we use it to construct a prover $\bbP_{MF}^*$ against the soundness guarantees in \cref{proto:BQP}.
 
-	$\tilde\bbP$ simulates \cref{proto:BlindBQP} as $(\bbV', \bbP')$.
+	$\bbP_{MF}^*$ simulates \cref{proto:BlindBQP} as $(V_{blind}(x), P_{blind}^*)()$
+	
+	\Ethan{Fix interface; $P_{blind}^*$ expects some message from $V$}
 
-	When $\bbP'$ sends $\sigma$, $\tilde\bbP$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to $\bbV$.
+	When $\bbP_{blind}^*$ sends $\sigma$, $\bbP_{MF}^*$ computes and sends $\rho=\mathsf{QHE.Dec}_{sk}(\sigma)$ to the verifier. \Ethan{Make observation that $P_{blind}^*$ has $sk$
 
-	$\bbV'$ has a non-negligible chance to accept after receiving $\sigma$.
-	When that happens, $\cV(w)=\cV(\Lambda(\rho))=Acc$, so $\bbV$ would also accept after receiving $\rho$.
+	By assumption, $\bbV_{Blind}$ has a non-negligible chance to accept after receiving $\sigma$.
+	When that happens, $\cV(w)=\cV(\Lambda(\rho))=Acc$.
+	So $\bbV_{MF}$ has the same probability to accept after receiving $\rho$.
 \end{prf}
 
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
