@@ -1,32 +1,61 @@
 \section{Constant-Round and Blind $\QPIP_1$ protocol for $\SampBQP$}
 
+\def\Samp{\mathsf{Samp}}
+\nc{\PiSamp}{\ensuremath{\Pi_\Samp}}
+\nc{\VSamp}{\ensuremath{V_\Samp}}
+\nc{\PSamp}{\ensuremath{P_\Samp}}
+\nc{\PSampstar}{\ensuremath{P_\Samp^*}}
+\nc{\cVSamp}[1]{\ensuremath{\cV_{\Samp,#1}}}
+\nc{\cPSamp}[1]{\ensuremath{\cP_{\Samp,#1}}}
+
+\def\SampB{\mathsf{Samp, blind}}
+\nc{\PiSampB}{\ensuremath{\Pi_\SampB}}
+
 Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homomorphic encryption $\mathsf{QHE}$ from \cref{decodeMeasureOrder} in the same way as what we did for our blind $\BQP$ delegation protocol (\cref{proto:BlindBQP}) in \cref{sec:BlindBQP}.
 
-\begin{protocol}{Compiling \cref{ProtoQPIP1} using $\mathsf{QHE}$}
-	\label{proto:QPIP1Samp}
+First we restate \cref{ProtoQPIP1} in more convenient terms.
+
+\begin{protocol}{Our 1-message $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ language $L$}
+	Common input: $x\in\set{0,1}^n$. 
 	\begin{enumerate}
-		\item The verifier runs $\mathsf{QHE.keygen}(1^\lambda, 1^L)$ where $L$ is the depth of circuit corresponding to the honest prover's action in \cref{ProtoQPIP1}
-		\item The verifier encrypts its input and runs \cref{ProtoQPIP1} with the prover homomorphically
-		\item The verifier measures the incoming ciphertext according to \cref{decodeMeasureOrder}
-		\item The verifier decodes the measurement results to get its output
+		\item The prover generates a certificate state $\rho\leftarrow\cPSamp{1}(x)$ and sends it to the verifier qubit-by-qubit.
+		\item The verifier generates $\Lambda \leftarrow \cVSamp{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
+			each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement and $m=\poly(n)$ is the length of the prover's certificate state.
+			It applies $\Lambda$ to $\rho$ qubit-by-qubit.
+			Let $w \in \set{0,1}^m$ denote the measurement outcome.
+			It verifies the measurement outcome and produces a decision $o\leftarrow\cVSamp{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVSamp{3}$ is a classical polynomial-time algorithm.
+	\end{enumerate}
+\end{protocol}
+
+Note that it is of the same form as its $\BQP$ counterpart $\PiSamp$ found in \cref{subsec:BlindBQP}.
+
+So we can compile it into $\PiSampB$ to achieve blindness in the same way:
+
+\begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\Piblind = (\Pblind, \Vblind)$ for $\SampBQP$ language $L$}
+	\label{proto:BlindBQP}
+	Verifier's input: $x\in\set{0,1}^n$.
+	
+	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cPSamp{1}$.
+	\begin{enumerate}
+		\item The verifier generates $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPSamp{1}(x)$.
+			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
+			It also sends $evk$ to the prover.
+		\item The prover homomorphically evaluates $\cPSamp{1}$ on input $ct_x$, generating $\sigma\leftarrow\mathsf{QHE.Eval}_{evk}(\cPSamp{1}, ct_x)$.
+			It sends $\sigma$ to the verifier qubit-by-qubit.
+		\item The verifier generates $\Lambda\leftarrow\cVSamp{2}(x)$,
+			$\Lambda'\leftarrow\cM_\QHE$,
+			$ct_w\leftarrow\Lambda'(\sigma)$,
+			$w\leftarrow\widehat{\mathsf{QHE.Dec}_{sk}}(ct_w)$,
+			and $o\leftarrow\cVSamp{3}(x, \Lambda, w)$.
+			It outputs $o$.
 	\end{enumerate}
 \end{protocol}
 
 \begin{thm}
-	\cref{proto:QPIP1Samp} has the same completeness and soundness guarantees as \cref{ProtoQPIP1}
+	$\PiSampB$ has the same completeness and soundness guarantees as $\PiSamp$ and is blind.
 \end{thm}
 \begin{prf}
-	A honest prover still gets accepted with overwhelming probability by the correctness of $\mathsf{QHE}$. \Ethan{Not sure if too hand-wavy}
-
-	As for soundness, a cheating prover cannot do better under this compiliation, since each message still decodes to some plaintext.
-
-	In other words, anything a cheating prover can do after the compiliation, there exists a corresponding strategy in the version before.
-	\Ethan {Ahhhh this is not rigorous at all}
-\end{prf}
-
-\begin{thm}
-	\cref{proto:QPIP1Samp} is IND-CPA secure.
-\end{thm}
-\begin{prf}
-	The only thing the prover gets is $\mathsf{QHE.Enc}_{pk}(x)$, $pk$, and $evk$. So this follows directly from the security of $\mathsf{QHE}$.
+	The proof of \cref{thm:BlindBQP} works, up to changing some labels.
+	Note that we don't have negligible soundness errors here, since $\PiSamp$ doesn't either.
+	The proof only shows that the compiliation preserves soundness.
 \end{prf}
