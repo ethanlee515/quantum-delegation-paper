@@ -39,10 +39,10 @@ So we can compile it into $\PiSampB$ to achieve blindness in the same way:
 	
 	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cPSamp{1}$.
 	\begin{enumerate}
-		\item The verifier generates $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPSamp{1}(x)$.
+		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPSamp{1}(x)$.
 			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
-			It also sends $evk$ to the prover.
-		\item The prover homomorphically evaluates $\cPSamp{1}$ on input $ct_x$, generating $\sigma\leftarrow\mathsf{QHE.Eval}_{evk}(\cPSamp{1}, ct_x)$.
+			It also sends $pk$ to the prover.
+		\item The prover homomorphically evaluates $\cPSamp{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPSamp{1}, ct_x)$.
 			It sends $\sigma$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda\leftarrow\cVSamp{2}(x)$,
 			$\Lambda'\leftarrow\cM_\QHE$,

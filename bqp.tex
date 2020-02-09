@@ -43,15 +43,15 @@ We'll later construct a protocol for $\SampBQP$ following the same flow of logic
 We start with a high-level description of the $\QPIP_1$ scheme $\PiMF$ from \cite{FOCS:Mahadev18a}, which is in turn taken from \cite{mf16}.
 
 This is a one-message $\QPIP_1$ protocol $\PiMF$ with only $X$ and $Z$ measurement for deciding a $\BQP$ language $L$.
-Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate state $\rho$ to the verifier qubit-by-qubit.
-The verifier samples a product measurement \Ethan{for consistency, ``measurement basis choice"} $\Lambda$ of $X$ and $Z$s according to a certain distribution, and applies it to $\rho$.
+Roughly, on input $x\in\set{0,1}^n$, the prover sends a certificate state $\rho$ to the verifier qubit-by-qubit.
+The verifier samples a measurement basis choice $\Lambda$ according to a certain distribution, and applies it to $\rho$.
 The verifier then, using the measurement results, decides whether to accept or reject.
 
 \begin{protocol}{1-message $\QPIP_1$ protocol $\PiMF = (\PMF, \VMF)$ for $\BQP$ language $L$}
 	\label{proto:BQP}
 	Common input: $x\in\set{0,1}^n$. 
 	\begin{enumerate}
-		\item The prover generates a certificate state $\rho\leftarrow\cPMF{1}(x)$ and sends $\rho$ to the verifier qubit-by-qubit. \Ethan{Say it's $m$ qubits}
+		\item The prover generates a $m$-qubit certificate state $\rho\leftarrow\cPMF{1}(x)$ and sends $\rho$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda \leftarrow \cVMF{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
 			each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
 			It applies $\Lambda$ to $\rho$ qubit-by-qubit.
@@ -59,8 +59,7 @@ The verifier then, using the measurement results, decides whether to accept or r
 			It verifies the measurement outcome and produces a decision $o\leftarrow\cVMF{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVMF{3}$ is a classical polynomial-time algorithm.
 	\end{enumerate}
 \end{protocol}
-\begin{thm}
-    \Ethan{Add reference}
+\begin{thm}[from \cite{FOCS:Mahadev18a, mf16}]
     $\PiMF$ has negligible completeness and soundness.
 \end{thm}
 
@@ -75,15 +74,13 @@ Its ciphertexts consists of a Pauli one-time-padded plaintext and classically en
 Pauli one-time-pads commute with $X$ and $Z$ measurements, so the verifier can measure the one-time-padded state as usual, then correct the measurement results using the Pauli keys.
 Now we state and prove this observation in more precise terms.
 
-\Ethan{TODO PROOFREAD ME}
 \begin{thm}
 	\label{decodeMeasureOrder}
-	Let $n\in\bbN$.
-	Let $m\in\bbN$ be the length of the ciphertexts under $\mathsf{QHE}$ corresponding to plaintexts of length $n$. \Ethan{$m$ isn't well-defined this way; missing security param. and depth param.}
+	Let $n, L\in\bbN$.
+	Let $(pk, sk)\leftarrow\QGen(1^n, 1^L)$
+	Let $m=\poly(n)$ be the length of the ciphertexts under $\mathsf{QHE}$ corresponding to plaintexts of length $n$.
 	
-	\Ethan{Keygen here}
-
-	There exists efficient classical poly-time algorithms $\cM_\QHE$ and $\widehat{\mathsf{QHE.Dec}}$ s.t.
+	There exists efficient classical poly-time algorithms $\cM_\QHE$ and $\widehat{\QDec_{sk}}$ s.t.
 	for all $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$ where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement:
 	$$\cM_\QHE(\Lambda)=\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$$
 	where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and
@@ -110,10 +107,10 @@ Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 	Verifier's input: $x\in\set{0,1}^n$.
 	
 	\begin{enumerate}
-		\item The verifier generates $(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$.
+		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$.
 			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
-			It also sends $evk$ to the prover.
-		\item The prover homomorphically evaluates $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\cPblind{1}(evk, ct_x)=\mathsf{QHE.Eval}_{evk}(\cPMF{1}, ct_x)$.
+			It also sends $pk$ to the prover.
+		\item The prover homomorphically evaluates $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\cPblind{1}(pk, ct_x)=\QEval_{pk}(\cPMF{1}, ct_x)$.
 			It sends $\sigma$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda\leftarrow\cVMF{2}(x)$,
 			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$,
@@ -130,40 +127,24 @@ Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 \end{thm}
 \begin{prf}
 	The completeness follows by inspection.
-	For blindness, the only thing the prover sees is $c$ and $evk$, so it follows directly from $\mathsf{QHE}$'s security.
+	For blindness, the only thing the prover sees is $c$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
 	
 	Suppose for the sake of contradiction \Ethan{First specify this is for soundness proof} that there exists some cheating prover $\Pblindstar$ with some noticeable acceptance probability $\varepsilon$.
 	Then we can construct a prover $\PMFstar$ violating the soundness guarantees of $\PiMF$ by simulating $(\Vblind(x), \Pblindstar)$ as below:
 
 	We define $\PMFstar$ to first generate
-	$(pk, sk, evk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$
+	$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$
 	and
 	$y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$
-	It then sends $ct_x$ and $evk$ to $\Pblindstar$ \Ethan{Just run it, don't send it} and gets $\sigma$ back.
+	It then sends $ct_x$ and $pk$ to $\Pblindstar$ \Ethan{Just run it, don't send it} and gets $\sigma$ back.
 	Finally, it decrypts
 	$\rho\leftarrow\mathsf{QHE.Dec}_{sk}(\sigma)$
 	and sends it to $\VMF$ qubit-by-qubit.
 
 	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
 	Let $\cP_\blind^*$ denote the action $\Pblindstar$ takes to produce $\sigma$ from $ct_x$.
-	Consider the experiment corresponding to $(\Vblind, \Pblindstar)$:
-	$$(pk, sk, evk)\leftarrow\QGen(1^n, 1^d)$$
-	$$ct_x\leftarrow\QEnc_{pk}(x)$$
-	$$\sigma\leftarrow\cP_\blind^*(ct_x, evk)$$
-	$$\Lambda\leftarrow\cVMF{2}(x)$$
-	$$\Lambda'\leftarrow\cM_\QHE(\Lambda)$$
-	$$ct_w\leftarrow\Lambda'(\sigma)$$
-	$$w\leftarrow\widehat{\QDec_{sk}}(ct_w)$$
-	$$o\leftarrow\cVMF(x, \Lambda, w)$$
 
-	Compare it with the experiment corresponding to $\PMFstar$:
-	$$(pk, sk, evk)\leftarrow\QGen(1^n, 1^d)$$
-	$$ct_x\leftarrow\QEnc_{pk}(x)$$
-	$$\sigma\leftarrow\cP_\blind^*(ct_x, evk)$$
-	$$\Lambda\leftarrow\cVMF{2}(x)$$
-	$$\rho\leftarrow\QDec_{sk}(\sigma)$$
-	$$w\leftarrow\Lambda(\rho)$$
-	$$o\leftarrow\cVMF(x, \Lambda, w)$$
+	Observe the experiments $A$ and $B$ \Ethan{TODO} are identical except...
 
     \Ethan{See google docs; remove the displayed math above and say in words}
 	By inspection, the only difference between the experiments is how $w$ is obtained from $\sigma$.
@@ -183,10 +164,10 @@ In order to prove blindness, we give a high-level overview of the compiliation r
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Pibz$ for $BQP$ language $L$}
 	\label{proto:QPIP0BQP}
 	\begin{enumerate}
-		\item The verifier generates $\Lambda, \Lambda', pk, sk, evk, ct_x$ the same way as in \cref{proto:BlindBQP}. \Ethan{Need more notation? But how?}
+		\item The verifier generates $\Lambda, \Lambda', pk, sk, ct_x$ the same way as in \cref{proto:BlindBQP}. \Ethan{Need more notation? But how?}
 			Then, using $\Lambda'$, it generates $k, td$.
-			It sends $k, evk, ct_x$ to the prover.
-		\item The prover, on inputs $k, evk, ct_x$, generates classical ``commitment" $y$ and internal state $\ket{st}$.
+			It sends $k, pk, ct_x$ to the prover.
+		\item The prover, on inputs $k, pk, ct_x$, generates classical ``commitment" $y$ and internal state $\ket{st}$.
 			It sends $y$ to the verifier.
 		\item The verifier sends the prover a public coin $c\in\set{0,1}$.
 		\item The prover, on inputs $c$ and $\ket{st}$, generates classical $a$ and sends it to the verifier.
