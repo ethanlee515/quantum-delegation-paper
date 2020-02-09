@@ -6,7 +6,7 @@ First, we make an observation.
 
 \begin{lemma}
 	\label{ProtoGroundStateCheck}
-	There is a $\QPIP_1$ protocol for \autoref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
+	There is a $\QPIP_1$ protocol for \cref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{lemma}
 \begin{prf}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
@@ -35,7 +35,7 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 		\begin{enumerate}
 			\item If the $i$-th register is for checking:
 			\begin{enumerate}
-				\item The verifier runs \autoref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
+				\item The verifier runs \cref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
 				\item If the test passes, increment counter $c$.
 			\end{enumerate}
 			\item If the register is for outputting:
@@ -70,12 +70,12 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 	Let $\tilde{\Pi}$ be some fixed permutation, then clearly:
 	$$\tilde{\Pi}\sigma'\tilde{\Pi}^\dagger=\sigma'$$
 
-	So we can apply \autoref{deFinetti}. $\exists\set{w_i, \rho_i}$ such that:
+	So we can apply \cref{deFinetti}. $\exists\set{w_i, \rho_i}$ such that:
 	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+n}(\sigma'-\sum_i w_i\rho_i^{\otimes n+m})}=O(\varepsilon)$$
 
 	Note that $\tilde\sigma=\sum_i w_i\rho_i^{\otimes n+m}$ is a classical mix over $\rho_i^{\otimes n+m}$ with weights $w_i$.
 
-	Let $p_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \autoref{AlgGroundStateCheck}.
+	Let $p_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \cref{AlgGroundStateCheck}.
 	So the accept chance of this prover is $\sum_j w_j p_j>\delta$
 	By Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otimes n+m}$ is then $\frac{w_i p_i}{\sum_j w_j p_j}$.
 
@@ -88,9 +88,9 @@ Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ pr
 	And so is
 	$$\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}=\frac{\sum_{j\in J} w_j q_j}{\delta}$$
 
-	So by Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otimes n+m}$ where $\rho_i$ has over probability $1-2\varepsilon$ to be accepted by \autoref{AlgGroundStateCheck} is overwhelming.
+	So by Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otimes n+m}$ where $\rho_i$ has over probability $1-2\varepsilon$ to be accepted by \cref{AlgGroundStateCheck} is overwhelming.
 
-	Such $\rho_i$ is $O(\negl(\varepsilon))$-close to $\ket{\psi_{C'(x)}}$, by applying a Chernoff bound to \autoref{ThmXZCheck}.
+	Such $\rho_i$ is $O(\negl(\varepsilon))$-close to $\ket{\psi_{C'(x)}}$, by applying a Chernoff bound to \cref{ThmXZCheck}.
 
 	The probability of measuring $t\geq T$ on the clock register of $\ket{\psi_{C'(x)}}$ is $\frac{1}{2}$, so the probability of failing to do so after $m$ attempts is negligible.
 	Once we do measure $t\geq T$, the data register is $C(x)$.
