@@ -25,17 +25,7 @@
 \def\bzrep{\mathsf{blind, 0, rep}}
 \nc{\Pibzrep}{\ensuremath{\Pi_\bzrep}}
 
-\Ethan{TODO Read other papers and see if I can copy their tones and phrasing}
-
-\Ethan{Note to self: If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
-
 \Ethan{TODO Intro this section}
-
-\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf for conventions. Mal. parties have stars, protos use Pi. Stuff like $r(P(w), V )(1n ,(M, x, t))$ }
-
-\Ethan{More notation, fix interfaces}
-
-\Ethan{Fix up to proto 3 and proofs}
 
 \subsection{Blind Delegation for BQP}
 \label{subsec:BlindBQP}
@@ -48,11 +38,11 @@ In this subsection we present our constant-round blind delegation protocol for $
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
-We start with a high-level description of the $\QPIP_1$ scheme from \cite{mahadev_delegation}, which is in turn taken from \cite{mf16}.
+We start with a high-level description of the $\QPIP_1$ scheme $\PiMF$ from \cite{mahadev_delegation}, which is in turn taken from \cite{mf16}.
 
 This is a one-message $\QPIP_1$ protocol with only $X$ and $Z$ measurement for deciding a $\BQP$ language $L$.
 Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate state $\rho$ to the verifier qubit-by-qubit.
-The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to certain distribution to apply to $\rho$
+The verifier samples a product measurement $\Lambda$ of $X$ and $Z$s according to a certain distribution, and applies it to $\rho$.
 The verifier then, using the measurement results, decides whether to accept or reject.
 
 \begin{protocol}{1-message $\QPIP_1$ protocol $\PiMF = (\PMF, \VMF)$ for $\BQP$ language $L$}
@@ -70,16 +60,16 @@ The verifier then, using the measurement results, decides whether to accept or r
 
 $\PiMF$ has negligible completeness and soundness.
 
-We compile this protocol using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol for $\BQP$, again with only $X$ and $Z$ measurements.
+We compile $\PiMF$ using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol $\Piblind$ for $\BQP$, again with only $X$ and $Z$ measurements.
 The high level idea is to run $\PiMF$ under $\mathsf{QHE}$.
 Namely, the verifier encrypts its original input $x$ and sends $y=\mathsf{QHE.Enc}(x)$ to the prover.
-The prover then homomorphically evaluate $\cF$ on $y$ to produce $\sigma$ which is a ciphertext corresponding to $\rho$, and sends $\sigma$ to the verifier.
+The prover then homomorphically evaluates $\cF$ on $y$ to produce $\sigma$ and sends it to the verifier.
 
 Now the verifier needs to obtain the measurement outcome $w$ from the encrypted state $\sigma$ using qubit-by-qubit $X$ and $Z$ measurements.
 This may not be possible in general, but we observe that $\mathsf{QHE}$ allows this. 
 Its ciphertexts consists of a Pauli one-time-padded plaintext and classically encrypted Pauli keys.
-Pauli one-time-pads commute with $X$ and $Z$ measurements, so the verifier can measure the one-time-padded state as usual then correct the measurement results using the Pauli keys.
-We state this observation as the following theorem:
+Pauli one-time-pads commute with $X$ and $Z$ measurements, so the verifier can measure the one-time-padded state as usual, then correct the measurement results using the Pauli keys.
+Now we state and prove this observation in more precise terms.
 
 \Ethan{TODO PROOFREAD ME}
 \begin{thm}
@@ -89,7 +79,6 @@ We state this observation as the following theorem:
 
 	There exists efficient classical poly-time algorithms $\cM_\QHE$ and $\widehat{\mathsf{QHE.Dec}}$ s.t.
 	for all $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$ where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement:
-	\Ethan{How to specify the existence of $sk$?}
 	$$\cM_\QHE(\Lambda)=\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$$
 	where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and
 	$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
@@ -107,7 +96,7 @@ We state this observation as the following theorem:
 	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
 \end{prf}
 
-Now we state our construction to compile $\PiMF$ using $\mathsf{QHE}$:
+Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 
 \begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\Piblind = (\Pblind, \Vblind)$ for $\BQP$ language $L$}
 	\label{proto:BlindBQP}
@@ -128,8 +117,6 @@ Now we state our construction to compile $\PiMF$ using $\mathsf{QHE}$:
 			It outputs $o$.
 	\end{enumerate}
 \end{protocol}
-
-As we will prove, $\Piblind$ is a $\QPIP_1$, constant round, and blind protocol for $\BQP$ with negligible completeness and soundness.
 
 \begin{thm}
 	$\Piblind$ has negligible completeness and soundness, and is blind.
@@ -178,11 +165,12 @@ As we will prove, $\Piblind$ is a $\QPIP_1$, constant round, and blind protocol 
 
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
 
-Finally, we prove Thm 3.1 by applying Mahadev's measurement protocol~\cite{mahadev_delegation} to Protocol 3 to compile it into a $\QPIP_0$ protocol $(P', V')$ \Ethan{fix name}.
-Note that Mahadev's measurement protocol can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol, and Protocol 3 is a $\QPIP_1$ protocol with X, Z measurement and negligible soundness.
-Thus the resulting protocol $(P', V')$ \Ethan{name?} is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$
+Finally, we prove \cref{thm:QPIP0BQP}.
+We use Mahadev's measurement protocol from \cite{mahadev_delegation} which can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol.
+The resulting protocol $\Pibz$ is a constant-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$ and negligible completeness.
 
-We give a high-level overview of the compiliation results.
+In order to prove blindness, we give a high-level overview of the compiliation results.
+\Ethan{Need to discuss about this}
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Pibz$ for $BQP$ language $L$}
 	\label{proto:QPIP0BQP}
@@ -238,29 +226,30 @@ Our results for $\BQP$ can be generalized to $\FBQP$.
 Let $f\in\FBQP$.
 For any input $x\in\set{0, 1}^*$, define $f_i(x)$ to be the $i$-th bit of $f(x)$.
 For $i\in\bbN, b\in\set{0,1}$, define the language $L_{i, b}=\set{x:f_i(x)=b}$.
-Define $\cL$ to be the collection of these languages: $\cL = \set{L_{i, b}: i\in[m], b\in\set{0, 1}}$.
+Furthermore, define $\cL$ to be the collection of these languages: $\cL = \set{L_{i, b}: i\in[m], b\in\set{0, 1}}$.
 
-\begin{protocol}{Blind and verifiable $\QPIP_0$ delegation for $\FBQP$}
+\begin{protocol}{Blind and verifiable $\QPIP_0$ protocol $\Pi_{\FBQP}$ for $\FBQP$ language $L$}
 	\label{proto:QPIP0FBQP}
 	Input: $x\in\set{0, 1}^n$
 
 	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how?}
 	\begin{enumerate}
-		\item Run $\Pibzrep$ for all $L\in\cL$ in parallel using input $x$. The verifier gets outputs $v_{i, b}\in\set{Acc, Rej}$.
-		\item If $\exists i$ s.t. $v_{i,0}=v_{i,1}$, reject.
-		\item Otherwise, define $y_i = b$ where $v_{i, b}=Acc$. This gives $y\in\set{0,1}^m$
-		\item Verifier outputs $y$
+		\item Run $\Pibzrep$ for all $L\in\cL$ in parallel using input $x$.
+		\item The verifier gets outputs $v_{i, b}\in\set{acc, rej}$.
+			If $\exists i$ s.t. $v_{i,0}=v_{i,1}$, reject.
+			Otherwise, define $y_i = b$ where $v_{i, b}=acc$. This gives $y\in\set{0,1}^m$.
+			The verifier accepts and outputs $y$.
 	\end{enumerate}
 \end{protocol}
 
 \begin{theorem}
-	\Cref{proto:QPIP0FBQP} has negligible completeness and soundness, and is blind.
+	$\Pi_{\FBQP}$ has negligible completeness and soundness, and is blind.
 \end{theorem}
 \begin{prf}
 	Completeness is follows by inspection.
 	Blindness follows because the executions of \cref{proto:repQPIP0BQP} are blind.
 
-	Based on the soundness of \cref{proto:BlindBQP}, $v_{i, b}=Acc$ implies that $x\in L_{i, b}\Rightarrow f_i(x)=b$ with overwhelming probability.
+	By the soundness of $\Pibzrep$, $v_{i, b}=acc$ implies that $x\in L_{i, b}\Rightarrow f_i(x)=b$ with overwhelming probability.
 	In other words, $y_i$ is correct with probability $1-\varepsilon_i$ where $\varepsilon_i=\negl(n)$. 
 	
 	By union bound over all output bits, the soundness of \cref{proto:QPIP0FBQP} is then
