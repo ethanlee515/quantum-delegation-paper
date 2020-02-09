@@ -202,17 +202,18 @@ In order to prove blindness, we give a high-level overview of the compiliation r
 
 $k$ has the additional properties to not leak information on $\Lambda'$, so the compliation preserves blindness. \Ethan{How to make this more rigorous?}
 
-We then apply the recent result parallel repetition get negligible soundness again:
+We use the recent results \cite{parallelrep, alagic2019twomessage} to apply parallel repetition to $\Pibz$ to get $\Pibzrep$ which has negligible soundness.
+
+\Ethan{Is the following even necessary?}
 
 \begin{protocol}{Parallel repetition of \cref{proto:QPIP0BQP}}
 	\label{proto:repQPIP0BQP}
 	\Ethan{TODO PROOFREAD ME}
 	Run $m=\poly(n)$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if the proportion of accepted copies is over some certain threshold $p(n)\in(0, 1)$.
-
 \end{protocol}
 
 \begin{thm}
-	\cref{proto:repQPIP0BQP} has negligible completeness and soundness
+	\cref{proto:repQPIP0BQP} has negligible completeness and soundness and is blind.
 \end{thm}
 \begin{prf}
 	See \cite{parallelrep, alagic2019twomessage}
@@ -250,7 +251,7 @@ Furthermore, define $\cL$ to be the collection of these languages: $\cL = \set{L
 	Completeness is follows by inspection.
 	Blindness follows because the executions of \cref{proto:repQPIP0BQP} are blind.
 
-	By the soundness of $\Pibzrep$, $v_{i, b}=acc$ implies that $x\in L_{i, b}\Rightarrow f_i(x)=b$ with overwhelming probability.
+	By the soundness of $\Pibzrep$, $v_{i, b}=acc$ implies that $x\in L_{i, b}$ with overwhelming probability.
 	In other words, $y_i$ is correct with probability $1-\varepsilon_i$ where $\varepsilon_i=\negl(n)$. 
 	
 	By union bound over all output bits, the soundness of \cref{proto:QPIP0FBQP} is then
