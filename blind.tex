@@ -10,6 +10,8 @@
 
 \def\SampB{\mathsf{Samp, blind}}
 \nc{\PiSampB}{\ensuremath{\Pi_\SampB}}
+\nc{\VSampB}{\ensuremath{V_\SampB}}
+\nc{\PSampB}{\ensuremath{P_\SampB}}
 
 Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homomorphic encryption $\mathsf{QHE}$ from \cref{decodeMeasureOrder} in the same way as what we did for our blind $\BQP$ delegation protocol (\cref{proto:BlindBQP}) in \cref{sec:BlindBQP}.
 
@@ -31,8 +33,8 @@ Note that it is of the same form as its $\BQP$ counterpart $\PiSamp$ found in \c
 
 So we can compile it into $\PiSampB$ to achieve blindness in the same way:
 
-\begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\Piblind = (\Pblind, \Vblind)$ for $\SampBQP$ language $L$}
-	\label{proto:BlindBQP}
+\begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\PiSampB = (\PSampB, \VSampB)$ for $\SampBQP$ language $L$}
+	\label{proto:BlindSampBQP}
 	Verifier's input: $x\in\set{0,1}^n$.
 	
 	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cPSamp{1}$.

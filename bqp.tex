@@ -38,7 +38,7 @@ In this subsection we present our constant-round blind delegation protocol for $
 We'll spend this section construct said protocol piece by piece, starting with the following $\QPIP_1$ protocol for $\BQP$.
 We'll later construct a protocol for $\SampBQP$ following the same flow of logic, albeit requiring more careful analysis.
 
-We start with a high-level description of the $\QPIP_1$ scheme $\PiMF$ from \cite{mahadev_delegation}, which is in turn taken from \cite{mf16}.
+We start with a high-level description of the $\QPIP_1$ scheme $\PiMF$ from \cite{FOCS:Mahadev18a}, which is in turn taken from \cite{mf16}.
 
 This is a one-message $\QPIP_1$ protocol with only $X$ and $Z$ measurement for deciding a $\BQP$ language $L$.
 Roughly, on input $x\in\set{0,1}^n$, the prover sends a $m$-qubit certificate state $\rho$ to the verifier qubit-by-qubit.
@@ -167,7 +167,7 @@ Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
 
 Finally, we prove \cref{thm:QPIP0BQP}.
-We use Mahadev's measurement protocol from \cite{mahadev_delegation} which can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol.
+We use Mahadev's measurement protocol from \cite{FOCS:Mahadev18a} which can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol.
 The resulting protocol $\Pibz$ is a constant-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$ and negligible completeness.
 
 In order to prove blindness, we give a high-level overview of the compiliation results.
