@@ -17,6 +17,14 @@
 \nc{\cVblind}[1]{\ensuremath{\cV_{\blind,#1}}}
 \nc{\cPblind}[1]{\ensuremath{\cP_{\MF,#1}}}
 
+\def\bz{\mathsf{blind, 0}}
+\nc{\Pibz}{\ensuremath{\Pi_\bz}}
+\nc{\Vbz}{\ensuremath{V_\bz}}
+\nc{\Pbz}{\ensuremath{P_\bz}}
+
+\def\bzrep{\mathsf{blind, 0, rep}}
+\nc{\Pibzrep}{\ensuremath{\Pi_\bzrep}}
+
 \Ethan{TODO Read other papers and see if I can copy their tones and phrasing}
 
 \Ethan{Note to self: If the original is wordy, just keep it the way it is. Don't try to simplify existing dfns.}
@@ -174,9 +182,9 @@ Finally, we prove Thm 3.1 by applying Mahadev's measurement protocol~\cite{mahad
 Note that Mahadev's measurement protocol can compile any $\QPIP_1$ protocol with X, Z measurement and negligible soundness to a $\QPIP_0$ protocol, and Protocol 3 is a $\QPIP_1$ protocol with X, Z measurement and negligible soundness.
 Thus the resulting protocol $(P', V')$ \Ethan{name?} is a O(1)-round $\QPIP_0$ protocol with soundness error $\frac{3}{4} + \negl(n)$
 
-We give a high-level overview of the compiliation results. \Ethan{Maybe just delete it and give name only}
+We give a high-level overview of the compiliation results.
 
-\begin{protocol}{\Cref{proto:BlindBQP} compiled using Mahadev's measurement protocol \Ethan{Give this a name}}
+\begin{protocol}{Blind $\QPIP_0$ protocol $\Pibz$ for $BQP$ language $L$}
 	\label{proto:QPIP0BQP}
 	\begin{enumerate}
 		\item The verifier generates $\Lambda, \Lambda', pk, sk, evk, ct_x$ the same way as in \cref{proto:BlindBQP}. \Ethan{Need more notation? But how?}
@@ -238,7 +246,7 @@ Define $\cL$ to be the collection of these languages: $\cL = \set{L_{i, b}: i\in
 
 	Suppose without loss of generality that the verifier knows $f(x)$ is of length $m=\poly(n)$ \Ethan{Seems like a strong assumption; maybe need to explain how?}
 	\begin{enumerate}
-		\item Run \cref{proto:repQPIP0BQP} for all $L\in\cL$ in parallel using input $x$. The verifier gets outputs $v_{i, b}\in\set{Acc, Rej}$.
+		\item Run $\Pibzrep$ for all $L\in\cL$ in parallel using input $x$. The verifier gets outputs $v_{i, b}\in\set{Acc, Rej}$.
 		\item If $\exists i$ s.t. $v_{i,0}=v_{i,1}$, reject.
 		\item Otherwise, define $y_i = b$ where $v_{i, b}=Acc$. This gives $y\in\set{0,1}^m$
 		\item Verifier outputs $y$
