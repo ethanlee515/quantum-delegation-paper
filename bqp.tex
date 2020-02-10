@@ -27,8 +27,6 @@
 
 \Ethan{TODO Intro this section}
 
-\Ethan{Use only pk, sk and combine evk into pk}
-
 \subsection{Blind Delegation for BQP}
 \label{subsec:BlindBQP}
 
@@ -99,8 +97,7 @@ Now we state and prove this observation in more precise terms.
 	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
 \end{prf}
 
-Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
-\Ethan{We state our construction of blind QPIP 1 for BQP by compiling...}
+Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using $\QHE$:
 
 \begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\Piblind = (\Pblind, \Vblind)$ for $\BQP$ language $L$}
 	\label{proto:BlindBQP}
@@ -110,7 +107,7 @@ Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$.
 			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
 			It also sends $pk$ to the prover.
-		\item The prover homomorphically evaluates $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\cPblind{1}(pk, ct_x)=\QEval_{pk}(\cPMF{1}, ct_x)$.
+		\item The prover computes $\sigma\leftarrow\cPblind{1}$ by homomorphically evaluating $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPMF{1}, ct_x)$.
 			It sends $\sigma$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda\leftarrow\cVMF{2}(x)$,
 			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$,
@@ -143,11 +140,8 @@ Now we state our results of compiling $\PiMF$ using $\mathsf{QHE}$:
 
 	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
 	Let $\cP_\blind^*$ denote the action $\Pblindstar$ takes to produce $\sigma$ from $ct_x$.
-
-	Observe the experiments $A$ and $B$ \Ethan{TODO} are identical except...
-
-    \Ethan{See google docs; remove the displayed math above and say in words}
-	By inspection, the only difference between the experiments is how $w$ is obtained from $\sigma$.
+	Observe the experiments $A$ and $B$ \Ethan{TODO} are identical except how $w$ is obtained from $\sigma$.
+	\Ethan{TODO Make more precise}
 	By \cref{decodeMeasureOrder}, the two ways are equivalent.
 	\Ethan{Here finish the proof by contradiction. Something about epsilon.}
 \end{prf}
@@ -188,7 +182,9 @@ In order to prove blindness, we give a high-level overview of the compiliation r
     Leave author note for theorem for now
 }
 
-$k$ has the additional properties to not leak information on $\Lambda'$, so the compliation preserves blindness. \Ethan{How to make this more rigorous?}
+
+For blindness, recall that the prover receives $ct_x = Enc(x), evk, k, c$ from the verifier. Blindness follows by the semantic security of QFHE and the fact that k computationally hides the basis choice $\Lambda$.
+\Ethan{This sentence is from google docs so keep it around}
 
 We use the recent results \cite{parallelrep, alagic2019twomessage} to apply parallel repetition to $\Pibz$ to get $\Pibzrep$ which has negligible soundness.
 
@@ -201,9 +197,10 @@ We use the recent results \cite{parallelrep, alagic2019twomessage} to apply para
 \end{protocol}
 
 \begin{thm}
-	\cref{proto:repQPIP0BQP} has negligible completeness and soundness and is blind.
+	\cref{proto:repQPIP0BQP} has negligible completeness and soundness.
 \end{thm}
 \begin{prf}
+	\Ethan{Don't open separate proof env}
 	See \cite{parallelrep, alagic2019twomessage}
 \end{prf}
 

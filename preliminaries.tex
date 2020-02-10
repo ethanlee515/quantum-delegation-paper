@@ -46,6 +46,7 @@ We classify the interaction between a (almost classical) client and a quantum se
 		\item There is also a classical communication channel between the prover and the verifier, which can transmit $\poly(\abs{x})$ many bits to either direction. 
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
 		\item (Soundness) For all $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$ outputs a distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
+			\Ethan{TODO Make this 1-param}
 	\end{itemize}
 \end{definition}
 
