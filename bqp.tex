@@ -107,7 +107,7 @@ Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using
 		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$.
 			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
 			It also sends $pk$ to the prover.
-		\item The prover computes $\sigma\leftarrow\cPblind{1}$ by homomorphically evaluating $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPMF{1}, ct_x)$.
+		\item The prover computes $\sigma\leftarrow\cPblind{1}(pk, ct_x)$ by homomorphically evaluating $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPMF{1}, ct_x)$.
 			It sends $\sigma$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda\leftarrow\cVMF{2}(x)$,
 			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$,
@@ -126,24 +126,24 @@ Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using
 	The completeness follows by inspection.
 	For blindness, the only thing the prover sees is $c$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
 	
-	Suppose for the sake of contradiction \Ethan{First specify this is for soundness proof} that there exists some cheating prover $\Pblindstar$ with some noticeable acceptance probability $\varepsilon$.
+	Now we prove the soundness of $\Piblind$.
+	Suppose for the sake of contradiction that there exists some cheating prover $\Pblindstar$ with some noticeable acceptance probability $\varepsilon$.
 	Then we can construct a prover $\PMFstar$ violating the soundness guarantees of $\PiMF$ by simulating $(\Vblind(x), \Pblindstar)$ as below:
 
 	We define $\PMFstar$ to first generate
 	$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$
 	and
-	$y\leftarrow\mathsf{QHE.Enc}_{pk}(x)$
-	It then sends $ct_x$ and $pk$ to $\Pblindstar$ \Ethan{Just run it, don't send it} and gets $\sigma$ back.
+	$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$
+	It then runs $\sigma\leftarrow\cPblind{1}(pk, ct_x)$
 	Finally, it decrypts
 	$\rho\leftarrow\mathsf{QHE.Dec}_{sk}(\sigma)$
 	and sends it to $\VMF$ qubit-by-qubit.
 
 	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
 	Let $\cP_\blind^*$ denote the action $\Pblindstar$ takes to produce $\sigma$ from $ct_x$.
-	Observe the experiments $A$ and $B$ \Ethan{TODO} are identical except how $w$ is obtained from $\sigma$.
-	\Ethan{TODO Make more precise}
-	By \cref{decodeMeasureOrder}, the two ways are equivalent.
-	\Ethan{Here finish the proof by contradiction. Something about epsilon.}
+	Observe that the experiments $(\PMFstar, \VMF)(x)$ and $(\Pblindstar, \Vblind(x))$ are identical except for how $w$ is obtained from $\sigma$.
+	so by \cref{decodeMeasureOrder} they are equivalent.
+	Hence we have $\PMFstar$ with noticeable acceptance probability $\varepsilon$, which is a contradiction.
 \end{prf}
 
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
@@ -194,6 +194,7 @@ We use the recent results \cite{parallelrep, alagic2019twomessage} to apply para
 	\label{proto:repQPIP0BQP}
 	\Ethan{TODO PROOFREAD ME}
 	Run $m=\poly(n)$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if the proportion of accepted copies is over some certain threshold $p(n)\in(0, 1)$.
+
 \end{protocol}
 
 \begin{thm}
