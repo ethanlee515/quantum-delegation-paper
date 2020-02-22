@@ -1,0 +1,66 @@
+\section{Remote State Preparation}
+
+\Ethan{TODO work on the writing}
+
+\def\QV{\mathsf{QV}}
+\nc{\PiQV}{\ensuremath{\Pi_\QV}}
+\nc{\VQV}{\ensuremath{V_\QV}}
+\nc{\PQV}{\ensuremath{P_\QV}}
+\nc{\PQVstar}{\ensuremath{P_\QV^*}}
+\nc{\cVQV}[1]{\ensuremath{\cV_{\QV,#1}}}
+\nc{\cPQV}[1]{\ensuremath{\cP_{\QV,#1}}}
+
+\def\QVAuth{\mathsf{QVAuth}}
+\nc{\PiQVAuth}{\ensuremath{\Pi_\QVAuth}}
+\nc{\VQVAuth}{\ensuremath{V_\QVAuth}}
+\nc{\PQVAuth}{\ensuremath{P_\QVAuth}}
+\nc{\PQVAuthstar}{\ensuremath{P_\QVAuth^*}}
+\nc{\cVQVAuth}[1]{\ensuremath{\cV_{\QVAuth,#1}}}
+\nc{\cPQVAuth}[1]{\ensuremath{\cP_{\QVAuth,#1}}}
+
+\def\samp{\mathsf{samp}}
+\nc{\Pisamp}{\ensuremath{\Pi_\samp}}
+\nc{\Vsamp}{\ensuremath{V_\samp}}
+\nc{\Psamp}{\ensuremath{P_\samp}}
+\nc{\Psampstar}{\ensuremath{P_\samp^*}}
+\nc{\cVsamp}[1]{\ensuremath{\cV_{\samp,#1}}}
+\nc{\cPsamp}[1]{\ensuremath{\cP_{\samp,#1}}}
+
+\def\sampblind{\mathsf{samp, blind}}
+\nc{\Pisampblind}{\ensuremath{\Pi_\sampblind}}
+\nc{\Vsampblind}{\ensuremath{V_\sampblind}}
+\nc{\Psampblind}{\ensuremath{P_\sampblind}}
+\nc{\Psampblindstar}{\ensuremath{P_\sampblind^*}}
+\nc{\cVsampblind}[1]{\ensuremath{\cV_{\sampblind,#1}}}
+\nc{\cPsampblind}[1]{\ensuremath{\cP_{\sampblind,#1}}}
+
+We generalize our blind $\QPIP_1$ protocol for $\SampBQP$ by allowing fully quantum verifier and quantum output as follows:
+
+\begin{protocol}{Blind and verifiable delegation protocol $\PiQV$ between two quantum computers}
+	Verifier's input: $x$
+
+	Pick $m, n, N$ appropriately in term of $\varepsilon$
+	\Ethan{TODO fix me; this gets the point across for now}
+	\begin{enumerate}
+		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$ where $d$ is the depth of the circuit corresponding to $\cPsampblind{1}(x)$.
+			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
+			It also sends $pk$ to the prover.
+		\item The prover computes $\sigma\leftarrow\cPsampblind{1}(pk, ct_x)$ by homomorphically evaluating $\cPsamp{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPsamp{1}, ct_x)$.
+			It sends $\sigma$ to the verifier.
+		\item The verifier computes output $o\leftarrow\cVQV(pk, \sigma)$ by (TODO summarize).
+			Specifically, it decodes $\sigma$ to get $\rho^N$.
+			It randomly picks and uses $n$ copies to check ground state energy using \cref{AlgGroundStateCheck}. If more than $\frac{1}{2}-\Delta$ \Ethan{TODO: define $\Delta$} reject, output $\bot$.
+			Otherwise, it measures other copies in random order, stopping and outputting \Ethan{Be more specific later} when it measures $t\geq T$.
+
+			\Ethan{Extremely handwavy but hopefully gets the point across for now}
+	\end{enumerate}
+\end{protocol}
+
+This has the same soundness guarantee as in \cref{QPIP1thm}.
+\Ethan{Or at least I hope it does}
+Namely, for all $\PQVstar$ there exists some $\delta\in(0, 1)$ s.t. the output $(\PQVstar, \VQV(x))$ is inverse-poly close to $(1-\delta)C(x) + \delta\ket{\bot}\bra{\bot}$
+
+Now we use $\PiQV$ to delegate $\tilde{C}(k, x)=A_k(C(x))$, where $A$ corresponds to some QAS.
+By the guarantee above, the output is inverse-poly close to $(1-\delta)A_k(C(x)) + \delta\ket{\bot}\bra{\bot}$
+Assuming it doesn't just...
+
