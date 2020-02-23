@@ -99,6 +99,8 @@ Now we state and prove this observation in more precise terms.
 
 Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using $\QHE$:
 
+\Ethan{TODO Rewrite this}
+
 \begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\Piblind = (\Pblind, \Vblind)$ for $\BQP$ language $L$}
 	\label{proto:BlindBQP}
 	Verifier's input: $x\in\set{0,1}^n$.
@@ -145,6 +147,9 @@ Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using
 	so by \cref{decodeMeasureOrder} they are equivalent.
 	Hence we have $\PMFstar$ with noticeable acceptance probability $\varepsilon$, which is a contradiction.
 \end{prf}
+
+\Ethan{Just move \protoref{urmila4} here; that's Urmila's 4 rounds protocol.
+Or just move that entire subsection here really.}
 
 \Ethan{TODO Below is copied from google docs; fix phrasing later}
 
