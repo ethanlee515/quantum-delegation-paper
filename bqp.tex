@@ -40,16 +40,19 @@
 \nc{\Vbzrep}{\ensuremath{V_\bzrep}}
 \nc{\Pbzrep}{\ensuremath{P_\bzrep}}
 
-\Ethan{TODO Intro this section}
+In this section we build our constant-round blind delegation protocols for $\BQP$ and $\FBQP$ with classical clients.
+We first construct our protocol for $\BQP$ in \cref{subsec:BlindBQP}, then use it to construct our protocol for $\FBQP$ in \cref{subsec:BlindFBQP}.
 
 \subsection{Blind Delegation for BQP}
 \label{subsec:BlindBQP}
 
-In this subsection we present our constant-round blind delegation protocol for $\BQP$.
-We'll construct said protocol piece by piece, starting with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16}.
-\Ethan{TODO finish outline and highlights}
+We build our constant-round blind delegation protocol for $\BQP$ first.
+We start with the protocol for $\BQP$ from \cite{mf16}, where the verifier requires a single-qubit register and is classical otherwise.
+We first obtain blindness by running said protocol under the homomorphic encryption given in \cite{mahadev_qfhe}.
+We then make the verifier fully classical using the same argument as used in \cite{FOCS:Mahadev18a}.
+Lastly, we use analysis from \cite{parallelrep, alagic2019twomessage} to ensure that it has negligible completeness and soundness errors while still being constant-round.
 
-This is a one-message $\QPIP_1$ protocol $\PiMF$ with only $X$ and $Z$ measurement for deciding a $\BQP$ language $L$.
+We start with the one-message $\QPIP_1$ protocol $\PiMF$ given in \cite{mf16} for deciding a $\BQP$ language $L$.
 Roughly, on input $x\in\set{0,1}^n$, the prover sends a certificate state $\rho$ to the verifier qubit-by-qubit.
 The verifier samples a measurement basis choice $\Lambda$ according to a certain distribution, and applies it to $\rho$.
 The verifier then, using the measurement results, decides whether to accept or reject.
@@ -59,7 +62,7 @@ The verifier then, using the measurement results, decides whether to accept or r
 	Common input: $x\in\set{0,1}^n$. 
 	\begin{enumerate}
 		\item The prover generates a $m$-qubit certificate state $\rho\leftarrow\cPMF{1}(x)$ and sends $\rho$ to the verifier qubit-by-qubit.
-		\item The verifier generates $\Lambda \leftarrow \cVMF{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
+		\item The verifier samples $\Lambda \leftarrow \cVMF{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
 			each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
 			It then applies $\Lambda$ to $\rho$ qubit-by-qubit, obtaining $w\leftarrow\Lambda(\rho)$.
 			Finally, it verifies the measurement outcome and produces a decision $o\leftarrow\cVMF{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVMF{3}$ is a classical polynomial-time algorithm.
@@ -69,8 +72,8 @@ The verifier then, using the measurement results, decides whether to accept or r
     $\PiMF$ has negligible completeness and soundness.
 \end{thm}
 
-We first compile $\PiMF$ using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol $\Piblind$ for $\BQP$.
-The high level idea is to run $\PiMF$ under $\mathsf{QHE}$.
+We now compile $\PiMF$ using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol $\Piblind$ for $\BQP$.
+The high level idea is to run $\PiMF$ under $\QHE$.
 Namely, the verifier encrypts its original input $x$ and sends $ct_x=\mathsf{QHE.Enc}(x)$ to the prover.
 The prover then homomorphically evaluates $\cPMF{3}$ on $ct_x$ to produce $\sigma$ and sends it to the verifier.
 
@@ -210,10 +213,11 @@ Again, the same argument from \cref{thm:MFZrep} applies. We simply repeat $\Pibz
 \end{thm}
 
 \subsection{Blind delegation of FBQP}
+\label{subsec:BlindFBQP}
 
-Our results for $\BQP$ can be generalized to $\FBQP$.
-We state our protocol for $\FBQP$ by using our $\Pibzrep$ as a blackbox.
-\Ethan{TODO Proofread me}
+Here we construct our delegation protocol for $\FBQP$.
+The idea is to break any $\FBQP$ instance down into $\BQP$ instances by considering the output bit-by-bit,
+so we can apply our results for $\BQP$.
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ protocol $\Pi_{\FBQP}$ for $f\in\FBQP$}
 	\label{proto:QPIP0FBQP}
