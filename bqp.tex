@@ -61,21 +61,20 @@ The verifier then, using the measurement results, decides whether to accept or r
 		\item The prover generates a $m$-qubit certificate state $\rho\leftarrow\cPMF{1}(x)$ and sends $\rho$ to the verifier qubit-by-qubit.
 		\item The verifier generates $\Lambda \leftarrow \cVMF{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
 			each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement.
-			It applies $\Lambda$ to $\rho$ qubit-by-qubit.
-			Let $w \in \set{0,1}^m$ denote the measurement outcome.
-			It verifies the measurement outcome and produces a decision $o\leftarrow\cVMF{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVMF{3}$ is a classical polynomial-time algorithm.
+			It then applies $\Lambda$ to $\rho$ qubit-by-qubit, obtaining $w\leftarrow\Lambda(\rho)$.
+			Finally, it verifies the measurement outcome and produces a decision $o\leftarrow\cVMF{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVMF{3}$ is a classical polynomial-time algorithm.
 	\end{enumerate}
 \end{protocol}
 \begin{thm}[from \cite{FOCS:Mahadev18a, mf16}]
     $\PiMF$ has negligible completeness and soundness.
 \end{thm}
 
-We compile $\PiMF$ using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol $\Piblind$ for $\BQP$, again with only $X$ and $Z$ measurements.
+We first compile $\PiMF$ using Mahadev's $\QHE$ from \cite{mahadev_qfhe} to obtain a blind 1-message $\QPIP_1$ protocol $\Piblind$ for $\BQP$.
 The high level idea is to run $\PiMF$ under $\mathsf{QHE}$.
-Namely, the verifier encrypts its original input $x$ and sends $y=\mathsf{QHE.Enc}(x)$ to the prover.
+Namely, the verifier encrypts its original input $x$ and sends $ct_x=\mathsf{QHE.Enc}(x)$ to the prover.
 The prover then homomorphically evaluates $\cPMF{3}$ on $ct_x$ to produce $\sigma$ and sends it to the verifier.
 
-Now the verifier needs to obtain the measurement outcome $w$ from the encrypted state $\sigma$ using qubit-by-qubit $X$ and $Z$ measurements.
+Now the verifier needs to obtain the measurement outcome $w$ from the encrypted state $\sigma$ using qubit-by-qubit measurements.
 This may not be possible in general, but we observe that Mahadev's $\mathsf{QHE}$ allows this. 
 Its ciphertexts consists of a Pauli one-time-padded plaintext and classically encrypted Pauli keys.
 Pauli one-time-pads commute with $X$ and $Z$ measurements, so the verifier can measure the one-time-padded state as usual, then correct the measurement results using the Pauli keys.
@@ -84,26 +83,25 @@ Now we state and prove this observation in more precise terms.
 \begin{thm}
 	\label{decodeMeasureOrder}
 	Let $n, L\in\bbN$.
-	Let $(pk, sk)\leftarrow\QGen(1^n, 1^L)$
-	Let $m=\poly(n)$ be the length of the ciphertexts under $\mathsf{QHE}$ corresponding to plaintexts of length $n$.
+	Let $(pk, sk)\leftarrow\QGen(1^n, 1^L)$.
+	Let $m=\poly(n)$ be the length of the ciphertexts corresponding to plaintexts of length $n$ encrypted using $pk$ under $\mathsf{QHE}$.
 	
 	There exists efficient classical poly-time algorithms $\cM_\QHE$ and $\widehat{\QDec_{sk}}$ s.t.
 	for all $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$ where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement:
 	$$\cM_\QHE(\Lambda)=\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$$
 	where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and
-	$$\Lambda\circ\mathsf{QHE.Dec}=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'$$
+	$$\widehat{\mathsf{QHE.Dec}_{sk}}\circ\Lambda'=\Lambda\circ\mathsf{QHE.Dec_{sk}}$$
 \end{thm}
 \begin{prf}
-	This is a proof by construction.
-	We require $\Lambda'$ and $\widehat{\mathsf{QHE.Dec}}$ such that $\forall\sigma=(X^xZ^z\rho Z^zX^x, c_{x,z})$,
-	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\widehat{\mathsf{QHE.Dec}}\circ\Lambda'(\sigma)$$
-	Clearly,
-	$$\Lambda\circ\mathsf{QHE.Dec}(\sigma)=\Lambda(\rho)$$
+	This proof is by construction.
+
+	We require $\forall\sigma=(X^xZ^z\rho Z^zX^x, c_{x,z})$,
+	$$\widehat{\QDec_{sk}}\circ\Lambda'(\sigma)=\Lambda\circ\QDec_{sk}(\sigma)=\Lambda(\rho)$$
 	
 	Let $\Lambda'$ applies $\Lambda$ to the first register, getting $u=\Lambda(X^xZ^z\rho Z^zX^x)$, and applies computational basis measurement to the second register, getting $c_{x, z}$.
 
 	Note that the Pauli one-time pad on $u$ commutes with $X$ and $Z$ measurements.
-	So let $\widehat{\mathsf{QHE.Dec}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
+	So let $\widehat{\QDec_{sk}}$ decode $c_{x, z}$ to get $(x, z)$ and undo the one-time pad on $u$ to get $\Lambda(\rho)$.
 \end{prf}
 
 Now we state our construction of blind $\QPIP_1$ for $\BQP$:
@@ -113,8 +111,9 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 	Verifier's input: $x\in\set{0,1}^n$.
 	
 	\begin{enumerate}
-		\item The verifier generates $(pk, sk, ct_x)\leftarrow\cVblind{1}(x)$ by encrypting $x$, generating
-			$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$ where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$, then
+		\item The verifier generates $(pk, sk, ct_x)\leftarrow\cVblind{1}(x)$ by encrypting $x$ under $\QHE$.
+			More precisely, it generates
+			$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$ where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$, and
 			$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$.
 			It sends $pk$ and $ct_x$ to the prover.
 		\item The prover computes $\sigma\leftarrow\cPblind{1}(pk, ct_x)$ by homomorphically evaluating $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPMF{1}, ct_x)$.
@@ -122,7 +121,7 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 		\item The verifier generates $\Lambda'\leftarrow\cVblind{2}(x)$ by computing
 			$\Lambda\leftarrow\cVMF{2}(x)$,
 			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$.
-			It measures the incoming state from the verifier, obtaining $ct_w\leftarrow\Lambda'(\sigma)$.
+			It measures the incoming state $\sigma$ qubit-by-qubit, obtaining $ct_w\leftarrow\Lambda'(\sigma)$.
 			Lastly, it generates and outputs $o\leftarrow\cVblind{3}(ct_w, sk, x, \Lambda')$ by
 			$w\leftarrow\widehat{\mathsf{QHE.Dec}_{sk}}(ct_w)$,
 			and $o\leftarrow\cVMF{3}(x, \Lambda, w)$.
@@ -135,7 +134,7 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 \end{thm}
 \begin{prf}
 	The completeness follows by inspection.
-	For blindness, the only thing the prover sees is $c$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
+	For blindness, the only thing the prover receives is $c$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
 	
 	Now we prove the soundness of $\Piblind$.
 	Suppose for the sake of contradiction that there exists some cheating prover $\Pblindstar$ with some noticeable acceptance probability $\varepsilon$.
@@ -144,8 +143,8 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 	We define $\PMFstar$ to first generate
 	$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$
 	and
-	$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$
-	It then runs $\sigma\leftarrow\cPblind{1}(pk, ct_x)$.
+	$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$,
+	then runs $\sigma\leftarrow\cPblind{1}(pk, ct_x)$.
 	Finally, it decrypts
 	$\rho\leftarrow\mathsf{QHE.Dec}_{sk}(\sigma)$
 	and sends it to $\VMF$ qubit-by-qubit.
@@ -190,10 +189,10 @@ We give a high-level overview of the compiliation results.
 \begin{prf}
 	Theorem $8.6$ in \cite{FOCS:Mahadev18a} compiles $\PiMF$ into a $\QPIP_0$ in a similar way and obtains this completeness and soundness.
 	Its proof uses only that $\PiMF$ is $\QPIP_1$ with only $X$ and $Z$ measurements on the verifier's side, with negligible completeness and soundness errors.
-	So the same logic applies here.
+	So the same argument applies here. \Ethan{TODO proofread me}
 
 	For blindness, recall that the prover receives $ct_x, pk, k, c$ from the verifier.
-	Blindness follows by the semantic security of $\QHE$ and the fact that $k$ computationally hides the basis choice $\Lambda'$.
+	Blindness follows by the semantic security of $\QHE$ and the fact that $k$ computationally hides the measurement basis choice $\Lambda'$.
 \end{prf}
 
 We use the recent results \cite{parallelrep, alagic2019twomessage} to apply parallel repetition to $\Pibz$ to get $\Pibzrep$ which has negligible soundness.
@@ -203,7 +202,7 @@ We use the recent results \cite{parallelrep, alagic2019twomessage} to apply para
 	$\PiMFZ$ can be repeat in parallel, obtaining $\PiMFZrep$ that has negligible completeness and soundness errors.
 \end{thm}
 
-Again, the same proof logic in \cref{thm:MFZrep} applies here. We simply repeat $\Pibz$ in parallel to get $\Pibzrep$ that is what we wanted in \cref{thm:QPIP0BQP}.
+Again, the same argument from \cref{thm:MFZrep} applies. We simply repeat $\Pibz$ in parallel to get $\Pibzrep$.
 
 \begin{thm}
 	\label{thm:QPIP0BQP}
@@ -212,7 +211,9 @@ Again, the same proof logic in \cref{thm:MFZrep} applies here. We simply repeat 
 
 \subsection{Blind delegation of FBQP}
 
-Our results for $\BQP$ can be generalized to $\FBQP$ as follows:
+Our results for $\BQP$ can be generalized to $\FBQP$.
+We state our protocol for $\FBQP$ by using our $\Pibzrep$ as a blackbox.
+\Ethan{TODO Proofread me}
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ protocol $\Pi_{\FBQP}$ for $f\in\FBQP$}
 	\label{proto:QPIP0FBQP}
@@ -240,9 +241,7 @@ Our results for $\BQP$ can be generalized to $\FBQP$ as follows:
 	Blindness follows because the executions of $\Pibzrep$ are blind.
 
 	By the soundness of $\Pibzrep$, $v_{i, b}=acc$ implies that $x\in L_{i, b}$ with overwhelming probability.
-	In other words, $y_i$ is correct with probability $1-\varepsilon_i$ where $\varepsilon_i=\negl(n)$. 
-	
+	In other words, $y_i$ has probability $\varepsilon_i=\negl(n)$ to be incorrect.
 	By union bound over all output bits, the soundness of $\Pi_{\FBQP}$ is then
-	$\sum_{i=1}^m \varepsilon_i$
-	which is clearly negligible.
+	$\sum_{i=1}^m \varepsilon_i=\negl(n)$.
 \end{prf}
