@@ -40,17 +40,22 @@
 \nc{\Vbzrep}{\ensuremath{V_\bzrep}}
 \nc{\Pbzrep}{\ensuremath{P_\bzrep}}
 
-In this section we build our constant-round blind delegation protocols for $\BQP$ and $\FBQP$ with classical clients.
-We first construct our protocol for $\BQP$ in \cref{subsec:BlindBQP}, then use it to construct our protocol for $\FBQP$ in \cref{subsec:BlindFBQP}.
+In this section we build our constant-round blind delegation \Ethan{Does ``delegation" imply verifiable?} protocols for $\BQP$ and $\FBQP$ with classical clients.
+
+In \cref{subsec:BlindBQP} we start with the protocol for $\BQP$ from \cite{mf16}.
+It has negligible completeness and soundness errors, but is not blind.
+Its verifier requires a single-qubit register and is classical otherwise.
+We first achieve blindness by running said protocol under the homomorphic encryption given in \cite{mahadev_qfhe}.
+We then make the verifier fully classical by using the compiler used in \cite{FOCS:Mahadev18a} even though it deteriorates soundness.
+Finally, we recover soundness while maintaining constant-round by running multiple copies in parallel,
+which we analyze using \cite{parallelrep, alagic2019twomessage}.
+
+In \cref{subsec:BlindFBQP} we then construct our protocol for $\FBQP$.
+The idea is to break any $\FBQP$ instance down into $\BQP$ instances by considering the output bit-by-bit,
+so we can apply our results for $\BQP$.
 
 \subsection{Blind Delegation for BQP}
 \label{subsec:BlindBQP}
-
-We build our constant-round blind delegation protocol for $\BQP$ first.
-We start with the protocol for $\BQP$ from \cite{mf16}, where the verifier requires a single-qubit register and is classical otherwise.
-We first obtain blindness by running said protocol under the homomorphic encryption given in \cite{mahadev_qfhe}.
-We then make the verifier fully classical using the same argument as used in \cite{FOCS:Mahadev18a}.
-Lastly, we use analysis from \cite{parallelrep, alagic2019twomessage} to ensure that it has negligible completeness and soundness errors while still being constant-round.
 
 We start with the one-message $\QPIP_1$ protocol $\PiMF$ given in \cite{mf16} for deciding a $\BQP$ language $L$.
 Roughly, on input $x\in\set{0,1}^n$, the prover sends a certificate state $\rho$ to the verifier qubit-by-qubit.
@@ -137,7 +142,7 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 \end{thm}
 \begin{prf}
 	The completeness follows by inspection.
-	For blindness, the only thing the prover receives is $c$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
+	For blindness, the prover receives only $ct_x$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
 	
 	Now we prove the soundness of $\Piblind$.
 	Suppose for the sake of contradiction that there exists some cheating prover $\Pblindstar$ with some noticeable acceptance probability $\varepsilon$.
@@ -153,17 +158,16 @@ Now we state our construction of blind $\QPIP_1$ for $\BQP$:
 	and sends it to $\VMF$ qubit-by-qubit.
 
 	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
-	Let $\cP_\blind^*$ denote the action $\Pblindstar$ takes to produce $\sigma$ from $ct_x$.
-	Observe that the experiments $(\PMFstar, \VMF)(x)$ and $(\Pblindstar, \Vblind(x))$ are identical except for how $w$ is obtained from $\sigma$.
+	Observe that the experiments $(\PMFstar, \VMF)(x)$ and $(\Pblindstar, \Vblind(x))$ are identical except for how $w$ is obtained from $\sigma$,
 	so by \cref{decodeMeasureOrder} they are equivalent.
 	Hence we have $\PMFstar$ with noticeable acceptance probability $\varepsilon$, which is a contradiction.
 \end{prf}
 
 \Ethan{Formally introduce \protoref{urmila4} (measurement protocol) earlier?}
 
-Next, we make the verifier completely classical by using \protoref{urmila4} from \cite{FOCS:Mahadev18a}.
-It was originally used to compile $\PiMF$ into $\PiMFZ$ that is $\QPIP_0$. \Ethan{Say a bit more?}
-It can however be applied to any $\QPIP_1$ protocol with $X$ and $Z$ measurement and negligible completeness and soundness errors.
+Next, we make the verifier completely classical by compiling $\Piblind$ using \protoref{urmila4} from \cite{FOCS:Mahadev18a}.
+It was originally used to compile $\PiMF$ into $\PiMFZ$,
+but in fact can be applied to any $\QPIP_1$ protocol to achieve similar effects.
 
 We give a high-level overview of the compiliation results.
 
@@ -190,9 +194,9 @@ We give a high-level overview of the compiliation results.
 	$\Pibz$ has negligible completeness error. Its soundness error is negligibly close to $\frac{3}{4}$. It is blind.
 \end{thm}
 \begin{prf}
-	Theorem $8.6$ in \cite{FOCS:Mahadev18a} compiles $\PiMF$ into a $\QPIP_0$ in a similar way and obtains this completeness and soundness.
-	Its proof uses only that $\PiMF$ is $\QPIP_1$ with only $X$ and $Z$ measurements on the verifier's side, with negligible completeness and soundness errors.
-	So the same argument applies here. \Ethan{TODO proofread me}
+	Theorem $8.6$ in \cite{FOCS:Mahadev18a} compiles $\PiMF$ into a $\PiMFZ$ which is $\QPIP_0$ in a similar way and obtains this completeness and soundness.
+	Its proof uses only that $\PiMF$ is $\QPIP_1$ with only $X$ and $Z$ measurements \Ethan{phrasing}, with negligible completeness and soundness errors.
+	So the same argument applies here. \Ethan{TODO proofread me? Does 2-round vs 1-round matter?}
 
 	For blindness, recall that the prover receives $ct_x, pk, k, c$ from the verifier.
 	Blindness follows by the semantic security of $\QHE$ and the fact that $k$ computationally hides the measurement basis choice $\Lambda'$.
@@ -205,7 +209,7 @@ We use the recent results \cite{parallelrep, alagic2019twomessage} to apply para
 	$\PiMFZ$ can be repeat in parallel, obtaining $\PiMFZrep$ that has negligible completeness and soundness errors.
 \end{thm}
 
-Again, the same argument from \cref{thm:MFZrep} applies. We simply repeat $\Pibz$ in parallel to get $\Pibzrep$.
+The argument from \cref{thm:MFZrep} applies here too. We simply repeat $\Pibz$ for $\poly(n)$ times in parallel to get $\Pibzrep$.
 
 \begin{thm}
 	\label{thm:QPIP0BQP}
@@ -215,15 +219,12 @@ Again, the same argument from \cref{thm:MFZrep} applies. We simply repeat $\Pibz
 \subsection{Blind delegation of FBQP}
 \label{subsec:BlindFBQP}
 
-Here we construct our delegation protocol for $\FBQP$.
-The idea is to break any $\FBQP$ instance down into $\BQP$ instances by considering the output bit-by-bit,
-so we can apply our results for $\BQP$.
+Here we state our delegation protocol for $\FBQP$.
+\Ethan{TODO high level overview, and mention one-sided vs two-sided}
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ protocol $\Pi_{\FBQP}$ for $f\in\FBQP$}
 	\label{proto:QPIP0FBQP}
 	Verifier's input: $x\in\set{0, 1}^n$
-
-	Public input: $f$
 
 	Let $m=\abs{f(x)}$; we assume without loss of generality that it depends only on $n$ and can be efficiently computed classically.
 	Denote the $i$-th bit of $f(x)$ as $f_i(x)$.
