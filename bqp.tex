@@ -1,6 +1,14 @@
 \section{Blind Delegation for BQP and FBQP}
 \label{sec:BlindBQP}
 
+\def\Mah{\mathsf{Mah}}
+\nc{\PiMah}{\ensuremath{\Pi_\Mah}}
+\nc{\VMah}{\ensuremath{V_\Mah}}
+\nc{\PMah}{\ensuremath{P_\Mah}}
+\nc{\PMahstar}{\ensuremath{P_\Mah^*}}
+\nc{\cVMah}[1]{\ensuremath{\cV_{\Mah,#1}}}
+\nc{\cPMah}[1]{\ensuremath{\cP_{\Mah,#1}}}
+
 \def\MF{\mathsf{MF}}
 \nc{\PiMF}{\ensuremath{\Pi_\MF}}
 \nc{\VMF}{\ensuremath{V_\MF}}
@@ -106,17 +114,19 @@ Now we state our construction of blind QPIP 1 for BQP by compiling $\PiMF$ using
 	Verifier's input: $x\in\set{0,1}^n$.
 	
 	\begin{enumerate}
-		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$.
-			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
-			It also sends $pk$ to the prover.
+		\item The verifier generates $(pk, sk, ct_x)\leftarrow\cVblind{1}(x)$ by encrypting $x$, generating
+			$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$ where $d$ is the depth of the circuit corresponding to $\cPMF{1}(x)$, then
+			$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$.
+			It sends $pk$ and $ct_x$ to the prover.
 		\item The prover computes $\sigma\leftarrow\cPblind{1}(pk, ct_x)$ by homomorphically evaluating $\cPMF{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPMF{1}, ct_x)$.
 			It sends $\sigma$ to the verifier qubit-by-qubit.
-		\item The verifier generates $\Lambda\leftarrow\cVMF{2}(x)$,
-			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$,
-			$ct_w\leftarrow\Lambda'(\sigma)$,
+		\item The verifier generates $\Lambda'\leftarrow\cVblind{2}(x)$ by computing
+			$\Lambda\leftarrow\cVMF{2}(x)$,
+			$\Lambda'\leftarrow\cM_\QHE(\Lambda)$.
+			It measures the incoming state from the verifier, obtaining $ct_w\leftarrow\Lambda'(\sigma)$.
+			Lastly, it generates and outputs $o\leftarrow\cVblind{3}(ct_w, sk, x, \Lambda')$ by
 			$w\leftarrow\widehat{\mathsf{QHE.Dec}_{sk}}(ct_w)$,
 			and $o\leftarrow\cVMF{3}(x, \Lambda, w)$.
-			It outputs $o$.
 	\end{enumerate}
 \end{protocol}
 
@@ -162,53 +172,39 @@ In order to prove blindness, we give a high-level overview of the compiliation r
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Pibz$ for $BQP$ language $L$}
 	\label{proto:QPIP0BQP}
+	\Ethan{Sync notations on \PiMah}
 	\begin{enumerate}
-		\item The verifier generates $\Lambda, \Lambda', pk, sk, ct_x$ the same way as in \cref{proto:BlindBQP}. \Ethan{Need more notation? But how?}
-			Then, using $\Lambda'$, it generates $k, td$.
+		\item The verifier generates $(pk, sk, ct_x)\leftarrow\cVblind{1}$,
+			$\Lambda'\leftarrow\cVblind{2}(x)$,
+			and $(k, td)\leftarrow\cVMah{1}(\Lambda')$.
 			It sends $k, pk, ct_x$ to the prover.
-		\item The prover, on inputs $k, pk, ct_x$, generates classical ``commitment" $y$ and internal state $\ket{st}$.
+		\item The prover generates $\sigma\leftarrow\cPblind{1}(pk, ct_x)$ and
+			$(y, st)\leftarrow\cPMah{2}(\sigma)$.
 			It sends $y$ to the verifier.
-		\item The verifier sends the prover a public coin $c\in\set{0,1}$.
-		\item The prover, on inputs $c$ and $\ket{st}$, generates classical $a$ and sends it to the verifier.
-		\item The verifier, on inputs $k, td, y, c, a, sk$, generates and outputs either $acc$ or $rej$.
+		\item The verifier samples public coin $c\leftarrow\set{0, 1}$ and sends it to the prover.
+		\item The prover generates and sends $a\leftarrow\cPMah{3}(c, st)$ to the verifier.
+		\item If $c=0$, then the verifier generates and outputs $o\leftarrow\cVMah{T}(k, y, a, sk)$.
+			Otherwise, it runs $ct_w\leftarrow\cVMah{H}(k, td, y, a, sk)$,
+			then generates and outputs $o\leftarrow\cVblind{3}(ct_w, sk, x, \Lambda')$.
 	\end{enumerate}
 \end{protocol}
 
-\Ethan{
-    Need to say more about step 5.
-    It's a compiler here.
-    Need to say stuff about interface
-    see protocol 5.1; protocol is the most important
-    interface uses only lambda
-    if hadamard round, get measurement outcome corresponding to sigma
-    how to decode
-    
-    Describe in words what's 5.1
-    Leave author note for theorem for now
-}
+\begin{thm}
+	$\Pibz$ has negligible completeness error. Its soundness error is negligibly close to $\frac{3}{4}$.
+\end{thm}
+\begin{proof}
+	Theorem $8.6$ in \cite{FOCS:Mahadev18a} compiles $\PiMF$ into a $\QPIP_0$ in a similar way and obtains this completeness and soundness.
+	The proof uses that $\PiMF$ is one-round $\QPIP_1$ with only $X$ and $Z$ measurements on the verifier's side, with negligible completeness and soundness errors.
+	$\Piblind$ is two-rounds, but we can treat the verifier's first message as additional classical public inputs, and apply the same logic to the second round.
 
-
-For blindness, recall that the prover receives $ct_x = Enc(x), evk, k, c$ from the verifier. Blindness follows by the semantic security of QFHE and the fact that k computationally hides the basis choice $\Lambda$.
-\Ethan{This sentence is from google docs so keep it around}
+	For blindness, recall that the prover receives $ct_x, pk, k, c$ from the verifier. Blindness follows by the semantic security of $\QHE$ and the fact that $k$ computationally hides the basis choice $\Lambda'$.
+\end{proof}
 
 We use the recent results \cite{parallelrep, alagic2019twomessage} to apply parallel repetition to $\Pibz$ to get $\Pibzrep$ which has negligible soundness.
 
-\Ethan{Is the following even necessary?}
-
-\begin{protocol}{Parallel repetition of \cref{proto:QPIP0BQP}}
-	\label{proto:repQPIP0BQP}
-	\Ethan{TODO PROOFREAD ME}
-	Run $m=\poly(n)$ copies of \cref{proto:QPIP0BQP} in parallel. Accept if the proportion of accepted copies is over some certain threshold $p(n)\in(0, 1)$.
-
-\end{protocol}
-
-\begin{thm}
-	\cref{proto:repQPIP0BQP} has negligible completeness and soundness.
+\begin{thm}[from \cite{parallelrep, alagic2019twomessage}]
+	One can repeat $\PiMah$ in parallel to obtain negligible completeness and soundness errors. \Ethan{Something doesn't seem right...}
 \end{thm}
-\begin{prf}
-	\Ethan{Don't open separate proof env}
-	See \cite{parallelrep, alagic2019twomessage}
-\end{prf}
 
 \subsection{Blind delegation of FBQP}
 
