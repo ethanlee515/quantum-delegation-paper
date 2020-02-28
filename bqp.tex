@@ -187,14 +187,14 @@ We give a high-level overview of the compiliation results.
 \begin{thm}
 	$\Pibz$ has negligible completeness error. Its soundness error is negligibly close to $\frac{3}{4}$.
 \end{thm}
-\begin{proof}
+\begin{prf}
 	Theorem $8.6$ in \cite{FOCS:Mahadev18a} compiles $\PiMF$ into a $\QPIP_0$ in a similar way and obtains this completeness and soundness.
 	Its proof uses only that $\PiMF$ is $\QPIP_1$ with only $X$ and $Z$ measurements on the verifier's side, with negligible completeness and soundness errors.
 	So the same logic applies here.
 
 	For blindness, recall that the prover receives $ct_x, pk, k, c$ from the verifier.
 	Blindness follows by the semantic security of $\QHE$ and the fact that $k$ computationally hides the basis choice $\Lambda'$.
-\end{proof}
+\end{prf}
 
 We use the recent results \cite{parallelrep, alagic2019twomessage} to apply parallel repetition to $\Pibz$ to get $\Pibzrep$ which has negligible soundness.
 
