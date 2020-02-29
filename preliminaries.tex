@@ -2,7 +2,7 @@
 
 \subsection{Notations}
 
-Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$. Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli (CCNOT) gate. 
+Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$. Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli gate. 
 
 The phase gate and Pauli matrices are denoted as follows.
 
@@ -17,8 +17,7 @@ The phase gate and Pauli matrices are denoted as follows.
 We define a few relevant complexity classes.
 
 \begin{definition} [$\BQP$]
-	\Ethan{TODO: Replace this with something that makes more sense}
-	A language $L$ is in $\BQP$ if it can be decided by some uniform quantum circuit family.
+	$\BQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
 \end{definition}
 
 \begin{definition} [$\FBQP$]
