@@ -131,11 +131,9 @@ We also recall the security definition for a FHE scheme.
 	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
 \end{dfn}
 
-The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitates the use of a classical clients:
+The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitates the use of classical clients:
 \begin{itemize}
 	\item $\QGen$ can be done classically.
 	\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
 	\item Its ciphertext takes the form $(X^xZ^z\rho Z^zX^x, c_{x, z})$, where $\rho$ is the plaintext and $c_{x, z}$ is a ciphertext that decodes to $(x, z)$ under a certain classical homomorphic encryption scheme.
 \end{itemize}
-
-As we will see, if a given protocol has classical inputs and uses only $X$ and $Z$ measurements, then $\QHE$ can be used as a compiler to achieve blindness.
