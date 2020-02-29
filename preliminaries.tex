@@ -45,8 +45,8 @@ We classify the interaction between a (almost classical) client and a quantum se
 		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
 		\item There is also a classical communication channel between the prover and the verifier, which can transmit $\poly(\abs{x})$ many bits to either direction. 
 		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
-		\item (Soundness) For all $\bbP'$, if $(\bbP', \bbV)$ accepts with probability greater than $\delta$, then conditioned on this acceptance, $\bbV$ outputs a distribution $\tilde{D}$ with $\norm{\tilde{D}-D_x}\leq s$.
-			\Ethan{TODO Make this 1-param}
+		\item (Soundness) Define the ideal output distribution $D_{x, \alpha}$ as first flipping a weighted coin with head probability $\alpha$. On head, output $\bot$. On tail, sample and output from $D_x$.
+			Then the protocol is sound if for all cheating prover $\bbP^*$, there exists $\alpha$ so that the output distribution of $(\bbP^*, \bbV)$ is negligibly close to $D_{x, \alpha}$.
 	\end{itemize}
 \end{definition}
 
