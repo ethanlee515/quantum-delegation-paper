@@ -18,7 +18,7 @@ We define a few relevant complexity classes.
 
 \begin{definition} [$\BQP$]
 	\Ethan{TODO: Replace this with something that makes more sense}
-	A language $L$ is in $\BQP$ if it can be decided by some uniform quantum circuit family.
+	$\SampBQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
 \end{definition}
 
 \begin{definition} [$\FBQP$]
