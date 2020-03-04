@@ -94,9 +94,9 @@ We state and prove this observation in more precise terms.
 	Let $m=\poly(n)$ be the length of the ciphertexts corresponding to plaintexts of length $n$ encrypted using $pk$ under $\mathsf{QHE}$.
 	
 	There exists efficient classical poly-time algorithms $\cM_\QHE$ and $\widehat{\QDec_{sk}}$ s.t.
-	for all $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$ where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement:
+	for all $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_n$ where each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement: \Ethan{Just use basis choice string instead}
 	$$\cM_\QHE(\Lambda)=\Lambda'=\Lambda'_1\otimes\ldots\otimes\Lambda'_m$$
-	where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and
+	where each $\Lambda_i'$ is a single-qubit $X$ or $Z$ measurement, and \Ethan{Function compositions feels weird}
 	$$\widehat{\mathsf{QHE.Dec}_{sk}}\circ\Lambda'=\Lambda\circ\mathsf{QHE.Dec_{sk}}$$
 \end{thm}
 \begin{prf}
@@ -159,7 +159,7 @@ Now we're ready to state our blind $\QPIP_1$ construction for $\BQP$.
 	We now prove that $\PMFstar$ in fact violates the soundness of $\PiMF$.
 	Observe that the experiments $(\PMFstar, \VMF)(x)$ and $(\Pblindstar, \Vblind(x))$ are identical except for how $w$ is obtained from $\sigma$,
 	so by \cref{decodeMeasureOrder} they are equivalent.
-	Hence we have $\PMFstar$ with noticeable acceptance probability $\varepsilon$, which is a contradiction.
+	Hence we have $\PMFstar$ with noticeable acceptance probability $\varepsilon$, which is a contradiction. \Ethan {Write more details; more formula}
 \end{prf}
 
 \Ethan{Formally introduce \protoref{urmila4} (measurement protocol) earlier?}
@@ -206,8 +206,10 @@ We first summarize said results.
 
 \begin{thm}[from \cite{parallelrep, alagic2019twomessage}]
 	\label{thm:MFZrep}
-	$\PiMFZ$ can be repeated in parallel, obtaining $\PiMFZrep$ that has negligible completeness and soundness errors.
+	$\PiMFZ$ can be repeated in parallel, obtaining $\PiMFZrep$ that has negligible completeness and soundness errors. \Ethan{Just remove this}
 \end{thm}
+
+\Ethan{Just define parallel repetition in words}
 
 We can now finish building our delegation scheme for $\BQP$.
 \begin{thm}
@@ -225,8 +227,8 @@ We can now finish building our delegation scheme for $\BQP$.
 
 Here we state our delegation protocol for $\FBQP$.
 We do so by breaking an $\FBQP$ instance down into $\BQP$ instances.
-Note that our $\BQP$ scheme is one-sided; the prover is allowed to cause the verifier to reject a yes-instance.
-As a result, we run two copies of $\Pbzrep$ for every output bit as below:
+Note that our $\BQP$ scheme is one-sided; the prover is allowed to cause the verifier to reject a yes-instance. \Ethan{Explain this better... Write more intuitions. Decision vs function problems; exists vs for all}
+As a result, we run two copies of $\Pibzrep$ for every output bit as below:
 
 \begin{protocol}{Blind and verifiable $\QPIP_0$ protocol $\Pi_{\FBQP}$ for $f\in\FBQP$}
 	\label{proto:QPIP0FBQP}

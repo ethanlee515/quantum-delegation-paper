@@ -18,6 +18,7 @@ We define a few relevant complexity classes.
 
 \begin{definition} [$\BQP$]
 	$\BQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
+\end{definition}
 
 \begin{definition} [$\FBQP$]
 	A function $f:\set{0,1}^*\rightarrow\set{0,1}^*$ is in $\FBQP$ if there is a $\BQP$ machine that, $\forall x$, outputs $f(x)$ with overwhelming probability.
