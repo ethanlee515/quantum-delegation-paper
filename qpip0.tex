@@ -93,6 +93,10 @@ In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave the following 4-
 With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$.
 \end{definition}
 
+\begin{lem}~\label{lem:trivial-4-round-strategy}
+    For any input, there exist a prover strategy for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing round and \hannote{binding?}.
+\end{lem}
+
 \begin{definition}[computationally indistinguishable]
 \hannote{move later}
 Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes a sample from $D_1$ as part of its input. 
@@ -132,7 +136,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
     \item Both verifier and prover start with the description of number of qubits $n$, quantum circuit $C$, input string $x$, and  a soundness parameter $\varepsilon$.
-    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. The copies share the same $h$ but have separate $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The prover use $h$ specifier by step~\ref{} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
+    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
     \item \label{step:multi-testing}Verifier rejects if the result on any of the test rounds is rejected. 
     \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
@@ -430,7 +434,9 @@ We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a $n$-qubi
 \hannote{need to simulate one copy?}
 
 
-For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp} and $i\in [m]$, consider the following prover strategy for Protocol~\ref{proto:urmila4}: on the first round, try to create $\ket{\psi_{???}}$ \hannote{which $i$ do i use?}
+For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp} and $i\in [m]$, consider the following prover strategy for Protocol~\ref{proto:urmila4}: on the second round, the prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  fact ??? instead. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$. otherwise he run $U_{trivial}$    described  in  fact ???.
+
+By 
 
 ===
 
