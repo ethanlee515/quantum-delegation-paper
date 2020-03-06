@@ -1,5 +1,55 @@
 \section{REWRITE - Blind Delegation for BQP and FBQP}
 \label{sec:BlindBQP2}
 
-Let $\Pi$ be...
-then there exists $\Pi$
+In this section we show that there's a relatively simple way to create a blind and constant-round $\QPIP_0$ delegation protocol. We create our protocol by running the constant-round $\QPIP_0$ protocol from \cite{FOCS:Mahadev18a} under $\QHE$ from \cite{mahadev_qfhe}. This is possible due to certain additional properties of $\QHE$ that facilitates the use of a classical client. Roughly speaking, measuring the ciphertext in standard basis converts the ciphertext into a ciphertext under some certain other classical homomorphic encryption.
+
+\def\HE{\mathsf{HE}}
+\def\HGen{\mathsf{HE.Keygen}}
+\def\HEnc{\mathsf{HE.Enc}}
+\def\HEval{\mathsf{HE.Eval}}
+\def\HDec{\mathsf{HE.Dec}}
+
+\begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
+	Suppose the protocol $(P, V)$ is $2T$-rounds with the following description:
+	
+	Public input: $x$
+	\begin{enumerate}
+		\item $P$ generates initial state $st_{P, 0}\leftarrow\cP_0$
+		\item $V$ generates initial states $st_{V, 0}\leftarrow\cV_0$
+		\item for $t=1,\ldots,T$:
+		\begin{enumerate}
+			\item $V$ generates $v_t\leftarrow\cV_t(st_{V, t-1})$ and sends it to the prover.
+			\item $P$ generates $(p_t, st_{P, t})\leftarrow\cP_t(v_t, st_{P, t-1})$ and sends $p_t$ to the verifier.
+			\item $V$ updates its state as $st_{V, t}\leftarrow\cV_t'(p_t, v_t, st_{V, t-1})$
+		\end{enumerate}
+		\item $V$ computes its output $o\leftarrow\cV_{out}(st_{V, T})$
+	\end{enumerate}
+
+	Then define the protocol $\Piblind$ with security parameter $\lambda$ as below:
+
+	Verifier's input: $x$
+	\begin{enumerate}
+		\item $\Vblind$ generates $(pk, sk)\leftarrow\QGen(1^\lambda, 1^L)$ for sufficiently large depth $L$ and sends $pk$ to $\Pblind$.
+		\item $\Pblind$ generates $q_{st_{P, 0}}\leftarrow\QEval_{pk}(\cP_0)$
+		\item $\Vblind$ generates $h_{st_{V, 0}}\leftarrow\HEval_{pk}(\cV_0)$
+		\item for $t=1,\ldots,T$:
+		\begin{enumerate}
+			\item $\Vblind$ generates $h_{v_t}\leftarrow\HEval_{pk}(\cV_t(st_{V, t-1}))$.
+				Then it uniformly samples $r_t\xleftarrow{\$}\set{0,1}^{\abs{v_t}}$,
+				and computes $h_{r_t}\leftarrow\HEnc_{pk}(r_t)$.
+				It sends $q_{v_t}\leftarrow(r_t, h_{r_t}\oplus_{H, pk} h_{v_t})$ to the server.
+			\item $\Pblind$ generates $(q_{p_t}, st_{P, t})\leftarrow\cP_t(q_{v_t}, st_{P, r-1})$ and sends $q_{p_t}=(p_t\oplus s_t, h_{s_t})$ to the verifier.
+			\item $\Vblind$ encrypts the first part of $q_{p_t}$ under $\HE$ in order to homomorphically compute $p_t$ by $h_{p_t}\leftarrow\HEnc_{pk}(p_t\oplus s_t)\oplus_{H, pk} h_{s_t}$.
+				It updates its state as $c_{st_{V, t}}\leftarrow\HEval_{pk}(\cV_t', (h_{p_t}, h_{v_t}, c_{st_{V, t-1}}))$
+		\end{enumerate}
+		\item $\Vblind$ generates $c_o\leftarrow\HEval_{pk}(\cV_{out}, c_{st_{V, T}})$ and outputs $\HDec_{sk}(c_o)$.
+	\end{enumerate}
+
+\end{protocol}
+
+\begin{theorem}
+	For all cheating prover $\Pblind^*$ of $\Piblind$, there exists a cheating prover $P^*$ of $\Pi$ s.t. for all input $x$, the output distributions of $(\Pblind, \Vblind(x))$ and $(P, V)(x)$ are negligibly close.
+\end{theorem}
+\begin{proof}
+	TODO
+\end{proof}
