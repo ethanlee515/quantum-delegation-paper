@@ -29,29 +29,32 @@ So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphicall
 		\item $V$ computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$
 	\end{enumerate}
 
-	Using $\Pi=(P, V)(x)$ from above, we now define the protocol $\Piblind=(P, V(x))$ as follows:
+	Using $\Pi=(P, V)(x)$ from above, we define the protocol $\Piblind=(P, V(x))$ as follows:
+
+	Verifier's input: $x$
 
 	Let $L_t$ be the circuit depth of $\cP_t$.
 	Let $\lambda=\abs{x}$.
 
-	Verifier's input: $x$
 	\begin{enumerate}
 		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
 			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$,
 			and encrypts $\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
 			It sends $pk_1$, $\ctx{x}{1}$, and $\ctx{v_1}{1}$ to the prover.
-		\item $\Pblind$ generates $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\QEval_{pk}(\cP_0, \ctx{v_1}{1}, \ctx{x}{1})$.
+		\item $\Pblind$ generates $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$
+			by evaluating $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\QEval_{pk}(\cP_1, \ctx{v_1}{1}, \ctx{x}{1})$.
 			It sends $\ctx{p_1}{1}$ to the verifier.
 		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
-			\item $\Vblind$ decrypts the prover's message by $p_{t-1}\leftarrow\QDec_{sk_{t-1}}(\ctx{p_{t-1}}{t-1})$,
-				and generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$.
+			\item $\Vblind$ decrypts the prover's last message by $p_{t-1}\leftarrow\QDec_{sk_{t-1}}(\ctx{p_{t-1}}{t-1})$,
+				then generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$.
 				Then it generates $(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$,
 				and produces encryptions $\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t)$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
 				It sends $pk_t$, $\ctx{v_t}{t}$, and $\ctx{sk_{t-1}}{t}$ to the prover.
-			\item $\Pblind$ updates its state to use the new $\QHE$ key by
+			\item $\Pblind$ generates $(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\cPblind{t}(\ctx{v_t}{t}, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1})$
+				by first refreshing the $\QHE$ key that encrypts its states by
 				first encrypting it under the new key by $\ctx{st_{P, t-1}}{t-1, t}\leftarrow\QEnc_{pk_t}(\ctx{st_{P, t-1}}{t-1}))$,
-				then homomorphically decrypting the old encryption by
+				then homomorphically decrypting the old encryption under the new key by
 				$\ctx{st_{P, t-1}}{t}\leftarrow\QEval_{pk_t}(\QDec, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1, t})$.
 				It then applies the next-message function of $\Pi$, generating
 				$(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\QEval_{pk_t}(\cP_t, \ctx{v_t}{t}, \ctx{st_{P, t-1}}{t})$.
@@ -65,14 +68,30 @@ So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphicall
 By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly close to that of $\Pi$.
 We show the soundness of $\Piblind$ in the following theorem.
 
+\def\Pstar{P^*}
+\nc{\cPstar}[1]{\ensuremath{\cP^*_{#1}}}
+
 \begin{theorem}
-	For all cheating prover $\Pblind^*$ of $\Piblind$, there exists a cheating prover $P^*$ of $\Pi$ s.t. for all input $x$, the output distributions of $(\Pblind, \Vblind(x))$ and $(P, V)(x)$ are negligibly close.
+	For all cheating prover $\Pblindstar$, there exists a cheating prover $\Pstar$ s.t. for all input $x$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{theorem}
 \begin{proof}
-	TODO
+	We define $\Pstar$ so that on $\cPstar{1}$ it generates
+	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$, then produces the encryptions
+	$\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
+	It then runs $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$.
+	Finally, it decrypts $p_1\leftarrow\QDec_{sk_1}(\ctx{p_1}{1})$ and sends it back to the verifier,
+	and keeps $\ctx{st_{P, 1}}{1}$ and $sk_1$.
+	Then, on the rest of the $\cPstar{t}$ rounds, $\Pstar$ generates
+	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$, and produces ciphertexts
+	$\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t))$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
+	It then runs $(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\cPblind{t}(\ctx{v_t}{t}, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1})$.
+	Finally, it decrypts $p_t\leftarrow\QDec_{sk_t}(\ctx{p_t}{1})$ and sends it back to the verifier,
+	and keeps $\ctx{st_{P, t}}{t}$ and $sk_t$.
+		
+	By construction, the experiments $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{proof}
 
-Finally, we show the blindness of $\Piblind$ through a standard hybrid argument as below:
+Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 \begin{theorem}
 	$\Piblind$ is blind.
 \end{theorem}
