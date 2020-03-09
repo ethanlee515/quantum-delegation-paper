@@ -96,5 +96,10 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	$\Piblind$ is blind.
 \end{theorem}
 \begin{proof}
-	Consider $T$ hybrids...
+	Consider $T+1$ hybrids experiments, from $\Hyb_1$ to $\Hyb_{T+1}$.
+	In $\Hyb_i$, we modify $(\Pblind, \Vblind(x))$ s.t.
+	for all rounds associated with $\cV{t}$ where $t\geq i$, the verifier replaces the $\ctx{sk_{t-1}}{t}$ in its message with encryption of $0$.
+	Then, for all $t$, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
+	Since computational indistinguishability is transitive \Ethan{really?}, $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
+	Note that $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind. So $\Hyb_{T+1}$ is also blind.
 \end{proof}
