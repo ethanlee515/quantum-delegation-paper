@@ -9,47 +9,73 @@ In this section we show that there's a relatively simple way to create a blind a
 \def\HEval{\mathsf{HE.Eval}}
 \def\HDec{\mathsf{HE.Dec}}
 
+\nc{\ctx}[2]{\ensuremath{{{#1}^{(#2)}}}}
+
+Due to some properties (TODO) of $\QHE$, we can abuse the notation and write a collection of registers encrypted under $\QHE$ as $(x_1, x_2)'=(x_1', x_2')$ for $\QHE$...
+So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphically we can split its output into corresponding encrypted registers too.
+
 \begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
-	Suppose the protocol $(P, V)$ is $2T$-rounds with the following description:
+	Suppose the protocol $(P, V)$ is a $\QPIP_0$ protocol where only the verifier receives outputs, with the following general form:
 	
 	Public input: $x$
 	\begin{enumerate}
-		\item $P$ generates initial state $st_{P, 0}\leftarrow\cP_0$
-		\item $V$ generates initial states $st_{V, 0}\leftarrow\cV_0$
-		\item for $t=1,\ldots,T$:
+		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$ and sends $v_1$ to the prover.
+		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(v_1, x)$ and sends $p_1$ to the verifier.
+		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
-			\item $V$ generates $v_t\leftarrow\cV_t(st_{V, t-1})$ and sends it to the prover.
+			\item $V$ generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$ and sends $v_t$ to the prover.
 			\item $P$ generates $(p_t, st_{P, t})\leftarrow\cP_t(v_t, st_{P, t-1})$ and sends $p_t$ to the verifier.
-			\item $V$ updates its state as $st_{V, t}\leftarrow\cV_t'(p_t, v_t, st_{V, t-1})$
 		\end{enumerate}
-		\item $V$ computes its output $o\leftarrow\cV_{out}(st_{V, T})$
+		\item $V$ computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$
 	\end{enumerate}
 
-	Then define the protocol $\Piblind$ with security parameter $\lambda$ as below:
+	Using $\Pi=(P, V)(x)$ from above, we now define the protocol $\Piblind=(P, V(x))$ as follows:
+
+	Let $L_t$ be the circuit depth of $\cP_t$.
+	Let $\lambda=\abs{x}$.
 
 	Verifier's input: $x$
 	\begin{enumerate}
-		\item $\Vblind$ generates $(pk, sk)\leftarrow\QGen(1^\lambda, 1^L)$ for sufficiently large depth $L$ and sends $pk$ to $\Pblind$.
-		\item $\Pblind$ generates $q_{st_{P, 0}}\leftarrow\QEval_{pk}(\cP_0)$
-		\item $\Vblind$ generates $h_{st_{V, 0}}\leftarrow\HEval_{pk}(\cV_0)$
-		\item for $t=1,\ldots,T$:
+		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
+			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$,
+			and encrypts $\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
+			It sends $pk_1$, $\ctx{x}{1}$, and $\ctx{v_1}{1}$ to the prover.
+		\item $\Pblind$ generates $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\QEval_{pk}(\cP_0, \ctx{v_1}{1}, \ctx{x}{1})$.
+			It sends $\ctx{p_1}{1}$ to the verifier.
+		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
-			\item $\Vblind$ generates $h_{v_t}\leftarrow\HEval_{pk}(\cV_t(st_{V, t-1}))$.
-				Then it uniformly samples $r_t\xleftarrow{\$}\set{0,1}^{\abs{v_t}}$,
-				and computes $h_{r_t}\leftarrow\HEnc_{pk}(r_t)$.
-				It sends $q_{v_t}\leftarrow(r_t, h_{r_t}\oplus_{H, pk} h_{v_t})$ to the server.
-			\item $\Pblind$ generates $(q_{p_t}, st_{P, t})\leftarrow\cP_t(q_{v_t}, st_{P, r-1})$ and sends $q_{p_t}=(p_t\oplus s_t, h_{s_t})$ to the verifier.
-			\item $\Vblind$ encrypts the first part of $q_{p_t}$ under $\HE$ in order to homomorphically compute $p_t$ by $h_{p_t}\leftarrow\HEnc_{pk}(p_t\oplus s_t)\oplus_{H, pk} h_{s_t}$.
-				It updates its state as $c_{st_{V, t}}\leftarrow\HEval_{pk}(\cV_t', (h_{p_t}, h_{v_t}, c_{st_{V, t-1}}))$
+			\item $\Vblind$ decrypts the prover's message by $p_{t-1}\leftarrow\QDec_{sk_{t-1}}(\ctx{p_{t-1}}{t-1})$,
+				and generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$.
+				Then it generates $(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$,
+				and produces encryptions $\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t)$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
+				It sends $pk_t$, $\ctx{v_t}{t}$, and $\ctx{sk_{t-1}}{t}$ to the prover.
+			\item $\Pblind$ updates its state to use the new $\QHE$ key by
+				first encrypting it under the new key by $\ctx{st_{P, t-1}}{t-1, t}\leftarrow\QEnc_{pk_t}(\ctx{st_{P, t-1}}{t-1}))$,
+				then homomorphically decrypting the old encryption by
+				$\ctx{st_{P, t-1}}{t}\leftarrow\QEval_{pk_t}(\QDec, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1, t})$.
+				It then applies the next-message function of $\Pi$, generating
+				$(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\QEval_{pk_t}(\cP_t, \ctx{v_t}{t}, \ctx{st_{P, t-1}}{t})$.
+				It sends $\ctx{p_t}{t}$ back to the verifier.
 		\end{enumerate}
-		\item $\Vblind$ generates $c_o\leftarrow\HEval_{pk}(\cV_{out}, c_{st_{V, T}})$ and outputs $\HDec_{sk}(c_o)$.
+		\item $\Vblind$ decrypts the prover's final message by $p_T\leftarrow\QDec_{sk_T}(\ctx{p_T}{T})$.
+			It then computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$.
 	\end{enumerate}
-
 \end{protocol}
+
+By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly close to that of $\Pi$.
+We show the soundness of $\Piblind$ in the following theorem.
 
 \begin{theorem}
 	For all cheating prover $\Pblind^*$ of $\Piblind$, there exists a cheating prover $P^*$ of $\Pi$ s.t. for all input $x$, the output distributions of $(\Pblind, \Vblind(x))$ and $(P, V)(x)$ are negligibly close.
 \end{theorem}
 \begin{proof}
 	TODO
+\end{proof}
+
+Finally, we show the blindness of $\Piblind$ through a standard hybrid argument as below:
+\begin{theorem}
+	$\Piblind$ is blind.
+\end{theorem}
+\begin{proof}
+	Consider $T$ hybrids...
 \end{proof}
