@@ -1,18 +1,25 @@
-\section{REWRITE - Blind Delegation for BQP and FBQP}
-\label{sec:BlindBQP2}
-
-In this section we show that there's a relatively simple way to create a blind and constant-round $\QPIP_0$ delegation protocol. We create our protocol by running the constant-round $\QPIP_0$ protocol from \cite{FOCS:Mahadev18a} under $\QHE$ from \cite{mahadev_qfhe}. This is possible due to certain additional properties of $\QHE$ that facilitates the use of a classical client. Roughly speaking, measuring the ciphertext in standard basis converts the ciphertext into a ciphertext under some certain other classical homomorphic encryption.
-
 \def\HE{\mathsf{HE}}
 \def\HGen{\mathsf{HE.Keygen}}
 \def\HEnc{\mathsf{HE.Enc}}
 \def\HEval{\mathsf{HE.Eval}}
 \def\HDec{\mathsf{HE.Dec}}
 
+\section{REWRITE - Blind Delegation for BQP and FBQP}
+\label{sec:BlindBQP2}
+
 \nc{\ctx}[2]{\ensuremath{{{#1}^{(#2)}}}}
 
-Due to some properties (TODO) of $\QHE$, we can abuse the notation and write a collection of registers encrypted under $\QHE$ as $(x_1, x_2)'=(x_1', x_2')$ for $\QHE$...
-So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphically we can split its output into corresponding encrypted registers too.
+In this section we show a relatively simple way to create a blind and constant-round $\QPIP_0$ delegation protocol for $\BQP$. We create our protocol by running the constant-round $\QPIP_0$ protocol from \cite{FOCS:Mahadev18a} under $\QHE$ from \cite{mahadev_qfhe}.
+This is possible due to additional properties of $\QHE$ that facilitates the use of a classical client. Its encryption can be performed classically.
+Then, after the homomorphic evaluation, the server could homomorphically measure the ciphertexts and send the results for the classical client to decrypt.
+In fact, this approach is powerful enough to give blindness to any $\QPIP_0$ protocol.
+
+We start with a summarization of $\QHE$ and notations.
+First, when there are many sets of $\QHE$ keys in play at the same time,
+we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
+Otherwise, we write $x'$ for a ciphertext corresponding to plaintext $x$.
+Moreover, the encryption is done on a qubit-by-qubit basis,
+so we can write $(x_1, x_2)'=(x_1', x_2')$.
 
 \begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
 	Suppose the protocol $(P, V)$ is a $\QPIP_0$ protocol where only the verifier receives outputs, with the following general form:
@@ -26,7 +33,8 @@ So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphicall
 			\item $V$ generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$ and sends $v_t$ to the prover.
 			\item $P$ generates $(p_t, st_{P, t})\leftarrow\cP_t(v_t, st_{P, t-1})$ and sends $p_t$ to the verifier.
 		\end{enumerate}
-		\item $V$ computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$
+		\item $V$ computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$.
+			\Ethan{Prover can get outputs too}
 	\end{enumerate}
 
 	Using $\Pi=(P, V)(x)$ from above, we define the protocol $\Piblind=(P, V(x))$ as follows:
@@ -62,6 +70,7 @@ So suppose $f$ outputs a tuple of registers, when it is evaluated homomorphicall
 		\end{enumerate}
 		\item $\Vblind$ decrypts the prover's final message by $p_T\leftarrow\QDec_{sk_T}(\ctx{p_T}{T})$.
 			It then computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$.
+			\Ethan{Prover can get outputs too}
 	\end{enumerate}
 \end{protocol}
 
