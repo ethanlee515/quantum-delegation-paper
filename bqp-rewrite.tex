@@ -9,16 +9,20 @@
 
 \nc{\ctx}[2]{\ensuremath{{{#1}^{(#2)}}}}
 
-In this section we show a relatively simple way to create a blind and constant-round $\QPIP_0$ delegation protocol for $\BQP$. We create our protocol by running the constant-round $\QPIP_0$ protocol from \cite{FOCS:Mahadev18a} under $\QHE$ from \cite{mahadev_qfhe}.
-This is possible due to additional properties of $\QHE$ that facilitates the use of a classical client. Its encryption can be performed classically.
-Then, after the homomorphic evaluation, the server could homomorphically measure the ciphertexts and send the results for the classical client to decrypt.
-In fact, this approach is powerful enough to give blindness to any $\QPIP_0$ protocol.
+In this section we show a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
+We start with the protocol from \cite{parallelrep, alagic2019twomessage} which satisfies all our requirements except blindness.
+Generally one can obtain blindness by running a protocol under homomorphic encryption. \Ethan{Maybe cite?} In our case, we have a classical client and a quantum server, so we choose the homomorphic encryption from \cite{mahadev_qfhe} that's compatible with this situation.
 
-We start with a summarization of $\QHE$ and notations.
-First, when there are many sets of $\QHE$ keys in play at the same time,
+We start by summarizing additional properties of Mahadev's $\QHE$ that makes our construction possible.
+First, when the plaintext is classical, the encryption can be performed classically.
+Moreover, a quantum ciphertext can be measured homomorphically, in which case the measurement outcomes can then be decrypted classically.
+Lastly, the encryption is done qubit-by-qubit, so one can split a ciphertext into registers as one would with the corresponding plaintext.
+
+We now state our compiler that gives any $\QPIP_0$ protocol blindness.
+For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
 Otherwise, we write $x'$ for a ciphertext corresponding to plaintext $x$.
-Moreover, the encryption is done on a qubit-by-qubit basis,
+Moreover, the encryption is qubit-by-qubit,
 so we can write $(x_1, x_2)'=(x_1', x_2')$.
 
 \begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
@@ -109,6 +113,6 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	In $\Hyb_i$, we modify $(\Pblind, \Vblind(x))$ s.t.
 	for all rounds associated with $\cV{t}$ where $t\geq i$, the verifier replaces the $\ctx{sk_{t-1}}{t}$ in its message with encryption of $0$.
 	Then, for all $t$, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
-	Since computational indistinguishability is transitive \Ethan{really?}, $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
-	Note that $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind. So $\Hyb_{T+1}$ is also blind.
+	Since computational indistinguishability is transitive \Ethan{Really? Definitely need to write down some inequalities here...}, $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
+	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we can conclude that $\Piblind$ is blind.
 \end{proof}

@@ -97,15 +97,39 @@ With loss of generality,  we can assume that the testing round verification is d
     For any input, there exist a prover strategy for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing round and \hannote{binding?}.
 \end{lem}
 
-\begin{definition}[computationally indistinguishable]
+\begin{definition}[quantum computationally indistinguishable]
 \hannote{move later}
-Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes a sample from $D_1$ as part of its input. 
+Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes \emph{one} sample from $D_1$ as part of its input. We also denote this as 
+$$ D_1 \approx_{q,\eps} D_2$$
 \end{definition}
 %Let $O^{D_1}$ and $O^{D_2}$ be oracles giving samples from $D_1$ and $D_2$.
 
 \begin{rmk}
+We extend the definition of computational distance to a subnormalized distribution  $D$  by assuming $A(D)=0$ when $A$ fail to draw a sample from $D$.
+\end{rmk}
+
+\begin{rmk}
 If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally indistinguishable.
 \end{rmk}
+
+\begin{lem}[triangle inequality for computational distance]
+Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
+
+If 
+\begin{align}
+    D_1 &\approx_{q,\eps} D_2 \\
+    D_4 &\approx_{q,\eps'} D_6, 
+\end{align}
+then 
+\begin{align}
+    D_3 \approx_{q,\eps+\eps'} D_5
+\end{align}
+\end{lem}
+\begin{proof}
+
+\end{proof}
+
+
 
 \hannote{comp. indistinguish for subnormalized state?}
 \hannote{triangle inequality}

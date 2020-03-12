@@ -1,12 +1,22 @@
 \section{Delegation Protocol for Hybrid Client}
 
-Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state. In the case of decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not work in our case, so we give the following construction instead.
+Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state.
+\Ethan{Properly intro and point out the difference between BQP and SampBQP and the challenge here.}
+In the case of decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not work in our case, so we give the following construction instead.
 
 First, we make an observation.
 
+\def\GS{\mathsf{GS}}
+\nc{\PiGS}{\ensuremath{\Pi_\GS}}
+\nc{\VGS}{\ensuremath{V_\GS}}
+\nc{\PGS}{\ensuremath{P_\GS}}
+\nc{\PGSstar}{\ensuremath{P_\GS^*}}
+\nc{\cVGS}[1]{\ensuremath{\cV_{\GS,#1}}}
+\nc{\cPGS}[1]{\ensuremath{\cP_{\GS,#1}}}
+
 \begin{lemma}
 	\label{ProtoGroundStateCheck}
-	There is a $\QPIP_1$ protocol for \cref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
+	There is a $\QPIP_1$ protocol $\PiGS$ for \cref{AlgGroundStateCheck}. Furthermore, in this protocol, the verifier doesn't need to apply any gates, and only needs to apply $X$ and $Z$ measurements.
 \end{lemma}
 \begin{prf}
 	The prover simply sends the input qubit-by-qubit for the verifier to measure. It is clear that any attacks on this scheme trivially maps onto an attack on the original scheme.
