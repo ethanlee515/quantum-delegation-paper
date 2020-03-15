@@ -7,23 +7,27 @@
 \section{REWRITE - Blind Delegation for BQP and FBQP}
 \label{sec:BlindBQP2}
 
-\nc{\ctx}[2]{\ensuremath{{{#1}^{(#2)}}}}
-
 In this section we show a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
+\Ethan{Talk about the compiler first, and BQP after.}
 We start with the protocol from \cite{parallelrep, alagic2019twomessage} which satisfies all our requirements except blindness.
 Generally one can obtain blindness by running a protocol under homomorphic encryption. \Ethan{Maybe cite?} In our case, we have a classical client and a quantum server, so we choose the homomorphic encryption from \cite{mahadev_qfhe} that's compatible with this situation.
+\Ethan{Talk about FBQP too}
 
+\nc{\ctx}[2]{\ensuremath{{{\widehat{#1}}^{(#2)}}}}
+
+\Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
+
+\Ethan{Too bottom-up. Need to tell more story.}
 We start by summarizing additional properties of Mahadev's $\QHE$ that makes our construction possible.
 First, when the plaintext is classical, the encryption can be performed classically.
 Moreover, a quantum ciphertext can be measured homomorphically, in which case the measurement outcomes can then be decrypted classically.
 Lastly, the encryption is done qubit-by-qubit, so one can split a ciphertext into registers as one would with the corresponding plaintext.
 
+\Ethan{More story here. Talk about stuff like why switch keys.}
+
 We now state our compiler that gives any $\QPIP_0$ protocol blindness.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
-Otherwise, we write $x'$ for a ciphertext corresponding to plaintext $x$.
-Moreover, the encryption is qubit-by-qubit,
-so we can write $(x_1, x_2)'=(x_1', x_2')$.
 
 \begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
 	Suppose the protocol $(P, V)$ is a $\QPIP_0$ protocol where only the verifier receives outputs, with the following general form:
@@ -88,12 +92,13 @@ We show the soundness of $\Piblind$ in the following theorem.
 	For all cheating prover $\Pblindstar$, there exists a cheating prover $\Pstar$ s.t. for all input $x$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{theorem}
 \begin{proof}
-	We define $\Pstar$ so that on $\cPstar{1}$ it generates
+	We define $\Pstar$ so that \Ethan{Fix wording here} on $\cPstar{1}$ it generates
 	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$, then produces the encryptions
 	$\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
 	It then runs $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$.
 	Finally, it decrypts $p_1\leftarrow\QDec_{sk_1}(\ctx{p_1}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st_{P, 1}}{1}$ and $sk_1$.
+
 	Then, on the rest of the $\cPstar{t}$ rounds, $\Pstar$ generates
 	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$, and produces ciphertexts
 	$\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t))$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
