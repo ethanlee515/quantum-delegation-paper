@@ -1,10 +1,23 @@
 \section{Delegation Protocol for Hybrid Client}
 
-Here we create a $\QPIP_1$ scheme for $\SampBQP$ by constructing a history XZ local Hamiltonian instance, and ask the prover to provide the ground state.
-\Ethan{Properly intro and point out the difference between BQP and SampBQP and the challenge here.}
-In the case of decision problems, it would be a simple Chernoff bound as in \cite{kitaev2002classical}. A prover, honest or not, couldn't do better than sending $n$ identical copies of some state. The same reasoning does not work in our case, so we give the following construction instead.
-
-First, we make an observation.
+In this section, we construct a $\QPIP_1$ delegation protocol for $\SampBQP$.
+The high level idea is cut-and-choose; that is,
+the server constructs multiple copies of the ground state as certificates,
+the client then randomly chooses a copy to output and checks the rest.
+There are two main challenges to this approach.
+First, the client needs to reliably extract the circuit's output from its corresponding ground state,
+which can be accomplished by padding the circuit with identity gates at the end.
+Then, the clock register measures into after the last gate with high probability,
+which implies that the data register is in the circuit's final state.
+The other challenge is that a cheating prover could create arbitrary entanglements between its certificates.
+This challenge isn't present in the protocol for $\BQP$ because its soundness is one-sided.
+That is, we allow a cheating server to cause the client to reject a yes-instance;
+it just can't convince the client to accept a no-instance.
+Because of this asymmetry, it turns out that any prover, honest or not, can't do better than sending $n$ identical copies of some state,
+which allows the use of Chernoff bound.
+Here we use de Finetti's theorem to approximate our measurement results with unentangled states,
+which comes with a cost of inverse polynomial errors,
+to also allow the use of Chernoff bounds.
 
 \def\GS{\mathsf{GS}}
 \nc{\PiGS}{\ensuremath{\Pi_\GS}}
@@ -13,6 +26,16 @@ First, we make an observation.
 \nc{\PGSstar}{\ensuremath{P_\GS^*}}
 \nc{\cVGS}[1]{\ensuremath{\cV_{\GS,#1}}}
 \nc{\cPGS}[1]{\ensuremath{\cP_{\GS,#1}}}
+
+\def\Samp{\mathsf{Samp}}
+\nc{\PiSamp}{\ensuremath{\Pi_\Samp}}
+\nc{\VSamp}{\ensuremath{V_\Samp}}
+\nc{\PSamp}{\ensuremath{P_\Samp}}
+\nc{\PSampstar}{\ensuremath{P_\Samp^*}}
+\nc{\cVSamp}[1]{\ensuremath{\cV_{\Samp,#1}}}
+\nc{\cPSamp}[1]{\ensuremath{\cP_{\Samp,#1}}}
+
+\def\GS{\mathsf{GS}}
 
 \begin{lemma}
 	\label{ProtoGroundStateCheck}
@@ -24,43 +47,25 @@ First, we make an observation.
 
 Now we present \hyperref[ProtoQPIP1]{Protocol~\ref*{ProtoQPIP1}}, a $\QPIP_1$ protocol for any $\SampBQP$ problem with inverse polynomial error in circuit size.
 
-\begin{protocol}{$\QPIP_1$ protocol for $\SampBQP$}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ with soundness error $O(\varepsilon)$}
 	\label{ProtoQPIP1}
-	\begin{itemize}
-		\item Let $\varepsilon>0$
-		\item Let $m$ be large enough so that $\frac{1}{2^m}$ is negligible in $\varepsilon$
-		\item Let $n$ be large enough so both
-			$$P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]$$
-			and
-			$$P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]$$ are negligible in $\varepsilon$ by Chernoff bound
-		\item Let $N$ be large enough so that $$\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$$
-			where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$
-	\end{itemize}
+	Let $C'$ be $C$ padding with enough identity gates so that...
+	Let $n$ be large enough so by Chernoff bound
+		$$P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]<\varepsilon$$
+		$$P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]<\varepsilon$$
+	Let $N$ be large enough so that by de Finetti's theorem...
+		That is,
+		$$\sqrt{\frac{2(m+n)^2\ln\abs{A}}{N-(m+n)}}<\varepsilon$$
+		where $\abs{A}$ is the number of qubits in $\ket{\psi_{C(x)}}$
 	\begin{enumerate}
-		\item The honest prover sends $N$ identical copies of $\ket{\psi_{C'(x)}}$, where $C'$ is $C$ padded with identities as mentioned in \hyperref[idpadding]{Observation~\ref*{idpadding}}
-		\item The verifier randomly picks $m$ copies for outputting and $n$ copies for checking
-		\item Set counter $c=0$
-		\item Set $y=\bot$
+		\item The honest prover prepares $N$ copies of $\ket{\psi_{C'(x)}}$
+		\item The verifier privately samples $I\subset[N]$ s.t. $\abs{I}=n$. It then privately samples $k\in[N]\setminus I$.
 		\item For $i$ from $1$ to $N$:
 		\begin{enumerate}
-			\item If the $i$-th register is for checking:
-			\begin{enumerate}
-				\item The verifier runs \cref{AlgGroundStateCheck} as described by \hyperref[ProtoGroundStateCheck]{Observation~\ref*{ProtoGroundStateCheck}}.
-				\item If the test passes, increment counter $c$.
-			\end{enumerate}
-			\item If the register is for outputting:
-			\begin{enumerate}
-				\item The verifier measures the copy in standard basis
-				\item If the measurement result of the clock register $\geq\frac{T}{2}$ and $y=\bot$, then update $y$ as the measurement result of the data register.
-			\end{enumerate}
-			\item Otherwise, just measure the entire register in standard basis and discard it.
+			\item The prover sends the $i$-th copy of $\ket{\psi_{C'(x)}}$, $\rho_i$, qubit-by-qubit.
+			\item If $i\in I$, the verifier runs $\cA_{\GS}$ on $\rho_i$. Otherwise, if $i=k$, the verifier measures the data register of $\rho_i$ and save the outcome as $y$. Otherwise the verifier discards $\rho_i$.
 		\end{enumerate}
-		\item If $\frac{c}{n}\geq\frac{1}{2}-\varepsilon$:
-		\begin{enumerate}
-			\item If $y\ne\bot$ then output $y$
-			\item Otherwise, reject.
-		\end{enumerate}
-		\item Otherwise, reject.
+		\item If the proportion of copies accepted by $\cA_{\GS}$ is greater than $\frac{1}{2}-\varepsilon$ then the client accepts and outputs $y$. Otherwise, it rejects.
 	\end{enumerate}
 \end{protocol}
 
