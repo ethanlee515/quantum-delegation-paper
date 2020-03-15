@@ -237,6 +237,7 @@ As a result, we run two copies of $\Pibzrep$ for every output bit as below:
 	Denote the $i$-th bit of $f(x)$ as $f_i(x)$.
 	For $i\in\bbN, b\in\set{0,1}$, define the $\BQP$ language $L_{i, b}=\set{s\in\set{0,1}^* : f_i(s)=b}$.
 	Let $m=\abs{f(x)}$; we assume without loss of generality that it depends only on $n$ and can be efficiently computed classically.
+	\Ethan{Move this assumption to the definition and make a remark there}
 	\begin{enumerate}
 		\item For all $i\in[m], b\in\set{0, 1}$ in parallel, the verifier and the prover run $(\Pbzrep, \Vbzrep(x))$ for $L_{i, b}$.
 		\item The verifier gets outputs $v_{i, b}\in\set{acc, rej}$.
