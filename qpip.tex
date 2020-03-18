@@ -1,19 +1,19 @@
 \section{Delegation Protocol for Hybrid Client}
 
 In this section, we construct a one-message $\QPIP_1$ delegation protocol for $\SampBQP$.
-It is statistically secure with negligible completeness errors and inverse polynomial soundness errors.
-At a high level idea, it is a cut-and-choose protocol.
+At a high level, it is a cut-and-choose protocol.
 The server constructs multiple copies of the ground state as certificates,
 then the client randomly chooses a copy to output and checks the rest.
+Unfortunately we have inverse polynomial soundness errors here.
 
 There are two main challenges to this cut-and-choose approach.
 First, the client needs to reliably extract the circuit output from its corresponding ground state.
 We accomplish this by padding the circuit with identity gates at the end.
 By doing so, the clock register collapses to after the last non-identity gate with high probability.
 
-The other challenge is that a cheating prover's copies of certificates can be arbitrarily entangled,
-so the usual techniques such as Chernoff bounds cannot be applied as-is.
-This isn't a challenge for our $\Piblind$ for $\BQP$ earlier because its soundness is one-sided:
+The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
+so common techniques such as Chernoff bounds can't be applied as-is.
+This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because its soundness is one-sided:
 we only guarantee that a client cannot accept a no-instance;
 a cheating server is allowed to cause the client to reject a yes-instance.
 Because of this asymmetry, a cheating prover's for $\Piblind$ optimal strategy is to maximize its acceptance probability,
@@ -41,17 +41,30 @@ to approximate our measurement results with that of measurement results on some 
 
 Now we present our $\QPIP_1$ protocol. It is parametrized by $\lambda$, the degree of its inverse polynomial soundness.
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$}
-	\label{ProtoQPIP1}
-	Let $\varepsilon=\frac{1}{T^\lambda}$.
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$}\label{ProtoQPIP1}
 	Let $C'$ be $C$ padded with $T^{\lambda + 1}$ identity gates at the end.
-	Let $n$ be large enough so by Chernoff bound:
-		$$P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]<\varepsilon$$
-		$$P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]<\varepsilon$$
-	Let $N$ be large enough so that de Finetti's theorem can be applied at the cost of $\varepsilon$ errors if one randomly picks $n+1$ subsystems out of $N$ permutation-invariant subsystems.
+
+	Pick $\varepsilon$ small enough so it holds for all $\phi$ that:
+	\begin{equation}
+		\label{QPIP1eps}
+		P[\cA_\GS(\phi)=acc]>\frac{1}{2}-2\varepsilon\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\frac{1}{T^\lambda}
+	\end{equation}
+
+	Pick $n$ large enough so by Chernoff bound:
+	\begin{equation}
+		\label{QPIP1Chernoff1}
+		P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]<2^{-\lambda}
+	\end{equation}
+	\begin{equation}
+		\label{QPIP1Chernoff2}
+		P\left[Bin(n, \frac{1}{2})\leq\left(\frac{1}{2}-\varepsilon\right)n\right]<2^{-\lambda}
+	\end{equation}
+
+	Let $N$ be large enough so that de Finetti's theorem can be applied at the cost of $T^{-\lambda}$ errors if one randomly picks $n+1$ subsystems out of $N$ permutation-invariant subsystems.
 		That is,
-		$$\sqrt{\frac{2(n+1)^2\ln\abs{A}}{N-(n+1)}}<\varepsilon$$
+		$$\sqrt{\frac{2(n+1)^2\ln\abs{A}}{N-(n+1)}}<T^{-\lambda}$$
 		where $\abs{A}$ is the number of qubits in $\ket{\psi_{C'(x)}}$
+
 	\begin{enumerate}
 		\item The verifier privately samples $I\subset[N]$ s.t. $\abs{I}=n$, and $k\xleftarrow{\$}[N]\setminus I$.
 		\item The honest prover prepares $N$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
@@ -65,51 +78,53 @@ Now we present our $\QPIP_1$ protocol. It is parametrized by $\lambda$, the degr
 	\end{enumerate}
 \end{protocol}
 
-Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise. $\PiSamp$ has negligible completeness errors by construction. We now show its soundness.
+Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise. We now show the completeness and soundness of $\PiSamp$.
 
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has $O(\frac{1}{T^\lambda})$ soundness error.
+	$\PiSamp$ has negligible completeness error and $O(T^-\lambda)$ soundness error.
 \end{thm}
 \begin{prf}
+	The completeness follows from \cref{QPIP1Chernoff2} and inspection.
+
+	Now we show soundness.
 	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier.
 
-	We first show that de Finetti's theorem can be used here.
-
+	We first show that de Finetti's theorem can indeed be used here to achieve independence.
 	Randomly picking $n+1$ out of $N$ registers is equivalent to first applying a random permutation then taking the first $n+1$ registers.
-	A random permutation, in turn, is equivalent to a classical mix over all possible permutations of $\sigma$:
-
+	A random permutation, in turn, is a classical mix over all possible permutations:
 	$$\sigma'=\frac{1}{\abs{\Sym(N)}}\sum_{\Pi\in\Sym(N)}\Pi\sigma\Pi^\dagger$$
+	We then verify that $\sigma'$ is permutation-invariant.
+	Fix $\tilde{\Pi}\in\Sym(N)$, then
+	$$\tilde{\Pi}\sigma'\tilde{\Pi}^\dagger
+	=\frac{1}{\abs{\Sym(N)}}\sum_{\Pi\in\Sym(N)}\tilde{\Pi}\Pi\sigma\Pi^\dagger\tilde{\Pi}^\dagger
+	=\frac{1}{\abs{\Sym(N)}}\sum_{\hat{\Pi}\in\Sym(N)}\hat{\Pi}\sigma\hat{\Pi}^\dagger
+	=\sigma'$$
+	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$, which is allowed since $\Sym(N)$ is a group.
 
-	Now we verify that $\sigma'$ is permutation-invariant.
-	Let $\tilde{\Pi}$ be some fixed permutation, then clearly:
-	$$\tilde{\Pi}\sigma'\tilde{\Pi}^\dagger=\sigma'$$
+	Now we apply \cref{deFinetti} to approximate $\sigma'$ with a classical mix over tensors of independent states.
+	That is, $\exists\rho=\sum_i w_i\rho_i^{\otimes n+1}$ such that:
+	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{n+1}(\sigma'-\rho)}=O(\varepsilon)$$
 
-	Now we apply \cref{deFinetti}. $\exists\set{w_i, \rho_i}$ such that:
-	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+n}(\sigma'-\sum_i w_i\rho_i^{\otimes n+m})}=O(\varepsilon)$$
+	Let $p_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under $\cA_{\GS}$.
+	We now partition the terms $\rho_i$ into two categories according to the Chernoff bound in \cref{QPIP1Chernoff1}:
+	$$I=\set{i:p_i\geq 2^{-\lambda}}$$
 
-	Note that $\tilde\sigma=\sum_i w_i\rho_i^{\otimes n+m}$ is a classical mix over $\rho_i^{\otimes n+m}$ with weights $w_i$.
+	For $i\notin I$ we have
+	$$\sum_{i\in I} w_i p_i<2^{-\lambda}=\negl(\lambda)$$
 
-	Let $p_i$ be the accept probability of at least $(\frac{1}{2}-\varepsilon)n$ copies from $\rho_i^{\otimes n}$ accept under \cref{AlgGroundStateCheck}.
-	So the accept chance of this prover is $\sum_j w_j p_j>\delta$
-	By Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otimes n+1}$ is then $\frac{w_i p_i}{\sum_j w_j p_j}$.
+	For $i\in I$ we have
+	$$P[\cA_\GS(\rho_i)=acc]>\frac{1}{2}-2\varepsilon$$
+	and hence
+	$$\braket{\rho_i|H_{C'(x)}|\rho_i}<\frac{1}{T^\lambda}$$
+	by \cref{QPIP1eps}.
+	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{at least I think we do. Need theorem.}
+	$$\braket{\rho_i|\phi_{C'(x)}}>1-O(T^{-\lambda})$$
+	\Ethan{Now we need some kinda standard fidelity argument to show that the measurement results will be close too. I'm not familiar with them at the moment.}
 
-	Let
-	$$J=\set{j:q_j\leq P\left[Bin(n, \frac{1}{2}-2\varepsilon)\geq\left(\frac{1}{2}-\varepsilon\right)n\right]}$$
-
-	Recall that then each $q_j$ must be negligible by how we picked $n$. Hence the following is clearly negligible:
-	$$\sum_{j\in J} w_j q_j$$
-
-	And so is
-	$$\frac{\sum_{j\in J} w_j q_j}{\sum_i w_i q_i}=\frac{\sum_{j\in J} w_j q_j}{\delta}$$
-
-	So by Bayes' theorem, conditioned on acceptance, the probability of $\tilde{\sigma}$ being $\rho_i^{\otimes n+m}$ where $\rho_i$ has over probability $1-2\varepsilon$ to be accepted by \cref{AlgGroundStateCheck} is overwhelming.
-
-	Such $\rho_i$ is $O(\negl(\varepsilon))$-close to $\ket{\psi_{C'(x)}}$, by applying a Chernoff bound to \cref{ThmXZCheck}.
-
-	The probability of measuring $t<T$ on the clock register of $\ket{\psi_{C'(x)}}$ is $\frac{T}{T+T^{\lambda+1}}<\frac{1}{T^\lambda}=\varepsilon$,
+	The probability of measuring $t<T$ on the clock register of $\ket{\psi_{C'(x)}}$ is $\frac{T}{T+T^{\lambda+1}}<T^{-\lambda}$,
 	so the data register has $1-\varepsilon$ probability to be $C(x)$ at this point.
 
-	All errors up to this point is $O(\varepsilon)$.
+	The soundness errors incurred at each step is at most $O(T^{-\lambda})$, so the conclusion follows.
 \end{prf}
 
