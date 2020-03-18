@@ -99,8 +99,10 @@ With loss of generality,  we can assume that the testing round verification is d
 
 \begin{definition}[quantum computationally indistinguishable]
 \hannote{move later}
-Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes \emph{one} sample from $D_1$ as part of its input. We also denote this as 
-$$ D_1 \approx_{q,\eps} D_2$$
+Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes \emph{one} sample from $D_1$ as part of its input. We also denote "$D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable" as 
+$$ \norm{D_1 - D_2}_q \leq \eps.$$
+And "$D_1$ and $D_2$  are not $\eps$-Q-computationally indistinguishable" as 
+$$ \norm{D_1 - D_2}_q > \eps.$$
 \end{definition}
 %Let $O^{D_1}$ and $O^{D_2}$ be oracles giving samples from $D_1$ and $D_2$.
 
@@ -108,25 +110,82 @@ $$ D_1 \approx_{q,\eps} D_2$$
 We extend the definition of computational distance to a subnormalized distribution  $D$  by assuming $A(D)=0$ when $A$ fail to draw a sample from $D$.
 \end{rmk}
 
-\begin{rmk}
+\begin{rmk}\label{rmk:trace-to-comp}
 If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally indistinguishable.
 \end{rmk}
 
-\begin{lem}[triangle inequality for computational distance]
+\begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
+    Let $D_1$, $D_2$, and $D_3$ be three distributions such that 
+    \begin{align}
+        \norm{D_1 -D_2}_q &\leq \eps \\ 
+        \norm{D_2 -D_3}_q &\leq \eps'. 
+    \end{align}
+    We have 
+    \begin{align}
+        \norm{D_1 -D_3}_q &\leq \eps+\eps'
+    \end{align}
+\end{lem}
+\begin{proof}
+For all quantum circuits $A$ with size $\poly(n)$, we have 
+\begin{align}
+    \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} \leq& \eps \\
+    \norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \leq& \eps',  
+\end{align}
+so 
+\begin{align}
+    &\norm{\Pr[A({D_1})=1]-\Pr[A({D_3})=1]} \nn \\
+    =& \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]+\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
+    \leq&  \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} +\norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
+    =& \eps +\eps' \nn
+\end{align}
+
+\end{proof}
+
+
+\begin{lem}[another triangle inequality for computational distance]\label{lem:computational-triangle}
 Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
 
 If 
 \begin{align}
-    D_1 &\approx_{q,\eps} D_2 \\
-    D_4 &\approx_{q,\eps'} D_6, 
+    &\norm{D_1 - D_2}_q \leq \eps   \\ 
+    &\norm{D_4 - D_6}_q \leq \eps',  
 \end{align}
 then 
 \begin{align}
-    D_3 \approx_{q,\eps+\eps'} D_5
+   \norm{ D_3 - D_5}_q \leq \eps+\eps' 
 \end{align}
 \end{lem}
+% \begin{align}
+%     D_1 &\approx_{q,\eps} D_2 \\
+%     D_4 &\approx_{q,\eps'} D_6, 
+% \end{align}
+% then 
+% \begin{align}
+%     D_3 \approx_{q,\eps+\eps'} D_5
+% \end{align}
 \begin{proof}
+% Since
+% $$\norm{D_4 - D_6}_q \leq \eps',$$
+% there exist 
 
+
+We prove by contradiction. Suppose that
+$$\norm{ D_3 - D_5}_q > \eps+\eps',$$
+then there exist a quantum circuit $A$ of size $poly(n)$ such that 
+$$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
+Since $$\norm{D_4 - D_6}_q \leq \eps'$$, we know that 
+$$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
+Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
+$$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$ 
+$$ \Pr[A({D_2})=1]= \Pr[A({D_5})=1]+ \Pr[A({D_6})=1].$$ 
+So 
+\begin{align}
+    &\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \nn \\
+    =&   \L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1] +\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \nn \\
+    \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
+     > &\eps 
+\end{align}
+This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
 \end{proof}
 
 
@@ -135,7 +194,7 @@ then
 \hannote{triangle inequality}
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of  Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-If a prover's strategy\hannote{need clarification} result in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ that is $\negl(n)$-Q-computationally indistinguishable from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
+If a prover's strategy\hannote{need clarification} result in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
 
 \begin{rmk}
@@ -435,7 +494,7 @@ Now we try to  put together all $i\in [m]$. Define
 $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
 
 We have 
-\begin{align}
+\begin{align} \label{eq:z-z-good}
     \tr|z-z_{good}| =& \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| \nn \\
     \leq&  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
     \leq&  \frac{1}{m}\sum_i\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)\R] \nn \\%%%%%%%%
@@ -458,23 +517,59 @@ We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a $n$-qubi
 \hannote{need to simulate one copy?}
 
 
-For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp} and $i\in [m]$, consider the following prover strategy for Protocol~\ref{proto:urmila4}: on the second round, the prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  fact ??? instead. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$. otherwise he run $U_{trivial}$    described  in  fact ???.
+For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for Protocol~\ref{proto:urmila4}: on the second round, the prover start with picking a uniformaly random $i\in [m]$. The prover then tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.
 
-By 
 
-===
+By Lemma~\ref{lem:trivial-4-round-strategy} and property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a $\rho_{composite}$ such that 
 
- [[Partition lemma ->  Parallel repetition]], except for probability $\eps$\hannote{$\frac{1}{poly}$?}, either the verifier reject at step~\ref{step:multi-testing} or $z$ is $\negl(n)$-computationally indistinguishable to $M_{XZ}(\rho,h)$ by Lemma~\ref{lem:urmila-binding}. 
- 
- By theorem~\ref{QPIP1thm}, $M_{XZ}(\rho,h)$  $\eps$-close to $C(x)$. Therefore, $M_{XZ}(\rho,h)$  and  $C(x)$ $z$ are $\eps$-Q-computationally indistinguishable, and thus $z$ and $C(x)$ are  $2\eps$-Q-computationally indistinguishable.
- 
+\begin{align}
+    \norm{z_{composite} - M_{XZ}(\rho_{composite},h) }_q \leq \negl(n) 
+\end{align}
+
+By Lemma~\ref{lem:trivial-4-round-strategy} and Lemma~\ref{lem:urmila-binding}, there exist a $\rho_{trivial}$ such that
+
+\begin{align}
+    \norm{z_{trivial} - M_{XZ}(\rho_{trivial},h) }_q \leq \negl(n), 
+\end{align}
+where $z_{trivial}$ is the random variable one get by running the strategy of Lemma~\ref{lem:trivial-4-round-strategy}, normalized by the probability that the trivial strategy is chosen in the composite strategy. $\rho_{trivial}$ is normalized by the same probability.
+
+Note that when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good}$. Therefore $z_{composite}=z_{good}+z_{trivial}$, and by Lemma~\ref{lem:computational-triangle},  
+
+\begin{align} \label{eq:z-good-rho}
+    \norm{z_{good} - M_{XZ}(\rho_{good},h) }_q \leq \negl(n), 
+\end{align}
+where $\rho_{good} \defeq \rho_{composite}-\rho_{trivial}$.
+
+Recall that by Eq~\ref{eq:z-z-good} we have
+\begin{align} \label{eq:z-z-good2}
+    \norm{z-z_{good}}_1 \leq \eps
+\end{align}
+if we pick $m,T,\gamma_0=???$ \hannote{tune eps}
+
+Also note that by theorem~\ref{QPIP1thm}, 
+\begin{align} \label{eq:rho-c}
+    \norm{M_{XZ}(\rho_{good},h) -p_{good} C(x)}_1 \leq \eps, 
+\end{align}
+where $p_{good} = \tr \rho_{good}$.
+
+Putting together Equation~\ref{eq:z-z-good2}\ref{eq:z-good-rho}\ref{eq:rho-c}, and Remark~\ref{rmk:trace-to-comp} and Lemma~\ref{lem:computational-triangle0}, we have  
+\begin{align}
+    \norm{z- p_{good}C(x)}_q \leq 2\eps +\negl{n}
+\end{align}
+
+
  
 \end{proof}
 
 ===========
 
 \hannote{below are unused old fragments}
+===
 
+ [[Partition lemma ->  Parallel repetition]], except for probability $\eps$\hannote{$\frac{1}{poly}$?}, either the verifier reject at step~\ref{step:multi-testing} or $z$ is $\negl(n)$-computationally indistinguishable to $M_{XZ}(\rho,h)$ by Lemma~\ref{lem:urmila-binding}. 
+ 
+ By theorem~\ref{QPIP1thm}, $M_{XZ}(\rho,h)$  $\eps$-close to $C(x)$. Therefore, $M_{XZ}(\rho,h)$  and  $C(x)$ $z$ are $\eps$-Q-computationally indistinguishable, and thus $z$ and $C(x)$ are  $2\eps$-Q-computationally indistinguishable.
+ 
 ===========
 
 
