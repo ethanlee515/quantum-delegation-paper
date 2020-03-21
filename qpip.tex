@@ -19,7 +19,7 @@ In our case with $\SampBQP$, we overcome this challenge instead by using de Fine
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
 
-\def\GS{\mathsf{GS}}
+\def\GS{\mathsf{Ham}}
 \nc{\PiGS}{\ensuremath{\Pi_\GS}}
 \nc{\VGS}{\ensuremath{V_\GS}}
 \nc{\PGS}{\ensuremath{P_\GS}}
@@ -35,8 +35,6 @@ within inverse polynomial errors.
 \nc{\cVSamp}[1]{\ensuremath{\cV_{\Samp,#1}}}
 \nc{\cPSamp}[1]{\ensuremath{\cP_{\Samp,#1}}}
 
-\def\GS{\mathsf{GS}}
-
 \begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$}\label{ProtoQPIP1}
 	Pick $\varepsilon=\poly(T^{-1})$
 	Let $C'$ be $C$ padded with $\poly(\varepsilon^{-1})$ identity gates at the end.
@@ -47,7 +45,7 @@ within inverse polynomial errors.
 		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $N$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
-			\item If $i\in I$, run $z_i\leftarrow\cA_{\GS}(\rho_i)$.
+			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
 			\item Otherwise, if $i=k$, measure the data register of $\rho_i$ and save the outcome as $y$.
 			\item Otherwise, discard $\rho_i$.
 		\end{enumerate}
@@ -85,7 +83,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ such that:
 	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}=O(\varepsilon)$$
 
-	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I:p_j=\cA_\GS(\rho_j)<\frac{1}{2}-2h}$ and its complement. \Ethan{TODO import and use the right ``given" command.}
+	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I:p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2h}$ and its complement. \Ethan{TODO import and use the right ``given" command.}
 
 	First suppose $j\in J$
 	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2h$,
@@ -99,7 +97,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	So this case doesn't get accepted often enough to matter.
 
 	Now, for the other case, $j\notin J$.
-	$$P[\cA_\GS(\phi)=acc]>\frac{1}{2}-2\varepsilon\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\frac{1}{T^\lambda}$$
+	$$P[\cV_\GS(\phi)=acc]>\frac{1}{2}-2\varepsilon\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\frac{1}{T^\lambda}$$
 	we then have
 	$$\braket{\rho_i|H_{C'(x)}|\rho_i}<\frac{1}{T^\lambda}.$$
 
