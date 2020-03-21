@@ -70,6 +70,17 @@ We present the security definition for interactive protocols:
 	\end{enumerate}
 \end{protocol}
 
+\subsection{Chernoff bound}
+
+Taken from \href{http://math.mit.edu/~goemans/18310S15/chernoff-notes.pdf}{here}.
+
+\begin{theorem}
+\label{thm:Chernoff}
+Let $X=\sum_{i=1}^n X_i$ where $X_i$ are i.i.d. Bernoulli trials, and $\mu=\E[X]$.
+Then for all $0<\delta<1$,
+$$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}$$
+\end{theorem}
+
 \subsection{Projection Lemma}
 
 We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
