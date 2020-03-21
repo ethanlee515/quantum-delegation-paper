@@ -4,7 +4,7 @@ In this section, we construct a one-message $\QPIP_1$ delegation protocol for $\
 At a high level, it is a cut-and-choose protocol.
 The server constructs multiple copies of the ground state as certificates,
 then the client randomly chooses a copy to output and checks the rest.
-Unfortunately we have inverse polynomial soundness errors here.
+Unfortunately our approach incurs inverse polynomial soundness errors.
 
 There are two main challenges to this cut-and-choose approach.
 First, the client needs to reliably extract the circuit output from its corresponding ground state.
@@ -13,13 +13,11 @@ By doing so, the clock register collapses to after the last non-identity gate wi
 
 The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
 so common techniques such as Chernoff bounds can't be applied as-is.
-This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because its soundness is one-sided:
-we only guarantee that a client cannot accept a no-instance;
-a cheating server is allowed to cause the client to reject a yes-instance.
-Because of this asymmetry, a cheating prover's for $\Piblind$ optimal strategy is to maximize its acceptance probability,
-which corresponds to sending $n$ identical copies of some state.
-In our case with $\SampBQP$, we overcome this challenge by using de Finetti's theorem
-to approximate our measurement results with that of measurement results on some unentangled copies.
+This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
+\Ethan{TODO; need brief and intuitive explanation}
+In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
+to approximate our measurement results with that of some unentangled copies,
+within inverse polynomial errors.
 
 \def\GS{\mathsf{GS}}
 \nc{\PiGS}{\ensuremath{\Pi_\GS}}
@@ -107,7 +105,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 
 	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{at least I think we do. Need theorem.}
 	$$\braket{\rho_i|\phi_{C'(x)}}>1-O(T^{-\lambda})$$
-	\Ethan{Now we need some kinda standard fidelity argument to show that the measurement results will be close too. I'm not familiar with them at the moment.}
+	\Ethan{Now we need some kinda standard fidelity argument to show that the measurement results will be close to as if the ground state is measured.}
 
 	The probability of measuring $t<T$ on the clock register of $\ket{\psi_{C'(x)}}$ is $\varepsilon$,
 	so the data register has $1-\varepsilon$ probability to be $C(x)$ at this point.
