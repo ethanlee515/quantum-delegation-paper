@@ -37,6 +37,8 @@ We now state our compiler that gives any $\QPIP_0$ protocol blindness.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
 
+\Ethan{TODO: break the following into two boxes}
+
 \begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
 	Suppose the protocol $(P, V)$ is a $\QPIP_0$ protocol where only the verifier receives outputs, with the following general form:
 	
@@ -59,6 +61,8 @@ we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
 
 	Let $L_t$ be the circuit depth of $\cP_t$.
 	Let $\lambda=\abs{x}$.
+
+	\Ethan{TODO Somehow make the hat not go over subscript}
 
 	\begin{enumerate}
 		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
