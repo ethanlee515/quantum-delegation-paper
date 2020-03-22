@@ -1,11 +1,19 @@
+\section{Blindness for $\QPIP_0$ protocols}
+\label{sec:BlindBQP2}
+
 \def\HE{\mathsf{HE}}
 \def\HGen{\mathsf{HE.Keygen}}
 \def\HEnc{\mathsf{HE.Enc}}
 \def\HEval{\mathsf{HE.Eval}}
 \def\HDec{\mathsf{HE.Dec}}
 
-\section{Blindness for $\QPIP_0$ protocols}
-\label{sec:BlindBQP2}
+\def\blind{\mathsf{blind}}
+\nc{\Piblind}{\ensuremath{\Pi_\blind}}
+\nc{\Vblind}{\ensuremath{V_\blind}}
+\nc{\Pblind}{\ensuremath{P_\blind}}
+\nc{\Pblindstar}{\ensuremath{P_\blind^*}}
+\nc{\cVblind}[1]{\ensuremath{\cV_{\blind,#1}}}
+\nc{\cPblind}[1]{\ensuremath{\cP_{\blind,#1}}}
 
 In this section we show a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
 \Ethan{Talk about the compiler first, and BQP after.}
