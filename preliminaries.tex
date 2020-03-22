@@ -27,11 +27,11 @@ We define a few relevant complexity classes.
 We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
-	A sampling problem $S$ is a collection of probability distributions $(D_x)$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
+	A sampling problem $S$ is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
 \end{definition}
 
 \begin{definition} [$\SampBQP$]
-	$\SampBQP$ is the class of sampling problems $S=(D_x)$ for which for all $\varepsilon$ there exists a quantum circuit constructible in time $\poly(|x|, \frac{1}{\varepsilon})$ that, given $x$ as input, samples from from a probability distribution $\tilde{D}_x$ such that $\norm{\tilde{D}_x-D_x}<\varepsilon$.
+	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 0^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 \end{definition}
 
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
