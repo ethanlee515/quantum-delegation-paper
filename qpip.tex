@@ -83,31 +83,28 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ such that:
 	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}=O(\varepsilon)$$
 
-	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I:p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2h}$ and its complement. \Ethan{TODO import and use the right ``given" command.}
+	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I|p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2h}$ and its complement.
 
-	First suppose $j\in J$
+	First suppose $j\in J$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
+	hence incurs negligible soundness errors.
 	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2h$,
-	then clearly $\Prob{Z>\frac{m}{2}-hm}<\Prob{Y>\frac{m}{2}-hm}$.
+	then clearly $\Prob{Z\geq\frac{m}{2}-hm}<\Prob{Y\geq\frac{m}{2}-hm}$.
 	By Chernoff bound, we have
-	$$\Prob{Y-(\frac{1}{2}-2\varepsilon)m\geq hm}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(T)$$
-	where $\mu_y=mp_y$ and $\delta=\frac{2h}{1-4h}$.
-
-	Summing up all these terms, we get
+	$$\Prob{Y\geq\frac{m}{2}-hm}=\Prob{Y-\mu\geq hm}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(T)$$
+	where $\mu=mp_y=\frac{m}{2}-2hm$ and $\delta=\frac{2h}{1-4h}$.
+	Summing up all the $\rho_j$ terms in $J$, we have
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda)$$
-	So this case doesn't get accepted often enough to matter.
 
 	Now, for the other case, $j\notin J$.
-	$$P[\cV_\GS(\phi)=acc]>\frac{1}{2}-2\varepsilon\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\frac{1}{T^\lambda}$$
+	$$\Prob{\cV_\GS(\phi)=acc}>\frac{1}{2}-2h\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\poly(\varepsilon)$$
 	we then have
-	$$\braket{\rho_i|H_{C'(x)}|\rho_i}<\frac{1}{T^\lambda}.$$
+	$$\braket{\rho_i|H_{C'(x)}|\rho_i}<\poly(\varepsilon).$$
+	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain
+	$$\braket{\rho_i|\phi_{C'(x)}}>1-\poly(\varepsilon).$$
+	By a standard fidelity argument, the measurement results on $\rho_i$ is $\poly(\varepsilon)$-close to that on $\ket{\phi_{C'(x)}}$.
 
-	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{at least I think we do. Need theorem.}
-	$$\braket{\rho_i|\phi_{C'(x)}}>1-O(T^{-\lambda})$$
-	\Ethan{Now we need some kinda standard fidelity argument to show that the measurement results will be close to as if the ground state is measured.}
+	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $\poly(\varepsilon)$ due to the padding,
+	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point.
 
-	The probability of measuring $t<T$ on the clock register of $\ket{\psi_{C'(x)}}$ is $\varepsilon$,
-	so the data register has $1-\varepsilon$ probability to be $C(x)$ at this point.
-
-	The soundness errors incurred at each step is at most $O(T^{-\lambda})$, so the conclusion follows.
+	The soundness errors incurred at each step is at most $\poly(\varepsilon)$, so the conclusion follows.
 \end{prf}
-
