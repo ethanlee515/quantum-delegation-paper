@@ -1,77 +1,123 @@
-\section{Constant-Round and Blind $\QPIP_1$ protocol for $\SampBQP$}
+\def\HE{\mathsf{HE}}
+\def\HGen{\mathsf{HE.Keygen}}
+\def\HEnc{\mathsf{HE.Enc}}
+\def\HEval{\mathsf{HE.Eval}}
+\def\HDec{\mathsf{HE.Dec}}
 
-\def\SampB{\mathsf{Samp, blind}}
-\nc{\PiSampB}{\ensuremath{\Pi_\SampB}}
-\nc{\VSampB}{\ensuremath{V_\SampB}}
-\nc{\PSampB}{\ensuremath{P_\SampB}}
-\nc{\PSampBstar}{\ensuremath{P_\SampB^*}}
-\nc{\cVSampB}[1]{\ensuremath{\cV_{\SampB,#1}}}
-\nc{\cPSampB}[1]{\ensuremath{\cP_{\SampB,#1}}}
+\section{Blindness for $\QPIP_0$ protocols}
+\label{sec:BlindBQP2}
 
-Now we compile our $\QPIP_1$ protocol (\cref{ProtoQPIP1}) using the quantum homomorphic encryption $\mathsf{QHE}$ from \cref{decodeMeasureOrder} in the same way as what we did for our blind $\BQP$ delegation protocol (\cref{proto:BlindBQP}) in \cref{sec:BlindBQP}.
+In this section we show a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
+\Ethan{Talk about the compiler first, and BQP after.}
+We start with the protocol from \cite{parallelrep, alagic2019twomessage} which satisfies all our requirements except blindness.
+Generally one can obtain blindness by running a protocol under homomorphic encryption. \Ethan{Maybe cite?} In our case, we have a classical client and a quantum server, so we choose the homomorphic encryption from \cite{mahadev_qfhe} that's compatible with this situation.
+\Ethan{Talk about FBQP too}
 
-First we restate \cref{ProtoQPIP1} in more convenient terms.
+\nc{\ctx}[2]{\ensuremath{{{\widehat{#1}}^{(#2)}}}}
 
-\begin{protocol}{Our 1-message $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ language $L$}
-	Common input: $x\in\set{0,1}^n$. 
+\Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
+
+\Ethan{Too bottom-up. Need to tell more story.}
+We start by summarizing additional properties of Mahadev's $\QHE$ that makes our construction possible.
+First, when the plaintext is classical, the encryption can be performed classically.
+Moreover, a quantum ciphertext can be measured homomorphically, in which case the measurement outcomes can then be decrypted classically.
+Lastly, the encryption is done qubit-by-qubit, so one can split a ciphertext into registers as one would with the corresponding plaintext.
+
+\Ethan{More story here. Talk about stuff like why switch keys.}
+
+We now state our compiler that gives any $\QPIP_0$ protocol blindness.
+For notation, when there are many sets of $\QHE$ keys in play at the same time,
+we use $\ctx{x}{i}$ to denote $x$ encrypted under $pk_i$.
+
+\begin{protocol}{Compiling $\QPIP_0$ protocol $(P, V)(x)$ into $(\Pblind, \Vblind(x))$}
+	Suppose the protocol $(P, V)$ is a $\QPIP_0$ protocol where only the verifier receives outputs, with the following general form:
+	
+	Public input: $x$
 	\begin{enumerate}
-		\item The prover generates a certificate state $\rho\leftarrow\cPSamp{1}(x)$ and sends it to the verifier qubit-by-qubit.
-		\item The verifier generates $\Lambda \leftarrow \cVSamp{2}(x)$, where $\Lambda=\Lambda_1\otimes\ldots\otimes\Lambda_m$;
-			each $\Lambda_i$ is a single-qubit $X$ or $Z$ measurement and $m=\poly(n)$ is the length of the prover's certificate state.
-			It applies $\Lambda$ to $\rho$ qubit-by-qubit.
-			Let $w \in \set{0,1}^m$ denote the measurement outcome.
-			It verifies the measurement outcome and produces a decision $o\leftarrow\cVSamp{3}(x, \Lambda, w)$ where $o\in\set{acc, rej}$ and $\cVSamp{3}$ is a classical polynomial-time algorithm.
+		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$ and sends $v_1$ to the prover.
+		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(v_1, x)$ and sends $p_1$ to the verifier.
+		\item for $t=2,\ldots,T$:
+		\begin{enumerate}
+			\item $V$ generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$ and sends $v_t$ to the prover.
+			\item $P$ generates $(p_t, st_{P, t})\leftarrow\cP_t(v_t, st_{P, t-1})$ and sends $p_t$ to the verifier.
+		\end{enumerate}
+		\item $V$ computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$.
+			\Ethan{Prover can get outputs too}
+	\end{enumerate}
+
+	Using $\Pi=(P, V)(x)$ from above, we define the protocol $\Piblind=(P, V(x))$ as follows:
+
+	Verifier's input: $x$
+
+	Let $L_t$ be the circuit depth of $\cP_t$.
+	Let $\lambda=\abs{x}$.
+
+	\begin{enumerate}
+		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
+			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$,
+			and encrypts $\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
+			It sends $pk_1$, $\ctx{x}{1}$, and $\ctx{v_1}{1}$ to the prover.
+		\item $\Pblind$ generates $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$
+			by evaluating $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\QEval_{pk}(\cP_1, \ctx{v_1}{1}, \ctx{x}{1})$.
+			It sends $\ctx{p_1}{1}$ to the verifier.
+		\item for $t=2,\ldots,T$:
+		\begin{enumerate}
+			\item $\Vblind$ decrypts the prover's last message by $p_{t-1}\leftarrow\QDec_{sk_{t-1}}(\ctx{p_{t-1}}{t-1})$,
+				then generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$.
+				Then it generates $(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$,
+				and produces encryptions $\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t)$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
+				It sends $pk_t$, $\ctx{v_t}{t}$, and $\ctx{sk_{t-1}}{t}$ to the prover.
+			\item $\Pblind$ generates $(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\cPblind{t}(\ctx{v_t}{t}, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1})$
+				by first refreshing the $\QHE$ key that encrypts its states by
+				first encrypting it under the new key by $\ctx{st_{P, t-1}}{t-1, t}\leftarrow\QEnc_{pk_t}(\ctx{st_{P, t-1}}{t-1}))$,
+				then homomorphically decrypting the old encryption under the new key by
+				$\ctx{st_{P, t-1}}{t}\leftarrow\QEval_{pk_t}(\QDec, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1, t})$.
+				It then applies the next-message function of $\Pi$, generating
+				$(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\QEval_{pk_t}(\cP_t, \ctx{v_t}{t}, \ctx{st_{P, t-1}}{t})$.
+				It sends $\ctx{p_t}{t}$ back to the verifier.
+		\end{enumerate}
+		\item $\Vblind$ decrypts the prover's final message by $p_T\leftarrow\QDec_{sk_T}(\ctx{p_T}{T})$.
+			It then computes its output $o\leftarrow\cV_{out}(p_T, st_{V, T})$.
+			\Ethan{Prover can get outputs too}
 	\end{enumerate}
 \end{protocol}
 
-Note that it is of the same form as its $\BQP$ counterpart $\PiSamp$ found in \cref{subsec:BlindBQP}.
+By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly close to that of $\Pi$.
+We show the soundness of $\Piblind$ in the following theorem.
 
-So we can compile it into $\PiSampB$ to achieve blindness in the same way:
+\def\Pstar{P^*}
+\nc{\cPstar}[1]{\ensuremath{\cP^*_{#1}}}
 
-\begin{protocol}{Blind $\QPIP_1$ 1-message protocol $\PiSampB = (\PSampB, \VSampB)$ for $\SampBQP$ language $L$}
-	\label{proto:BlindSampBQP}
-	Verifier's input: $x\in\set{0,1}^n$.
-	
-	Let $d=\poly(n)$ be the depth of the circuit corresponding to $\cPSamp{1}$.
-	\begin{enumerate}
-		\item The verifier generates $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$, where $d$ is the depth of the circuit corresponding to $\cPSamp{1}(x)$.
-			It then generates and sends $ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$ to the prover.
-			It also sends $pk$ to the prover.
-		\item The prover homomorphically evaluates $\cPSamp{1}$ on input $ct_x$, generating $\sigma\leftarrow\QEval_{pk}(\cPSamp{1}, ct_x)$.
-			It sends $\sigma$ to the verifier qubit-by-qubit.
-		\item The verifier generates $\Lambda\leftarrow\cVSamp{2}(x)$,
-			$\Lambda'\leftarrow\cM_\QHE$,
-			$ct_w\leftarrow\Lambda'(\sigma)$,
-			$w\leftarrow\widehat{\mathsf{QHE.Dec}_{sk}}(ct_w)$,
-			and $o\leftarrow\cVSamp{3}(x, \Lambda, w)$.
-			It outputs $o$.
-	\end{enumerate}
-\end{protocol}
+\begin{theorem}
+	For all cheating prover $\Pblindstar$, there exists a cheating prover $\Pstar$ s.t. for all input $x$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
+\end{theorem}
+\begin{proof}
+	We define $\Pstar$ so that \Ethan{Fix wording here} on $\cPstar{1}$ it generates
+	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$, then produces the encryptions
+	$\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
+	It then runs $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$.
+	Finally, it decrypts $p_1\leftarrow\QDec_{sk_1}(\ctx{p_1}{1})$ and sends it back to the verifier,
+	and keeps $\ctx{st_{P, 1}}{1}$ and $sk_1$.
 
-\begin{thm}
-	$\PiSampB$ has the same completeness and soundness guarantees as $\PiSamp$ and is blind.
-\end{thm}
-\begin{prf}
-	The proof is almost identical to that of \cref{thm:BlindBQP}.
+	Then, on the rest of the $\cPstar{t}$ rounds, $\Pstar$ generates
+	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$, and produces ciphertexts
+	$\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t))$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
+	It then runs $(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\cPblind{t}(\ctx{v_t}{t}, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1})$.
+	Finally, it decrypts $p_t\leftarrow\QDec_{sk_t}(\ctx{p_t}{1})$ and sends it back to the verifier,
+	and keeps $\ctx{st_{P, t}}{t}$ and $sk_t$.
+		
+	By construction, the experiments $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
+\end{proof}
 
-	The completeness follows by inspection.
-	For blindness, the prover receives only $ct_x$ and $pk$, so it follows directly from $\mathsf{QHE}$'s security.
-	
-	Now we prove the soundness of $\PiSampB$.
-	Suppose for the sake of contradiction that there exists some cheating prover $\PSampBstar$ with some acceptance probability $\varepsilon\notin O(\frac{1}{\poly(n)})$.
-	Then we can construct a prover $\PSampstar$ violating the soundness guarantees of $\PiSamp$ by simulating $(\VSampB(x), \PSampBstar)$ as below:
-
-	We define $\PSampstar$ to first generate
-	$(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^n, 1^d)$
-	and
-	$ct_x\leftarrow\mathsf{QHE.Enc}_{pk}(x)$,
-	then runs $\sigma\leftarrow\cPSampB{1}(pk, ct_x)$.
-	Finally, it decrypts
-	$\rho\leftarrow\mathsf{QHE.Dec}_{sk}(\sigma)$
-	and sends it to $\VSamp$ qubit-by-qubit.
-
-	We now prove that $\PSampstar$ in fact violates the soundness of $\PiSamp$.
-	Observe that the experiments $(\PSampstar, \VSamp)(x)$ and $(\PSampBstar, \VSampB(x))$ are identical except for how $w$ is obtained from $\sigma$,
-	so by \cref{decodeMeasureOrder} they are equivalent.
-	Hence we have $\PSampstar$ with acceptance probability $\varepsilon$, which is a contradiction.
-\end{prf}
+Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
+\begin{theorem}
+	$\Piblind$ is blind.
+\end{theorem}
+\begin{proof}
+	Consider $T+1$ hybrids experiments, from $\Hyb_1$ to $\Hyb_{T+1}$.
+	In $\Hyb_i$, we modify $(\Pblind, \Vblind(x))$ s.t.
+	for all rounds associated with $\cV{t}$ where $t\geq i$, the verifier replaces the $\ctx{sk_{t-1}}{t}$ in its message with encryption of $0$.
+	Then, for all $t$, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
+	Since computational indistinguishability is transitive \Ethan{Really? Definitely need to write down some inequalities here...}, $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
+	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we can conclude that $\Piblind$ is blind.
+\end{proof}
