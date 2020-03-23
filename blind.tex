@@ -104,14 +104,16 @@ We show the soundness of $\Piblind$ in the following theorem.
 	For all cheating prover $\Pblindstar$, there exists a cheating prover $\Pstar$ s.t. for all input $x$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{theorem}
 \begin{proof}
-	We define $\Pstar$ so that \Ethan{Fix wording here} on $\cPstar{1}$ it generates
+	We define $\Pstar$ as follows.
+	
+	On $\cPstar{1}$ it generates
 	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$, then produces the encryptions
 	$\ctx{x}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v_1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
 	It then runs $(\ctx{p_1}{1}, \ctx{st_{P, 1}}{1})\leftarrow\cPblind{1}(\ctx{v_1}{1}, \ctx{x}{1})$.
 	Finally, it decrypts $p_1\leftarrow\QDec_{sk_1}(\ctx{p_1}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st_{P, 1}}{1}$ and $sk_1$.
 
-	Then, on the rest of the $\cPstar{t}$ rounds, $\Pstar$ generates
+	Then, on the rest of the $\cPstar{t}$ rounds, it generates
 	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$, and produces ciphertexts
 	$\ctx{v_t}{t}\leftarrow\QEnc_{pk_t}(v_t))$ and $\ctx{sk_{t-1}}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
 	It then runs $(\ctx{p_t}{t}, \ctx{st_{P, t}}{t})\leftarrow\cPblind{t}(\ctx{v_t}{t}, \ctx{sk_{t-1}}{t}, \ctx{st_{P, t-1}}{t-1})$.
@@ -130,6 +132,6 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	In $\Hyb_i$, we modify $(\Pblind, \Vblind(x))$ s.t.
 	for all rounds associated with $\cV{t}$ where $t\geq i$, the verifier replaces the $\ctx{sk_{t-1}}{t}$ in its message with encryption of $0$.
 	Then, for all $t$, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
-	Since computational indistinguishability is transitive \Ethan{Really? Definitely need to write down some inequalities here...}, $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
-	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we can conclude that $\Piblind$ is blind.
+	By applying triangle inequality iteratively\Ethan{Is this enough or do we need equations?}, we obtain that $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
+	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we conclude that $\Piblind$ is blind.
 \end{proof}
