@@ -24,7 +24,11 @@ We define a few relevant complexity classes.
 	A function $f:\set{0,1}^*\rightarrow\set{0,1}^*$ is in $\FBQP$ if there is a $\BQP$ machine that, $\forall x$, outputs $f(x)$ with overwhelming probability.
 \end{definition}
 
-We define a sampling version of $\BQP$, $\SampBQP$, based on \cite{aaronson_2013}.
+We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
+
+\begin{definition} [search problem]
+	A search problem $R$ is a collection of nonempty sets $(A_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0, 1}^*$, where $A_x$... \Ethan{Great, interface doesn't line up correctly}
+\end{definition}
 
 \begin{definition} [sampling problem]
 	A sampling problem $S$ is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
