@@ -96,13 +96,9 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
 	Now, for the other case, $j\notin J$.
-	$$\Prob{\cV_\GS(\phi)=acc}>\frac{1}{2}-2h\Rightarrow\braket{\phi|H_{C'(x)}|\phi}<\poly(\varepsilon)$$
-	we then have
-	\Ethan{$\rho_j$ isn't a pure state, so need to rewrite this using traces and such}
-	$$\braket{\rho_j|H_{C'(x)}|\rho_j}<\poly(\varepsilon).$$
-	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain
-	$$\braket{\rho_j|\phi_{C'(x)}}>1-\poly(\varepsilon).$$
-	By a standard fidelity argument, the measurement results on $\rho_j$ is $\poly(\varepsilon)$-close to that on $\ket{\phi_{C'(x)}}$.
+	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2h\Rightarrow\tr\left(H_{C'(x)}\rho_j\right)<\poly(\varepsilon)$$
+	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{Need notation for fidelity}
+	$$D(\rho_j, \ket{\phi_{C'(x)}})<\poly(\varepsilon)$$
 
 	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $\poly(\varepsilon)$ due to the padding,
 	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point.
