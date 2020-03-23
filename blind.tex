@@ -20,30 +20,24 @@
 
 Here we present our compiler on $\QPIP_0$ protocols that can be used to achieves blindness.
 The high level idea is to run the protocol under homomorphic encryption.
-The classical version of this compiler has appeared in \cite{KMThesis}, where it is used to make protocols computationally simulatable.
-As we have the protocol from \cite{parallelrep, alagic2019twomessage} which satisfies all our requirements except blindness.
-Compiling it would be a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
-Similarly, the compiler can be applied to our $\FBQP$ and $\SampBQP$ protocols \Ethan{TODO name} too.
-
+A classical version of this compiler appears in \cite{KMThesis}, where it is used to make protocols computationally simulatable.
 We have a classical client and a quantum server.
-We choose the homomorphic encryption from \cite{mahadev_qfhe} that's compatible with this situation.
+So we choose the quantum homomorphic encryption from \cite{mahadev_qfhe} that's compatible with classical clients.
 More precisely, when the corresponding plaintext is classical, encryption and decryption can be performed classically.
-Furthermore, we notice that a ciphertext can be split into registers as with the corresponding plaintext.
+Furthermore, we notice that the ciphertexts can be split into registers as with the corresponding plaintext.
 
 A naive approach is to encrypt the initial input,
-evaluate the entire protocol homomorphically,
+run the entire protocol homomorphically,
 then decode the output at the very end.
-However, it is difficult to prove the soundness because... \Ethan{TODO why?}
+However, it is difficult to prove the soundness this way because homomorphic encryption schemes doesn't guarantee circuit privacy;
+the server could learn about ther client's coins.
+Furthermore, the prover would also be allowed to send invalid ciphertexts...?
+\Ethan{Can't we assume all ciphertexts are valid, and ``invalid" ones just decodes to $\bot$?}
 So instead we let the verifier decrypt every round.
 Then, in order the preserve blindness, the verifier generates a new set of keys for every message it sends to the prover...
 Which results in the following protocol.
 
 \Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
-
-\Ethan{Too bottom-up. Need to tell more story.}
-We start by summarizing additional properties of Mahadev's $\QHE$ that makes our construction possible.
-
-\Ethan{More story here. Talk about stuff like why switch keys.}
 
 We now state our compiler that gives any $\QPIP_0$ protocol blindness.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
@@ -140,3 +134,8 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	By applying triangle inequality iteratively\Ethan{Is this enough or do we need equations?}, we obtain that $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
 	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we conclude that $\Piblind$ is blind.
 \end{proof}
+
+This compiler implies a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
+To do so, apply it to the protocol from \cite{parallelrep, alagic2019twomessage}.
+Similarly, the compiler can be applied to our $\FBQP$ and $\SampBQP$ protocols \Ethan{TODO name} too.
+
