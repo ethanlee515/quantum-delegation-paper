@@ -63,12 +63,11 @@ We compile the above protocol to achieve blindness as follows.
 
 	Verifier's input: $x$
 
-	Let $L_t$ be the circuit depth of $\cP_t$.
-	Let $\lambda=\abs{x}$.
+	Let $L=\poly(x)$, $\lambda=\poly(x)$.
 
 	\begin{enumerate}
 		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
-			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$,
+			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$,
 			and encrypts $\ctx{x}{}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
 			It sends $pk_1$, $\ctx{x}{}{1}$, and $\ctx{v}{1}{1}$ to the prover.
 		\item $\Pblind$ generates $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$
@@ -78,15 +77,15 @@ We compile the above protocol to achieve blindness as follows.
 		\begin{enumerate}
 			\item $\Vblind$ decrypts the prover's last message by $p_{t-1}\leftarrow\QDec_{sk_{t-1}}(\ctx{p}{t-1}{t-1})$,
 				then generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$.
-				Then it generates $(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$,
+				Then it generates $(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^L)$,
 				and produces encryptions $\ctx{v}{t}{t}\leftarrow\QEnc_{pk_t}(v_t)$ and $\ctx{sk}{t-1}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
 				It sends $pk_t$, $\ctx{v}{t}{t}$, and $\ctx{sk}{t-1}{t}$ to the prover.
 			\item $\Pblind$ generates $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t}, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$
-				by first switching the $\QHE$ key that its states is encrypted under;
-				that is, it first encrypts it under the new key by $\ctx{st}{P, t-1}{t-1, t}\leftarrow\QEnc_{pk_t}(\ctx{st}{P, t-1}{t-1}))$,
-				then homomorphically decrypting the old encryption under the new key by
+				by first switching its encryption key;
+				that is, it encrypts its state under the new key by $\ctx{st}{P, t-1}{t-1, t}\leftarrow\QEnc_{pk_t}(\ctx{st}{P, t-1}{t-1}))$,
+				then homomorphically decrypts the old encryption by
 				$\ctx{st}{P, t-1}{t}\leftarrow\QEval_{pk_t}(\QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t})$.
-				It then applies the next-message function of $\Pi$ homomorphically, generating
+				Then it applies the next-message function of $\Pi$ homomorphically, generating
 				$(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\QEval_{pk_t}(\cP_t, \ctx{v}{t}{t}, \ctx{st}{P, t-1}{t})$.
 				It sends $\ctx{p}{t}{t}$ back to the verifier.
 		\end{enumerate}
@@ -105,14 +104,14 @@ We show the soundness of $\Piblind$ in the following theorem.
 	We define $\Pstar$ as follows.
 	
 	On $\cPstar{1}$ it generates
-	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^{L_1})$, then produces the encryptions
+	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$, then produces the encryptions
 	$\ctx{x}{}{1}\leftarrow\QEnc_{pk_1}(x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc_{pk_1}(v_1)$.
 	It then runs $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$.
 	Finally, it decrypts $p_1\leftarrow\QDec_{sk_1}(\ctx{p}{1}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st}{P, 1}{1}$ and $sk_1$.
 
 	Then, on the rest of the $\cPstar{t}$ rounds, it generates
-	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^{L_t})$, and produces ciphertexts
+	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^L)$, and produces ciphertexts
 	$\ctx{v}{t}{t}\leftarrow\QEnc_{pk_t}(v_t))$ and $\ctx{sk}{t-1}{t}\leftarrow\QEnc_{pk_t}(sk_{t-1})$.
 	It then runs $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t}, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$.
 	Finally, it decrypts $p_t\leftarrow\QDec_{sk_t}(\ctx{p}{t}{1})$ and sends it back to the verifier,
