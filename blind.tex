@@ -20,8 +20,7 @@
 
 Here we present our compiler on $\QPIP_0$ protocols that can be used to achieves blindness.
 The high level idea is to run the protocol under homomorphic encryption.
-Similar idea has happened in
-\Ethan{TODO cite thesis} \Ethan{TODO maybe find out more about that ``simulate-able" thing in that thesis and explain the difference in the contexts}.
+The classical version of this compiler has appeared in \cite{KMThesis}, where it is used to make protocols computationally simulatable.
 As we have the protocol from \cite{parallelrep, alagic2019twomessage} which satisfies all our requirements except blindness.
 Compiling it would be a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
 Similarly, the compiler can be applied to our $\FBQP$ and $\SampBQP$ protocols \Ethan{TODO name} too.
