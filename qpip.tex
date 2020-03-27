@@ -20,12 +20,7 @@ to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
 
 \def\GS{\mathsf{Ham}}
-\nc{\PiGS}{\ensuremath{\Pi_\GS}}
-\nc{\VGS}{\ensuremath{V_\GS}}
-\nc{\PGS}{\ensuremath{P_\GS}}
-\nc{\PGSstar}{\ensuremath{P_\GS^*}}
-\nc{\cVGS}[1]{\ensuremath{\cV_{\GS,#1}}}
-\nc{\cPGS}[1]{\ensuremath{\cP_{\GS,#1}}}
+\nc{\cVGS}{\ensuremath{\cV_\GS}}
 
 \def\Samp{\mathsf{Samp}}
 \nc{\PiSamp}{\ensuremath{\Pi_\Samp}}
@@ -37,16 +32,17 @@ within inverse polynomial errors.
 
 \Ethan{Again, look at other papers...}
 
-\Ethan{TODO Recall variables from the last section}
+We start with a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$ and an input $x$,
+then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy.
+We assume without loss of generality that $C$ comprises of only Hadamard and Toffoli gates.
+We now present our $\QPIP_1$ protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$}\label{ProtoQPIP1}
-    \Ethan{Two action items; define T. Don't set eps this early.}
-	Pick $\varepsilon=\poly(T^{-1})$.
-	
-	Let $C'$ be $C$ padded with $\poly(\varepsilon^{-1})$ identity gates at the end.
-	Pick $h=\poly(\varepsilon)$, $m=O(h^{-3})$, $M=\poly(m)$.
-	\Ethan{Solve instead of using ``poly"; ``order" is fine.
-	For running time, poly is fine though.}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for computation of $C(x)$ and error parameter $\varepsilon$}\label{ProtoQPIP1}
+
+	Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
+	Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}, and
+	$\cVGS$ be the way to check this ground state as defined in \Cref{AlgGroundStateCheck}.
+
 	\Ethan{get style from pg 22 on other paper}
 	
 	\Ethan{Also see 102, p2, 5}
@@ -54,21 +50,17 @@ within inverse polynomial errors.
 	\Ethan{201 p12 p23 two different styles of protocol-writing}
 	
 	\Ethan{106 p31}
-	
-	\Ethan{Specify size of h, m, M when they appear instead of at the top}
-	
-	\Ethan{Use gamma or whatever Greek letter instead of h for threshold}
 
 	\begin{enumerate}
-		\item The honest prover prepares $M$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item The honest prover prepares $M=\varepsilon^{-8}\ln(\frac{T}{\varepsilon})$ copies \Ethan{That isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\varepsilon^{-3}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ and save the outcome as $y$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-hm$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
+			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\varepsilon m$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
 	\end{enumerate}
 \end{protocol}
 
@@ -76,21 +68,17 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and $\poly(\varepsilon)$ soundness error.
+	$\PiSamp$ has negligible completeness error and $\poly(\varepsilon^{-1})$ soundness error.
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply the Chernoff bound \cref{thm:Chernoff} with $\mu=\frac{m}{2}$, $\delta=2h$ to get
-	$$\Prob{\frac{m}{2}-Z\geq hm}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(T).$$
-	\Ethan{Just match the protocol above; write $Z>m/2-hm$.
-	This is Chernoff bound; nobody will get confused over it not matching the theorem statement precisely.}
+	So we can apply the Chernoff bound \cref{thm:Chernoff} with $\mu=\frac{m}{2}$ and $\delta=2\varepsilon$ to get
+	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
 
 	Now we show soundness.
 	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier.
 
-    \Ethan{``First step of our analysis is to use..."; use common sense?}
-    
-	We first show that de Finetti's theorem can indeed be used here to achieve independence.
+	The first step of our analysis is to use de Finetti's theorem.
 	Randomly picking $m+1$ out of $M$ registers is equivalent to first applying a random permutation to get some $\sigma'$ then taking the first $m+1$ registers.
 	A random permutation, in turn, is a classical mix over all possible permutations:
 	$$\sigma'=\frac{1}{\abs{\Sym(M)}}\sum_{\Pi\in\Sym(M)}\Pi\sigma\Pi^\dagger.$$
@@ -102,12 +90,12 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	=\sigma'$$
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
-	Now we apply \cref{deFinetti} \Ethan{Theorem is always uppercase. Same with Lemma.} to approximate $\sigma'$ with a classical mix over tensors of independent states.
-	\Ethan{Say this is measurement results, and state typeof(Lambda) while at it. Define specific Lambdas instead of max over; or actually, use for all}
-	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ \Ethan{Double check that registers of rhos are all identical} such that:
-	$$\max_{\Lambda_i}\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}=O(\varepsilon).$$
+	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over tensors of independent states.
+	Note that the ground state has $\abs{A}=n+T+\frac{T}{e}$ qubits.
+	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ such that for all quantum-classical channels $\Lambda_i$ on $\abs{A}$ qubits:
+	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}=\frac{todo}{todo}=O(\varepsilon).$$
 
-	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I|p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2h}$ and its complement.
+	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I|p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2\varepsilon}$ and its complement.
 
 	First suppose $j\in J$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
@@ -120,7 +108,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
 	Now, for the other case, $j\notin J$, we have
-	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2h\Rightarrow\tr\left(H_{C'(x)}\rho_j\right)<\poly(\varepsilon).$$
+	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2\varepsilon\Rightarrow\sqrt{\tr\left(H_{C'(x)}\rho_j}\right)<\varepsilon.$$
 	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{Need notation for fidelity}
 	$$D(\rho_j, \ket{\phi_{C'(x)}})<\poly(\varepsilon)$$
 

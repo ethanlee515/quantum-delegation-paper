@@ -2,7 +2,15 @@
 
 \subsection{Notations}
 
-Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$. Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli gate. 
+Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
+
+\begin{definition} [quantum-classical channels]
+	\label{def:QCChannel}
+	A quantum measurement is given by a set of matrices $\set{M_k}$ such that $M_k\geq0$ and $\sum_k M_k=\id$.
+	We associate to any measurement a map $\Lambda(\rho)=\sum_k \tr(M_k\rho)\ket{k}\bra{k}$
+	with $\set{\ket{k}}$ an orthonormal basis.
+	This map is also called a \emph{quantum-classical channel}.
+\end{definition}
 
 The phase gate and Pauli matrices are denoted as follows.
 
@@ -11,6 +19,8 @@ The phase gate and Pauli matrices are denoted as follows.
 	$Y=\begin{pmatrix}0&-i\\i&0\end{pmatrix}$,
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
+
+TODO Define fidelity
 
 \subsection{Relevant complexity classes}
 
@@ -42,7 +52,7 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a protocol $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a protocol $(\bbP, \bbV)$ with the following properties with input $x$:
 	\begin{itemize}
 		\item $\bbP$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
 		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
@@ -106,14 +116,13 @@ We will instead use the following formulation, which can be obtained by relabeli
 
 \subsection{Quantum de Finetti Theorem under Local Measurements}
 
-\Ethan{TODO define Lambdas}
-
 De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
 There are many formulations; we use the one from \cite{Brandão2017} because we need logarithmic dependence on $|A|$.
 \begin{thm}
 	\label{deFinetti}
 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state. Then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
 	$$\max_{\Lambda_1,\ldots,\Lambda_l}\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1\leq\sqrt{\frac{2l^2\ln\abs{A}}{k-l}}$$
+	where $\Lambda_i$ are quantum-classical channels.
 \end{thm}
 
 \subsection{Quantum Homomorphic Encryption Schemes}
