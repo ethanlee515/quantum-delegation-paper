@@ -225,21 +225,21 @@ That is, we present and analyze an algorithm that checks whether a given state i
 	There exists some $c\in\bbR$ s.t.
 	let $H_{C(x)}$ be as above and
 	$\varepsilon\in\bbR$, then
-	if $\cVGS$ accepts $\rho$ with probability at least $\frac{1}{2}-\frac{c\varepsilon}{T^5}$
-	then $F(\rho, \psi_{C(x)})\geq1-\varepsilon$
+	if $\cVGS(\rho)$ accepts with probability at least $\frac{1}{2}-\frac{c\varepsilon}{T^5}$
+	then $F(\rho, \ket{\psi_{C(x)}})\geq1-\varepsilon$
 \end{cor}
 \begin{prf}
+	We first argue this with pure state input $\ket\phi$.
+
 	Define $c$ so that $\cVGS$ accepts $\ket{\phi}$ with probability $\frac{1}{2}-\frac{c}{T^5}\braket{\phi|H_{C(x)}|\phi}$.
-
-	Break $\ket{\phi}$ above into what's in the kernel of $H$ and what isn't.
+	Break $\ket{\phi}$ above into what's in the kernel of $H$ and what isn't:
 	$$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
-	We can then see $\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\psi_{C(x)}, \phi)$.
-
+	We can then see $\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$.
+	This argument above can be generalized for mixed states since we have for all $\sigma$ that
+	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \sigma)=\sum_i p_i F(\ket{\phi_i}, \sigma)$$
 	Now we have
-	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\psi_{C(x)}, \phi))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
-	which easily implies our claim for pure state inputs $\phi$.
-
-	The argument generalizes easily to mixed state inputs $\rho$.
+	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
+	which implies our claim.
 \end{prf}
 
 
