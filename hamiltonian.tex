@@ -235,8 +235,8 @@ That is, we present and analyze an algorithm that checks whether a given state i
 	Break $\ket{\phi}$ above into what's in the kernel of $H$ and what isn't:
 	$$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
 	We can then see $\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$.
-	This argument above can be generalized for mixed states since we have for all $\sigma$ that
-	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \sigma)=\sum_i p_i F(\ket{\phi_i}, \sigma)$$
+	This argument above can be generalized for mixed states since we have for all $\ket\psi$ that
+	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi)$$
 	Now we have
 	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
 	which implies our claim.
