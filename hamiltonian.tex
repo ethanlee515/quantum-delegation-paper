@@ -37,7 +37,7 @@ The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, 
 	\label{thm:LHReduction}
 	Let $C$ be a circuit of size $T$. For any input string $x$, there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
 	\begin{itemize}
-		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
+		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms and $d_S\in O(T^4)$.
 		\item $H_{C(x)}$ has $\ket{\psi_{C(x)}}$ as the unique ground state with eigenvalue $0$.
 		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 		\item Its descriptions can be constructed by a $\BPP$ machine in polynomial time.
@@ -182,7 +182,7 @@ In this subsection, we prove \cref{ThmXZCheck}.
 That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
 
 \begin{algorithm}
-	\caption{Check for ground state}
+	\caption{Check for ground state $\cVGS$}
 	\label{AlgGroundStateCheck}
 		Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
 		Let $\ket\phi$ be the potential ground state to check.
@@ -196,8 +196,10 @@ That is, we present and analyze an algorithm that checks whether a given state i
 \end{algorithm}
 
 \begin{thm}
-	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients at most $O(\poly(T))$.
-	Then \cref{AlgGroundStateCheck} accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$.
+	\label{thm:HamCheck}
+	Let $H$ have $O(T)$ nonzero terms whose coefficients are at most $O(T^4)$.
+	\Ethan{Missing a bunch of other assumptions... Should just state $H$ as local Hamiltonian instance from earlier}
+	Then $\cVGS$ accepts $\ket{\phi}$ with probability $\frac{1}{2}-\frac{O(1)}{T^5}\braket{\phi|H_{C(x)}|\phi}$.
 \end{thm}
 \begin{prf}
 	Here we follow \cite{PhysRevA.93.022326}.
@@ -212,9 +214,34 @@ That is, we present and analyze an algorithm that checks whether a given state i
 	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
 	\begin{align*}
 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
+		&=\frac{1}{2}-\frac{O(1)}{T^5}\braket{\phi|H|\phi}
 	\end{align*}
 \end{prf}
+
+\begin{cor}
+	\Ethan{Consider merging this with theorem above}
+
+	\label{cor:HamCheck}
+	There exists some $c\in\bbR$ s.t.
+	let $H_{C(x)}$ be as above and
+	$\varepsilon\in\bbR$, then
+	if $\cVGS$ accepts $\rho$ with probability at least $\frac{1}{2}-\frac{c\varepsilon}{T^5}$
+	then $F(\rho, \psi_{C(x)})\geq1-\varepsilon$
+\end{cor}
+\begin{prf}
+	Define $c$ so that $\cVGS$ accepts $\ket{\phi}$ with probability $\frac{1}{2}-\frac{c}{T^5}\braket{\phi|H_{C(x)}|\phi}$.
+
+	Break $\ket{\phi}$ above into what's in the kernel of $H$ and what isn't.
+	$$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
+	We can then see $\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\psi_{C(x)}, \phi)$.
+
+	Now we have
+	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\psi_{C(x)}, \phi))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
+	which easily implies our claim for pure state inputs $\phi$.
+
+	The argument generalizes easily to mixed state inputs $\rho$.
+\end{prf}
+
 
 %%%%
 %%%% Keep the old version here for the record. 

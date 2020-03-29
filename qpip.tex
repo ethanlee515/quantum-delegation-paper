@@ -19,16 +19,6 @@ In our case with $\SampBQP$, we overcome this challenge instead by using de Fine
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
 
-\def\GS{\mathsf{Ham}}
-\nc{\cVGS}{\ensuremath{\cV_\GS}}
-
-\def\Samp{\mathsf{Samp}}
-\nc{\PiSamp}{\ensuremath{\Pi_\Samp}}
-\nc{\VSamp}{\ensuremath{V_\Samp}}
-\nc{\PSamp}{\ensuremath{P_\Samp}}
-\nc{\PSampstar}{\ensuremath{P_\Samp^*}}
-\nc{\cVSamp}[1]{\ensuremath{\cV_{\Samp,#1}}}
-\nc{\cPSamp}[1]{\ensuremath{\cP_{\Samp,#1}}}
 
 \Ethan{Again, look at other papers...}
 
@@ -40,8 +30,12 @@ We now present our $\QPIP_1$ protocol that allows a client to verifiably obtain 
 \begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for computation of $C(x)$ and error parameter $\varepsilon$}\label{ProtoQPIP1}
 
 	Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
-	Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}, and
-	$\cVGS$ be the way to check this ground state as defined in \Cref{AlgGroundStateCheck}.
+	Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction},
+	and $\cVGS$ be the way to check this ground state as defined in \Cref{AlgGroundStateCheck}.
+	Recall that by \Cref{thm:HamCheck} there exists some $c\in\bbN$
+	\Ethan{Maybe figure out the exact value of $c$ later? It's really messy due to multiple uses of projection lemma among other things}
+	so that if $\cVGS$ accepts $\rho$ with probability at least $\frac{1}{2}-\kappa$ where $\kappa=\frac{\varepsilon}{(T+\frac{T}{\varepsilon})^c}$ then $F(\rho, \ket{\psi_{C'(x)}})\geq1-\varepsilon^2$
+	\Ethan{TODO: That theorem currently doesn't even say that. At least write a corollary for it.}
 
 	\Ethan{get style from pg 22 on other paper}
 	
@@ -52,8 +46,8 @@ We now present our $\QPIP_1$ protocol that allows a client to verifiably obtain 
 	\Ethan{106 p31}
 
 	\begin{enumerate}
-		\item The honest prover prepares $M=\varepsilon^{-8}\ln(\frac{T}{\varepsilon})$ copies \Ethan{That isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\varepsilon^{-3}$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item The honest prover prepares $M=\kappa^{-4}\varepsilon^{-4}\ln(\frac{T}{\varepsilon})$ copies \Ethan{That isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\kappa^{-2}\varepsilon^{-1}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
@@ -108,7 +102,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
 	Now, for the other case, $j\notin J$, we have
-	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2\varepsilon\Rightarrow\sqrt{\tr\left(H_{C'(x)}\rho_j}\right)<\varepsilon.$$
+	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2\varepsilon\Rightarrow\sqrt{\tr H_{C'(x)}\rho_j}<\varepsilon.$$
 	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{Need notation for fidelity}
 	$$D(\rho_j, \ket{\phi_{C'(x)}})<\poly(\varepsilon)$$
 
