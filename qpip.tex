@@ -22,43 +22,54 @@ within inverse polynomial errors.
 
 \Ethan{Again, look at other papers...}
 
+\Ethan{get style from pg 22 on other paper}
+
+\Ethan{Also see 102, p2, 5}
+
+\Ethan{201 p12 p23 two different styles of protocol-writing}
+
+\Ethan{106 p31}
+
 We start with a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$ and an input $x$,
 then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy.
 We assume without loss of generality that $C$ comprises of only Hadamard and Toffoli gates.
-We now present our $\QPIP_1$ protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
+We present our protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for computation of $C(x)$ and error parameter $\varepsilon$}\label{ProtoQPIP1}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for the computation $C(x)$ with error parameter $\varepsilon$}
+	\label{ProtoQPIP1}
 
-	Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
-	Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction},
-	and $\cVGS$ be the way to check this ground state as defined in \Cref{AlgGroundStateCheck}.
-	Recall that by \Cref{thm:HamCheck} there exists some $c\in\bbN$
-	\Ethan{Maybe figure out the exact value of $c$ later? It's really messy due to multiple uses of projection lemma among other things}
-	so that if $\cVGS$ accepts $\rho$ with probability at least $\frac{1}{2}-\kappa$ where $\kappa=\frac{\varepsilon}{(T+\frac{T}{\varepsilon})^c}$ then $F(\rho, \ket{\psi_{C'(x)}})\geq1-\varepsilon^2$
-	\Ethan{TODO: That theorem currently doesn't even say that. At least write a corollary for it.}
+	Inputs:
+	\begin{itemize}
+		\item Error parameter $\varepsilon\in(0, 1)$
+		\item Input string $x\in\set{0, 1}^n$
+		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates
+	\end{itemize}
 
-	\Ethan{get style from pg 22 on other paper}
-	
-	\Ethan{Also see 102, p2, 5}
-	
-	\Ethan{201 p12 p23 two different styles of protocol-writing}
-	
-	\Ethan{106 p31}
+	Ingrediants:
+	\begin{itemize}
+		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
+		\item Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}.
+		\item $\cVGS$ be the way to check said ground state as defined in \Cref{AlgGroundStateCheck}.
+		\item Define $c\in\bbR$ as in \Cref{cor:HamCheck}.
+	\end{itemize}
 
+	Pseudocode:
 	\begin{enumerate}
-		\item The honest prover prepares $M=\kappa^{-4}\varepsilon^{-4}\ln(\frac{T}{\varepsilon})$ copies \Ethan{That isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\kappa^{-2}\varepsilon^{-1}$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item The honest prover prepares $M=\frac{T^{20}}{\varepsilon^{32}}\ln(\frac{T}{\varepsilon})$ copies \Ethan{This isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ and save the outcome as $y$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\varepsilon m$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
+			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
 	\end{enumerate}
 \end{protocol}
 
-Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise. We now show the completeness and soundness of $\PiSamp$.
+Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
+It is easy to see $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
+We now show its completeness and soundness.
 
 \begin{thm}
     \label{QPIP1thm}
@@ -66,7 +77,7 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply the Chernoff bound \cref{thm:Chernoff} with $\mu=\frac{m}{2}$ and $\delta=2\varepsilon$ to get
+	So we can apply Chernoff bound (\Cref{thm:Chernoff}) with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
 	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
 
 	Now we show soundness.
@@ -87,27 +98,30 @@ Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classica
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over tensors of independent states.
 	Note that the ground state has $\abs{A}=n+T+\frac{T}{e}$ qubits.
 	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ such that for all quantum-classical channels $\Lambda_i$ on $\abs{A}$ qubits:
-	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}=\frac{todo}{todo}=O(\varepsilon).$$
+	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}
+	\leq\sqrt{\frac{2m^2\ln\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
+	=O(\varepsilon).$$
 
-	Now we separate the $\rho_j$ into two categories: $J=\set{j\in I|p_j=\cV_\GS(\rho_j)<\frac{1}{2}-2\varepsilon}$ and its complement.
+	Now we separate the $\rho_j$ into two categories base on $p_j$, the accept probability of $\cVGS(\rho_j)$:
+	$$J=\set{j\in I|p_j<\frac{1}{2}-2\kappa}$$
 
 	First suppose $j\in J$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
-	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2h$,
-	then clearly $\Prob{Z\geq\frac{m}{2}-hm}<\Prob{Y\geq\frac{m}{2}-hm}$.
+	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2\kappa$,
+	then clearly $\Prob{Z\geq\frac{m}{2}-\kappa m}<\Prob{Y\geq\frac{m}{2}-\kappa m}$.
 	By Chernoff bound, we have
-	$$\Prob{Y\geq\frac{m}{2}-hm}=\Prob{Y-\mu\geq hm}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(T)$$
-	where $\mu=mp_y=\frac{m}{2}-2hm$ and $\delta=\frac{2h}{1-4h}$.
+	$$\Prob{Y\geq\frac{m}{2}-\kappa m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1})$$
+	where $\mu=mp_y=\frac{m}{2}-2\kappa m$ and $\delta=\frac{2\kappa}{1-4\kappa}$.
 	Summing up all the $\rho_j$ terms in $J$, we have
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
-	Now, for the other case, $j\notin J$, we have
-	$$\Prob{\cV_\GS(\rho_i)=acc}>\frac{1}{2}-2\varepsilon\Rightarrow\sqrt{\tr H_{C'(x)}\rho_j}<\varepsilon.$$
-	We also know that the least nonzero eigenvalue of $H_{C'(x)}$ is lower-bounded by $\frac{3}{4}$, so we obtain \Ethan{Need notation for fidelity}
-	$$D(\rho_j, \ket{\phi_{C'(x)}})<\poly(\varepsilon)$$
+	Now, for the other case, $j\notin J$, by \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
+	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq\varepsilon^2.$$
+	which in turn implies a lower bound on the respective trace distance:
+	$$T(\rho_j, \ket{\psi_{C'(x)}})<\varepsilon.$$
 
 	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $\poly(\varepsilon)$ due to the padding,
 	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point.
 
-	The soundness errors at each step is $\poly(\varepsilon)$, so the conclusion follows.
+	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
 \end{prf}

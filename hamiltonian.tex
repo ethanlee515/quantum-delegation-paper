@@ -191,7 +191,7 @@ That is, we present and analyze an algorithm that checks whether a given state i
 			\item Set $p_S = \frac{|d_S|}{D}$
 			\item Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
 			\item Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
-			\item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept. Otherwise, reject.
+			\item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept by outputting $1$. Otherwise, reject by outputting $0$.
 		\end{itemize}
 \end{algorithm}
 

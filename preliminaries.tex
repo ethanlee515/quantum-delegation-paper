@@ -4,6 +4,7 @@
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 We write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
+We write $T(\rho_1, \rho_2)=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$. $\forall \rho_1, \rho_2\in\cB^{\otimes N}$ we have $T(\rho_1, \rho_2)\leq\sqrt{1-F(\rho_1, \rho_2)}$.
 
 \begin{definition} [quantum-classical channels]
 	\label{def:QCChannel}
