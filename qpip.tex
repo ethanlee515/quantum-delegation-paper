@@ -31,7 +31,7 @@ within inverse polynomial errors.
 \Ethan{106 p31}
 
 We start with a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$ and an input $x$,
-then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy.
+then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy. \Ethan{Define some kinda $\varepsilon_0$ for this}
 We assume without loss of generality that $C$ comprises of only Hadamard and Toffoli gates.
 We present our protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
 
@@ -42,49 +42,49 @@ We present our protocol that allows a client to verifiably obtain the measuremen
 	\begin{itemize}
 		\item Error parameter $\varepsilon\in(0, 1)$
 		\item Input string $x\in\set{0, 1}^n$
-		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates
+		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates \Ethan{move this into ingredients and put SampBQP instance as inputs}
 	\end{itemize}
 
 	Ingrediants:
 	\begin{itemize}
 		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
-		\item Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}.
-		\item $\cVGS$ be the way to check said ground state as defined in \Cref{AlgGroundStateCheck}.
-		\item Define $c\in\bbR$ as in \Cref{cor:HamCheck}.
+		\item Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}. \Ethan{Also bring $H_C$ in. More descriptions. Make it more intuitive.}
+		\item $\cVGS$ be the way to check said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix}
+		\item Define $c\in\bbR$ as in \Cref{cor:HamCheck}. \Ethan{Just make sure it's less than 10 and write 10. Also it shouldn't be an ingredient if it's $c$}
 	\end{itemize}
 
-	Pseudocode:
+	Protocol:
 	\begin{enumerate}
-		\item The honest prover prepares $M=\frac{T^{20}}{\varepsilon^{32}}\ln(\frac{T}{\varepsilon})$ copies \Ethan{This isn't an integer...?} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item The honest prover prepares $M=\frac{T^{20}}{\varepsilon^{32}}\ln(\frac{T}{\varepsilon})$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
 		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
-			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ and save the outcome as $y$.
+			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $y$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
 			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
 	\end{enumerate}
 \end{protocol}
 
-Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
+Note that $\VSamp$ \Ethan{TODO Define this} only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
 It is easy to see $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
 We now show its completeness and soundness.
 
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and $\poly(\varepsilon^{-1})$ soundness error.
+	$\PiSamp$ has negligible completeness error and $O(\varepsilon)$ soundness error.
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply Chernoff bound (\Cref{thm:Chernoff}) with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
+	So we can apply Chernoff bound (\Cref{thm:Chernoff}) \Ethan{Theorem numbering needs fix} with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
 	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
 
 	Now we show soundness.
 	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier.
 
 	The first step of our analysis is to use de Finetti's theorem.
-	Randomly picking $m+1$ out of $M$ registers is equivalent to first applying a random permutation to get some $\sigma'$ then taking the first $m+1$ registers.
+	Randomly picking $m+1$ out of $M$ registers is equivalent to first applying a random permutation then taking the first $m+1$ registers.
 	A random permutation, in turn, is a classical mix over all possible permutations:
 	$$\sigma'=\frac{1}{\abs{\Sym(M)}}\sum_{\Pi\in\Sym(M)}\Pi\sigma\Pi^\dagger.$$
 	It is simple to check that $\sigma'$ is permutation-invariant:
@@ -96,17 +96,25 @@ We now show its completeness and soundness.
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over tensors of independent states.
-	Note that the ground state has $\abs{A}=n+T+\frac{T}{e}$ qubits.
-	That is, $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$ such that for all quantum-classical channels $\Lambda_i$ on $\abs{A}$ qubits:
+	Note that the ground state has $\abs{A}=n+T+\frac{T}{\varepsilon}$ qubits.
+	\Ethan{Think about notation... maybe $s$? typeof($A$) is strange. Also an error here.}
+	That is, \Ethan{type out ``there exists" if in sentence} $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$
+	\Ethan{multiple copies to one copy? Say in words that rho j is one component of iids}
+	such that for all quantum-classical channels $\Lambda_i$ on $\abs{A}$ qubits:
 	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}
 	\leq\sqrt{\frac{2m^2\ln\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
 	=O(\varepsilon).$$
+	
+	\Ethan{In our context, lambda i is ground state check... etc. and rho 1 rho 2 are...}
 
-	Now we separate the $\rho_j$ into two categories base on $p_j$, the accept probability of $\cVGS(\rho_j)$:
-	$$J=\set{j\in I|p_j<\frac{1}{2}-2\kappa}$$
+	Now we separate the $\rho_j$ into two categories base on $p_j$, the accept probability of $\cVGS(\rho_j)$: \Ethan{Wording issue; make it obvious I'm defining $p_j$}
+	$$J=\set{j\in\bbN|p_j<\frac{1}{2}-2\kappa}$$
+	
+	\Ethan{Definition of $J$ is extraneous; just cut into two cases.}
 
 	First suppose $j\in J$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
+	\Ethan{Delete the following and just say it's standard application of Chernoff bound}
 	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2\kappa$,
 	then clearly $\Prob{Z\geq\frac{m}{2}-\kappa m}<\Prob{Y\geq\frac{m}{2}-\kappa m}$.
 	By Chernoff bound, we have
@@ -115,13 +123,17 @@ We now show its completeness and soundness.
 	Summing up all the $\rho_j$ terms in $J$, we have
 	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
+    \Ethan{Fix the kets}
+    
 	Now, for the other case, $j\notin J$, by \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
-	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq\varepsilon^2.$$
+	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq1-\varepsilon^2.$$
 	which in turn implies a lower bound on the respective trace distance:
 	$$T(\rho_j, \ket{\psi_{C'(x)}})<\varepsilon.$$
+	\Ethan{Trace distance notation}
 
 	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $\poly(\varepsilon)$ due to the padding,
-	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point.
+	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point. \Ethan{get rid of the remaining polys}
 
 	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
+	\Ethan{Be more careful here. Actually sum up errors.}
 \end{prf}
