@@ -19,23 +19,14 @@ In our case with $\SampBQP$, we overcome this challenge instead by using de Fine
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
 
-
-\Ethan{Again, look at other papers...}
-
-\Ethan{get style from pg 22 on other paper}
-
-\Ethan{Also see 102, p2, 5}
-
-\Ethan{201 p12 p23 two different styles of protocol-writing}
-
-\Ethan{106 p31}
+\Ethan{Actual technical part starts here}
 
 We start with a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$ and an input $x$,
 then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy. \Ethan{Define some kinda $\varepsilon_0$ for this}
 We assume without loss of generality that $C$ comprises of only Hadamard and Toffoli gates.
 We present our protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp$ for the computation $C(x)$ with error parameter $\varepsilon$}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the computation $C(x)$ with error parameter $\varepsilon$}
 	\label{ProtoQPIP1}
 
 	Inputs:
@@ -55,7 +46,7 @@ We present our protocol that allows a client to verifiably obtain the measuremen
 
 	Protocol:
 	\begin{enumerate}
-		\item The honest prover prepares $M=\frac{T^{20}}{\varepsilon^{32}}\ln(\frac{T}{\varepsilon})$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item The honest prover prepares $M=\frac{T^{21}}{\varepsilon^{33}}$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
 		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
@@ -67,8 +58,8 @@ We present our protocol that allows a client to verifiably obtain the measuremen
 	\end{enumerate}
 \end{protocol}
 
-Note that $\VSamp$ \Ethan{TODO Define this} only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
-It is easy to see $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
+Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
+It is simple to check that $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
 We now show its completeness and soundness.
 
 \begin{thm}
@@ -96,23 +87,19 @@ We now show its completeness and soundness.
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over tensors of independent states.
-	Note that the ground state has $\abs{A}=n+T+\frac{T}{\varepsilon}$ qubits.
 	\Ethan{Think about notation... maybe $s$? typeof($A$) is strange. Also an error here.}
-	That is, \Ethan{type out ``there exists" if in sentence} $\exists\rho=\sum_j w_j\rho_j^{\otimes m+1}$
+	That is, there exists some $\rho=\sum_j w_j\rho_j^{\otimes m+1}$
 	\Ethan{multiple copies to one copy? Say in words that rho j is one component of iids}
-	such that for all quantum-classical channels $\Lambda_i$ on $\abs{A}$ qubits:
+	such that for all quantum-classical channels $\Lambda_i$ on $n+T+\frac{T}{\varepsilon}$ qubits:
 	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}
-	\leq\sqrt{\frac{2m^2\ln\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
+	\leq\sqrt{\frac{2m^2\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
 	=O(\varepsilon).$$
 	
 	\Ethan{In our context, lambda i is ground state check... etc. and rho 1 rho 2 are...}
 
-	Now we separate the $\rho_j$ into two categories base on $p_j$, the accept probability of $\cVGS(\rho_j)$: \Ethan{Wording issue; make it obvious I'm defining $p_j$}
-	$$J=\set{j\in\bbN|p_j<\frac{1}{2}-2\kappa}$$
-	
-	\Ethan{Definition of $J$ is extraneous; just cut into two cases.}
+	Let $p_j$ be the probability that $\cVGS(\rho_j)=acc$. Now we seperate the $\rho_j$ terms into two categories based on $p_j$.
 
-	First suppose $j\in J$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
+	First suppose $p_j<\frac{1}{2}-2\kappa$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
 	\Ethan{Delete the following and just say it's standard application of Chernoff bound}
 	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2\kappa$,
