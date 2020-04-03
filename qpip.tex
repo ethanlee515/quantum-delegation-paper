@@ -87,7 +87,6 @@ We now show its completeness and soundness.
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over tensors of independent states.
-	\Ethan{Think about notation... maybe $s$? typeof($A$) is strange. Also an error here.}
 	That is, there exists some $\rho=\sum_j w_j\rho_j^{\otimes m+1}$
 	\Ethan{multiple copies to one copy? Say in words that rho j is one component of iids}
 	such that for all quantum-classical channels $\Lambda_i$ on $n+T+\frac{T}{\varepsilon}$ qubits:
@@ -99,27 +98,21 @@ We now show its completeness and soundness.
 
 	Let $p_j$ be the probability that $\cVGS(\rho_j)=acc$. Now we seperate the $\rho_j$ terms into two categories based on $p_j$.
 
-	First suppose $p_j<\frac{1}{2}-2\kappa$, we use a standard Chernoff bound argument as follows to show that this case has negligible acceptance probabilities,
+	First suppose $p_j<\frac{1}{2}-2\kappa$,
+	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
-	\Ethan{Delete the following and just say it's standard application of Chernoff bound}
-	Let $Y=\sum y_j$ be i.i.d. Bernoulli trials with success probabilities $p_y=\frac{1}{2}-2\kappa$,
-	then clearly $\Prob{Z\geq\frac{m}{2}-\kappa m}<\Prob{Y\geq\frac{m}{2}-\kappa m}$.
-	By Chernoff bound, we have
-	$$\Prob{Y\geq\frac{m}{2}-\kappa m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1})$$
-	where $\mu=mp_y=\frac{m}{2}-2\kappa m$ and $\delta=\frac{2\kappa}{1-4\kappa}$.
-	Summing up all the $\rho_j$ terms in $J$, we have
-	$$\sum_{j\in J} w_j q_j<2^{-\lambda}=\negl(\lambda).$$
 
     \Ethan{Fix the kets}
     
-	Now, for the other case, $j\notin J$, by \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
+	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
+	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
 	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq1-\varepsilon^2.$$
 	which in turn implies a lower bound on the respective trace distance:
 	$$T(\rho_j, \ket{\psi_{C'(x)}})<\varepsilon.$$
 	\Ethan{Trace distance notation}
 
-	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $\poly(\varepsilon)$ due to the padding,
-	so the data register has $1-\poly(\varepsilon)$ probability to be $C(x)$ at this point. \Ethan{get rid of the remaining polys}
+	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $O(\varepsilon)$ due to the padding,
+	so the data register has $1-O(\varepsilon)$ probability to be $C(x)$ at this point.
 
 	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
 	\Ethan{Be more careful here. Actually sum up errors.}
