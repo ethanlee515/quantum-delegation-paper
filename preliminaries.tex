@@ -73,11 +73,11 @@ We classify the interaction between a (almost classical) client and a quantum se
 
 We present the security definition for interactive protocols:
 
-\begin{dfn}
+\begin{definition}
 	Let $\lambda$ be a security parameter.
 	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
 	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
-\end{dfn}
+\end{definition}
 
 \begin{protocol}{Attack against semantic security}
 	\label{proto:indcpa}
@@ -143,7 +143,7 @@ There are many formulations; we use the one from \cite{Brandão2017} because we 
 \def\QDec{\mathsf{QHE.Dec}}
 
 We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the interface of a homomorphic encryption scheme:
-\begin{dfn}
+\begin{definition}
 	A leveled homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, sk)$
@@ -151,7 +151,7 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 		\item $\mathsf{HE.Dec}_{sk}(c)\rightarrow \mu^*$
 		\item $\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l)\rightarrow c_f$
 	\end{itemize}
-\end{dfn}
+\end{definition}
 
 $\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
 $$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
@@ -161,11 +161,11 @@ where $f$ is specified by a circuit of depth at most $L$.
 
 We also recall the security definition for a FHE scheme.
 
-\begin{dfn}
+\begin{definition}
 	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
 	$$\abs{Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(1))=1]}=\mu(\lambda)$$
 	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
-\end{dfn}
+\end{definition}
 
 The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitates the use of classical clients:
 \begin{itemize}
