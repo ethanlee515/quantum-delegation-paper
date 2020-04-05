@@ -21,22 +21,22 @@ within inverse polynomial errors.
 
 \Ethan{Actual technical part starts here}
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for $\SampBQP$}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{ProtoQPIP1}
 
-	Inputs:
+	Inputs: \Ethan{Should the $\SampBQP$ instance be an input?}
 	\begin{itemize}
-		\item $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 		\item Error parameter $\varepsilon\in(0, 1)$
 	\end{itemize}
 
 	Ingrediants:
 	\begin{itemize}
-		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates \Ethan{Something about $\varepsilon_0$?}
+		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
-		\item Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}. \Ethan{Also bring $H_C$ in. More descriptions. Make it more intuitive.}
-		\item $\cVGS$ be the way to check said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix}
+		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
+		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
+		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
 	\end{itemize}
 
 	Protocol:
@@ -97,14 +97,13 @@ We now show its completeness and soundness.
 	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities,
 	hence incurs negligible soundness errors.
 
-    \Ethan{Fix the kets}
+    \Ethan{TODO Fix the kets}
     
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
 	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
 	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq1-\varepsilon^2.$$
 	which in turn implies a lower bound on the respective trace distance:
 	$$\frac{1}{2}\norm{\rho_j - \ket{\psi_{C'(x)}}}_1<\varepsilon.$$
-	\Ethan{Trace distance notation}
 
 	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $O(\varepsilon)$ due to the padding,
 	so the data register has $1-O(\varepsilon)$ probability to be $C(x)$ at this point.
@@ -112,6 +111,3 @@ We now show its completeness and soundness.
 	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
 	\Ethan{Be more careful here. Actually sum up errors.}
 \end{prf}
-\begin{cor}
-	By choosing $\tilde{\varepsilon}=O(\varepsilon)$ accordingly, $\PiSamp$ has $\tilde\varepsilon$ soundness error. In which case, it runs in $\poly(T, \tilde\varepsilon^{-1})$ time, and has negligible completeness errors.
-\end{cor}
