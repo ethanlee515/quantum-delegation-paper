@@ -21,27 +21,22 @@ within inverse polynomial errors.
 
 \Ethan{Actual technical part starts here}
 
-We start with a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$ and an input $x$,
-then there exists some quantum circuit $C$ that samples from $D_x$ within desired accuracy. \Ethan{Define some kinda $\varepsilon_0$ for this}
-We assume without loss of generality that $C$ comprises of only Hadamard and Toffoli gates.
-We present our protocol that allows a client to verifiably obtain the measurement outcome of $C(x)$.
-
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the computation $C(x)$ with error parameter $\varepsilon$}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for $\SampBQP$}
 	\label{ProtoQPIP1}
 
 	Inputs:
 	\begin{itemize}
+		\item $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$
+		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 		\item Error parameter $\varepsilon\in(0, 1)$
-		\item Input string $x\in\set{0, 1}^n$
-		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates \Ethan{move this into ingredients and put SampBQP instance as inputs}
 	\end{itemize}
 
 	Ingrediants:
 	\begin{itemize}
+		\item Quantum circuit $C$ of size $T$ consisting of only Hadamard and Toffoli gates \Ethan{Something about $\varepsilon_0$?}
 		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
 		\item Let $\ket{\psi_{C'(x)}}$ be the local Hamiltonian ground state associated with $C'$ as defined in \Cref{thm:LHReduction}. \Ethan{Also bring $H_C$ in. More descriptions. Make it more intuitive.}
 		\item $\cVGS$ be the way to check said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix}
-		\item Define $c\in\bbR$ as in \Cref{cor:HamCheck}. \Ethan{Just make sure it's less than 10 and write 10. Also it shouldn't be an ingredient if it's $c$}
 	\end{itemize}
 
 	Protocol:
@@ -54,7 +49,7 @@ We present our protocol that allows a client to verifiably obtain the measuremen
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $y$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ then the verifier accepts and outputs $y$. Otherwise, it rejects.
+			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ as in \Cref{cor:HamCheck} then the verifier accepts and outputs $y$. Otherwise, it rejects.
 	\end{enumerate}
 \end{protocol}
 
@@ -117,3 +112,6 @@ We now show its completeness and soundness.
 	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
 	\Ethan{Be more careful here. Actually sum up errors.}
 \end{prf}
+\begin{cor}
+	By choosing $\tilde{\varepsilon}=O(\varepsilon)$ accordingly, $\PiSamp$ has $\tilde\varepsilon$ soundness error. In which case, it runs in $\poly(T, \tilde\varepsilon^{-1})$ time, and has negligible completeness errors.
+\end{cor}
