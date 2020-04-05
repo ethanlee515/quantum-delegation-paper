@@ -48,18 +48,23 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 0^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 \end{definition}
 
+\begin{definition}
+	We say $\Pi=(P, V)(x)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ if
+	\begin{itemize}
+		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c$.
+		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$. Let $z_{ideal}\leftarrow D_x$ if $d=acc$, else $z_{ideal}=\bot$. Then $\norm{(d, z) - (d, z_{ideal})} \leq s$.
+	\end{itemize}
+\end{definition}
+
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
 We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $(\delta, s)$ if there exists a protocol $(\bbP, \bbV)$ with the following properties with input $x$:
+	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $s$ if there exists a protocol $(\bbP, \bbV)(x)$ for $S$ with the following properties:
 	\begin{itemize}
 		\item $\bbP$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
 		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
 		\item There is also a classical communication channel between the prover and the verifier, which can transmit $\poly(\abs{x})$ many bits to either direction. 
-		\item (Completeness) After interacting with $\bbP$, $\bbV$ accepts with probability $\geq c$.
-		\item (Soundness) Define the ideal output distribution $D_{x, \alpha}$ as first flipping a weighted coin with head probability $\alpha$. On head, output $\bot$. On tail, sample and output from $D_x$.
-			Then the protocol is sound if for all cheating prover $\bbP^*$, there exists $\alpha$ so that the output distribution of $(\bbP^*, \bbV)$ is negligibly close to $D_{x, \alpha}$.
 	\end{itemize}
 \end{definition}
 
