@@ -1,23 +1,6 @@
 \section{Achieving Blindness on $\QPIP_0$ protocols}
 \label{sec:BlindBQP2}
 
-\def\HE{\mathsf{HE}}
-\def\HGen{\mathsf{HE.Keygen}}
-\def\HEnc{\mathsf{HE.Enc}}
-\def\HEval{\mathsf{HE.Eval}}
-\def\HDec{\mathsf{HE.Dec}}
-
-\def\blind{\mathsf{blind}}
-\nc{\Piblind}{\ensuremath{\Pi_\blind}}
-\nc{\Vblind}{\ensuremath{V_\blind}}
-\nc{\Pblind}{\ensuremath{P_\blind}}
-\nc{\Pblindstar}{\ensuremath{P_\blind^*}}
-\nc{\cVblind}[1]{\ensuremath{\cV_{\blind,#1}}}
-\nc{\cPblind}[1]{\ensuremath{\cP_{\blind,#1}}}
-\def\Pstar{P^*}
-\nc{\cPstar}[1]{\ensuremath{\cP^*_{#1}}}
-\nc{\ctx}[3]{\ensuremath{{{\widehat{#1}}_{#2}^{(#3)}}}}
-
 Here we present our compiler on $\QPIP_0$ protocols that can be used to achieves blindness.
 The high level idea is to run the protocol under homomorphic encryption.
 A classical version of this compiler appears in \cite{KMThesis}, where it is used to make protocols computationally simulatable.
