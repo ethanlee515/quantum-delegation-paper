@@ -63,7 +63,7 @@ We now show its completeness and soundness.
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply Chernoff bound (\Cref{thm:Chernoff}) \Ethan{Theorem numbering needs fix} with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
+	So we can apply Chernoff bound (\Cref{thm:Chernoff}) with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
 	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
 
 	Now we show soundness.
