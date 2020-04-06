@@ -49,7 +49,7 @@ within inverse polynomial errors.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $y$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ as in \Cref{cor:HamCheck} then the verifier accepts and outputs $y$. Otherwise, it rejects. \hannote{... outputs $(acc, y)$. Outputs $(rej,\bot)$}
+			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ as in \Cref{cor:HamCheck} then the verifier outputs $(acc, y)$. Else, it outputs $(rej, \bot)$.
 	\end{enumerate}
 \end{protocol}
 
