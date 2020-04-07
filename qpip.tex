@@ -56,7 +56,10 @@ within inverse polynomial errors.
 Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
 It is simple to check that $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
 We now show its completeness and soundness.
-
+Particularly, we prove that it has $O(\varepsilon)$ soundness errors
+with the understanding that by relabelling $\varepsilon'=O(\varepsilon)$ and modifying $\PiSamp$ accordingly,
+one can achieve $\varepsilon'$ soundness errors while maintaining completeness and running time properties.
+  
 \begin{thm}
     \label{QPIP1thm}
 	$\PiSamp$ has negligible completeness error and $O(\varepsilon)$ soundness error. \hannote{remind completeness and soundness with a footnote.}
@@ -67,6 +70,7 @@ We now show its completeness and soundness.
 	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
 
 	Now we show soundness.
+
 	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier.
 
 	The first step of our analysis is to use de Finetti's theorem.
@@ -81,33 +85,38 @@ We now show its completeness and soundness.
 	=\sigma'$$
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
-	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate $\sigma'$ with a classical mix over $m+1$-fold tensor product of some states $\rho_j$.
-	That is, there exists some $\rho=\sum_j w_j\rho_j^{\otimes m+1}$
-	\Ethan{multiple copies to one copy? Say in words that rho j is one component of iids}
-	such that for all quantum-classical channels $\Lambda_i$ on $n+T+\frac{T}{\varepsilon}$ qubits:
+	\Ethan{Trace out discarded copy on $\sigma'$? Or add copies on $\tau$?}
+
+	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $M$-fold tensor products of identical copies of some states $\tau_j$.
+	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes M}$
+	such that for all quantum-classical channels $\Lambda_i$ acting on registers with size of $\ket{\psi_{C'(x)}}$:
 	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}
 	\leq\sqrt{\frac{2m^2\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
 	=O(\varepsilon).$$
+	In our context, for $1\leq i\leq m$, $\Lambda_i$ corresponds to measurements chosen by $\cVGS$.
+	$\Lambda_{m+1}$ is measurement on the data register of $\rho_k$.
 	
-	\Ethan{In our context, lambda i is ground state check... etc. and rho 1 rho 2 are...}
-
-	Let $p_j$ be the probability that $\cVGS(\rho_j)=acc$. Now we seperate the $\rho_j$ terms into two categories based on $p_j$.
+	Now we claim that for each component $\tau_j$,
+	if $\PSampstar$ had sent $\tau_j^{\otimes M}$ instead then the soundness error is $O(\varepsilon)$.
+	Let $p_j$ be the probability that $\cVGS(\tau_j)=acc$, we seperate $\tau_j$ terms into two cases.
 
 	First suppose $p_j<\frac{1}{2}-2\kappa$,
-	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities,
-	hence incurs negligible soundness errors.
+	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities.
+	That is, it outputs $(rej, \bot)$ with overwhelming probability, hence has negligible soundness errors.
 
-    \Ethan{TODO Fix the kets}
-    
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
-	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\rho_j$ and $\psi_{C'(x)}$:
-	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\rho_j, \psi_{C'(x)})\geq1-\varepsilon^2.$$
+	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\tau_j$ and $\ket{\psi_{C'(x)}}$:
+	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\varepsilon^2.$$
 	which in turn implies a lower bound on the respective trace distance:
-	$$\frac{1}{2}\norm{\rho_j - \ket{\psi_{C'(x)}}}_1<\varepsilon.$$
+	$$\frac{1}{2}\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_1<\varepsilon.$$
+	Let $(d, y)$ be $\VSamp$'s output. Suppose $d=acc$, then $y$ would be the measurement on $\tau_j$'s data register,
+	which is $\varepsilon$-close to that on $\ket{\psi_{C'(x)}}$.
+	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has $1-\varepsilon$ probability to contain $C(x)$ due to the padding.
+	So $y$ is $O(\varepsilon)$-close to $y_{ideal}$ when $d=acc$.
+	Which implies that $(d, y)$ is $O(\varepsilon)$-close to $(d, y_{ideal})$.
 
-	The probability of measuring $t<T$ on the clock register of $\ket{\phi_{C'(x)}}$ is $O(\varepsilon)$ due to the padding,
-	so the data register has $1-O(\varepsilon)$ probability to be $C(x)$ at this point.
-
-	The soundness errors at each step is $O(\varepsilon)$, so the conclusion follows.
-	\Ethan{Be more careful here. Actually sum up errors.}
+	The cheating prover's strategies corresponding to $\tau_j$ all have $O(\varepsilon)$ soundness errors.
+	As $\rho$ is a convex combination of these strategies, we conclude the same about it.
+	Finally, as the outputs corresponding to $\sigma$ is $\varepsilon$-close to that of some $\rho$,
+	by data processing inequality we conclude that $\PiSamp$ has $O(\varepsilon)$ soundness errors.
 \end{prf}
