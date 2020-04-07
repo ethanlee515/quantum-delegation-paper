@@ -68,8 +68,8 @@ We compile the above protocol to achieve blindness as follows.
 			\item $\Pblind$ generates $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t}, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$
 				by first switching its encryption key;
 				that is, it encrypts its state under the new key by $\ctx{st}{P, t-1}{t-1, t}\leftarrow\QEnc(pk_t, \ctx{st}{P, t-1}{t-1}))$,
-				then homomorphically decrypts the old encryption by
-				$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t})$.
+				then homomorphically decrypts the old encryption by \linebreak
+				$$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t}).$$
 				Then it applies the next-message function homomorphically, generating
 				$(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\QEval(pk_t, \cP_t, \ctx{v}{t}{t}, \ctx{st}{P, t-1}{t})$.
 				It sends $\ctx{p}{t}{t}$ back to the verifier.

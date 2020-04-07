@@ -2,9 +2,9 @@
 
 \subsection{Notations}
 
-Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes N}\rightarrow\mathcal{B}^{\otimes N}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
+Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 We write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
-We write $\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$. $\forall \rho_1, \rho_2\in\cB^{\otimes N}$ we have $\frac{1}{2}\norm{\rho_1-\rho_2}_1\leq\sqrt{1-F(\rho_1, \rho_2)}$.
+We write $\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$. For all $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$ we have $\frac{1}{2}\norm{\rho_1-\rho_2}_1\leq\sqrt{1-F(\rho_1, \rho_2)}$.
 
 \begin{definition} [quantum-classical channels]
 	\label{def:QCChannel}
@@ -28,10 +28,12 @@ We define a few relevant complexity classes.
 
 \begin{definition} [$\BQP$]
 	$\BQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
+	\Ethan{Just copy this from somewhere}
 \end{definition}
 
 \begin{definition} [$\FBQP$]
 	A function $f:\set{0,1}^*\rightarrow\set{0,1}^*$ is in $\FBQP$ if there is a $\BQP$ machine that, $\forall x$, outputs $f(x)$ with overwhelming probability.
+	\Ethan{Need to be more formal. Also should be efficient verifiable}
 \end{definition}
 
 We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
@@ -48,19 +50,26 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 0^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 \end{definition}
 
-\begin{definition}
-	We say $\Pi=(P, V)(x)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ if
-	\begin{itemize}
-		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c$.
-		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$. Let $z_{ideal}\leftarrow D_x$ if $d=acc$, else $z_{ideal}=\bot$. Then $\norm{(d, z) - (d, z_{ideal})} \leq s$.
-	\end{itemize}
-\end{definition}
-
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
 We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
-	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be in $\QPIP_\tau$ with completeness $c$ and soundness $s$ if there exists a protocol $(\bbP, \bbV)(x)$ for $S$ with the following properties:
+	We say $\Pi=(P, V)(x)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ \Ethan{Might need these to be functions of $\abs{x}$} if
+	\Ethan{Look up ``interactive protocols for BQP". Right now it's missing quantifier for all x. Also need to mention d is decision bit; maybe do that in next definition and swap locations}
+	\begin{itemize}
+		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c$.
+		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$. Let \Ethan{Use display math to make it obvious I'm defining this} $z_{ideal}\leftarrow D_x$ if $d=acc$, else $z_{ideal}=\bot$. Then $\norm{(d, z) - (d, z_{ideal})} \leq s$ \Ethan{make stat. distance notation consistent}.
+	\end{itemize}
+\end{definition}
+
+\Ethan{Acc, rej, P, V fonts}
+
+\Ethan{Might need to write our own def. here}
+
+\Ethan{Look at thesis for this}
+
+\begin{definition}
+	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be \Ethan{Try to make this more general; remove mentions of sampling/decision problems} in $\QPIP_\tau$ with completeness $c$ and soundness $s$ \Ethan{Don't tie this with completeness and soundness yet} if there exists a protocol $(\bbP, \bbV)(x)$ for $S$ with the following properties:
 	\begin{itemize}
 		\item $\bbP$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
 		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
@@ -68,8 +77,14 @@ We classify the interaction between a (almost classical) client and a quantum se
 	\end{itemize}
 \end{definition}
 
+\Ethan{Two separate definitions for comp and soundness}
+
+\Ethan{Soundness?}
+
 \subsection{Semantic security for interactive protocols}
 \Ethan{Just call this blindness and put this under interactive protocols}
+
+\Ethan{See Thomas' paper if he defined this}
 
 We present the security definition for interactive protocols:
 
@@ -144,7 +159,7 @@ There are many formulations; we use the one from \cite{Brandão2017} because we 
 
 We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the interface of a homomorphic encryption scheme:
 \begin{definition}
-	A leveled homomophic encryption scheme is tuple of algorithms $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	A leveled homomophic encryption scheme is tuple of algorithms \linebreak $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, sk)$
 		\item $\mathsf{HE.Enc}_{pk}(\mu)\rightarrow c$
