@@ -27,8 +27,12 @@ The phase gate and Pauli matrices are denoted as follows.
 We define a few relevant complexity classes.
 
 \begin{definition} [$\BQP$]
+	Definition from Kitaev:
+	A \emph{quantum algorithm} for the computation of a function $F:\zo^*\rightarrow\zo^*$ is a classical algorithm (i.e., a Turing machine) that computes a function of the form $x\mapstochar\rightarrow Z(x)$, where $Z(x)$ is a description of a quantum circuit which computes $F(x)$ on empty input. The function $F$ is said to belong to class $\BQP$ if there is a quantum algorithm that computes $F$ in time $\poly(n)$.
+
+	Definition from Complexity Zoo:
 	$\BQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
-	\Ethan{Just copy this from somewhere}
+	\Ethan{Just copy this from somewhere... Does anyone even define this?}
 \end{definition}
 
 \begin{definition} [$\FBQP$]
