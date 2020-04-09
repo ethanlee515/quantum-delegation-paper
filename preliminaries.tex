@@ -1,5 +1,7 @@
 \section{Preliminaries}
 
+\Ethan{Check that the quantifiers are all there}
+
 \subsection{Notations}
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
@@ -35,16 +37,24 @@ We define a few relevant complexity classes.
 	\Ethan{Just copy this from somewhere... Does anyone even define this?}
 \end{definition}
 
+\iffalse
+
 \begin{definition} [$\FBQP$]
 	A function $f:\set{0,1}^*\rightarrow\set{0,1}^*$ is in $\FBQP$ if there is a $\BQP$ machine that, $\forall x$, outputs $f(x)$ with overwhelming probability.
 	\Ethan{Need to be more formal. Also should be efficient verifiable}
 \end{definition}
 
+\fi
+
 We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
+
+\iffalse
 
 \begin{definition} [search problem]
 	A search problem $R$ is a collection of nonempty sets $(A_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0, 1}^*$, where $A_x$... \Ethan{Great, interface doesn't line up correctly}
 \end{definition}
+
+\fi
 
 \begin{definition} [sampling problem]
 	A sampling problem $S$ is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
@@ -58,12 +68,12 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
-	We say $\Pi=(P, V)(x)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ \Ethan{Might need these to be functions of $\abs{x}$} if
+	We say $\Pi=(P, V)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ \Ethan{Might need these to be functions of $\abs{x}$} if
 	\Ethan{Look up ``interactive protocols for BQP". Right now it's missing quantifier for all x. Also need to mention d is decision bit; maybe do that in next definition and swap locations}
 	\begin{itemize}
 		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c$.
 		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$. Let \Ethan{Use display math to make it obvious I'm defining this} $z_{ideal}\leftarrow D_x$ if $d=acc$, else $z_{ideal}=\bot$. Then $\norm{(d, z) - (d, z_{ideal})} \leq s$ \Ethan{make stat. distance notation consistent}.
-	\end{itemize}
+	\end{itemize} \hannote{need computational?}
 \end{definition}
 
 \Ethan{Acc, rej, P, V fonts}
@@ -85,14 +95,15 @@ We classify the interaction between a (almost classical) client and a quantum se
 
 \Ethan{Soundness?}
 
-\subsection{Semantic security for interactive protocols}
 \Ethan{Just call this blindness and put this under interactive protocols}
 
-\Ethan{See Thomas' paper if he defined this}
+\Ethan{See Thomas' paper if he defined this. Or actually, see https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf}
 
 We present the security definition for interactive protocols:
 
 \begin{definition}
+    \Ethan{Define this in terms of views instead; see paper linked on Skype}
+
 	Let $\lambda$ be a security parameter.
 	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
 	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
@@ -114,9 +125,9 @@ Taken from \href{http://math.mit.edu/~goemans/18310S15/chernoff-notes.pdf}{here}
 
 \begin{thm}
 \label{thm:Chernoff}
-Let $X=\sum_{i=1}^n X_i$ where $X_i$ are i.i.d. Bernoulli trials, and $\mu=\E[X]$.
+Let $X=\sum_{i=1}^n X_i$ where $X_i$ are i.i.d. \Ethan{Ind. is enough} Bernoulli trials, and $\mu=\E[X]$.
 Then for all $0<\delta<1$,
-$$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}$$
+$$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 \end{thm}
 
 \subsection{Projection Lemma}
@@ -130,6 +141,8 @@ We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes
 \end{thm}
 
 We will instead use the following formulation, which can be obtained by relabeling variables from above.
+
+\Ethan{State 2.3; prove from 2.2 in appendix}
 
 \begin{thm}
 	\label{thm:projection}
@@ -155,6 +168,8 @@ There are many formulations; we use the one from \cite{Brandão2017} because we 
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
+\Ethan{Everything gets security param.}
+
 \def\QHE{\mathsf{QHE}}
 \def\QGen{\mathsf{QHE.Keygen}}
 \def\QEnc{\mathsf{QHE.Enc}}
@@ -173,7 +188,7 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 \end{definition}
 
 $\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
-$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l)=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
+$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l))=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
 where $f$ is specified by a circuit of depth at most $L$.
 
 \Ethan{To be pedantic, the above doesn't imply Dec undoes Enc even if we sub in $f=\id$.}
@@ -186,9 +201,11 @@ We also recall the security definition for a FHE scheme.
 	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
 \end{definition}
 
-The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitates the use of classical clients:
+The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitate the use of classical clients:
 \begin{itemize}
 	\item $\QGen$ can be done classically.
 	\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
 	\item Its ciphertext takes the form $(X^xZ^z\rho Z^zX^x, c_{x, z})$, where $\rho$ is the plaintext and $c_{x, z}$ is a ciphertext that decodes to $(x, z)$ under a certain classical homomorphic encryption scheme.
 \end{itemize}
+
+\Ethan{Reword the above? How? 3rd point can be weakened to can be decrypted classically? Maybe call this ``classical friendly". Mention LWE. There exists a classical friendly... etc.}
