@@ -33,7 +33,8 @@ within inverse polynomial errors.
 	Ingrediants:
 	\begin{itemize}
 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
-		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end. \hannote{$T?$}
+		\item Let $T$ be the number of gates in $C$.
+		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
 		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
 		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
