@@ -33,7 +33,7 @@ within inverse polynomial errors.
 	Ingrediants:
 	\begin{itemize}
 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
-		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
+		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end. \hannote{$T?$}
 		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
 		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
@@ -41,8 +41,8 @@ within inverse polynomial errors.
 
 	Protocol:
 	\begin{enumerate}
-		\item The honest prover prepares $M=\frac{T^{21}}{\varepsilon^{33}}$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=\frac{T^{21}}{\varepsilon^{33}}$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-verify} The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$. \hannote{$\xleftarrow{\$}$ ?}
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
@@ -62,12 +62,14 @@ one can achieve $\varepsilon'$ soundness errors while maintaining completeness a
   
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and $O(\varepsilon)$ soundness error. \hannote{remind completeness and soundness with a footnote.}
+	$\PiSamp$ has negligible completeness error and $O(\varepsilon)$ soundness error.
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
 	So we can apply Chernoff bound (\Cref{thm:Chernoff}) with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
 	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
+	
+	\Ethan{Should be negl lambda}
 
 	Now we show soundness.
 
@@ -85,7 +87,7 @@ one can achieve $\varepsilon'$ soundness errors while maintaining completeness a
 	=\sigma'$$
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
-	\Ethan{Trace out discarded copy on $\sigma'$? Or add copies on $\tau$?}
+	\Ethan{$\sigma'_{\leq m+1}$ Maybe this notation for traced out state}
 
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $M$-fold tensor products of identical copies of some states $\tau_j$.
 	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes M}$
@@ -95,6 +97,10 @@ one can achieve $\varepsilon'$ soundness errors while maintaining completeness a
 	=O(\varepsilon).$$
 	In our context, for $1\leq i\leq m$, $\Lambda_i$ corresponds to measurements chosen by $\cVGS$.
 	$\Lambda_{m+1}$ is measurement on the data register of $\rho_k$.
+	
+	\Ethan{TODO special font for acc/rej}
+	
+	\Ethan{Just say what would happen if V accs this instead}
 	
 	Now we claim that for each component $\tau_j$,
 	if $\PSampstar$ had sent $\tau_j^{\otimes M}$ instead then the soundness error is $O(\varepsilon)$.
@@ -109,14 +115,16 @@ one can achieve $\varepsilon'$ soundness errors while maintaining completeness a
 	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\varepsilon^2.$$
 	which in turn implies a lower bound on the respective trace distance:
 	$$\frac{1}{2}\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_1<\varepsilon.$$
-	Let $(d, y)$ be $\VSamp$'s output. Suppose $d=acc$, then $y$ would be the measurement on $\tau_j$'s data register,
+	Let $(d, y)$ be $\VSamp$'s output \Ethan{on input tau j}. Suppose $d=acc$, then $y$ would be the measurement on $\tau_j$'s data register,
 	which is $\varepsilon$-close to that on $\ket{\psi_{C'(x)}}$.
 	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has $1-\varepsilon$ probability to contain $C(x)$ due to the padding.
-	So $y$ is $O(\varepsilon)$-close to $y_{ideal}$ when $d=acc$.
-	Which implies that $(d, y)$ is $O(\varepsilon)$-close to $(d, y_{ideal})$.
+	So $y$ is $O(\varepsilon)$-close to $y_{ideal}$ when $d=acc$,
+	which implies that $(d, y)$ is $O(\varepsilon)$-close to $(d, y_{ideal})$.
 
 	The cheating prover's strategies corresponding to $\tau_j$ all have $O(\varepsilon)$ soundness errors.
-	As $\rho$ is a convex combination of these strategies, we conclude the same about it.
+	As $\rho$ is a convex combination \Ethan{More equations...} of these strategies, we conclude the same about it.
 	Finally, as the outputs corresponding to $\sigma$ is $\varepsilon$-close to that of some $\rho$,
 	by data processing inequality we conclude that $\PiSamp$ has $O(\varepsilon)$ soundness errors.
 \end{prf}
+
+\Ethan{Switch y and z}
