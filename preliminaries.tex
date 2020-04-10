@@ -16,7 +16,7 @@ We write $\norm{\rho_1-\rho_2}_{tr}$ for the trace distance between $\rho_1$ and
 	This map is also called a \emph{quantum-classical channel}.
 \end{definition}
 
-The phase gate and Pauli matrices are denoted as follows.
+The phase gate and Pauli matrices are the following matrices.
 
 \begin{definition}
 	$P(i)=\begin{pmatrix}1&0\\0&i\end{pmatrix}$, $X=\begin{pmatrix}0&1\\1&0\end{pmatrix}$,
@@ -64,9 +64,9 @@ We model the interaction between a (almost classical) client and a quantum serve
 			$$\begin{cases}
 				z_{ideal}=\bot & \text{if } d=\Acc\\
 				z_{ideal}\leftarrow D_x & \text{if } d=\Rej
-			\end{cases}$$
+			\end{cases}$$\hannote{swap rej and acc}
 			then $\norm{(d, z) - (d, z_{ideal})} \leq \varepsilon$ \Ethan{make stat. distance notation consistent}.
-	\end{itemize} \hannote{need computational?} \Ethan{The norm at the end? Nah it's statistical distance}
+	\end{itemize} \hannote{need computational version of soundness?} \Ethan{The norm at the end? Nah it's statistical distance}
 \end{definition}
 
 We also define blindness of a protocol.
