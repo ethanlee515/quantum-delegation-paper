@@ -19,7 +19,7 @@ For two densities $f_1$ and $f_2$ over the same finite domain $X$, we write $\no
 	This map is also called a \emph{quantum-classical channel}.
 \end{definition}
 
-The phase gate and Pauli matrices are denoted as follows.
+The phase gate and Pauli matrices are the following matrices.
 
 \begin{definition}
 	$P(i)=\begin{pmatrix}1&0\\0&i\end{pmatrix}$,
@@ -72,11 +72,11 @@ We model the interaction between a (almost classical) client and a quantum serve
 		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$.
 			Define $z_{ideal}$ by
 			$$\begin{cases}
-				z_{ideal}=\bot & \text{if } d=\Acc\\
-				z_{ideal}\leftarrow D_x & \text{if } d=\Rej
+				z_{ideal}=\bot & \text{if } d=\Rej\\
+				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
 			\end{cases}$$
 			then $\norm{(d, z) - (d, z_{ideal})}_{TV} \leq \varepsilon$.
-	\end{itemize} \hannote{need computational?} \Ethan{Yeah. Will fix.}
+	\end{itemize} \hannote{need computational version of soundness?} \Ethan{Yeah. Will fix.}
 \end{definition}
 
 We also define blindness of a protocol.
