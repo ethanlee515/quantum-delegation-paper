@@ -55,11 +55,9 @@ We model the interaction between a (almost classical) client and a quantum serve
 \Ethan{Look up ``interactive protocols for BQP"}
 \begin{definition}
 	We say $\Pi=(P, V)$ is a protocol for the langauge $L$ with completeness error $c$ and soundness error $s$ if for all $x\in\zo^*$:
-	\Ethan{TODO: errors are functions of input length}
 	\begin{itemize}
-		\item If $x\in L$
-			$\Pr\left[(P, V)(x)=(1^n, x)\right]$
-		\item TODO SOUNDNESS
+		\item If $x\in L$, then $\Pr\left[(P, V)(x)=\Rej\right]<c(\abs{x})$.
+		\item If $x\notin L$, then for all cheating prover $P^*$, $\Pr\left[(P^*, V)(x)=\Acc\right]<s(\abs{x})$.
 	\end{itemize}
 \end{definition}
 
@@ -68,7 +66,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 	We say $\Pi$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
 	\begin{itemize}
 		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
-		\item Let $(d, z)\leftarrow(P, V)(x)$. \Ethan{Same problem as last definition...} Then $d=rej$ with probability at most $c(\lambda)$.
+		\item Let $(d, z)\leftarrow(P, V)(x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
 		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$.
 			Define $z_{ideal}$ by
 			$$\begin{cases}
