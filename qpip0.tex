@@ -234,10 +234,25 @@ We combine the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP
 \end{protocol}
 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of  Protocol~\ref{proto:qpip0_naive} ]
-If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, $\norm{(d,z_{naive})-(d,z_{ideal})}_q \leq O(\eps)$.
-
-, unless LWE can be efficiently solved by a quantum computer. 
+If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, $\norm{(d,z_{naive})-(d,z_{ideal})}_q \leq O(\eps)$, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with probability $1-\negl(n)$, there exist a $\rho$ such that $\norm{z_{commit}- M_{XZ}(\rho,h)}_q \leq \negl(n)$. Let $Ver$ be the verification operation run by Protocol~\ref{ProtoQPIP1} on the measurement outcome. \hannote{describe better} Since $Ver$ is an efficient process and $Ver(z_{commmit})=(d,z_{naive})$, we have that 
+
+\begin{equation} \label{eq:z=verM}
+    \norm{(d,z_{naive})-Ver( M_{XZ}(\rho,h))}_q \leq \negl(n).
+\end{equation}
+\hannote{actually true with subnormalize shit?}
+ By Theorem~\ref{QPIP1thm}, for all $\rho$, 
+ \begin{equation}
+     \norm{Ver(M_{XZ}(\rho,h))-(d,z_{ideal})}\leq O(\eps).
+ \end{equation}
+   Combined with Equation~\ref{eq:z=verM} and Lemma~\ref{lem:computational-triangle0}, we have that
+   \begin{equation}
+       \norm{(d,z_{naive})-(d,z_{ideal})}_q\leq O(\eps)
+   \end{equation}
+\end{proof}
 
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$}
