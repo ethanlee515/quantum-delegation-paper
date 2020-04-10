@@ -6,7 +6,7 @@
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 We write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
-We write $\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$. For all $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$ we have $\frac{1}{2}\norm{\rho_1-\rho_2}_1\leq\sqrt{1-F(\rho_1, \rho_2)}$.
+We write $\norm{\rho_1-\rho_2}_{tr}$ for the trace distance between $\rho_1$ and $\rho_2$. For all $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$ we have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
 
 \begin{definition} [quantum-classical channels]
 	\label{def:QCChannel}
@@ -24,37 +24,9 @@ The phase gate and Pauli matrices are denoted as follows.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
-\subsection{Relevant complexity classes}
-
-We define a few relevant complexity classes.
-
-\begin{definition} [$\BQP$]
-	Definition from Kitaev:
-	A \emph{quantum algorithm} for the computation of a function $F:\zo^*\rightarrow\zo^*$ is a classical algorithm (i.e., a Turing machine) that computes a function of the form $x\mapstochar\rightarrow Z(x)$, where $Z(x)$ is a description of a quantum circuit which computes $F(x)$ on empty input. The function $F$ is said to belong to class $\BQP$ if there is a quantum algorithm that computes $F$ in time $\poly(n)$.
-
-	Definition from Complexity Zoo:
-	$\BQP$ is the class of languages $L$ for which for all $n\in\bbN$ there exists a quantum circuit constructible in time $\poly(n)$ that, given any $x\in\set{0, 1}^n$ as input, correctly decides whether $x\in L$ at least $\frac{2}{3}$ of the time.
-	\Ethan{Just copy this from somewhere... Does anyone even define this?}
-\end{definition}
-
-\iffalse
-
-\begin{definition} [$\FBQP$]
-	A function $f:\set{0,1}^*\rightarrow\set{0,1}^*$ is in $\FBQP$ if there is a $\BQP$ machine that, $\forall x$, outputs $f(x)$ with overwhelming probability.
-	\Ethan{Need to be more formal. Also should be efficient verifiable}
-\end{definition}
-
-\fi
+\Ethan{I removed the definition of $\BQP$ since nobody else defines it in their papers anyways}
 
 We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
-
-\iffalse
-
-\begin{definition} [search problem]
-	A search problem $R$ is a collection of nonempty sets $(A_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0, 1}^*$, where $A_x$... \Ethan{Great, interface doesn't line up correctly}
-\end{definition}
-
-\fi
 
 \begin{definition} [sampling problem]
 	A sampling problem $S$ is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
@@ -65,67 +37,56 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 \end{definition}
 
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
-We classify the interaction between a (almost classical) client and a quantum server for sampling problems, extending the classification by \cite{FOCS:Mahadev18a}.
+We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
-	We say $\Pi=(P, V)$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and soundness error $s$ \Ethan{Might need these to be functions of $\abs{x}$} if
-	\Ethan{Look up ``interactive protocols for BQP". Right now it's missing quantifier for all x. Also need to mention d is decision bit; maybe do that in next definition and swap locations}
+	A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
 	\begin{itemize}
-		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c$.
-		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$. Let \Ethan{Use display math to make it obvious I'm defining this} $z_{ideal}\leftarrow D_x$ if $d=acc$, else $z_{ideal}=\bot$. Then $\norm{(d, z) - (d, z_{ideal})} \leq s$ \Ethan{make stat. distance notation consistent}.
-	\end{itemize} \hannote{need computational?}
-\end{definition}
-
-\Ethan{Acc, rej, P, V fonts}
-
-\Ethan{Might need to write our own def. here}
-
-\Ethan{Look at thesis for this}
-
-\begin{definition}
-	A sampling problem $S=(D_x)_{x\in\set{0, 1}^*}$ is said to be \Ethan{Try to make this more general; remove mentions of sampling/decision problems} in $\QPIP_\tau$ with completeness $c$ and soundness $s$ \Ethan{Don't tie this with completeness and soundness yet} if there exists a protocol $(\bbP, \bbV)(x)$ for $S$ with the following properties:
-	\begin{itemize}
-		\item $\bbP$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
-		\item $\bbV$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
-		\item There is also a classical communication channel between the prover and the verifier, which can transmit $\poly(\abs{x})$ many bits to either direction. 
+		\item $P$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
+		\item $V$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
+		\item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially many bits to either direction. 
 	\end{itemize}
 \end{definition}
 
-\Ethan{Two separate definitions for comp and soundness}
-
-\Ethan{Soundness?}
-
-\Ethan{Just call this blindness and put this under interactive protocols}
-
-\Ethan{See Thomas' paper if he defined this. Or actually, see https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf}
-
-We present the security definition for interactive protocols:
-
+\Ethan{Look up ``interactive protocols for BQP"}
 \begin{definition}
-    \Ethan{Define this in terms of views instead; see paper linked on Skype}
-
-	Let $\lambda$ be a security parameter.
-	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
-	Then it is IND-CPA secure if $\forall x\in\set{0,1}^n$ no polynomial time adversary $\cA$ can win \protoref{indcpa} with probability better than $\frac{1}{2}+\negl(\lambda)$
+	We say $\Pi=(P, V)$ is a protocol for the langauge $L$ if for all $x\in\zo^*$: TODO
 \end{definition}
 
-\begin{protocol}{Attack against semantic security}
-	\label{proto:indcpa}
-	\begin{enumerate}
-		\item The challenge picks $b\in\set{0,1}$ at random
-		\item If $b=0$, the challenger runs the protocol with the adversary, acting as the verifier with input $0^n$
-		\item Otherwise, the challenger runs the protocol with the adversary, acting as the verifier with input $x$
-		\item $\cA$ attempts to guess $b$
-	\end{enumerate}
-\end{protocol}
+\begin{definition}
+	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$.
+	We say $\Pi$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
+	\begin{itemize}
+		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
+		\item Let $(d, z)\leftarrow(P, V)(x)$. Then $d=rej$ with probability at most $c(\lambda)$.
+		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$.
+			Define $z_{ideal}$ by
+			$$\begin{cases}
+				z_{ideal}=\bot & \text{if } d=\Acc\\
+				z_{ideal}\leftarrow D_x & \text{if } d=\Rej
+			\end{cases}$$
+			then $\norm{(d, z) - (d, z_{ideal})} \leq \varepsilon$ \Ethan{make stat. distance notation consistent}.
+	\end{itemize} \hannote{need computational?} \Ethan{The norm at the end? Nah it's statistical distance}
+\end{definition}
+
+We also define blindness of a protocol.
+
+\begin{definition}
+	Let $\lambda$ be a security parameter.
+	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
+	Then it is \emph{blind} if...
+
+	\Ethan{TODO something about views}
+
+	\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf}
+\end{definition}
+
 
 \subsection{Chernoff bound}
 
-Taken from \href{http://math.mit.edu/~goemans/18310S15/chernoff-notes.pdf}{here}.
-
 \begin{thm}
 \label{thm:Chernoff}
-Let $X=\sum_{i=1}^n X_i$ where $X_i$ are i.i.d. \Ethan{Ind. is enough} Bernoulli trials, and $\mu=\E[X]$.
+Let $X=\sum_{i=1}^n X_i$ where $X_i$ are independent Bernoulli trials, and $\mu=\E[X]$.
 Then for all $0<\delta<1$,
 $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 \end{thm}
@@ -142,7 +103,7 @@ We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes
 
 We will instead use the following formulation, which can be obtained by relabeling variables from above.
 
-\Ethan{State 2.3; prove from 2.2 in appendix}
+\Ethan{State the one below; prove the one above in appendix}
 
 \begin{thm}
 	\label{thm:projection}
@@ -188,7 +149,7 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 \end{definition}
 
 $\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
-$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l))=f(\mathsf{HE.Dec}_{sk}(c_0),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
+$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l))=f(\mathsf{HE.Dec}_{sk}(c_1),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
 where $f$ is specified by a circuit of depth at most $L$.
 
 \Ethan{To be pedantic, the above doesn't imply Dec undoes Enc even if we sub in $f=\id$.}
@@ -201,11 +162,18 @@ We also recall the security definition for a FHE scheme.
 	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
 \end{definition}
 
-The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitate the use of classical clients:
-\begin{itemize}
-	\item $\QGen$ can be done classically.
-	\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
-	\item Its ciphertext takes the form $(X^xZ^z\rho Z^zX^x, c_{x, z})$, where $\rho$ is the plaintext and $c_{x, z}$ is a ciphertext that decodes to $(x, z)$ under a certain classical homomorphic encryption scheme.
-\end{itemize}
+The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitate the use of classical clients.
 
-\Ethan{Reword the above? How? 3rd point can be weakened to can be decrypted classically? Maybe call this ``classical friendly". Mention LWE. There exists a classical friendly... etc.}
+\begin{definition}
+	we call a quantum homomorphic encryption scheme \emph{classical-friendly} if it has the following properties:
+	\begin{itemize}
+		\item $\QGen$ can be done classically.
+		\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
+		\item Its ciphertext can be homomorphically measured, after which $\QDec$ can also be done classically.
+	\end{itemize}
+\end{definition}
+
+\begin{theorem} [from \cite{mahadev_qfhe}]
+	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine,
+	there exists a classical-friendly quantum homomorphic encryption scheme.
+\end{theorem}
