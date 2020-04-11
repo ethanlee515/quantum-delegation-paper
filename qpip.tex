@@ -21,20 +21,23 @@ within inverse polynomial errors.
 
 \Ethan{Actual technical part starts here}
 
+\Ethan{New changes: Re-parametrize so final error is eps. Write more details for soundness about the classical mix.}
+
 \begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{ProtoQPIP1}
 
-	Inputs: \Ethan{Should the $\SampBQP$ instance be an input?}
+	Inputs:
 	\begin{itemize}
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
-		\item Error parameter $\varepsilon\in(0, 1)$
+		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
+		\item Accuracy parameter $1^{1/\varepsilon}$ where $\varepsilon=\frac{1}{\poly(\lambda)}$ \Ethan{This feels strange... Neither $\forall\poly$ nor $\exists\poly$ feels right.}
 	\end{itemize}
 
 	Ingrediants:
 	\begin{itemize}
 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 		\item Let $T$ be the number of gates in $C$.
-		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
+		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
 		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
 		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
@@ -42,36 +45,32 @@ within inverse polynomial errors.
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=\frac{T^{21}}{\varepsilon^{33}}$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item\label{step:qpip1-verify} The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}}{\varepsilon^{15}}$, and $k\xleftarrow{\$}[M]\setminus I$. \hannote{$\xleftarrow{\$}$ ?}
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=505\frac{T^{21}\lambda^2}{\varepsilon^{31}}$ \Ethan{I think? Double check later} copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-verify} The verifier privately samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}\lambda}{\varepsilon^{14}}$, and $k\xleftarrow{\$}[M]\setminus I$. \hannote{$\xleftarrow{\$}$ ?} \Ethan{Sample randomly from. I thought it's standard notation}
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
-			\item If $i\in I$, run $z_i\leftarrow\cV_{\GS}(\rho_i)$.
-			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $y$.
+			\item If $i\in I$, run $y_i\leftarrow\cV_{\GS}(\rho_i)$.
+			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $z$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Z=\sum_{i\in I} z_i$. If $Z>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{2\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ as in \Cref{cor:HamCheck} then the verifier outputs $(acc, y)$. Else, it outputs $(rej, \bot)$.
+			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{72\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ as in \Cref{cor:HamCheck} then the verifier outputs $(\Acc, z)$.
+			Else, it outputs $(\Rej, \bot)$.
 	\end{enumerate}
 \end{protocol}
 
 Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
-It is simple to check that $\PiSamp$ runs in $\poly(T, \varepsilon^{-1})$ time.
+It is simple to check that $\PiSamp$ runs in $\poly(n, \lambda)$ time. \Ethan{Right? Or just $\poly(\lambda)$?}
 We now show its completeness and soundness.
-Particularly, we prove that it has $O(\varepsilon)$ soundness errors
-with the understanding that by relabelling $\varepsilon'=O(\varepsilon)$ and modifying $\PiSamp$ accordingly,
-one can achieve $\varepsilon'$ soundness errors while maintaining completeness and running time properties.
   
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and $O(\varepsilon)$ soundness error.
+	$\PiSamp$ has negligible completeness error and is computationally sound.
 \end{thm}
 \begin{prf}
 	For completeness, notice $z_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply Chernoff bound (\Cref{thm:Chernoff}) with $\mu=\frac{m}{2}$ and $\delta=\frac{c\varepsilon^2}{\left(T+\frac{T}{\varepsilon}\right)^5}$ to get
-	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq2e^{-\frac{\mu\delta^2}{3}}=\negl(\varepsilon^{-1}).$$
+	So we can apply Chernoff bound (\Cref{thm:Chernoff}) to get
+	$$\Prob{Z>\frac{m}{2}-\varepsilon m}\leq\negl(\lambda).$$
 	
-	\Ethan{Should be negl lambda}
-
 	Now we show soundness.
 
 	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier.
@@ -88,44 +87,41 @@ one can achieve $\varepsilon'$ soundness errors while maintaining completeness a
 	=\sigma'$$
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
-	\Ethan{$\sigma'_{\leq m+1}$ Maybe this notation for traced out state}
-
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $M$-fold tensor products of identical copies of some states $\tau_j$.
-	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes M}$
+	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes m+1}$
 	such that for all quantum-classical channels $\Lambda_i$ acting on registers with size of $\ket{\psi_{C'(x)}}$:
-	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'-\rho)}
+	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'_{\leq m+1}-\rho)}
 	\leq\sqrt{\frac{2m^2\left(n+T+\frac{T}{\varepsilon}\right)}{M-m}}
-	=O(\varepsilon).$$
+	\leq\frac{\varepsilon}{6}$$
+	where $\sigma'_{\leq m+1}$ is the first $m+1$ registers of $\sigma'$.
 	In our context, for $1\leq i\leq m$, $\Lambda_i$ corresponds to measurements chosen by $\cVGS$.
 	$\Lambda_{m+1}$ is measurement on the data register of $\rho_k$.
 	
-	\Ethan{TODO special font for acc/rej}
-	
-	\Ethan{Just say what would happen if V accs this instead}
-	
-	Now we claim that for each component $\tau_j$,
-	if $\PSampstar$ had sent $\tau_j^{\otimes M}$ instead then the soundness error is $O(\varepsilon)$.
-	Let $p_j$ be the probability that $\cVGS(\tau_j)=acc$, we seperate $\tau_j$ terms into two cases.
+	For each $\tau_j$, we define the distribution $(d_j, z_j)$ to correspond to $\VSamp$'s output if it were to receive $\tau_j^{\otimes M}$ from $\PSampstar$, and define $z_{j, ideal}$ accordingly.
+	We claim that $(d_j, z_j)$ is $\frac{2\varepsilon}{6}$-close to $(d_j, z_{j, ideal})$.
+	Let $p_j$ be the probability that $\cVGS(\tau_j)=\Acc$, and consider two cases as follows.
 
 	First suppose $p_j<\frac{1}{2}-2\kappa$,
 	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities.
-	That is, it outputs $(rej, \bot)$ with overwhelming probability, hence has negligible soundness errors.
+	That is, $(d_j, z_j)$ is $\negl(\lambda)$-close to $(\Rej, \bot)$.
 
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
 	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\tau_j$ and $\ket{\psi_{C'(x)}}$:
-	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\varepsilon^2.$$
+	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\frac{\varepsilon^2}{36}.$$
 	which in turn implies a lower bound on the respective trace distance:
-	$$\frac{1}{2}\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_1<\varepsilon.$$
-	Let $(d, y)$ be $\VSamp$'s output \Ethan{on input tau j}. Suppose $d=acc$, then $y$ would be the measurement on $\tau_j$'s data register,
-	which is $\varepsilon$-close to that on $\ket{\psi_{C'(x)}}$.
+	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\varepsilon}{6}.$$
+	Suppose $d_j=\Acc$, then $z_j$ would be $\negl(\lambda)$-close to the measurement on $\tau_j$'s data register,
+	which is $\frac{\varepsilon}{6}$-close to that on $\ket{\psi_{C'(x)}}$.
 	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has $1-\varepsilon$ probability to contain $C(x)$ due to the padding.
-	So $y$ is $O(\varepsilon)$-close to $y_{ideal}$ when $d=acc$,
-	which implies that $(d, y)$ is $O(\varepsilon)$-close to $(d, y_{ideal})$.
+	So $z_j$ is $\frac{2\varepsilon}{6}$-close to $z_{ideal}$ when $d=\Acc$,
+	which implies that $(d_j, z_j)$ is $\frac{2\varepsilon}{6}$-close to $(d_j, z_{j, ideal})$.
 
-	The cheating prover's strategies corresponding to $\tau_j$ all have $O(\varepsilon)$ soundness errors.
-	As $\rho$ is a convex combination \Ethan{More equations...} of these strategies, we conclude the same about it.
-	Finally, as the outputs corresponding to $\sigma$ is $\varepsilon$-close to that of some $\rho$,
-	by data processing inequality we conclude that $\PiSamp$ has $O(\varepsilon)$ soundness errors.
+	Define $z_\rho$ to be the output distribution corresponding to if $\VSamp$ were to receive $\rho=\sum_j w_j\tau_j^{\otimes M}$ instead of $\sigma$ from the server,
+	and define $z_{\rho, ideal}$ accordingly.
+	We have $\norm{(d_\rho, z_\rho) - (d', z'_{\rho, ideal})}_{TV} < \frac{2\varepsilon}{6}$ since the same is true for all components $\tau_j$.
+
+	As $(d, z)$ is $\frac{\varepsilon}{6}$-close to $(d_\rho, z_\rho)$ for some $\rho$ by de Finetti's theorem and data processing inequality,
+	using triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{TV}\leq\frac{\varepsilon}{2}$.
+	Hence we have $\norm{d - d_\rho}_{TV}\leq\frac{\varepsilon}{2}$, which implies $\norm{(d_\rho, z'_{\rho, ideal}) - (d, z_{ideal})}_{TV}\leq\frac{\varepsilon}{2}$.
+	The conclusion then follows from triangle inequality.
 \end{prf}
-
-\Ethan{Switch y and z}

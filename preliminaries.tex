@@ -54,26 +54,26 @@ We model the interaction between a (almost classical) client and a quantum serve
 
 \Ethan{Look up ``interactive protocols for BQP"}
 \begin{definition}
-	We say $\Pi=(P, V)$ is a protocol for the langauge $L$ with completeness error $c$ and soundness error $s$ if for all $x\in\zo^*$:
+	We say $\Pi=(P, V)$ is a protocol for the langauge $L$ with completeness error $c$ and soundness error $s$ if for all $x\in\zo^*$ and security parameter $1^\lambda$:
 	\begin{itemize}
-		\item If $x\in L$, then $\Pr\left[(P, V)(x)=\Rej\right]<c(\abs{x})$.
-		\item If $x\notin L$, then for all cheating prover $P^*$, $\Pr\left[(P^*, V)(x)=\Acc\right]<s(\abs{x})$.
+		\item If $x\in L$, then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
+		\item If $x\notin L$, then for all cheating prover $P^*$, $\Pr\left[(P^*, V)(x, 1^\lambda)=\Acc\right]<s(\lambda)$.
 	\end{itemize}
 \end{definition}
 
 \begin{definition}
 	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$.
-	We say $\Pi$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
+	We say $\Pi$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and computational soundness \Ethan{Specify it's computational or no?} if for all $x\in\zo^*$:
 	\begin{itemize}
 		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
-		\item Let $(d, z)\leftarrow(P, V)(x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x)$.
+		\item Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
+		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
 			Define $z_{ideal}$ by
 			$$\begin{cases}
 				z_{ideal}=\bot & \text{if } d=\Rej\\
 				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
 			\end{cases}$$
-			then $\norm{(d, z) - (d, z_{ideal})}_{TV} \leq \varepsilon$.
+			then for all adversary, its probability to distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\varepsilon$.
 	\end{itemize} \hannote{need computational version of soundness?} \Ethan{Yeah. Will fix.}
 \end{definition}
 
@@ -87,9 +87,7 @@ We also define blindness of a protocol.
 		\item $\set{\View_{P^*}(P^*, V(x))(1^\lambda)}_{\lambda\in\bbN, x\in\zo^n}$
 		\item $\set{\View_{P^*}(P^*, V(0))(1^\lambda)}_{\lambda\in\bbN, x\in\zo^n}$
 	\end{itemize}
-	\Ethan{Do I need to write out unrelated inputs to be fully general?}
-
-	\Ethan{See https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf}
+	\Ethan{See \url{https://www.iis.sinica.edu.tw/~kmchung/download/ConstCZK.pdf}}
 \end{definition}
 
 \subsection{Chernoff bound}
