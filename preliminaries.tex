@@ -37,7 +37,7 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 \end{definition}
 
 \begin{definition} [$\SampBQP$]
-	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 0^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
+	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 1^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 \end{definition}
 
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
@@ -63,7 +63,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 
 \begin{definition}
 	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$.
-	We say $\Pi$ is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and computational soundness \Ethan{Specify it's computational or no?} if for all $x\in\zo^*$:
+	We say $\Pi$ is a computationally sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
 	\begin{itemize}
 		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
 		\item Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
@@ -73,8 +73,9 @@ We model the interaction between a (almost classical) client and a quantum serve
 				z_{ideal}=\bot & \text{if } d=\Rej\\
 				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
 			\end{cases}$$
-			then for all adversary, its probability to distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\varepsilon$.
-	\end{itemize} \hannote{need computational version of soundness?} \Ethan{Yeah. Will fix.}
+			then for all adversary, its probability to successfully distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\frac{1}{2}+\frac{\varepsilon}{2}$
+			\Ethan{Something like this? Or need protocol or specify prior probability is 1/2 each?}
+	\end{itemize}
 \end{definition}
 
 We also define blindness of a protocol.
@@ -104,6 +105,7 @@ $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
 
 \begin{thm}
+	\label{thm:proj1}
 	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
 	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
 	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
@@ -111,15 +113,16 @@ We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes
 
 We will instead use the following formulation, which can be obtained by relabeling variables from above.
 
-\Ethan{State the one below; prove the one above in appendix}
-
 \begin{thm}
 	\label{thm:projection}
 	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
-	$$J=\frac{10\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+	$$J=\frac{11\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
 	then we have
 	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
 \end{thm}
+\begin{proof}
+	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $10\norm{H_1}$.
+\end{proof}
 
 \subsection{Quantum de Finetti Theorem under Local Measurements}
 
