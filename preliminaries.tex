@@ -40,6 +40,11 @@ We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $S=\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists a polynomial-time quantum algorithm $B$ that, given $(x, 1^{1/\varepsilon})$ as input, samples from a probability distribution $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 \end{definition}
 
+\Ethan{Circuit only depends on len(x) and eps.
+Maybe define BQP first and do this after?}
+
+\textbf{Also need to add, without loss of the generality, the sampling happens by first executing a BQP circuit and then perform simple measurements. }
+
 \subsection{Quantum Prover Interactive Protocol (QPIP)}
 We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
 

@@ -270,10 +270,14 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 
 \begin{protocol}{$\QPIP_0$ for $\SampBQP$}
 \label{proto:QPIP0samp}
+Inputs: 
+ Both verifier and prover start with the description of number of qubits $n$,  input string $x$ to the $\SampBQP$ Instance, and a soundness parameter $\varepsilon$.
+    
+Protocol:
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
-    \item Both verifier and prover start with the description of number of qubits $n$, quantum circuit $C$, input string $x$, and  a soundness parameter $\varepsilon$.
-    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
+    
+    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{step:qpip1-state-gen} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
     \item \label{step:multi-testing}Verifier rejects if the result on any of the test rounds is rejected. 
     \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
@@ -284,7 +288,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \end{theorem}
 
 
-
+\hannote{Intuitions about the partition lemma. }
 
 
 
@@ -292,7 +296,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \begin{lemma}[partition lemma2]\label{lem:partition2}
 Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U_0$ is the how the prover generates answer in the second round, and $U$ is how the prover generates answer in the fourth round. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$.  Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$.
 
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
+ For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  \hannote{$\psi$ should not be pure state?} \hannote{actually need to fix a $pk$ for everything here.}
 
 \begin{align}
     G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ} \\ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}  \\
@@ -405,7 +409,10 @@ where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =
 
 Now we are ready to prove Theorem~\ref{thm:qpip0}
 \begin{proof}
-We begin by considering the state $\ket{\psi}$ the prover in Protocol~\ref{proto:QPIP0samp} hold before he receives $\{c\}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
+Completeness is trivial.
+
+
+For soundness, We begin by considering the state $\ket{\psi}$ the prover in Protocol~\ref{proto:QPIP0samp} hold before he receives $\{c\}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 
 
 For all $k\leq m$, $d\in \zo^k$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
@@ -421,7 +428,7 @@ By Lemma~\ref{lem:partition2}, we have
     &+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}}, 
 \end{align}
 
-where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
+where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over verifier's choice of $pk$.}
 
 By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
 \begin{align} \label{eq:bad-term-sum}
@@ -564,12 +571,17 @@ where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi
 ===
 
 %Prove that $z_{good}$ is binding.
-We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a $n$-qubit quantum state $\rho$ such that $z_{good}$ is $\eps$-Q-computationally indistinguishable to $\sum_z \proj{z} \tr\L(\rho \sigma_h \R)$.
+We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a subnormalized $n$-qubit quantum state $\rho_{good}$ such that $z_{good}$ is $\eps$-Q-computationally indistinguishable to $M_{XZ}(\rho_{good},h)$.
+
+\hannote{$M_{XZ}(\rho_{good},h)=\sum_z \proj{z} \tr\L(\rho \sigma_{h,z} \R)?$}.
 \hannote{add notation for pauli matrix $\sigma_h$.}
 
-\hannote{$\rho$ is sub normalized}
-
 \hannote{need to simulate one copy?}
+
+For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}: The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.
+
+
+==== old ===
 
 
 For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for Protocol~\ref{proto:urmila4}: on the first round the verifier pick $h$ from distribution specified by ???? of Protocol~\ref{ProtoQPIP1}. On the second round, the prover start with picking a uniformaly random $i\in [m]$. The prover then tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.

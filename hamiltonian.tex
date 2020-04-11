@@ -1,15 +1,39 @@
-\section{Construction of the XZ Local Hamiltonian}
+\section{Construction of the X-Z Local Hamiltonian for $\SampBQP$}
 \label{sec:Hamiltonian}
 
-\XW{highlight the different requirement from the normal Local Hamiltonian reduction; and highlight a bit about the solution idea}
 
-In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian instance.
+\def \Hin {H_{\mathrm{in}}}
+\def \Hout {H_{\mathrm{out}}}
+\def \Hprop {H_{\mathrm{prop}}}
+\newcommand{\histpsi}[1]{\ket{\psi_{#1}^{\mathrm{hist}}}}
 
-The local Hamiltonian problem is $\QMA$-complete, which means it's $\BQP$-hard.
-Protocols to delegate $\BQP$ computations such as \cite{FOCS:Mahadev18a} \Ethan{Are there any more?} take advantage of this fact and require the prover to send the corresponding $\QMA$ certificate.
-We take a similar approach to delegate $\SampBQP$ computations; however, we need to extract more information from the certificates.
-Local Hamiltonians have been extensively studied in contexts of adiabatic quantum computations, so we will summarize known results from sources such as \cite{adiabatic}.
-\Ethan{This source was given to us by Yu-Ching; I haven't read it. Also I probably should cite more sources here.}
+
+As we mentioned in this introduction, we will employ the circuit \emph{history} state in the original construction of the Local Hamiltonian problem~\cite{kitaev2002classical} to encode the circuit information for $\SampBQP$. 
+However, there are distinct requirements between certifying the computation for $\BQP$ and $\SampBQP$ based on the history state.
+For any quantum circuit $C$ on input $x$, the original construction for certifying $\BQP$\footnote{The original construction is for the purpose of certifying problems in QMA. We consider its simple restriction to problems inside BQP.} consists of three parts of local Hamiltonian $\Hin, \Hprop$, $\Hout$ where $\Hin$ is used to certify the initial input $x$, $\Hprop$ to certify the gate-by-gate evolution according to the circuit description, and $\Hout$ to certify the final output. 
+In particular, the history state referring to quantum circuit $C$ on input $x$ is in the ground space of $\Hin$ and $\Hprop$. Note that $\BQP$ is a decision problem and its outcome (0/1) can be easily encoded into the energy $\Hout$ on the single output qubit. 
+As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hprop + \Hout$. 
+
+To deal with $\SampBQP$, we will still employ $\Hin$ and $\Hprop$ to certify the circuit's input and gate-by-gate evolution. However, in this case, we care about the entire final state of the circuit, rather than the energy on the output qubit. The history state is still in the ground space of $\Hin + \Hprop$.  
+One approach to certify the entire final state encoded inside the history state is to make sure that the history state is the unique ground state of $\Hin + \Hprop$ and all other orthogonal states will have much higher energies. 
+Namely, we need to construct some $\Hin'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies. 
+This guarantees that any state with close-to-ground energy must also be close to the history state. 
+We remark that this is a much stronger and different requirement from most local Hamiltonian constructions where the focus is on the ground energy. 
+However, we show it can indeed be achieved by using the \emph{perturbation} technique 
+developed in the local Hamiltonian literature (e.g.~\cite{kempe_kitaev_regev_2006}) for a different purpose. 
+
+
+
+
+
+%\XW{highlight the different requirement from the normal Local Hamiltonian reduction; and highlight a bit about the solution idea}
+
+% In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian instance.
+% The local Hamiltonian problem is $\QMA$-complete, which means it's $\BQP$-hard.
+% Protocols to delegate $\BQP$ computations such as \cite{FOCS:Mahadev18a} \Ethan{Are there any more?} take advantage of this fact and require the prover to send the corresponding $\QMA$ certificate.
+% We take a similar approach to delegate $\SampBQP$ computations; however, we need to extract more information from the certificates.
+% Local Hamiltonians have been extensively studied in contexts of adiabatic quantum computations, so we will summarize known results from sources such as \cite{adiabatic}.
+% \Ethan{This source was given to us by Yu-Ching; I haven't read it. Also I probably should cite more sources here.}
 
 We begin by recalling the form that local Hamiltonian certificates:
 
