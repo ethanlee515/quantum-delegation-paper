@@ -72,7 +72,7 @@ There exists an efficient prover that passes the test round with probability $1$
 
 \subsection{Mahadev's classical "commitment" of $XZ$ measurement}
 
-In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave the following 4-round interactive protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine. 
+In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round interactive protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine, which we describe below while omitting the implementation details. 
 
 \begin{protocol}{Mahadev's 4 round commitment}
 \label{proto:urmila4}
@@ -93,7 +93,7 @@ In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave the following 4-
 With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$.
 \end{definition}
 
-\begin{lem}~\label{lem:trivial-4-round-strategy}
+\begin{lem}[\hannote{ref}\hannote{unused}]~\label{lem:trivial-4-round-strategy}
     For any input, there exist a prover strategy for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing round and \hannote{binding?}.
 \end{lem}
 
@@ -142,7 +142,7 @@ so
 \end{proof}
 
 
-\begin{lem}[another triangle inequality for computational distance]\label{lem:computational-triangle}
+\begin{lem}[another triangle inequality for computational distance \hannote{unused}]\label{lem:computational-triangle}
 Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
 
 If 
@@ -225,7 +225,7 @@ We combine the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP
 	\begin{enumerate}
 	\item The verifier choose a $XZ$-measurement $h$ over  $M=\frac{T^{21}}{\varepsilon^{33}}$  copies of $\ket{\psi_{C'(x)}}$ from the distribution emergent from by Step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1}.
 	
-	\item The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \times$ (number of qubits in $\ket{\psi_{C'(x)}}$), where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$.
+	\item The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \times$ (number of qubits in $\ket{\psi_{C'(x)}}$), where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the second round of Protocol~\ref{proto:urmila4} to abort the process.\footnote{This is useless for the cheating prover but useful for proving our theorem.} If the verifier receives $\bot$ in the second round, he outputs $(\Rej,\bot)$ and terminates the protocol.
 	
 	\item If $c=1$, the verifier finished the verification step of Protocol~\ref{ProtoQPIP1} by using $z$ from Protocol~\ref{proto:urmila4} as the measurement result he would get and outputs $(d,z_{naive})$
 	
@@ -465,7 +465,7 @@ Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corre
 
 
 $$z_i\defeq \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round.
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. \hannote{need to average $pk$ here.}
 
 Since $\{c\}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
@@ -578,7 +578,7 @@ We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a subnorma
 
 \hannote{need to simulate one copy?}
 
-For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}: The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.
+For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}: The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.
 
 
 ==== old ===

@@ -14,16 +14,23 @@ For any quantum circuit $C$ on input $x$, the original construction for certifyi
 In particular, the history state referring to quantum circuit $C$ on input $x$ is in the ground space of $\Hin$ and $\Hprop$. Note that $\BQP$ is a decision problem and its outcome (0/1) can be easily encoded into the energy $\Hout$ on the single output qubit. 
 As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hprop + \Hout$. 
 
-To deal with $\SampBQP$, we will still employ $\Hin$ and $\Hprop$ to certify the circuit's input and gate-by-gate evolution. However, in this case, we care about the entire final state of the circuit, rather than the energy on the output qubit. The history state is still in the ground space of $\Hin + \Hprop$.  
-One approach to certify the entire final state encoded inside the history state is to make sure that the history state is the unique ground state of $\Hin + \Hprop$ and all other orthogonal states will have much higher energies. 
+To deal with $\SampBQP$, we will still employ $\Hin$ and $\Hprop$ to certify the circuit's input and gate-by-gate evolution. However, in this case, we care about the entire final state of the circuit, rather than the energy on the output qubit. The history state remains in the ground space of $\Hin + \Hprop$.  
+Our approach to certify the entire final state (which is encoded inside the history state) is to make sure that the history state is the unique ground state of $\Hin + \Hprop$ and all other orthogonal states will have much higher energies. 
 Namely, we need to construct some $\Hin'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies. 
-This guarantees that any state with close-to-ground energy must also be close to the history state. 
-We remark that this is a much stronger and different requirement from most local Hamiltonian constructions where the focus is on the ground energy. 
-However, we show it can indeed be achieved by using the \emph{perturbation} technique 
+It is guaranteed that any state with close-to-ground energy must also be close to the history state. 
+We remark that this is an additional strong requirement, whereas most local Hamiltonian constructions focus on the ground energy. 
+We show it can indeed be achieved by using the \emph{perturbation} technique 
 developed in the local Hamiltonian literature (e.g.~\cite{kempe_kitaev_regev_2006}) for a different purpose. 
+Another example of local Hamiltonian construction focusing on the spectral gap can be found in~\cite{adiabatic} where the purpose is to simulate quantum circuits by adiabatic quantum computation. 
 
+We need, however, two more further twists to serve our purpose. 
+First, as we will eventually measure the final state in order to obtain classical samples, we need that the final state occupies a large fraction of the history state. We can simply add dummy identity gates for that purpose. 
+Second, as we are only able to perform $X$ or $Z$ measurement by techniques from~\cite{FOCS:Mahadev18a},
+we need to construct X-Z only local Hamiltonians. 
+\XW{TOADD: some old references}
+We achieve this by choosing one particular universal gate set and will include our construction for the sake of completeness. 
 
-
+\XW{TOADD: some orgainization}
 
 
 %\XW{highlight the different requirement from the normal Local Hamiltonian reduction; and highlight a bit about the solution idea}
@@ -35,25 +42,52 @@ developed in the local Hamiltonian literature (e.g.~\cite{kempe_kitaev_regev_200
 % Local Hamiltonians have been extensively studied in contexts of adiabatic quantum computations, so we will summarize known results from sources such as \cite{adiabatic}.
 % \Ethan{This source was given to us by Yu-Ching; I haven't read it. Also I probably should cite more sources here.}
 
-We begin by recalling the form that local Hamiltonian certificates:
 
-\begin{dfn}
+\subsection{Specific Construction}
+
+Recall the definition of the history state which serves as a transcript of the circuit evolution~\cite{kitaev2002classical}:
+
+\begin{dfn}[History-state]
 	\label{dfn:groundstate}	
-	Let $C=U_T\ldots U_1$ be a quantum circuit consisting of $T$ gates, and let $x\in\set{0,1}^n$. Then we denote
-	$$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$$
-	We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
+    Given any quantum circuit $C=U_T\ldots U_1$ of $T$ elementary gates and input $x\in\{0,1\}^n$, the \emph{history}-state $\histpsi{C(x)}$ is defined by
+    \begin{equation}
+        \histpsi{C(x)} \equiv \frac{1}{\sqrt{T}}\sum_{t=0}^TU_t\ldots U_1\ket{x,0}\otimes\ket{\hat{t}},
+    \end{equation}
+    where the first register refers to the input, the second refers to the work space which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$ up to design choice. 
 \end{dfn}
 
-\begin{rmk}
-	\label{idpadding}
-	One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
-	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
-\end{rmk}
+% \begin{rmk}
+% 	\label{idpadding}
+% 	One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
+% 	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
+% \end{rmk}
+
+\XW{define $k$-local XZ Hamiltonian}
 
 We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
 \begin{dfn}
 	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
 \end{dfn}
+
+\XW{cite the results that Toffoli and Hadamard gates
+and add the fact}
+
+Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
+Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
+Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
+\begin{thm}
+	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
+\end{thm}
+\begin{prf}
+	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
+	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+\end{prf}
+
+
+
+
+\XW{main construction and proofs}
 
 Now we state the main theorems that we'll work towards in this section.
 The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, with some additional properties that will be convenient for us:
@@ -68,66 +102,53 @@ The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, 
 	\end{itemize}
 \end{thm}
 
-The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
-\begin{thm}
-	\label{ThmXZCheck}
-	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
-\end{thm}
+% The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
+% \begin{thm}
+% 	\label{ThmXZCheck}
+% 	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
+% \end{thm}
 
-\subsection{Circuits of Toffoli and Hadamard gates}
+%\subsection{Circuits of Toffoli and Hadamard gates}
 
-Old notation: Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli gate.
-\Ethan{TODO: replace with something that looks better and doesn't conflict with the use of $\Lambda$ as measurement.}
+% Old notation: Let $\Lambda_c(U)$ denote the gate $U$ controlled on qubit $c$, and $\Lambda^2_{f, s}(U)$ denote the gate $U$ controlled by both $f$ and $s$. I.e. $\Lambda^2_{1, 2}(X_3)$ would be a Toffoli gate.
+% \Ethan{TODO: replace with something that looks better and doesn't conflict with the use of $\Lambda$ as measurement.}
 
-Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
-Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
-Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
-\begin{thm}
-	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
-\end{thm}
-\begin{prf}
-	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
-\end{prf}
 
-Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
-\begin{thm}
-	Let $C$ be a circuit that:
-	\begin{itemize}
-		\item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
-		\item uses $n$ qubits
-	\end{itemize}
-	Then a classical machine given $C$ can compute a circuit $C'$ that:
-	\begin{itemize}
-		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
-		\item uses $n+1$ qubits
-		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
-		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
-	\end{itemize}
-\end{thm}
-\begin{prf}
-	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
-	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
-		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+% Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
+% \begin{thm}
+% 	Let $C$ be a circuit that:
+% 	\begin{itemize}
+% 		\item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
+% 		\item uses $n$ qubits
+% 	\end{itemize}
+% 	Then a classical machine given $C$ can compute a circuit $C'$ that:
+% 	\begin{itemize}
+% 		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
+% 		\item uses $n+1$ qubits
+% 		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
+% 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
+% 	\end{itemize}
+% \end{thm}
+% \begin{prf}
+% 	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
+% 	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
+% 		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 
-	Now consider the transform on quantum states
-	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
-	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
+% 	Now consider the transform on quantum states
+% 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
+% 	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
-	This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
-	$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
-	$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
+% 	This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
+% 	$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
+% 	$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 
-	We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
-	\begin{itemize}
-		\item $C'$ uses only Hadamard and Toffoli gates.
-		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
-		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
-	\end{itemize}
-\end{prf}
-
-\subsection{Reducing quantum circuit to local Hamiltonian}
+% 	We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
+% 	\begin{itemize}
+% 		\item $C'$ uses only Hadamard and Toffoli gates.
+% 		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
+% 		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+% 	\end{itemize}
+% \end{prf}
 
 In this subsection, we prove \cref{thm:LHReduction} by showing how to reduce a $\SampBQP$ circuit to a local-$XZ$-Hamiltonian.
 
@@ -200,7 +221,7 @@ $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 
-\subsection{Checking the ground state of the local Hamiltonian}
+\subsection{TBA}
 
 In this subsection, we prove \cref{ThmXZCheck}.
 That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
