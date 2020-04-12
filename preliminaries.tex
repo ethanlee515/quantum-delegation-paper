@@ -10,6 +10,7 @@ we write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\rig
 We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$.
 We have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
 For two densities $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance.
+We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
 
 \begin{definition} [quantum-classical channels]
 	\label{def:QCChannel}
@@ -63,7 +64,8 @@ We model the interaction between a (almost classical) client and a quantum serve
 For $\SampBQP$ protocols, the accuracy error is encoded in the $\SampBQP$ instance itself, so there are no soundness parameters.
 
 \begin{definition}
-	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$.
+	\label{dfn:stats-secure-proto-sampbqp}
+	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$. \Ethan{Or, where to put this poly dependence? And is this $\exists\poly$ or $\forall\poly$? Both sounds strange.}
 	We say $\Pi$ is a statistically sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
 	\begin{itemize}
 		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
@@ -82,20 +84,11 @@ As sometimes one only achieves computational guarantees instead of statistical o
 we also model the corresponding situation for $\SampBQP$ protocols.
 
 \begin{definition}
-	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$.
-	We say $\Pi$ is a computationally sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
-	\begin{itemize}
-		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
-		\item Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
-			Define $z_{ideal}$ by
-			$$\begin{cases}
-				z_{ideal}=\bot & \text{if } d=\Rej\\
-				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
-			\end{cases}$$
-			then for all adversary, its probability to successfully distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\frac{1}{2}+\frac{\varepsilon}{2}$
-			\Ethan{Something like this? Or need protocol or specify prior probability is 1/2 each?}
-	\end{itemize}
+	Define everything as in \Cref{dfn:stats-secure-proto-sampbqp}.
+	We say $\Pi=(P, V)$ is \emph{computationally sound} instead of statistically if instead of 
+	$\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$,
+	we have that the probability for any adversary to successfully distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\frac{1}{2}+\frac{\varepsilon}{2}$.
+	\Ethan{Something like this? Or need protocol or specify prior probability is 1/2 each?}
 \end{definition}
 
 We define blindness of a protocol as follows.

@@ -30,7 +30,7 @@ within inverse polynomial errors.
 	\begin{itemize}
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
-		\item Accuracy parameter $1^{1/\varepsilon}$ where $\varepsilon=\frac{1}{\poly(\lambda)}$ \Ethan{Just say between 0 and 1; specify poly lambda in thm statement}
+		\item Accuracy parameter $1^{1/\varepsilon}$ where $\varepsilon\in(0, 1)$
 	\end{itemize}
 
 	Ingrediants:
@@ -40,6 +40,7 @@ within inverse polynomial errors.
 		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
 		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$. \Ethan{Cite previous theorem}
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
+		\item Let $s=n+T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$
 		\item Let $\cVGS$ be the verification algorithm for $H_{C'(x)}$ as defined in \Cref{AlgGroundStateCheck}.
 	\end{itemize}
 
@@ -53,30 +54,29 @@ within inverse polynomial errors.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name} of $\rho_i$ under the standard basis and save the outcome as $z$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{72\left(T+\frac{T}{\varepsilon}\right)^5}$ and $c\in\bbR$ is the constant specified in \Cref{cor:HamCheck}, then the verifier outputs $(\Acc, z)$.
+			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{72\left(T+\frac{6T}{\varepsilon}\right)^5}$ and $c\in\bbR$ is the constant specified in \Cref{cor:HamCheck}, then the verifier outputs $(\Acc, z)$.
 			Else, it outputs $(\Rej, \bot)$.
 	\end{enumerate}
 \end{protocol}
 
 Note that $\VSamp$ only needs to apply $X$ and $Z$ measurements, and is classical otherwise.
 It is simple to check that $\VSamp$ runs in $\poly(n, \lambda, \frac{1}{\epsilon})$ time.
+\Ethan{Maybe this is less work than defining a general ``efficient verifier", since $\BQP$ and $\SampBQP$ have different inputs}
 We now show its completeness and soundness.
   
 \begin{thm}
     \label{QPIP1thm}
 	$\PiSamp$ has negligible completeness error and is statistically sound.
-	\Ethan{Should also say $\lambda$ and $\varepsilon$ are inverse poly related. Or actually, maybe specify that in soundness dfn.}
-	
-	\Ethan{Might want to define verifier being efficient (poly-time) there too}
+	\Ethan{TODO Fix this. Figure out where to put the inverse poly dependence between lambda and eps.}
 \end{thm}
 \begin{prf}
 	For completeness, notice $y_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
 	So we can apply Chernoff bound (\Cref{thm:Chernoff}) to get
 	$$\Prob{Y>\frac{m}{2}-\varepsilon m}\leq\negl(\lambda).$$
-	\Ethan{So its rejection chance is...}
+	So $\VSamp$ has negligible probability to reject.
 	
 	Now we show soundness.
-	Suppose $\PSampstar$ is a cheating prover that sends some $\sigma$ to the verifier. \Ethan{on inputs x, eps, lambda...}
+	Suppose $\PSampstar$ is a cheating prover that, on inputs $x, 1^{1/\varepsilon}, 1^\lambda$, sends some $\sigma$ to the verifier.
 
 	The first step of our analysis is to use de Finetti's theorem.
 	Randomly picking $m+1$ out of $M$ registers is equivalent to first applying a random permutation then taking the first $m+1$ registers.
@@ -92,7 +92,7 @@ We now show its completeness and soundness.
 
 	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $m+1$-fold tensor products of identical copies of some states $\tau_j$.
 	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes m+1}$
-	such that for all quantum-classical channels $\Lambda_i$ acting on registers with size of $\ket{\psi_{C'(x)}}$ \Ethan{Make that size another variable}:
+	such that for all quantum-classical channels $\Lambda_i$ acting on registers of size $s$:
 	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'_{\leq m+1}-\rho)}
 	\leq\sqrt{\frac{2m^2\left(n+T+\frac{6T}{\varepsilon}\right)}{M-m}}
 	\leq\frac{\varepsilon}{6}$$
