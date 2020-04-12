@@ -9,7 +9,8 @@ For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
 we write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
 We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$.
 We have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
-For two densities $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance.
+For two distributions $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance,
+and we say $f_1$ and $f_2$ are $\varepsilon$-close if $\norm{f_1-f_2}_{TV}\leq\varepsilon$. \Ethan{TODO Copy and paste this for trace dist.}
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
 
 \begin{definition} [quantum-classical channels]
@@ -29,54 +30,76 @@ The phase gate and Pauli matrices are the following matrices.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
-\Ethan{I removed the definition of $\BQP$ since nobody else defines it in their papers anyways}
+\subsection{Sampling Problems}
 
-We define search and sampling versions of $\BQP$ based on \cite{aaronson_2013}.
+We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
-	A \emph{sampling problem} is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{p(n)}$ for some fixed polynomial $p$.
+	A \emph{sampling problem} is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{m(n)}$ for some fixed polynomial $m$.
 \end{definition}
 
 \begin{definition} [$\SampBQP$]
-	$\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ for which there exists an efficient $\BPP$ machine that, on input $(n, 1^{1/\varepsilon})$, outputs a quantum circuit (that is, a sequence of unitary gates) $C$ such that for all $x\in\zo^n$, the standard basis measurement outcome on some designated output register \Ethan{Feels incredibly wordy. Not sure if the word ``register" here feels right either.} of $C(x)$ is $\varepsilon$-close to $D_x$.
+	$\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\varepsilon \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\varepsilon)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$.
 \end{definition}
 
-\subsection{Quantum Prover Interactive Protocol (QPIP)}
+\subsection{Quantum Prover Interactive Protocols (QPIP)}
+
+\Ethan{TODO, lower priority: define protocols}
+
 We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
 
 \begin{definition}
 	A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
 	\begin{itemize}
-		\item $P$ is run by the prover, a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
-		\item $V$ is run by the verifier, which is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
-		\item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially \Ethan{Is this good enough, or should I try to say poly in input length? Input isn't defined yet.} many bits to either direction. 
+		\item $P$ is a $\BQP$ \Ethan{wording; quantum poly time?} machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
+		\item $V$ is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
+		\item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially many bits to either direction.
 	\end{itemize}
 \end{definition}
 
-\begin{definition}
-	We say $\Pi=(P, V)$ is a protocol for the langauge $L$ with completeness error $c$ and soundness error $s$ if for all $x\in\zo^*$ and security parameter $1^\lambda$:
-	\begin{itemize}
-		\item If $x\in L$, then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
-		\item If $x\notin L$, then for all cheating prover $P^*$, $\Pr\left[(P^*, V)(x, 1^\lambda)=\Acc\right]<s(\lambda)$.
+\Ethan{Sec. param. should be 1st param}
+
+\begin{definition} \Ethan{Wording at the beginning isn't consistent...}
+	We say \Ethan{quantify this as QPIP proto} $\Pi=(P, V)$ is a protocol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds.
+\begin{itemize}
+	    \item For every... TODO INTERFACE
+		\item (Completeness): For all security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
+		$\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
+		\item (Soundness): For all cheating $\BQP$ prover $P^*$ \Ethan{TODO think about why this has to be quantified first before lambda}, for sufficiently large security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
 	\end{itemize}
 \end{definition}
-
-For $\SampBQP$ protocols, the accuracy error is encoded in the $\SampBQP$ instance itself, so there are no soundness parameters.
 
 \begin{definition}
 	\label{dfn:stats-secure-proto-sampbqp}
-	Let $\Pi=(P, V)$ be a protocol with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$. \Ethan{Or, where to put this poly dependence? And is this $\exists\poly$ or $\forall\poly$? Both sounds strange.}
-	We say $\Pi$ is a statistically sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ if for all $x\in\zo^*$:
+	Let \Ethan{QPIP proto.} $\Pi=(P, V)$ be a protocol.
+	We say $\Pi$ is a statistically sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness, if for all $x\in\zo^*$ \Ethan{put other params here. lambda first, then x and eps in terms of lambda with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$}:
 	\begin{itemize}
-		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
-		\item Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-		\item For all cheating prover $P^*$, let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
+		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. \Ethan{Mention length of z too. Also mention z is bot if d is rej}
+		\item (Completeness): Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
+		\item (Statistical soundness): For all cheating prover $P^*$,....    Consider the following experiment:
+		\begin{itemize}
+		    \item Let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
+		    \item Define $z_{ideal}$ by
+			$$\begin{cases}
+				z_{ideal}=\bot & \text{if } d=\Rej\\
+				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
+			\end{cases}$$.
+		\end{itemize}
+		It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$. 
+		
+		\Ethan{Below is right, not sure what's above}
+		
+		let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
 			Define $z_{ideal}$ by
 			$$\begin{cases}
 				z_{ideal}=\bot & \text{if } d=\Rej\\
 				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
 			\end{cases}$$
 			then $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$.
+		\item \Ethan{D is BQP}
+		$ \abs{\Pr[D(1^{\lambda}, d,z) = 1] - \Pr[D(1^{\lambda}, d,z_{ideal}) = 1]} \leq \eps $
+		
+		TODO Comp. soundness here...?
 	\end{itemize}
 \end{definition}
 
@@ -91,11 +114,11 @@ we also model the corresponding situation for $\SampBQP$ protocols.
 	\Ethan{Something like this? Or need protocol or specify prior probability is 1/2 each?}
 \end{definition}
 
-We define blindness of a protocol as follows.
+We define blindness of a protocol as follows. \Ethan{Input x is private input now... the rest are still common input... etc.}
 
 \begin{definition}
+	Let $(P, V)$ be an interactive protocol with security parameter $\lambda$. \Ethan{Define the version with eps, say that it's fine without eps for BQP} \Ethan{TODO Quantify cheating prover}
 	Let $\lambda$ be a security parameter.
-	Let $(\bbP, \bbV)$ be an interactive protocol with security parameter $\lambda$.
 	Then it is \emph{blind} if the following ensembles are computationally indistinguishable over $\lambda$:
 	\begin{itemize}
 		\item $\set{\View_{P^*}(P^*, V(x))(1^\lambda)}_{\lambda\in\bbN, x\in\zo^n}$
@@ -112,45 +135,47 @@ Then for all $0<\delta<1$,
 $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 \end{thm}
 
-\subsection{Projection Lemma}
+% \subsection{Projection Lemma}
 
-We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
+% We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
 
-\begin{thm}
-	\label{thm:proj1}
-	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
-	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
-	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
-\end{thm}
+% \begin{thm}[\Ethan{TODO thm number from src}]
+% 	\label{thm:proj1}
+% 	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
+% 	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
+% 	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
+% \end{thm}
 
-We will instead use the following formulation, which can be obtained by relabeling variables from above.
+% We will instead use the following formulation, which can be obtained by relabeling variables from above.
 
-\begin{thm}
-	\label{thm:projection}
-	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
-	$$J=\frac{11\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
-	then we have
-	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
-\end{thm}
-\begin{proof}
-	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $10\norm{H_1}$.
-\end{proof}
+% \begin{thm}
+% 	\label{thm:projection}
+% 	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
+% 	$$J=\frac{11\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+% 	then we have
+% 	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
+% \end{thm}
+% \begin{proof}
+% 	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $10\norm{H_1}$.
+% \end{proof}
 
-\subsection{Quantum de Finetti Theorem under Local Measurements}
+% \subsection{Quantum de Finetti Theorem under Local Measurements}
 
-De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
-There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
-\begin{thm}
-	\label{deFinetti}
-	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register is $s$ qubits,
-	then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
-	$$\max_{\Lambda_1,\ldots,\Lambda_l}
-	\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
-	\leq\sqrt{\frac{2l^2s}{k-l}}$$
-	where $\Lambda_i$ are quantum-classical channels.
-\end{thm}
+% De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
+% There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
+% \begin{thm}
+% 	\label{deFinetti}
+% 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register is $s$ qubits,
+% 	then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
+% 	$$\max_{\Lambda_1,\ldots,\Lambda_l}
+% 	\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
+% 	\leq\sqrt{\frac{2l^2s}{k-l}}$$
+% 	where $\Lambda_i$ are quantum-classical channels.
+% \end{thm}
 
 \subsection{Quantum Homomorphic Encryption Schemes}
+
+\Ethan{Just define QHE}
 
 \def\QHE{\mathsf{QHE}}
 \def\QGen{\mathsf{QHE.Keygen}}
@@ -158,8 +183,9 @@ There are many formulations; we use the one from \cite{Brandão2017} because we 
 \def\QEval{\mathsf{QHE.Eval}}
 \def\QDec{\mathsf{QHE.Dec}}
 
-We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the interface of a homomorphic encryption scheme:
+We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the definition of a homomorphic encryption scheme:
 \begin{definition}
+    \Ethan{Do more copying}
 	A leveled homomophic encryption scheme is tuple of algorithms \linebreak $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
 	\begin{itemize}
 		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, sk)$
@@ -175,11 +201,13 @@ where $f$ is specified by a circuit of depth at most $L$.
 
 \Ethan{To be pedantic, the above doesn't imply Dec undoes Enc even if we sub in $f=\id$.}
 
+\Ethan{Maybe add correctness}
+
 We also recall the security definition for a FHE scheme.
 
 \begin{definition}
 	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
-	$$\abs{Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(1))=1]}=\mu(\lambda)$$
+	$$\abs{Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(1))=1]}\leq\mu(\lambda)$$
 	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
 \end{definition}
 
@@ -188,9 +216,9 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
 \begin{definition}
 	we call a quantum homomorphic encryption scheme \emph{classical-friendly} if it has the following properties:
 	\begin{itemize}
-		\item $\QGen$ can be done classically.
+		\item $\QGen$ produces classical keys
 		\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
-		\item Its ciphertext can be homomorphically measured, after which $\QDec$ can also be done classically.
+		\item Its ciphertext can be homomorphically measured, after which $\QDec$ can also be done classically. \Ethan{Underlying msg is classical = ct is classical = can be classical decrypted}
 	\end{itemize}
 \end{definition}
 

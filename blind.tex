@@ -59,8 +59,8 @@ We compile the above protocol to achieve blindness as follows.
 			and encrypts $\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
 			It sends $pk_1$, $\ctx{x}{}{1}$, and $\ctx{v}{1}{1}$ to the prover.
 		\item $\Pblind$ generates $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$
-			by evaluating \linebreak
-			$(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\QEval(pk, \cP_1, \ctx{v}{1}{1}, \ctx{x}{}{1})$.
+			by evaluating %\linebreak
+			$(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow  \QEval(pk, \cP_1,$ \  $\ctx{v}{1}{1}, \ctx{x}{}{1})$.
 			It sends $\ctx{p}{1}{1}$ to the verifier.
 		\item for $t=2,\ldots,T$:
 		\begin{enumerate}

@@ -1,12 +1,13 @@
 \section{Construction of the X-Z Local Hamiltonian for $\SampBQP$}
 \label{sec:Hamiltonian}
 
+\XW{merge Section 3 and 4; also easy the discussion}
 
 \def \Hin {H_{\mathrm{in}}}
 \def \Hout {H_{\mathrm{out}}}
 \def \Hprop {H_{\mathrm{prop}}}
 \newcommand{\histpsi}[1]{\ket{\psi_{#1}^{\mathrm{hist}}}}
-
+\newcommand{\LHXZ}[1]{\mathrm{LH}_{\mathrm{XZ}}^{#1}}
 
 As we mentioned in this introduction, we will employ the circuit \emph{history} state in the original construction of the Local Hamiltonian problem~\cite{kitaev2002classical} to encode the circuit information for $\SampBQP$. 
 However, there are distinct requirements between certifying the computation for $\BQP$ and $\SampBQP$ based on the history state.
@@ -27,12 +28,9 @@ We need, however, two more further twists to serve our purpose.
 First, as we will eventually measure the final state in order to obtain classical samples, we need that the final state occupies a large fraction of the history state. We can simply add dummy identity gates for that purpose. 
 Second, as we are only able to perform $X$ or $Z$ measurement by techniques from~\cite{FOCS:Mahadev18a},
 we need to construct X-Z only local Hamiltonians. 
-\XW{TOADD: some old references}
-We achieve this by choosing one particular universal gate set and will include our construction for the sake of completeness. 
+Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction. 
 
-\XW{TOADD: some orgainization}
-
-
+%\XW{TOADD: some orgainization}
 %\XW{highlight the different requirement from the normal Local Hamiltonian reduction; and highlight a bit about the solution idea}
 
 % In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian instance.
@@ -53,7 +51,7 @@ Recall the definition of the history state which serves as a transcript of the c
     \begin{equation}
         \histpsi{C(x)} \equiv \frac{1}{\sqrt{T}}\sum_{t=0}^TU_t\ldots U_1\ket{x,0}\otimes\ket{\hat{t}},
     \end{equation}
-    where the first register refers to the input, the second refers to the work space which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$ up to design choice. 
+    where the first register refers to the input, the second refers to the work space ($\mathrm{poly}(n)$ size) which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$ up to design choice. 
 \end{dfn}
 
 % \begin{rmk}
@@ -62,30 +60,48 @@ Recall the definition of the history state which serves as a transcript of the c
 % 	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
 % \end{rmk}
 
-\XW{define $k$-local XZ Hamiltonian}
+% \XW{define $k$-local XZ Hamiltonian}
+% We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
 
-We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
-\begin{dfn}
-	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
+We define the X-Z local Hamiltonian of interest as follows: 
+
+\begin{dfn}[$k$-local X-Z Hamiltonian] For any $n$-qubit system, the set of $k$-local X-Z terms, denoted by $\LHXZ{k}$, contains Hermitian matrices that apply non-trivially on at most $k$ qubits as a product of Pauli $X$ and $Z$ terms. Namely, 
+\begin{equation}
+  \LHXZ{k} = \left\{h_1 \otimes h_2 \otimes \ldots \otimes h_n: \forall i \in [n], h_i \in \{I, X, Z\}, \text{and}, \abs{\set{i: h_i=X \text{ or }Z}} \leq k. \right \}. 
+\end{equation}
+A $k$-local X-Z Hamiltonian $H$ is a linear combination of terms from $\LHXZ{k}$. Namely, 
+\begin{equation}
+  H = \sum_i \alpha_{i} H_i,  \quad \forall i, \alpha_i \in R,  H_i \in \LHXZ{k}.
+\end{equation}
 \end{dfn}
 
-\XW{cite the results that Toffoli and Hadamard gates
-and add the fact}
+As our starting point, we include the existing result of constructing X-Z local Hamitonians for general $\BQP$ computation. First, we note the fact Toffoli and Hadamard gates form a universal gate set for quantum computation~\cite{Shi03, quant-ph/0301040}. 
+It is easy to see that both Toffoli and Hadamard gates can be represented as linear combinations of terms from $\LHXZ{}$. For example, 
+\begin{equation}
+    \mathrm{(Hadamard)} \quad H \equiv \frac{1}{\sqrt{2}} \begin{pmatrix}1&1\\1&-1\end{pmatrix} = \frac{1}{\sqrt{2}}\left (X+Z\right).
+\end{equation}
+The Toffoli gate maps bits $(a,b,c)$ to $(a,b, c \oplus (a \text{ and } b))$, which can be decomposed as $\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$ where $\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$.
 
-Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
-Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
-Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
-\begin{thm}
-	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
-\end{thm}
-\begin{prf}
-	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
-\end{prf}
+% Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
+% Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
+% Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
+% \begin{Fact}
+%     	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
+% \end{Fact}
+% \begin{prf}
+% 	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
+% 	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+% 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+% \end{prf}
+
+Moreover, it is known in~\cite{PhysRevA.78.012352} about how to convert Kitaev's original 5-local Hamiltonian construction~\cite{kitaev2002classical} to a 5-local X-Z Hamiltonian. Precisely, 
 
 
 
+
+
+
+We will follow the unary clock representation from~\cite{kitaev2002classical}, i.e., valid 
 
 \XW{main construction and proofs}
 
@@ -100,6 +116,44 @@ The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, 
 		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
 		\item Its descriptions can be constructed by a $\BPP$ machine in polynomial time.
 	\end{itemize}
+\end{thm}
+
+
+
+
+We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
+
+\begin{thm}[\Ethan{TODO thm number from src}]
+	\label{thm:proj1}
+	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
+	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
+	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
+\end{thm}
+
+We will instead use the following formulation, which can be obtained by relabeling variables from above.
+
+\begin{thm}
+	\label{thm:projection}
+	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
+	$$J=\frac{11\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+	then we have
+	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
+\end{thm}
+\begin{proof}
+	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $10\norm{H_1}$.
+\end{proof}
+
+
+De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
+There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
+\begin{thm}
+	\label{deFinetti}
+	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register is $s$ qubits,
+	then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
+	$$\max_{\Lambda_1,\ldots,\Lambda_l}
+	\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
+	\leq\sqrt{\frac{2l^2s}{k-l}}$$
+	where $\Lambda_i$ are quantum-classical channels.
 \end{thm}
 
 % The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
