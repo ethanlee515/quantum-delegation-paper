@@ -26,6 +26,9 @@ We now state our compiler that gives any $\QPIP_0$ protocol blindness.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 
+\Ethan{How to work the security parameter into the following? It's annoying if everything takes that.
+Also, where do I write that footnote about extra uncompiled inputs such as accuracy param.?}
+
 \begin{protocol}{$\QPIP_0$ protocol $\Pi_0=(P, V)(x)$ where only the verifier receives outputs}
 	
 	Public input: $x$
@@ -56,7 +59,8 @@ We compile the above protocol to achieve blindness as follows.
 			and encrypts $\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
 			It sends $pk_1$, $\ctx{x}{}{1}$, and $\ctx{v}{1}{1}$ to the prover.
 		\item $\Pblind$ generates $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$
-			by evaluating $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\QEval(pk, \cP_1, \ctx{v}{1}{1}, \ctx{x}{}{1})$.
+			by evaluating \linebreak
+			$(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\QEval(pk, \cP_1, \ctx{v}{1}{1}, \ctx{x}{}{1})$.
 			It sends $\ctx{p}{1}{1}$ to the verifier.
 		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
@@ -69,7 +73,7 @@ We compile the above protocol to achieve blindness as follows.
 				by first switching its encryption key;
 				that is, it encrypts its state under the new key by $\ctx{st}{P, t-1}{t-1, t}\leftarrow\QEnc(pk_t, \ctx{st}{P, t-1}{t-1}))$,
 				then homomorphically decrypts the old encryption by \linebreak
-				$$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t}).$$
+				$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t}).$
 				Then it applies the next-message function homomorphically, generating
 				$(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\QEval(pk_t, \cP_t, \ctx{v}{t}{t}, \ctx{st}{P, t-1}{t})$.
 				It sends $\ctx{p}{t}{t}$ back to the verifier.
@@ -111,14 +115,23 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 \end{theorem}
 \begin{proof}
 	Consider $T+1$ hybrids experiments, from $\Hyb_1$ to $\Hyb_{T+1}$.
-	In $\Hyb_i$, we modify $(\Pblind, \Vblind(x))$ s.t.
-	for all rounds associated with $\cV{t}$ where $t\geq i$, the verifier replaces the $\ctx{sk}{t-1}{t}$ in its message with encryption of $0$.
-	Then, for all $t$, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
-	By applying triangle inequality iteratively\Ethan{Is this enough or do we need equations?}, we obtain that $\Hyb_1$ is indistinguishable with $\Hyb_{T+1}$.
-	Since $\Hyb_{T+1}$ is precisely $\Piblind$, and $\Hyb_1$ is clearly blind, we conclude that $\Piblind$ is blind.
+	We define $\Hyb_{T+1}$ to be $\Piblind$.
+	For $t<T+1$, we define $\Hyb_{t}$ to be the same as $\Hyb_{t+1}$,
+	except when $\Vblind$ should send $\ctx{sk}{t}{t}$, it instead sends $\ctx{0}{}{t}$ which is encryption of $0$ under $pk_t$.
+	Then, for all $t$, from the perspective of the prover, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
+	By applying triangle inequality iteratively \Ethan{good enough?}, we observe that $\Hyb_1$ is computationally indistinguishable with $\Hyb_{T+1}$.
+	Furthermore, $\Hyb_1$ is blind since the prover isn't provided any information about any secret keys.
+	So we conclude that $\Piblind$ is blind.
 \end{proof}
 
-This compiler implies a relatively simple way to create a blind and constant-round delegation protocol with a classical client for $\BQP$, with negligible soundness and completeness errors.
-To do so, apply it to the protocol from \cite{parallelrep, alagic2019twomessage}.
-Similarly, the compiler can be applied to our $\FBQP$ and $\SampBQP$ protocols \Ethan{TODO name} too.
+Our compiler is a straightforward way of achievement blindness with existing $\QPIP_0$ protocols while preserving other runtime properties.
+In particular, we now apply it to the delegation protocol for $\BQP$ from \cite{parallelrep, alagic2019twomessage},
+as well as our $\SampBQP$ protocol $\PiSamp$ to obtain the following results respectively.
 
+\begin{theorem}
+	There exists a blind, constant-round $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness errors.
+\end{theorem}
+
+\begin{theorem}
+	There exists a computationally sound, blind, and constant-round $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness errors.
+\end{theorem}
