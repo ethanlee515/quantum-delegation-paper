@@ -107,11 +107,9 @@ We model the interaction between a (almost classical) client and a quantum serve
 	\end{itemize}
 \end{definition}
 
-\Ethan{Sec. param. should be 1st param}
-
 \begin{definition}
 	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
-	We say it is a prototol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds.
+	We say it is a prototol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds:
 \begin{itemize}
 		\item On public inputs $1^\lambda$ and $x\in\zo^*$, the verifier outputs either $\Acc$ or $\Rej$.
 		\item (Completeness): For all security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
@@ -123,7 +121,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 \begin{definition}
 	\label{dfn:stats-secure-proto-sampbqp}
 	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
-	We say it is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness if the following holds.
+	We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness if the following holds:
 	\begin{itemize}
 		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^n$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{m(n)}$, otherwise $z=\bot$.
 		\item (Completeness):
@@ -147,15 +145,17 @@ We model the interaction between a (almost classical) client and a quantum serve
 	\end{itemize}
 \end{definition}
 
-We define blindness of a protocol as follows. \Ethan{Input x is private input now... the rest are still common input... etc.}
+We now define blindness of a protocol.
+In the context of blind protocols, the above definitions should be modified so that $x$ is the verifier's private input.
+We define blindness with an accuracy parameter $\varepsilon$, which exists in protocols for $\SampBQP$ instances;
+one can leave it out where appropriate, such as in protocols for $\BQP$ languages.
 
 \begin{definition}
-	Let $(P, V)$ be an interactive protocol with security parameter $\lambda$. \Ethan{Define the version with eps, say that it's fine without eps for BQP} \Ethan{TODO Quantify cheating prover}
-	Let $\lambda$ be a security parameter.
-	Then it is \emph{blind} if the following ensembles are computationally indistinguishable over $\lambda$:
+	Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ and $1^{1/\varepsilon}$, and verifier's private input $x\in\zo^*$.
+	We say $\Pi$ is \emph{blind} if for all cheating prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
 	\begin{itemize}
-		\item $\set{\View_{P^*}(P^*, V(x))(1^\lambda)}_{\lambda\in\bbN, x\in\zo^n}$
-		\item $\set{\View_{P^*}(P^*, V(0))(1^\lambda)}_{\lambda\in\bbN, x\in\zo^n}$
+		\item $\set{\View_{P^*}(P^*, V(x))(1^\lambda, 1^{1/\varepsilon})}_{\lambda\in\bbN, \varepsilon\in(0,1), x\in\zo^*}$
+		\item $\set{\View_{P^*}(P^*, V(0))(1^\lambda, 1^{1/\varepsilon})}_{\lambda\in\bbN, \varepsilon\in(0,1), x\in\zo^*}$
 	\end{itemize}
 \end{definition}
 
@@ -172,40 +172,52 @@ $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
-\Ethan{Just define QHE}
-
 \def\QHE{\mathsf{QHE}}
 \def\QGen{\mathsf{QHE.Keygen}}
 \def\QEnc{\mathsf{QHE.Enc}}
 \def\QEval{\mathsf{QHE.Eval}}
 \def\QDec{\mathsf{QHE.Dec}}
 
-We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client. We start by presenting the definition of a homomorphic encryption scheme:
+We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client.
 \begin{definition}
-    \Ethan{Do more copying}
-	A leveled homomophic encryption scheme is tuple of algorithms \linebreak $\mathsf{HE}=(\mathsf{HE.Keygen}, \mathsf{HE.Enc}, \mathsf{HE.Dec}, \mathsf{HE.Eval})$ with the following descriptions:
+	A quantum homomophic (public-key) encryption scheme $\QHE=(\QGen,$ \linebreak
+	$\QEnc, \QEval, \QDec)$ is quadruple of quantum polynomial-time algorithms which operate as follows:
 	\begin{itemize}
-		\item $\mathsf{HE.Keygen}(1^\lambda, 1^L)\rightarrow(pk, sk)$
-		\item $\mathsf{HE.Enc}_{pk}(\mu)\rightarrow c$
-		\item $\mathsf{HE.Dec}_{sk}(c)\rightarrow \mu^*$
-		\item $\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l)\rightarrow c_f$
+		\item \emph{Key generation.}
+			The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda)$ takes a unary representation of the security parameter and outputs a public key encryption key $pk$ and a secret decryption key $sk$.
+		\item \emph{Encryption.}
+			The algorithm $c\leftarrow\QEnc(pk, \mu)$ takes the public key $pk$ and a single bit message $\mu\in\zo$ and outputs a ciphertext $c$.
+		\item \emph{Decryption.}
+			The algorithm $\mu^*\leftarrow\QDec(sk, c)$ takes the secret key $sk$ and a ciphertext $c$ and outputs a message $\mu^*\in\zo$.
+			It must be the case that
+				$$\QDec(sk, \QEnc(pk, \mu))=\mu$$
+			with overwhelming probability in $\lambda$.
+		\item \emph{Homomorphic Evaluation.}
+			The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit \Ethan{?} $f$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ and outputs a ciphertext $c_f$.
+			It must be the case that
+				$$\QDec(sk, \QEval(pk, f, c_1, \ldots, c_l))=f(\QDec(sk, c_1),\ldots,\QDec(sk, c_l))$$
+			with overwhelming probability in $\lambda$.
 	\end{itemize}
 \end{definition}
 
-$\mathsf{HE}$ also satisfies, with overwhelming probability in $\lambda$, that
-$$\mathsf{HE.Dec}_{sk}(\mathsf{HE.Eval}_{pk}(f, c_1, \ldots, c_l))=f(\mathsf{HE.Dec}_{sk}(c_1),\ldots,\mathsf{HE.Dec}_{sk}(c_l))$$
-where $f$ is specified by a circuit of depth at most $L$.
+\begin{definition}[Compactness and Full Homomorphism]
+	\Ethan{This is copied from Mahadev. Not sure how much of this we need. We need at least how leveled HE is defined.}
 
-\Ethan{To be pedantic, the above doesn't imply Dec undoes Enc even if we sub in $f=\id$.}
-
-\Ethan{Maybe add correctness}
+	A quantum homomorphic encryption scheme $\QHE$ is compact if
+	there exists a polynomial $s$ in $\lambda$ such that the output length of $\QEval$ is at most $s$ bits long (regardless of $f$ or
+	the number of inputs). A compact scheme is (pure) fully homomorphic if it can evaluate any efficiently computable
+	boolean function. A compact scheme is leveled fully homomorphic if it takes $1^L$ as additional input in key generation,
+	and can only evaluate depth $L$ Boolean circuits where $L$ is polynomial in $\lambda$. A scheme is quantum pure or
+	leveled fully homomorphic if we refer to quantum circuits rather than boolean circuits.
+\end{definition}
 
 We also recall the security definition for a FHE scheme.
 
 \begin{definition}
-	A FHE scheme $\mathsf{HE}$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
+	\Ethan{This was copied from Mahadev. Not sure where $L$ (level) goes.}
+	A scheme $\QHE$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
 	$$\abs{Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(1))=1]}\leq\mu(\lambda)$$
-	where $(pk, sk)\leftarrow\mathsf{QHE.Keygen}(1^\lambda)$
+	where $(pk, sk)\leftarrow\QGen(1^\lambda)$
 \end{definition}
 
 The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe} has additional properties that facilitate the use of classical clients.
@@ -215,7 +227,7 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
 	\begin{itemize}
 		\item $\QGen$ produces classical keys
 		\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
-		\item Its ciphertext can be homomorphically measured, after which $\QDec$ can also be done classically. \Ethan{Underlying msg is classical = ct is classical = can be classical decrypted}
+		\item When the underlying message is classical, the corresponding ciphertext is also classical and can be decrypted classically.
 	\end{itemize}
 \end{definition}
 

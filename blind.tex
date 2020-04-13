@@ -23,11 +23,9 @@ Which results in the following protocol.
 \Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
 
 We now state our compiler that gives any $\QPIP_0$ protocol blindness.
+For the sake of simplicity, we omit the security and accuracy parameters. \Ethan{The previous sentence is newly added}
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
-
-\Ethan{How to work the security parameter into the following? It's annoying if everything takes that.
-Also, where do I write that footnote about extra uncompiled inputs such as accuracy param.?}
 
 \begin{protocol}{$\QPIP_0$ protocol $\Pi_0=(P, V)(x)$ where only the verifier receives outputs}
 	
@@ -72,8 +70,8 @@ We compile the above protocol to achieve blindness as follows.
 			\item $\Pblind$ generates $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t}, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$
 				by first switching its encryption key;
 				that is, it encrypts its state under the new key by $\ctx{st}{P, t-1}{t-1, t}\leftarrow\QEnc(pk_t, \ctx{st}{P, t-1}{t-1}))$,
-				then homomorphically decrypts the old encryption by \linebreak
-				$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t}).$
+				then homomorphically decrypts the old encryption by
+				$\ctx{st}{P, t-1}{t}\leftarrow\QEval(pk_t, \QDec,$ \ $\ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1, t})$.
 				Then it applies the next-message function homomorphically, generating
 				$(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\QEval(pk_t, \cP_t, \ctx{v}{t}{t}, \ctx{st}{P, t-1}{t})$.
 				It sends $\ctx{p}{t}{t}$ back to the verifier.
