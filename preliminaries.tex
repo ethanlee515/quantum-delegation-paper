@@ -7,10 +7,11 @@
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
 we write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
-We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$.
+We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$,
 We have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
+We say $\rho_1$ and $\rho_2$ are $\varepsilon$-close if $F(\rho_1, \rho_2)\leq\varepsilon$.
 For two distributions $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance,
-and we say $f_1$ and $f_2$ are $\varepsilon$-close if $\norm{f_1-f_2}_{TV}\leq\varepsilon$. \Ethan{TODO Copy and paste this for trace dist.}
+and we say $f_1$ and $f_2$ are $\varepsilon$-close if $\norm{f_1-f_2}_{TV}\leq\varepsilon$.
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
 
 \begin{definition} [quantum-classical channels]
@@ -59,59 +60,42 @@ We model the interaction between a (almost classical) client and a quantum serve
 
 \Ethan{Sec. param. should be 1st param}
 
-\begin{definition} \Ethan{Wording at the beginning isn't consistent...}
-	We say \Ethan{quantify this as QPIP proto} $\Pi=(P, V)$ is a protocol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds.
+\begin{definition}
+	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
+	We say it is a prototol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds.
 \begin{itemize}
-	    \item For every... TODO INTERFACE
+		\item On public inputs $1^\lambda$ and $x\in\zo^*$, the verifier outputs either $\Acc$ or $\Rej$.
 		\item (Completeness): For all security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
 		$\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
-		\item (Soundness): For all cheating $\BQP$ prover $P^*$ \Ethan{TODO think about why this has to be quantified first before lambda}, for sufficiently large security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
+		\item (Soundness): For all cheating $\BQP$ prover $P^*$, sufficiently large security parameter $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
 	\end{itemize}
 \end{definition}
 
 \begin{definition}
 	\label{dfn:stats-secure-proto-sampbqp}
-	Let \Ethan{QPIP proto.} $\Pi=(P, V)$ be a protocol.
-	We say $\Pi$ is a statistically sound protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness, if for all $x\in\zo^*$ \Ethan{put other params here. lambda first, then x and eps in terms of lambda with security parameter $\lambda$ and accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$}:
+	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
+	We say it is a protocol for the sampling problem $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness if the following holds.
 	\begin{itemize}
-		\item At the end of the protocol, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. \Ethan{Mention length of z too. Also mention z is bot if d is rej}
-		\item (Completeness): Let $(d, z)\leftarrow(P, V)(x, 1^{1/\varepsilon}, 1^\lambda)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-		\item (Statistical soundness): For all cheating prover $P^*$,....    Consider the following experiment:
-		\begin{itemize}
-		    \item Let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
-		    \item Define $z_{ideal}$ by
-			$$\begin{cases}
-				z_{ideal}=\bot & \text{if } d=\Rej\\
-				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
-			\end{cases}$$.
-		\end{itemize}
-		It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$. 
-		
-		\Ethan{Below is right, not sure what's above}
-		
-		let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
-			Define $z_{ideal}$ by
-			$$\begin{cases}
-				z_{ideal}=\bot & \text{if } d=\Rej\\
-				z_{ideal}\leftarrow D_x & \text{if } d=\Acc
-			\end{cases}$$
-			then $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$.
-		\item \Ethan{D is BQP}
-		$ \abs{\Pr[D(1^{\lambda}, d,z) = 1] - \Pr[D(1^{\lambda}, d,z_{ideal}) = 1]} \leq \eps $
-		
-		TODO Comp. soundness here...?
+		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^n$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{m(n)}$, otherwise $z=\bot$.
+		\item (Completeness):
+			For all security parameter $\lambda\in\bbN$, accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$, and $x\in\zo^{\poly(\lambda)}$, 
+			Let $(d, z)\leftarrow(P, V)(1^\lambda, 1^{1/\varepsilon}, x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
+		\item (Statistical soundness): For all cheating prover $P^*$,
+			sufficiently large $\lambda\in\bbN$, accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$, and $x\in\zo^{\poly(\lambda)}$, 
+			consider the following experiment:
+			\begin{itemize}
+				\item Let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
+				\item Define $z_{ideal}$ by
+				$$\begin{cases}
+					z_{ideal}=\bot & \text{if } d=\Rej\\
+					z_{ideal}\leftarrow D_x & \text{if } d=\Acc
+				\end{cases}$$.
+			\end{itemize}
+			It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$. 
+		\item (Computational soundness): Define $d, z, z_{ideal}$ same as above.
+			It holds that for all $\BQP$ distinguisher $D$,
+			$\abs{\Pr[D(1^{\lambda}, d,z) = 1] - \Pr[D(1^{\lambda}, d,z_{ideal}) = 1]} \leq \varepsilon $
 	\end{itemize}
-\end{definition}
-
-As sometimes one only achieves computational guarantees instead of statistical ones;
-we also model the corresponding situation for $\SampBQP$ protocols.
-
-\begin{definition}
-	Define everything as in \Cref{dfn:stats-secure-proto-sampbqp}.
-	We say $\Pi=(P, V)$ is \emph{computationally sound} instead of statistically if instead of 
-	$\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$,
-	we have that the probability for any adversary to successfully distinguish a sample of $(d, z)$ from that of $(d, z_{ideal})$ is less than $\frac{1}{2}+\frac{\varepsilon}{2}$.
-	\Ethan{Something like this? Or need protocol or specify prior probability is 1/2 each?}
 \end{definition}
 
 We define blindness of a protocol as follows. \Ethan{Input x is private input now... the rest are still common input... etc.}
@@ -135,43 +119,7 @@ Then for all $0<\delta<1$,
 $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 \end{thm}
 
-% \subsection{Projection Lemma}
-
-% We use the projection lemma from \cite{kempe_kitaev_regev_2006}, which describes the conditions under which we can estimate the ground state energy of $H_1 + H_2$ with that of $H_1\big|_{\ker H_2}$.
-
-% \begin{thm}[\Ethan{TODO thm number from src}]
-% 	\label{thm:proj1}
-% 	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on some Hilbert space $\cH=\cS+\cS^\bot$.
-% 	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
-% 	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}^2}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
-% \end{thm}
-
-% We will instead use the following formulation, which can be obtained by relabeling variables from above.
-
-% \begin{thm}
-% 	\label{thm:projection}
-% 	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
-% 	$$J=\frac{11\norm{H_1}^2}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
-% 	then we have
-% 	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
-% \end{thm}
-% \begin{proof}
-% 	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $10\norm{H_1}$.
-% \end{proof}
-
-% \subsection{Quantum de Finetti Theorem under Local Measurements}
-
-% De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
-% There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
-% \begin{thm}
-% 	\label{deFinetti}
-% 	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register is $s$ qubits,
-% 	then for every $0\leq l\leq k$ there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
-% 	$$\max_{\Lambda_1,\ldots,\Lambda_l}
-% 	\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
-% 	\leq\sqrt{\frac{2l^2s}{k-l}}$$
-% 	where $\Lambda_i$ are quantum-classical channels.
-% \end{thm}
+\Ethan{Proj. lemma and de Finetti thm. were moved}
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
