@@ -1,10 +1,10 @@
 \section{Delegation Protocol for Fully Classical Client}
 
-\hannote{In this section, we modify the construction of \cite{FOCS:Mahadev18a} to show that a $\QPIP_1$ protocol for $\SampBQP$ implies a $\QPIP_0$ for $\SampBQP$.}
+%\hannote{In this section, we modify the construction of \cite{FOCS:Mahadev18a} to show that a $\QPIP_1$ protocol for $\SampBQP$ implies a $\QPIP_0$ for $\SampBQP$.}
 
-We then extend our scheme for $\QPIP_0$ using results from \cite{FOCS:Mahadev18a}.
+% We then extend our scheme for $\QPIP_0$ using results from \cite{FOCS:Mahadev18a}.
 
-Here we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev18a} to create a delegation protocol for $\SampBQP$ for fully classical clients. Combining them will cost polynomially rounds, so we use results from \cite{parallelrep} that allows parallel repetition to construct a constant-round protocol.
+In this section, we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev18a} to create a delegation protocol for $\SampBQP$ for fully classical clients. To boost the soundness, we need  polynomial rounds, so we use results from \cite{parallelrep} to run polynomially many copies in parallel and get a constant-round protocol.
 
 
 %Subprotocol for Quantum Measurements
@@ -14,60 +14,6 @@ As a warm-up, we  restate the construction in \cite{FOCS:Mahadev18a}, which show
 
 Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
 
-
-
-
-\begin{theorem}
-    \label{Mahadev_QPIP0_Protocol_Interface}
-	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ with the following properties:
-	\begin{itemize}
-	    \item The protocol runs either a ``Hadamard round" or a ``test round".
-	    \item With a test round, the verifier outputs nothing other than accept/reject
-	    \item With a Hadamard round, for prover $\bbP'$, the verifier also obtains a sample from $D_{\bbP', h}$. We define $D^C_{\bbP', h}$ as that distribution conditioned on acceptance.
-	    \item (completeness) $\forall\rho\in\mathcal{B}^{\otimes n}$ and $h\in\set{0,1}^n$, there is a prover with negligible reject probability. Furthermore, $D^C_{\bbP, h}$ has negligible total variation distance to $D_{\rho, h}$
-	    \item (soundness) Fix $\bbP'$ and $h$. Let $p_{h, H}$ be its rejection probability under a Hadamard round, and $p_{h, T}$ be its rejection probability under a test round. Then $\exists\tilde\bbP$ s.t. $\norm{D^C_{\bbP', h} - D_{\tilde\bbP, h}}\leq p_{h,H} + \sqrt{p_{h, T}}+\mu$ for some negligible $\mu$, and $\exists\rho$ s.t. $D_{\tilde\bbP, h}$ is computationally indistinguishable from $D_{\rho, h}$.
-		\item This is a 4-round protocol. The prover does not know whether it is a test or Hadamard round until the end of 3rd round.
-		\begin{enumerate}
-			\item The verifier generates $(k, td)$, ``key" and ``trapdoor". It sends the key to the prover.
-			\item The prover computes a classical ``commitment" $y$ and sends it to the verifier.
-			\item The verifier sends $c\in\set{0, 1}$, where $c=0$ corresponds to test round and $c=1$ corresponds to Hadamard round.
-			\item The prover computes and sends a classical string $a$
-		\end{enumerate}
-	\end{itemize}
-\end{theorem}
-
-\hannote{import urmila protocol description.. up}
-Here, we recall the Mahadev's protocol \cite{FOCS:Mahadev18a}. We only give a high-level description of the protocol and properties of it and omit the details since they are not needed to show our result. 
-
-The protocol is run between a quantum prover $\pro$ and a classical verifier $\ver$ on a common input $x$. The aim of the protocol is to enable a verifier to classically verify $x\in \lang$ for a BQP language $\lang$ with the help of interactions with a quantum prover.
-The protocol is a 4-round protocol where the first message is sent from $\ver$ to $\pro$. 
-We denote the $i$-th message generation algorithm by $\ver_i$ for $i\in\{1,3\}$ or $\pro_i$ for $i\in \{2,4\}$ and denote the verifier's final decision algorithm by $\ver_\out$.
-Then a high-level description of the protocol is given below.
-\begin{description}
-\item[$\ver_1$:] On input the security parameter $1^\secpar$ and $x$, it generates a pair $(\key,\td)$ of a``key" and ``trapdoor", sends $\key$ to $\pro$, and keeps $\td$ as its internal state.
-\item[$\pro_2$:] On input $x$ and $\key$, it generates a classical ``commitment" $\comy$ along with a quantum state $\ket{\st_\pro}$, sends $\comy$ to $\pro$, and keeps $\ket{\st_\pro}$ as its internal state.
-\item[$\ver_3$:] It randomly picks $c\sample \bit$ and sends $c$ to $\pro$.\footnote{The third message is just a public-coin, and does not depend on the transcript so far or $x$.}
-Following the terminology in \cite{FOCS:Mahadev18a}, we call the case of $c=0$ the ``test round" and the case of $c=1$ the ``Hadamard round".
-\item[$\pro_4$:] On input $\ket{\st_\pro}$ and $c$, it generates a classical string $\ans$ and sends $\ans$ to $\pro$.
-\item[$\ver_\out$:] On input $\key$, $\td$, $y$, $c$, and $\ans$, it returns $\top$ indicating acceptance or $\bot$ indicating rejection.
-In case $c=0$, the verification can be done publicly, that is, $\ver_\out$ need not take $\td$ as input.
-\end{description}
-
-For the protocol, we have the following properties:\\
-\noindent\textbf{Completeness:}
-For all $x\in \lang$, we have $\Pr[\langle \pro,\ver \rangle(x)]=\bot]= \negl(\secpar)$.\\
-\noindent\textbf{Soundness:}
-If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$, we have  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot]\leq 3/4$.
-
-We need a slightly different form of soundness implicitly shown in \cite{FOCS:Mahadev18a}, which roughly says that if a cheating prover can pass the ``test round" (i.e., the case of $c=0$) with overwhelming probability, then it can pass the ``Hadamard round" (i.e., the case of $c=1$) only with a negligible probability. 
-\begin{lemma}[implicit in \cite{FOCS:Mahadev18a}]\label{lem:Mah_soundness}
-If the LWE problem is hard for quantum polynomial-time algorithms, then for any $x\notin \lang$ and a quantum polynomial-time cheating prover $\pro^*$ such that  $\Pr[\langle \pro^*,\ver \rangle(x)]=\bot\mid c=0]=\negl(\secpar)$, we have $\Pr[\langle \pro^*,\ver \rangle(x)]=\top\mid c=1]=\negl(\secpar)$.
-\end{lemma}
-
-We will also use the following simple lemma:
-\begin{lemma}\label{fact:perfectly_pass_test}
-There exists an efficient prover that passes the test round with probability $1$ (but passes the Hadamard round with probability $0$) even if $x\notin \lang$. 
-\end{lemma}
 
 
 \subsection{Mahadev's classical "commitment" of $XZ$ measurement}
@@ -94,114 +40,71 @@ With loss of generality,  we can assume that the testing round verification is d
 \end{definition}
 
 \begin{lem}[\hannote{ref}]~\label{lem:trivial-4-round-strategy}
-    For any input, there exist a prover strategy $(U_{trivial,0},U_{trivial})$ for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing round and \hannote{binding?}.
+    For any input, there exist a prover strategy $(U_{trivial,0},U_{trivial})$ for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing.
 \end{lem}
 
-\begin{definition}[quantum computationally indistinguishable]
-\hannote{move later}
-Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes \emph{one} sample from $D_1$ as part of its input. We also denote "$D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable" as 
-$$ \norm{D_1 - D_2}_q \leq \eps.$$
-And "$D_1$ and $D_2$  are not $\eps$-Q-computationally indistinguishable" as 
-$$ \norm{D_1 - D_2}_q > \eps.$$
-\end{definition}
-%Let $O^{D_1}$ and $O^{D_2}$ be oracles giving samples from $D_1$ and $D_2$.
-
-\begin{rmk}
-We extend the definition of computational distance to a subnormalized distribution  $D$  by assuming $A(D)=0$ when $A$ fail to draw a sample from $D$.
-\end{rmk}
-
-\begin{rmk}\label{rmk:trace-to-comp}
-If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally indistinguishable.
-\end{rmk}
-
-\begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
-    Let $D_1$, $D_2$, and $D_3$ be three distributions such that 
-    \begin{align}
-        \norm{D_1 -D_2}_q &\leq \eps \\ 
-        \norm{D_2 -D_3}_q &\leq \eps'. 
-    \end{align}
-    We have 
-    \begin{align}
-        \norm{D_1 -D_3}_q &\leq \eps+\eps'
-    \end{align}
-\end{lem}
-\begin{proof}
-For all quantum circuits $A$ with size $\poly(n)$, we have 
-\begin{align}
-    \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} \leq& \eps \\
-    \norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \leq& \eps',  
-\end{align}
-so 
-\begin{align}
-    &\norm{\Pr[A({D_1})=1]-\Pr[A({D_3})=1]} \nn \\
-    =& \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]+\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
-    \leq&  \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} +\norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
-    =& \eps +\eps' \nn
-\end{align}
-
-\end{proof}
 
 
-\begin{lem}[another triangle inequality for computational distance \hannote{unused}]\label{lem:computational-triangle}
-Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
 
-If 
-\begin{align}
-    &\norm{D_1 - D_2}_q \leq \eps   \\ 
-    &\norm{D_4 - D_6}_q \leq \eps',  
-\end{align}
-then 
-\begin{align}
-   \norm{ D_3 - D_5}_q \leq \eps+\eps' 
-\end{align}
-\end{lem}
+
+% \begin{lem}[another triangle inequality for computational distance \hannote{unused}]\label{lem:computational-triangle}
+% Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
+
+% If 
 % \begin{align}
-%     D_1 &\approx_{q,\eps} D_2 \\
-%     D_4 &\approx_{q,\eps'} D_6, 
+%     &\norm{D_1 - D_2}_q \leq \eps   \\ 
+%     &\norm{D_4 - D_6}_q \leq \eps',  
 % \end{align}
 % then 
 % \begin{align}
-%     D_3 \approx_{q,\eps+\eps'} D_5
+%   \norm{ D_3 - D_5}_q \leq \eps+\eps' 
 % \end{align}
-\begin{proof}
-% Since
-% $$\norm{D_4 - D_6}_q \leq \eps',$$
-% there exist 
+% \end{lem}
+% % \begin{align}
+% %     D_1 &\approx_{q,\eps} D_2 \\
+% %     D_4 &\approx_{q,\eps'} D_6, 
+% % \end{align}
+% % then 
+% % \begin{align}
+% %     D_3 \approx_{q,\eps+\eps'} D_5
+% % \end{align}
+% \begin{proof}
+% % Since
+% % $$\norm{D_4 - D_6}_q \leq \eps',$$
+% % there exist 
 
 
-We prove by contradiction. Suppose that
-$$\norm{ D_3 - D_5}_q > \eps+\eps',$$
-then there exist a quantum circuit $A$ of size $poly(n)$ such that 
-$$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
-Since $$\norm{D_4 - D_6}_q \leq \eps'$$, we know that 
-$$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
-Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
-$$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$ 
-$$ \Pr[A({D_2})=1]= \Pr[A({D_5})=1]+ \Pr[A({D_6})=1].$$ 
-So 
-\begin{align}
-    &\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \nn \\
-    =&   \L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1] +\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \nn \\
-    \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
-     > &\eps 
-\end{align}
-This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
-\end{proof}
+% We prove by contradiction. Suppose that
+% $$\norm{ D_3 - D_5}_q > \eps+\eps',$$
+% then there exist a quantum circuit $A$ of size $poly(n)$ such that 
+% $$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
+% Since $$\norm{D_4 - D_6}_q \leq \eps'$$, we know that 
+% $$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
+% Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
+% $$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$ 
+% $$ \Pr[A({D_2})=1]= \Pr[A({D_5})=1]+ \Pr[A({D_6})=1].$$ 
+% So 
+% \begin{align}
+%     &\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \nn \\
+%     =&   \L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1] +\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \nn \\
+%     \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
+%      > &\eps 
+% \end{align}
+% This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
+% \end{proof}
 
+Mahadev's 4-round protocol has the following binding property.
 
-
-\hannote{comp. indistinguish for subnormalized state?}
-\hannote{triangle inequality}
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of  Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
+If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
 
 
 Note that even a honest prover has complete freedom in choosing $\rho$, so protocol~\ref{proto:urmila4} didn't make the prover commit to a particular state. What it actually does is let the prover commit to a particular $XZ$ measurement on $\rho$. This is good enough for our application, since we will feed the $XZ$ measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
 
 
-We combine the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP_1$ Protocol, Protocol~\ref{ProtoQPIP1}, to get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
+By combining the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP_1$ Protocol, Protocol~\ref{ProtoQPIP1}, we get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
 
 \begin{protocol}{naive $\QPIP_0$ protocol  for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
@@ -215,23 +118,29 @@ We combine the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP
  	Ingrediants:
  	\begin{itemize}
  		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
- 		\item Let $C'$ be $C$ padded with $\frac{T}{\varepsilon}$ identity gates at the end.
+ 		\item Let $T$ be the number of gates in $C$.
+		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
  		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
+		\item Let $s=n+T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$
 %  		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
  	\end{itemize}
+
+
 
 	Protocol:
 	\begin{enumerate}
 	\item The verifier choose a $XZ$-measurement $h$ over  $M=\frac{T^{21}}{\varepsilon^{33}}$  copies of $\ket{\psi_{C'(x)}}$ from the distribution emergent from by Step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1}.
 	
-	\item \label{step:urmila-in-naive} The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \times$ (number of qubits in $\ket{\psi_{C'(x)}}$), where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the fourth round of Protocol~\ref{proto:urmila4} if $c=1$ to abort the process.\footnote{This is useless for the cheating prover but useful for proving one of our theorems.} If the verifier receives $\bot$ in the fourth round, he outputs $(\Rej,\bot)$ and terminates this protocol.
+	\item \label{step:urmila-in-naive} The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \, s$ , where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the fourth round of Protocol~\ref{proto:urmila4} if $c=1$ to abort the process.\footnote{This is useless for the cheating prover but useful for proving one of our theorems.} If the verifier receives $\bot$ in the fourth round, he outputs $(\Rej,\bot)$ and terminates this protocol.
 	
 	\item If $c=1$, the verifier finished the verification step of Protocol~\ref{ProtoQPIP1} by using $z_{commit}$ from Protocol~\ref{proto:urmila4} as the measurement result he would get and outputs $(d,z_{naive})$.
 	
 	
 	\end{enumerate}
 \end{protocol}
+
+ Protocol~\ref{proto:qpip0_naive} has no soundness guarantee, but it has the following binding property that would be useful in proving the soundness of the actual protocol in Section~\ref{sec:qpip0}.
 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of  Protocol~\ref{proto:qpip0_naive} ]
 If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, 
@@ -259,7 +168,7 @@ By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with p
 \end{proof}
 
 
-\subsection{$\QPIP_0$ protocol for $\SampBQP$}
+\subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
 %Parallel Repetition of the Measurement Subprotocol
 
 The following protocol is a $\QPIP_0$ protocol for $\SampBQP$
@@ -274,6 +183,8 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 
 \begin{protocol}{$\QPIP_0$ for $\SampBQP$}
 \label{proto:QPIP0samp}
+
+\hannote{fix inputs}
 Inputs: 
  Both verifier and prover start with the description of number of qubits $n$,  input string $x$ to the $\SampBQP$ Instance, and a soundness parameter $\varepsilon$.
     
@@ -297,10 +208,10 @@ Protocol:
 
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
-\begin{lemma}[partition lemma2]\label{lem:partition2}
+\begin{lemma}[partition lemma]\label{lem:partition2}
 Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U_0$ is the how the prover generates answer in the second round, and $U$ is how the prover generates answer in the fourth round. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$.  Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$.
 
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  \hannote{$\psi$ should not be pure state?} \hannote{actually need to fix a $pk$ for everything here.}
+ For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
 
 \begin{align}
     G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ} \\ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}  \\
@@ -312,7 +223,7 @@ Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U
  
 
  
-  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$.
+  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $pk,sk,y$. \hannote{check}
 
  
 
@@ -370,9 +281,9 @@ This will imply that    $\ket{\psi_{1,i,\gamma}}$ is binding to $i$-th Hadamard 
 \end{align}
 
   
-\item \hannote{added by me..not needed?}
+% \item \hannote{added by me..not needed?}
 
-$$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
+% $$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
  
 
 
@@ -468,8 +379,8 @@ Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corre
 
 
 
-$$z_i\defeq \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. \hannote{need to average $pk$ here.}
+$$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. \hannote{add description about  averaging $pk$ here.}
 
 Since $\{c\}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
@@ -572,15 +483,9 @@ where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi
 
 
 
-===
 
-%Prove that $z_{good}$ is binding.
-We now proceeds to prove that $z_{good}$ is binding. I.e. there exist a subnormalized $n$-qubit quantum state $\rho_{good}$ such that $z_{good}$ is $\eps$-Q-computationally indistinguishable to $M_{XZ}(\rho_{good},h)$.
 
-\hannote{$M_{XZ}(\rho_{good},h)=\sum_z \proj{z} \tr\L(\rho \sigma_{h,z} \R)?$}.
-\hannote{add notation for pauli matrix $\sigma_h$.}
-
-\hannote{need to simulate one copy?}
+We now proceeds to prove that $z_{good}$ is close to the ideal distribution. 
 
 For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
@@ -621,280 +526,12 @@ Therefore by Lemma~\ref{lem:computational-triangle0}, we have
 \begin{align}
      \norm{(d,z)-(d,z_{ideal})}_q \leq O(\eps)
 \end{align}
-\hannote{the composition of z ideal and triangle ineq is sketchy lol.}
+\hannote{the composition of z ideal and triangle ineq is sketchy lol. Also need to specify different z ideal}
 
  
 \end{proof}
 
-===========
 
-\hannote{below are unused old fragments}
 
 
-========= old
 
-By Lemma~\ref{lem:trivial-4-round-strategy} and property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a $\rho_{composite}$ such that 
-
-\begin{align}
-    \norm{z_{composite} - M_{XZ}(\rho_{composite},h) }_q \leq \negl(n) 
-\end{align}
-
-By Lemma~\ref{lem:trivial-4-round-strategy} and Lemma~\ref{lem:urmila-binding}, there exist a $\rho_{trivial}$ such that
-
-\begin{align}
-    \norm{z_{trivial} - M_{XZ}(\rho_{trivial},h) }_q \leq \negl(n), 
-\end{align}
-where $z_{trivial}$ is the random variable one get by running the strategy of Lemma~\ref{lem:trivial-4-round-strategy}, normalized by the probability that the trivial strategy is chosen in the composite strategy. $\rho_{trivial}$ is normalized by the same probability.
-
-Note that when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good}$. Therefore $z_{composite}=z_{good}+z_{trivial}$, and by Lemma~\ref{lem:computational-triangle},  
-
-\begin{align} \label{eq:z-good-rho}
-    \norm{z_{good} - M_{XZ}(\rho_{good},h) }_q \leq \negl(n), 
-\end{align}
-where $\rho_{good} \defeq \rho_{composite}-\rho_{trivial}$.
-
-Recall that by Eq~\ref{eq:z-z-good} we have
-\begin{align} \label{eq:z-z-good2}
-    \norm{z-z_{good}}_1 \leq \eps
-\end{align}
-if we pick $m,T,\gamma_0=???$ \hannote{tune eps}
-
-Also note that by theorem~\ref{QPIP1thm}, 
-\begin{align} \label{eq:rho-c}
-    \norm{M_{XZ}(\rho_{good},h) -p_{good} C(x)}_1 \leq \eps, 
-\end{align}
-where $p_{good} = \tr \rho_{good}$.
-
-Putting together Equation~\ref{eq:z-z-good2} \ref{eq:z-good-rho} \ref{eq:rho-c},  Remark~\ref{rmk:trace-to-comp}, and Lemma~\ref{lem:computational-triangle0}, we have  
-\begin{align}
-    \norm{z- p_{good}C(x)}_q \leq 2\eps +\negl{n}
-\end{align}
-
-
-
-
-==== old ===
-
-
-For every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for Protocol~\ref{proto:urmila4}: on the first round the verifier pick $h$ from distribution specified by ???? of Protocol~\ref{ProtoQPIP1}. On the second round, the prover start with picking a uniformaly random $i\in [m]$. The prover then tries to run $U_0$ by taking the verifier's input as $i$-th copy of protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then \hannote{picks a uniformly random $\gamma$ ?}  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, if the prover had generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. otherwise he continues to run the strategy of Lemma~\ref{lem:trivial-4-round-strategy}. We denote the random variable the verifier would get on the testing round as $z_{construct}$.
-
-
-
-===
-
- [[Partition lemma ->  Parallel repetition]], except for probability $\eps$\hannote{$\frac{1}{poly}$?}, either the verifier reject at step~\ref{step:multi-testing} or $z$ is $\negl(n)$-computationally indistinguishable to $M_{XZ}(\rho,h)$ by Lemma~\ref{lem:urmila-binding}. 
- 
- By theorem~\ref{QPIP1thm}, $M_{XZ}(\rho,h)$  $\eps$-close to $C(x)$. Therefore, $M_{XZ}(\rho,h)$  and  $C(x)$ $z$ are $\eps$-Q-computationally indistinguishable, and thus $z$ and $C(x)$ are  $2\eps$-Q-computationally indistinguishable.
- 
-===========
-
-
-\hannote{import 3.5. didn't import the proof, too long.}
-
-First, We present a slight adaption of Lemma 3.5 of \cite{parallelrep}  that partitions the prover's internal state. We omit the proof here.
-
-
-%$\frac{\gamma_0}{T}=1/\poly(\secpar)$
-\begin{lemma}[partition lemma]\label{lem:partition}
-Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U_0$ is the how the prover generates answer in the second round, and $U$ is how the prover generates answer in the fourth round. Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$.
-
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exists an $\poly(n)$-sized quantum circuit $G_{i,\gamma}$ such that for all (possibly sub-normalized) \hannote{$n$-qubit?} quantum state $\ket{\psi}_{\regX,\regZ}$,  
-\begin{align*}
-    G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in} = \\ \ket{0^m}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}\ket{0^t01}_{ph,th,in}+  \ket{0^m}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}\ket{0^t11}_{ph,th,in} + \ket{\psi'_{err}}
-\end{align*}
- where $t$ is the number of qubits in the register $ph$, $\ket{\psi_0}_{\regX,\regZ}$, $\ket{\psi_1}_{\regX,\regZ}$, and $\ket{\psi_{err}}_{\regX,\regZ}$ are sub-normalized states that may depend on $\gamma$.
-
-Furthermore, the following properties are satisfied for all $i\in[m]$.
-%
-\begin{enumerate}
-    \item \label{partition-property-1}  Define $\ket{\psi_{err}}_{\regX,\regZ}\defeq \ket{\psi}_{\regX,\regZ} - \ket{\psi_{0}}_{\regX,\regZ}- \ket{\psi_{1}}_{\regX,\regZ}$.\hannote{?} We have  $$E_{\gamma}[\|\ket{\psi_{err}}_{\regX,\regZ}\|^2]\leq \frac{6}{T}+\negl(n)$$. 
-    $$\|\ket{\psi}_{\regX,\regZ}\|^2 -E_{\gamma}\L[\|\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}\|^2 +\|\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}\|^2\R]\leq \frac{6}{T}+\negl(n),$$
-    
-    where the averaged is over uniformly sampled $\gamma$.
-\item For any fixed $\gamma$, $\Pr[M_{ph,th,in}\circ \ket{\psi'_{err}} \in \{0^t01,0^t11\}] =0$. %where $M_{ph,th,in}$ is the computational-basis measurement in the register $(ph,th,in)$. %and $t$ is the number of qubits in $ph$.   
-This implies that if we apply the measurement $M_{ph,th,in}$ on $\frac{G_{i,\gamma} \ket{0^m}_{\regC}\ket{\psi}_{\regX,\regZ}\ket{0^t}_{ph}\ket{0}_{th}\ket{0}_{in}}{\|\ket{\psi}_{\regX,\regZ}\|}$, then the outcome is $0^tb1$ with probability $\|\ket{\psi_b}_{\regX,\regZ}\|^2$ and the resulting state in the register $(\regX,\regZ)$  is $\frac{\ket{\psi_b}_{\regX,\regZ}}{\|\ket{\psi_b}_{\regX,\regZ}\|}$ ignoring a global phase factor.
-
-    % \item For any fixed $\gamma$, $E_{b\in \{0,1\}} [\|\ket{\psi_b}_{\regX,\regZ}\|^2]\leq \frac{1}{2}\|\ket{\psi}_{\regX,\regZ}\|^2$. \hannote{redundant?}
-    
-    
-%     \begin{align*}
-% \Pr\left[M_{\regX_i}\circ U\frac{\ket{\{c\}}_{\regC}\ket{\psi_0}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{k_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
-% \end{align*}
-  
-%   \begin{align*}
-% \Pr\left[V_{f,i}\L(sk_i,h,y_i, U\frac{\ket{\{c\}}_{\regC}\ket{\psi_0}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\R) \in \Acc \right]\leq (m-1)\gamma+\negl(\secpar).
-% \end{align*}
-    
-        \item 
-For all $\{pk\}$, $\{y\}$, fixed $\gamma$, and $\{c\}\in S_m$ such that $c_i = 0$, we have 
- 
-     \begin{align*}
- \Pr\left[M_{\regX_i}\circ U\frac{\ket{\{c\}}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{pk_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
- \end{align*}
-
-
-
-    \item 
-For all $\{pk\}$, $\{y\}$, fixed $\gamma$, and $\{c\}\in S_m$ such that $c_i = 0$, there exists an efficient quantum algorithm $\ext_i$ such that 
-
-\begin{align*}  
-  \Pr\left[M_{\regX_i}\circ \ext_i\left(\frac{\ket{\{c\}}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)\in \Acc_{pk_i,y_i}\right]=1-\negl(\secpar).
-  \end{align*}
-  
-  
-\item \hannote{added by me..}
-$$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
-\end{enumerate}
-\end{lemma}
-\begin{rmk}\label{rmk:partition-projector}
-\hannote{should be corollary with proof?} By applying $G_{i,\gamma}$ then measuring the $ph,th,in$ register, we can get two efficient quantum algorithms $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that 
-
-\begin{enumerate}
-    \item $$G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ}=\ket{\psi_{0,i,\gamma}}_{\regX,\regZ} $$
-\item  $$G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ}=\ket{\psi_{1,i,\gamma}}_{\regX,\regZ} $$
-%  \item ~\label{step:sum-ob} For all $i$ and $\gamma$,
-%   $$G_{0,i,\gamma}+G_{1,i,\gamma} \leq (1+\negl(n))Id_{\regX,\regZ} $$ \hannote{actually wrong.. the fuck?}
-%  \item ~\label{step:sum-lb}
-%   $$E_\gamma(G_{0,i,\gamma}+G_{1,i,\gamma}) \geq (1-\negl(n))Id_{\regX,\regZ} $$
-\end{enumerate}
-
-
-Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are not normalized. \hannote{we overload a quantum algorithm with the corresponding unitary.}
-
-Also note that 
-\begin{align}
-   &\norm{( G_{0,i,\gamma}+G_{1,i,\gamma}) \ket{\psi}}^2 \nn \\
-   =& \norm{\ket{\psi_{0,i,\gamma}}+\ket{\psi_{1,i,\gamma}}}^2 \nn \\
-   =& \norm{\ket{\psi_{0,i,\gamma}}}^2+\norm{\ket{\psi_{1,i,\gamma}}}^2+\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}}+\vev{\psi_{1,i,\gamma}|\psi_{0,i,\gamma}} \nn \\
-    \leq& \norm{\ket{\psi}}^2 +\negl(n)
-\end{align}
-and 
-\begin{align}
-   &E_\gamma \norm{( G_{0,i,\gamma}+G_{1,i,\gamma}) \ket{\psi}}^2 \nn \\
-   =& E_\gamma\norm{\ket{\psi_{0,i,\gamma}}+\ket{\psi_{1,i,\gamma}}}^2 \nn \\
-   =& E_\gamma\L[\norm{\ket{\psi_{0,i,\gamma}}}^2+\norm{\ket{\psi_{1,i,\gamma}}}^2+\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}}+\vev{\psi_{1,i,\gamma}|\psi_{0,i,\gamma}}\R] \nn \\
-    \geq& \norm{\ket{\psi}}^2 -\frac{6}{T}-\negl(n)
-\end{align}
-
-% \begin{align}
-%   &E_\gamma \norm{( G_{0,i,\gamma}+G_{1,i,\gamma}) \ket{\psi}}^2 \nn \\
-%   =& E_\gamma\norm{\ket{\psi_{0,i,\gamma}}+\ket{\psi_{1,i,\gamma}}}^2 \nn \\
-%   =& E_\gamma\norm{\ket{\psi}-\ket{\psi_{err}}}^2 \nn \\
-%     =& E_\gamma\L[\norm{\ket{\psi}}^2+\norm{\ket{\psi_{err}}}^2-2Re(\vev{\psi|\psi_{err}})\R] \nn \\
-%     \geq& \norm{\ket{\psi}}^2 -\frac{6}{T}-\negl(n)
-% \end{align}
-\end{rmk}
-
-
-
-\begin{lemma} \hannote{urmila talks about protocol not state.}
-For all $h$, $i\in [m]$ and $\{c\}\in S_m$ such that $c_i = 1$, $a_i \equiv  M_{\regX_i}\circ U\L(\frac{\ket{\{c\}}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\R)$ is binding. I.e. there exist a $\rho$ such that $V_f(sk,h,y,a)$ is $\negl(n)$-Q-computationally indistinguishable to $M_{XZ}(\rho,h)$, unless LEW can be efficiently solved by a quantum computer.
-\end{lemma}
-\begin{proof}
-We construct an  strategy $\tilde{U}$ for the fourth round of Protocol~\ref{proto:QPIP0samp}, which is "amplified" from $U$ .
-$\tilde{U}$ start by measuring the $\regC$ register. Since the $\regC$ register only has classical-valued inputs, this initial measurement does not decohere anything. Denote the measured input as $\{\tilde{c}\}$. If $\tilde{c}_i=0$, run $U$. If $\tilde{c}_i=1$, run $\ext_i$. By Lemma~\ref{lem:partition}, ???
-
-%without loss of generality we can assume $U$ measures $\regC$ first and run 
-\end{proof}
-
-====
-
-
-==============
-
-\iffalse
-\hannote{duplicate version by ethan..}
-\begin{lem}
-	Let $(U_0, U)$ be some prover's strategy.
-	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $i\in[m]$, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
-	Let $\gamma$ be sampled uniformly from $\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document}.
-	Then, there exists an efficient quantum procedure $G_{i,\gamma}$ such that for any (possibly sub-normalized) quantum state $\ket{\psi}_{X, Z}$,
-
-	$$TODO-LONG-EQ$$
-
-	where $t$ is the number of qubits in the register $ph$ \Ethan{Where is this register defined?},
-	$z_0, z_1\in\bbC$ such that $\abs{z_0}=\abs{z_1}=1$, and $z_0$, $z_1$, $\ket{\psi_0}_{X, Z}$, $\ket{\psi_1}_{X, Z}$, $\ket{\psi_{err}}_{X, Z}$ may depend on $\gamma$.
-	Furthermore, the following properties are satisfied.
-	\begin{enumerate}
-		\item Let $\ket{\psi_{err}}=\ket{\psi}-\ket{\psi_0}-\ket{\psi_1}$, then
-			$$\E_\gamma[\norm{\ket{\psi_{err}}}^2]\leq\frac{1}{T}+\negl(n)$$
-		\item TODO Some long property
-		\item For any fixed $\gamma$,
-			$$\E_{b\in\set{0, 1}}\left[\norm{\ket{\psi_{b}}_{X, Z}}^2\right]\leq\frac{1}{2}\norm{\ket{\psi}_{X, Z}}^2$$
-		\item For any fixed $\gamma$ and $c\in\set{0, 1}^m$ such that $c_i=0$, \Ethan{Where's this $M_{X_i}$ defined?}
-			$$\Pr\left[M_{X_i}\circ U\frac{\ket{c}_C\ket{\psi_0}_{X,Z}}{\norm{\psi_0}_{X,Z}}\in A_{k_i, y_i}\right]\leq2^{m-1}\gamma+\negl(n)$$
-		\item For any fixed $\gamma$, there exists an efficient quantum algorithm $\cE_i$ such that
-			$$\Pr\left[\cE_i\left(\frac{\ket{0^m}_C\ket{\psi_1}_{X,Z}}{\norm{\psi_1}_{X,Z}}\in A_{k_i, y_i}\right)\right]\leq1-\negl(n)$$
-	\end{enumerate}
-\end{lem}
-
-
-
-\begin{theorem}
-    
- If there exists a $\QPIP_1$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah there exists a $\QPIP_0$ protocol $(\bbV', \bbP')$ for $\SampBQP$ with soundness blah' and completeness blah'
-	
-\end{theorem}
-
-
-\fi
-==========
-
-Choose the $T$ in Lemma~\ref{lem:partition} to be $\Theta(m^3)$ \hannote{$\gamma_0$?}. By Property~\ref{partition-property-1} of Lemma~\ref{lem:partition}, 
-$$\forall i, \L(1- 1/m^2\R)\text{fraction of }\gamma$$ 
-satisfies that 
-$$\norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
-Therefore, there exist an $\gamma$ such that 
-$$\forall i,\, \norm{\ket{\psi_{err}}}^2 \leq 1/m+\negl(n). $$
-
-Denote $G_{i,\gamma}$ with  $\gamma$ found above as $G_i$. \hannote{finding $\gamma$ is not computationally efficient.}
-
-====
-
-
-\Ethan{Below is 3.6. Looks kinda useful but I need to think through this $c$ thing to make sure it'll be fine even if it's not randomly generated.}
-\hannote{How about include 3.6 in the theorem}
-
-
-
-Here we follow \cite{parallelrep}.
-
-We characterize a prover by two unitaries $(U_0, U)$ acting on the space $\cH_C\otimes\cH_X\otimes\cH_Z\otimes\cH_Y\otimes\cH_K$.
-
-\Ethan{I'll elaborate on above later, after figuring out exactly what I need or don't need}
-
-Each coordinate can be accepted and rejected separately, and the entire protocol accepts only if all coordinates accept.
-
-Let $A_{k_i, y_i}$ be the set of $a_i$s accepted by the verifier in the test round when the first and second messages are $k_i$ and $y_i$, respectively.
-
-
-
-\Ethan{Do we even need this lemma 3.5, or can we just use 3.6...}
-
-
-\begin{lem}
-	Let $m=O(\log n)$ \Ethan{$n$ is problem size?}, $\gamma_0\in[0, 1]$, and $T\in\bbN$ such that $\frac{\gamma_0}{T}=\frac{1}{\poly(n)}$.
-	Let $\gamma_i\xleftarrow{\$}\set{\frac{j\gamma_0}{T}}^T_{j=1}$ \Ethan{This is a set, right? Doesn't look like one in the original document} for each $i\in[m]$.
-	Then a state $\ket{psi}_{X, Z}$ can be partitioned as follows: \Ethan{Just gonna hard-code $c=0^m$ here for now}
-	$$\ket{\psi}=\ket{\psi_0}+\ket{\psi_{10}}+\ket{\psi_{110}}+\ldots+\ket{\psi_{11\ldots10}}+\ket{\psi_{11\ldots11}}+\ket{\psi_{err}}$$
-	where the way of partitioning may depend on the choices of $\hat\gamma=(\gamma_i)_{i=1}^m$.
-	Furthermore, the following properties are satisfied. \Ethan{Takes a bit of parsing to see how is our case different here since $c$ might be defined differently for us}
-	\begin{enumerate}
-		\item stuff
-		\item For any fixed $\hat\gamma$... 
-		\item For any fixed $\hat\gamma$...
-		\item For any fixed $c$,
-			$$\E_{\hat\gamma}\left[\norm{\ket{\psi_{err}}_{X,Z}}^2\right]\leq\frac{6m^2}{T}+\negl(n)$$
-		\item stuff
-	\end{enumerate}
-\end{lem}
-    asdf
-
-
-
-
-\begin{cor}
-    
-	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine, there exists a $\QPIP_0$ protocol $(\bbV, \bbP)$ for $\SampBQP$ with soundness blah and completeness blah
-	
-\end{cor}
