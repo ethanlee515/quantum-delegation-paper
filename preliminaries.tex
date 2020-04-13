@@ -42,6 +42,55 @@ We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
 	$\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\varepsilon \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\varepsilon)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$.
 \end{definition}
 
+
+\subsection{Computational Indistinguishability}
+
+\begin{definition}[quantum computationally indistinguishable]\label{def:comp-indis}
+\hannote{move later}
+Let  $D_1$ and $D_2$ be distributions over $n$-bit string.  We say $D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable if for all quantum circuit $A$ of size $\poly(n)$, $$\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \leq \eps,$$  where $A(D_1)$ means $A$ takes \emph{one} sample from $D_1$ as part of its input. We also denote "$D_1$ and $D_2$  are $\eps$-Q-computationally indistinguishable" as 
+$$ \norm{D_1 - D_2}_q \leq \eps.$$
+And "$D_1$ and $D_2$  are not $\eps$-Q-computationally indistinguishable" as 
+$$ \norm{D_1 - D_2}_q > \eps.$$
+\end{definition}
+%Let $O^{D_1}$ and $O^{D_2}$ be oracles giving samples from $D_1$ and $D_2$.
+
+\begin{rmk}
+We extend the definition of computational distance to a subnormalized distribution  $D$  by assuming $A(D)=0$ when $A$ fail to draw a sample from $D$.
+\end{rmk}
+
+\begin{rmk}\label{rmk:trace-to-comp}
+If $\norm{D_1-D_2}_1\leq \eps$, $D_1$ and $D_2$ are $\eps$-Q-computationally indistinguishable.
+\end{rmk}
+
+\begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
+    Let $D_1$, $D_2$, and $D_3$ be three distributions such that 
+    \begin{align}
+        \norm{D_1 -D_2}_q &\leq \eps \\ 
+        \norm{D_2 -D_3}_q &\leq \eps'. 
+    \end{align}
+    We have 
+    \begin{align}
+        \norm{D_1 -D_3}_q &\leq \eps+\eps'
+    \end{align}
+\end{lem}
+\begin{proof}
+For all quantum circuits $A$ with size $\poly(n)$, we have 
+\begin{align}
+    \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} \leq& \eps \\
+    \norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \leq& \eps',  
+\end{align}
+so 
+\begin{align}
+    &\norm{\Pr[A({D_1})=1]-\Pr[A({D_3})=1]} \nn \\
+    =& \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]+\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
+    \leq&  \norm{\Pr[A({D_1})=1]-\Pr[A({D_2})=1]} +\norm{\Pr[A({D_2})=1]-\Pr[A({D_3})=1]} \nn \\
+    =& \eps +\eps' \nn
+\end{align}
+
+\end{proof}
+
+
+
 \subsection{Quantum Prover Interactive Protocols (QPIP)}
 
 \Ethan{TODO, lower priority: define protocols}

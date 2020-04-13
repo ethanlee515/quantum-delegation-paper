@@ -6,6 +6,7 @@
 \def \Hin {H_{\mathrm{in}}}
 \def \Hout {H_{\mathrm{out}}}
 \def \Hprop {H_{\mathrm{prop}}}
+\def \Hclock {H_{\mathrm{clock}}}
 \newcommand{\histpsi}[1]{\ket{\psi_{#1}^{\mathrm{hist}}}}
 \newcommand{\LHXZ}[1]{\mathrm{LH}_{\mathrm{XZ}}^{#1}}
 
@@ -51,7 +52,7 @@ Recall the definition of the history state which serves as a transcript of the c
     \begin{equation}
         \histpsi{C(x)} \equiv \frac{1}{\sqrt{T}}\sum_{t=0}^TU_t\ldots U_1\ket{x,0}\otimes\ket{\hat{t}},
     \end{equation}
-    where the first register refers to the input, the second refers to the work space ($\mathrm{poly}(n)$ size) which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$ up to design choice. 
+    where the first register of $n$-qubit refers to the input, the second of $m$-qubit refers to the work space ($\mathrm{poly}(n)$ size) which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$ up to design choice. 
 \end{dfn}
 
 % \begin{rmk}
@@ -75,13 +76,12 @@ A $k$-local X-Z Hamiltonian $H$ is a linear combination of terms from $\LHXZ{k}$
 \end{equation}
 \end{dfn}
 
-As our starting point, we include the existing result of constructing X-Z local Hamitonians for general $\BQP$ computation. First, we note the fact Toffoli and Hadamard gates form a universal gate set for quantum computation~\cite{Shi03, quant-ph/0301040}. 
+As our starting point, we will include the existing result of constructing X-Z local Hamitonians for general $\BQP$ computation. First, we note the fact Toffoli and Hadamard gates form a universal gate set for quantum computation~\cite{Shi03, quant-ph/0301040}. 
 It is easy to see that both Toffoli and Hadamard gates can be represented as linear combinations of terms from $\LHXZ{}$. For example, 
 \begin{equation}
     \mathrm{(Hadamard)} \quad H \equiv \frac{1}{\sqrt{2}} \begin{pmatrix}1&1\\1&-1\end{pmatrix} = \frac{1}{\sqrt{2}}\left (X+Z\right).
 \end{equation}
 The Toffoli gate maps bits $(a,b,c)$ to $(a,b, c \oplus (a \text{ and } b))$, which can be decomposed as $\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$ where $\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$.
-
 % Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
 % Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
 % Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
@@ -93,6 +93,48 @@ The Toffoli gate maps bits $(a,b,c)$ to $(a,b, c \oplus (a \text{ and } b))$, wh
 % 	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
 % 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 % \end{prf}
+
+We will follow the unary clock register design from Kitaev's original 5-local Hamiltonian construction~\cite{kitaev2002classical}. Namely, valid unary clock states ($T$-qubit) are $\ket{00\ldots0}$, $\ket{10\dots0}$, $\ket{110\ldots0}$, etc, which span the ground energy space of the following local Hamiltonian: 
+\begin{equation}
+    \Hclock= \sum_{t=1}^{T-1}\proj{01}_{t,t+1},
+\end{equation}
+where $\proj{01}_{t,t+1}$ stands for a projection on the $t$th and $(t+1)$th qubit in the clock register. 
+It is observed in~\cite{PhysRevA.78.012352} that $\Hclock$ can be reformulated as a linear combination of terms from $\LHXZ{}$ as follows, 
+\begin{equation}
+   \Hclock= \frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_t\otimes Z_{t+1}),
+\end{equation}
+where $Z_t$ refers to Pauli $Z$ operated on the $t$th qubit in the clock register. 
+
+One can achieve so similarly for $\Hin$ and $\Hprop$. For the input condition, we want to make sure $x=(x_1, \ldots, x_n) \in \{0,1\}^n$ is in the input space and the workspace is initialized to $\ket{0}$ for all qubits at the time $0$. Namely, one can set $\Hin$ to be
+\begin{equation}
+    \Hin = \sum_{i=1}^n(I- \proj{x_i}_i)\otimes \proj{0}_1 + \sum_{i=1}^m \proj{0}_{n+i} \otimes \proj{0}_1, 
+\end{equation}
+where the last part $\proj{0}_1$ applies on to the first qubit in the clock register. One can rewrite $\Hin$ as 
+\begin{equation}
+ \Hin=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1) + \frac{1}{4} \sum_{i=1}^m (I - Z_{n+i}) \otimes (I + Z_1). 
+\end{equation}
+\XW{todo here}
+% Then, we ensure that the initial condition is set up correctly.
+% 	$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
+% 	The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
+
+
+	Then, we ensure that the gates are applied correctly.
+	$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
+	$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
+	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
+	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
+	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
+
+	We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least nonzero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
+
+	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since our gates are either Hadamard or Toffoli.
+	Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
+	Extra care must be taken for boundary cases.
+	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+
 
 Moreover, it is known in~\cite{PhysRevA.78.012352} about how to convert Kitaev's original 5-local Hamiltonian construction~\cite{kitaev2002classical} to a 5-local X-Z Hamiltonian. Precisely, 
 
@@ -212,32 +254,7 @@ In this subsection, we prove \cref{thm:LHReduction} by showing how to reduce a $
 
 	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues.
 
-	First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
-	$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-	As a sum of projections, clearly $H_{clock}\geq 0$. We shall also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
-	$$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
-	This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
-
-	Then, we ensure that the initial condition is set up correctly.
-	$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
-	The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
-	$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
-
-	Then, we ensure that the gates are applied correctly.
-	$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
-	$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
-	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
-	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
-	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
-
-	We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least nonzero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
-
-	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since our gates are either Hadamard or Toffoli.
-	Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
-	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
-	Extra care must be taken for boundary cases.
-	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+	
 
 	To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
 	$$K_{clock}=\ker H_{clock}$$
