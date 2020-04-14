@@ -23,20 +23,16 @@ Which results in the following protocol.
 \Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
 
 We now state our compiler that gives any $\QPIP_0$ protocol blindness.
-For the sake of simplicity, we omit the security and accuracy parameters.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
-
-\Ethan{Say in words I'm going to compile proto 5 (which is a general form of...) to proto 6}
-
-\Ethan{Add lambda back}
+We start with a general form of a $\QPIP_0$ protocol that we'll be compiling.
 
 \begin{protocol}{$\QPIP_0$ protocol $\Pi_0=(P, V)(x)$ where only the verifier receives outputs}
 	
-	Common inputs\footnote{TODO something about eps}:
+	Common inputs\footnote{For the sake of simplicity, we omit accuracy parameter $\varepsilon$ where it exists}:
 	\begin{itemize}
-		\item $x\in\zo^*$
-		\item $1^\lambda$
+		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
+		\item Some classical input $x\in\zo^*$ \Ethan{Or should this be $\zo^n$? Or $\zo^{\poly(\lambda)}$?}
 	\end{itemize}
 
 	\begin{enumerate}
@@ -55,14 +51,19 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 We compile the above protocol to achieve blindness as follows.
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Piblind=(\Pblind, \Vblind(x))$ correponding to $\Pi_0$}
-	Common input: $\lambda$
+	Inputs:
+	\begin{itemize}
+		\item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$
+		\item Verifier's input: $x\in\zo^n$
+	\end{itemize}
 
-	Verifier's input: $x\in\zo^*$
-
-	Let $L=\poly(x)$ \Ethan{Quantify/define L more clearly}, $\lambda=\poly(x)$.
+	Ingrediants:
+	\begin{itemize}
+		\item Let $L$ be the maximum circuit depth of $\cP_t$.
+	\end{itemize}
 
 	\begin{enumerate}
-		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
+		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(1^\lambda, x)$.
 			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$,
 			and encrypts $\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
 			It sends $pk_1$, $\ctx{x}{}{1}$, and $\ctx{v}{1}{1}$ to the prover.
@@ -122,15 +123,21 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	$\Piblind$ is blind.
 \end{theorem}
 \begin{proof}
-	Consider $T+1$ hybrids experiments, from $\Hyb_1$ to $\Hyb_{T+1}$.
-	We define $\Hyb_{T+1}$ to be $\Piblind$.
-	For $t<T+1$, we define $\Hyb_{t}$ to be the same as $\Hyb_{t+1}$,
-	except when $\Vblind$ should send $\ctx{sk}{t}{t}$, it instead sends $\ctx{0}{}{t}$ which is encryption of $0$ under $pk_t$.
-	Then, for all $t$, from the perspective of the prover, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
-	By a standard hybrid argument, we observe that $\Hyb_1$ is computationally indistinguishable with $\Hyb_{T+1}$.
-	Furthermore, $\Hyb_1$ is blind since the prover isn't provided any information about any secret keys.
-	\Ethan{do hybrid on 0 too and make sure it fits the dfns. Also should mention why hybriding works}
-	So we conclude that $\Piblind$ is blind.
+	We show that for all cheating prover $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
+	$P^*$ cannot distinguish $(P^*, \Vblind(x))(\lambda)$ from $(P^*, \Vblind(0^n))(\lambda)$ with noticeable probability in $\lambda$.
+	We use a hybrid argument; let $\Hyb_{T+1}^x=(P^*, \Vblind(x))(\lambda)$ and $\Hyb_{T+1}^0=(P^*, \Vblind(0^n))(\lambda)$.
+	For $2\leq t<T+1$, define $\Hyb_t^x$ to be the same as $\Hyb_{t+1}^x$,
+	except when $\Vblind$ should send $\ctx{v}{t}{t}$ and $\ctx{sk}{t-1}{t}$, it instead sends encryptions of $0$ under $pk_t$.
+	We define $\Hyb_1^x$ to be the same as $\Hyb_2^x$ except the verifier sends encryptions of $0$ in place of $\ctx{x}{}{1}$ and $\ctx{v}{1}{1}$.
+	We define $\Hyb_t^0$ similarly. Note that $\Hyb_1^x$ and $\Hyb_1^0$ are identical.
+
+	For all $t$, from the perspective of the prover,
+	as it receives no information on $sk_t$,
+	$\Hyb_{t+1}^x$ is computationally indistinguishable from $\Hyb_t^x$ due to the CPA security of $\QHE$ under $pk_t$.
+	By a standard hybrid argument, we observe that $\Hyb_1^x$ is computationally indistinguishable with $\Hyb_{T+1}^x$.
+	We use the the same argument for the computational indistinguishability between $\Hyb_1^0$ and $\Hyb_{T+1}^0$.
+	We conclude that $P^*$ cannot distinguish between $\Hyb_{T+1}^x$ and $\Hyb_{T+1}^0$,
+	therefore $\Piblind$ is blind.
 \end{proof}
 
 Our compiler is a straightforward way of achievement blindness with existing $\QPIP_0$ protocols while preserving other runtime properties.

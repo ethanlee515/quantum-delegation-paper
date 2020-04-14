@@ -115,7 +115,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 \begin{definition}
 	A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
 	\begin{itemize}
-		\item $P$ is a $\BQP$ \Ethan{wording; quantum poly time?} machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
+		\item $P$ is a $\BQP$ machine, which also has access to a quantum channel that can transmit $\tau$ qubits to the verifier per use.
 		\item $V$ is a hybrid machine of a classical part and a limited quantum part. The classical part is a $\BPP$ machine. The quantum part is a register of $\tau$ qubits, on which the verifier can perform arbitrary quantum operations and which has access to a quantum channel which can transmit $\tau$ qubits. At any given time, the verifier is not allowed to possess more than $\tau$ qubits. The interaction between the quantum and classical parts of the verifier is the usual one: the classical part controls which operations are to be performed on the quantum register, and outcomes of measurements of the quantum register can be used as input to the classical part.
 		\item There is also a classical communication channel between the prover and the verifier, which can transmit polynomially many bits to either direction.
 	\end{itemize}
@@ -137,7 +137,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
 	We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c(\cdot)$ and statistical (resp., computational) soundness if the following holds:
 	\begin{itemize}
-		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{m(\abs{x})}$, \footnote{$m$ is the length of... TODO} otherwise $z=\bot$.
+		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z$ is in the domain \Ethan{?} of $D_x$, otherwise $z=\bot$.
 		\item (Completeness):
 			For all accuracy parameter $\varepsilon(\lambda)=\frac{1}{\poly(\lambda)}$,
 			security parameter $\lambda\in\bbN$,
@@ -199,11 +199,11 @@ $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 
 We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client.
 \begin{definition}
-	A quantum homomophic (public-key) encryption scheme $\QHE=(\QGen,$ \linebreak
+	A quantum leveled homomophic (public-key) encryption scheme $\QHE=(\QGen,$ \linebreak
 	$\QEnc, \QEval, \QDec)$ is quadruple of quantum polynomial-time algorithms which operate as follows:
 	\begin{itemize}
 		\item \emph{Key generation.}
-			The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda)$ takes a unary representation of the security parameter as input and outputs a public key $pk$ and a secret key $sk$.
+			The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda, 1^L)$ takes a unary representation of the security parameter and a unary representation of the level parameter as inputs and outputs a public key $pk$ and a secret key $sk$.
 		\item \emph{Encryption.}
 			The algorithm $c\leftarrow\QEnc(pk, \mu)$ takes the public key $pk$ and a single bit message $\mu\in\zo$ as inputs and outputs a ciphertext $c$.
 		\item \emph{Decryption.}
@@ -212,7 +212,7 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 				$$\QDec(sk, \QEnc(pk, \mu))=\mu$$
 			with overwhelming probability in $\lambda$.
 		\item \emph{Homomorphic Evaluation.}
-			The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit $f$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ as inputs and outputs a ciphertext $c_f$.
+			The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit $f$ of depth at most $L$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ as inputs and outputs a ciphertext $c_f$.
 			It must be the case that
 				$$\QDec(sk, \QEval(pk, f, c_1, \ldots, c_l))=f(\QDec(sk, c_1),\ldots,\QDec(sk, c_l))$$
 			with overwhelming probability in $\lambda$.
@@ -223,11 +223,8 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 	A quantum homomorphic encryption scheme $\QHE$ is compact if
 	there exists a polynomial $s$ in $\lambda$ such that the output length of $\QEval$ is at most $s$ bits long (regardless of $f$ or
 	the number of inputs). A compact scheme is (pure) fully homomorphic if it can evaluate any efficiently computable
-	boolean function. A compact scheme is leveled fully homomorphic if it takes $1^L$ as additional input in key generation,
-	and can only evaluate depth $L$ Boolean circuits where $L$ is polynomial in $\lambda$.
+	boolean function.
 \end{definition}
-
-\Ethan{Combine leveled dfn. with QFHE; keep compactness here}
 
 We also recall the security definition for a FHE scheme.
 
