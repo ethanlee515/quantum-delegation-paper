@@ -210,7 +210,7 @@ Let $\Kin=\ker \Hin$, $\Kclock=\ker \Hclock$, and $\Kprop=\ker \Hprop$. It is kn
 Thus $\histpsi{C(x)}$ remains in the ground space of $H_{\mathrm{new}}$. Let $S$ denote its orthogonal space. Namely, $S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$. 
 Denote by $\Hin\big|_S$ the restriction of $\Hin$ on space $S$ and similarly for others. 
 
-\XW{need to check the following calculation and modify the theorem statement respectively.}
+%\XW{need to check the following calculation and modify the theorem statement respectively.}
 %We will apply \Cref{lem:projection} twice to obtain $\Jclock$ and $\Jprop$ respectively. 
 Consider $\Hin + \Jclock\Hclock$ first. According to \cref{lem:projection}, by choosing 
 \[
@@ -268,6 +268,7 @@ In this subsection, we construct a one-message $\QPIP_1$ delegation protocol for
 Intuitively, one should expect the one-message from the server to the client is something like the history state so that the client can measure to sample.  
 
 At a high-level, the design of such protocol should consist of at least two components: (1) the first component should test whether the message is indeed a valid history state; (2) the second component should simulate the last step of a $\SampBQP$ computation by measuring the final state in the computational basis. 
+
 Our construction of X-Z local Hamiltonian $H$ from \Cref{thm:LHReduction} will help serve the first purpose. 
 In particular, we adopt a variant of the energy verification protocol for local Hamiltonian (e.g., ~\cite{mf16, PhysRevA.93.022326}) to certify the energy of $H$ with only $X$ or $Z$ measurements.
 Moreover, because of the large spectral gap, when the energy is small, the underlying state must also be close to the history state. 
@@ -304,23 +305,27 @@ For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with prob
 \[
  \mathrm{Prob}[\cVGS \text{ accepts } \rho] \geq \frac{1}{2} - \frac{\epsilon}{2 \sum_i \abs{\alpha_i}},
 \]
-then the fidelity between $\rho$ and $\histpsi{C(x)}$ is at least $1-\epsilon$. 
+then the trace distance between $\rho$ and $\histpsi{C(x)}$ is at most $\frac{2}{\sqrt{3}}\sqrt{\epsilon}$. 
 \end{theorem}
 
 \begin{prf} Consider the pure state case $\rho=\proj{\phi}$ first. By \Cref{thm:HamCheck} and our assumption, we have $\braket{\phi|H|\phi} \leq \epsilon$. 
-Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is a eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\beta}^2 \leq \frac{4}{3}\epsilon$. Thus, 
+Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is a eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\alpha}^2 \geq 1-\frac{4}{3}\epsilon$. Thus, 
 \[
-  \mathrm{F}(\histpsi{C(x)}, \ket{\phi}) =
-\] 
-\XW{todo from here; might need to change the theorem statement as well}
-$$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
-	We can then see
-	$$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
-	which can be generalized for mixed states since we have for all $\ket\psi$ that
-	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
-	As a result, we have
-	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
-	which implies our claim.
+   \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi}}_{tr} = \sqrt{1- |\braket{\psi^{\mathrm{hist}}_{C(x)}|\phi}|^2}
+   \leq \frac{2}{\sqrt{3}}\sqrt{\epsilon}.
+\]
+For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality, we have 
+\[
+    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \rho}_{tr} \leq \sum_i p_i    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi_i}}_{tr} \leq \sum_i p_i \frac{2}{\sqrt{3}} \sqrt{\epsilon} =\frac{2}{\sqrt{3}}\sqrt{\epsilon}.
+\]
+% $$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
+% 	We can then see
+% 	$$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
+% 	which can be generalized for mixed states since we have for all $\ket\psi$ that
+% 	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
+% 	As a result, we have
+% 	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
+% 	which implies our claim.
 \end{prf}
 
 % \begin{algorithm}
@@ -353,17 +358,15 @@ $$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(
 % 	\end{align*}
 % \end{prf}
 
-
-\XW{rewrite this part of the introduction}
-At a high level, it is a cut-and-choose protocol.
-The server constructs multiple copies of the ground state as certificates,
-then the client randomly chooses a copy to output and checks the rest.
-Unfortunately our approach incurs inverse polynomial soundness errors.
-
-There are two main challenges to this cut-and-choose approach.
-First, the client needs to reliably extract the circuit output from its corresponding ground state.
-We accomplish this by padding the circuit with identity gates at the end.
-By doing so, the clock register collapses to after the last non-identity gate with high probability.
+One, however, needs to combine the test and the output on multiple copies of the history states for our second purpose, where we construct the following cut-and-choose protocol.  
+% At a high level, it is a cut-and-choose protocol.
+% The server constructs multiple copies of the ground state as certificates,
+% then the client randomly chooses a copy to output and checks the rest.
+% Unfortunately our approach incurs inverse polynomial soundness errors.
+% There are two main challenges to this cut-and-choose approach.
+% First, the client needs to reliably extract the circuit output from its corresponding ground state.
+% We accomplish this by padding the circuit with identity gates at the end.
+% By doing so, the clock register collapses to after the last non-identity gate with high probability.
 
 The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
 so common techniques such as Chernoff bounds can't be applied as-is.
@@ -372,10 +375,6 @@ This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
 In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
-
-
-
-
 
 De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
 There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
