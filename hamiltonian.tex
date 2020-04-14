@@ -191,7 +191,7 @@ We will use the following simple reformulation instead.
 	Given any quantum circuit $C = U_T \ldots U_1$ of  $T$ elementary gates and input $x \in \{0,1\}^n$, one can construct a 6-local X-Z Hamiltonian $H_{C(x)}$ in polynomial time such that 
 	\begin{enumerate}
 		\item[(1)] $H_{C(x)} = \sum_i \alpha_i H_i$ where 
-		each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^4)$. Moreover, there are at most $O(T)$ non-zero terms. 
+		each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^9)$. Moreover, there are at most $O(T)$ non-zero terms. 
 		\item[(2)] $H_{C(x)}$ has $\histpsi{C(x)}$ as the unique ground state with eigenvalue $0$ and has a spectral gap at least $\frac{3}{4}$. Namely,  for any state $\ket\phi$ that is orthogonal to $\histpsi{C(x)}$, we have $\braket{\phi|H_{C(x)}|\phi}\geq \frac{3}{4}$.
 	\end{enumerate}
 \end{thm}
@@ -223,7 +223,7 @@ we have
 \]
 Consider further adding $\Jprop\Hprop$ term.  By choosing 
 \[
- \Jprop= \frac{O(\norm{\Hin\big|_S + \Jclock\Hclock\big|_S}^2)}{\ground{\Hprop\big|_{S \cap \Kprop^\bot}}}= O(T^6),
+ \Jprop= \frac{O(\norm{\Hin\big|_S + \Jclock\Hclock\big|_S}^2)}{\ground{\Hprop\big|_{S \cap \Kprop^\bot}}}= O(T^8),
 \]
 where we use the fact $\ground{\Hprop\big|_{S\cap \Kprop^\bot}}\geq \ground{\Hprop\big|_{\Kprop^\bot}}=\Omega(T^{-2})$~\cite{kitaev2002classical}, we have  
 % $$\exists J_{prop}=\frac{\poly\left(\norm{H_{in}\big|_S+J_{clock}H_{clock}\big|_S}\right)}{\lambda\left(H_{prop}\big|_{S\cap K^\bot_{prop}}\right)}
@@ -239,7 +239,7 @@ A simple observation here is that $S \cap \Kclock \cap \Kprop$ is the span of hi
 \]
 Given that $\histpsi{C(x)}$ is the ground state of $H_{\mathrm{new}}$ with eigenvalue 0, and any orthogonal state to $\histpsi{C(x)}$ has eigenvalue at least $\ground{H_{\mathrm{new}}}\geq 3/4$, the spectral gap of $H_{\mathrm{new}}$ at at least $3/4$. 
 
-Note that $H_{\mathrm{new}}$ is a 6-local X-Z Hamiltonian by construction. It suffices to check the bound of $\abs{\alpha_i}$ and the number of terms. The former is determined by $\Jclock$ and $\Jprop$. The latter is by counting the number of terms from $\Hin, \Hclock, \Hprop$, each of which is bounded by $O(T)$.
+Note that $H_{\mathrm{new}}$ is a 6-local X-Z Hamiltonian by construction. It suffices to check the bound of $\abs{\alpha_i}$ and the number of terms. The former is one more than the order of $\Jprop$ since each $\Hprop^t$ contributes $\frac{1}{4}$ to the $I$ term, creating an extra factor of $T$. The latter is by counting the number of terms from $\Hin, \Hclock, \Hprop$, each of which is bounded by $O(T)$.
 \end{proof}
 % 	To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
 % 	$$K_{clock}=\ker H_{clock}$$
@@ -281,7 +281,7 @@ $H=\sum_i \alpha_{i} H_i$ (i.e., $\forall i, H_i \in \LHXZ{k}$) and any state $\
 \begin{itemize}
 \item Let $p_i= \abs{\alpha_i}/\sum_i \abs{\alpha_i}$ for each $i$. Sample $i^*$ according to $p_{i^*}$. 
 \item Pick $H_{i^*}$ which acts non-trivially on at most $k$ qubits of $\ket{\phi}$. Measure the corresponding single-qubit Pauli X or Z operator. 
-Record the list of the resutls $x_j=\pm 1$ for $j=1, \ldots k$. 
+Record the list of the results $x_j=\pm 1$ for $j=1, \ldots k$. 
 \item Let $r=x_1x_2\cdots x_k$. The protocol \emph{accepts} if $r$ and $\alpha_{i^*}$ have different signs, i.e., $\sgn(\alpha_{i^*})r=-1$. Otherwise, the protocol \emph{rejects}. 
 \end{itemize}
 \end{protocol}
