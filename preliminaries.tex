@@ -32,21 +32,20 @@ The phase gate and Pauli matrices are the following matrices.
 	Let $\rho_1,\rho_2\in\cB^n$.
 	We write $\rho_1\approx_{c,\varepsilon}\rho_2$ if $\rho_1$ and $\rho_2$ are \emph{$\varepsilon$-computationally indistinguishable}.
 	That is, for all quantum polynomial-time distinguishers $\mathsf{D}$,
-	$$\abs{\Pr\left[\mathsf(D)(\rho_1)=1\right]-\Pr\left[\mathsf(D)(\rho_2)=1\right]}\leq\varepsilon.$$
+	$$\abs{\Pr\left[\mathsf{D}(\rho_1)=1\right]-\Pr\left[\mathsf{D}(\rho_2)=1\right]}\leq\varepsilon.$$
 \end{definition}
-
-We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized outputs on subnormalized inputs.
-We also extend it to distributions, which can be treated as mixed states.
+We extend the notion of computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized outputs as appropriate.
+We also extend it to distributions by treating them as mixed states.
 
 \begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
-    Let $D_1$, $D_2$, and $D_3$ be three distributions such that 
+    Let $\rho_1, \rho_2, \rho_3\in\cB^{\otimes n}$ such that 
     \begin{align}
-		D_1\approx_{c, \varepsilon}D_2\\
-		D_2\approx_{c, \varepsilon'}D_3.
+		\rho_1\approx_{c, \varepsilon}\rho_2\\
+		\rho_2\approx_{c, \varepsilon'}\rho_3.
     \end{align}
     We have 
     \begin{align}
-		D_1\approx_{c, \varepsilon+\varepsilon'}D_3.
+		\rho_1\approx_{c, \varepsilon+\varepsilon'}\rho_3.
     \end{align}
 \end{lem}
 
