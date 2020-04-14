@@ -191,7 +191,7 @@ We will use the following simple reformulation instead.
 	Given any quantum circuit $C = U_T \ldots U_1$ of  $T$ elementary gates and input $x \in \{0,1\}^n$, one can construct a 6-local X-Z Hamiltonian $H_{C(x)}$ in polynomial time such that 
 	\begin{enumerate}
 		\item[(1)] $H_{C(x)} = \sum_i \alpha_i H_i$ where 
-		each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^4)$. Moreover, there are at most $O(T)$ non-zero terms. 
+		each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^6)$. Moreover, there are at most $O(T)$ non-zero terms. 
 		\item[(2)] $H_{C(x)}$ has $\histpsi{C(x)}$ as the unique ground state with eigenvalue $0$ and has a spectral gap at least $\frac{3}{4}$. Namely,  for any state $\ket\phi$ that is orthogonal to $\histpsi{C(x)}$, we have $\braket{\phi|H_{C(x)}|\phi}\geq \frac{3}{4}$.
 	\end{enumerate}
 \end{thm}
@@ -210,7 +210,7 @@ Let $\Kin=\ker \Hin$, $\Kclock=\ker \Hclock$, and $\Kprop=\ker \Hprop$. It is kn
 Thus $\histpsi{C(x)}$ remains in the ground space of $H_{\mathrm{new}}$. Let $S$ denote its orthogonal space. Namely, $S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$. 
 Denote by $\Hin\big|_S$ the restriction of $\Hin$ on space $S$ and similarly for others. 
 
-\XW{need to check the following calculation and modify the theorem statement respectively.}
+%\XW{need to check the following calculation and modify the theorem statement respectively.}
 %We will apply \Cref{lem:projection} twice to obtain $\Jclock$ and $\Jprop$ respectively. 
 Consider $\Hin + \Jclock\Hclock$ first. According to \cref{lem:projection}, by choosing 
 \[
@@ -268,6 +268,7 @@ In this subsection, we construct a one-message $\QPIP_1$ delegation protocol for
 Intuitively, one should expect the one-message from the server to the client is something like the history state so that the client can measure to sample.  
 
 At a high-level, the design of such protocol should consist of at least two components: (1) the first component should test whether the message is indeed a valid history state; (2) the second component should simulate the last step of a $\SampBQP$ computation by measuring the final state in the computational basis. 
+
 Our construction of X-Z local Hamiltonian $H$ from \Cref{thm:LHReduction} will help serve the first purpose. 
 In particular, we adopt a variant of the energy verification protocol for local Hamiltonian (e.g., ~\cite{mf16, PhysRevA.93.022326}) to certify the energy of $H$ with only $X$ or $Z$ measurements.
 Moreover, because of the large spectral gap, when the energy is small, the underlying state must also be close to the history state. 
@@ -357,15 +358,15 @@ For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality,
 % 	\end{align*}
 % \end{prf}
 
-At a high level, it is a cut-and-choose protocol.
-The server constructs multiple copies of the ground state as certificates,
-then the client randomly chooses a copy to output and checks the rest.
-Unfortunately our approach incurs inverse polynomial soundness errors.
-
-There are two main challenges to this cut-and-choose approach.
-First, the client needs to reliably extract the circuit output from its corresponding ground state.
-We accomplish this by padding the circuit with identity gates at the end.
-By doing so, the clock register collapses to after the last non-identity gate with high probability.
+One, however, needs to combine the test and the output on multiple copies of the history states for our second purpose, where we construct the following cut-and-choose protocol.  
+% At a high level, it is a cut-and-choose protocol.
+% The server constructs multiple copies of the ground state as certificates,
+% then the client randomly chooses a copy to output and checks the rest.
+% Unfortunately our approach incurs inverse polynomial soundness errors.
+% There are two main challenges to this cut-and-choose approach.
+% First, the client needs to reliably extract the circuit output from its corresponding ground state.
+% We accomplish this by padding the circuit with identity gates at the end.
+% By doing so, the clock register collapses to after the last non-identity gate with high probability.
 
 The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
 so common techniques such as Chernoff bounds can't be applied as-is.
@@ -374,10 +375,6 @@ This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
 In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
-
-
-
-
 
 De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
 There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
