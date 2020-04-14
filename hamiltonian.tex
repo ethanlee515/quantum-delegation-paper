@@ -370,8 +370,10 @@ To serve the second purpose, one needs to combine the test and the output on mul
 The challenge comes from the fact that a cheating prover might send something rather than copies of the history state. 
 In particular, the prover can entangle between different copies in order to cheat. 
 In the case of certifying a $\BQP$ computation, the goal is to verify the ground energy of any local Hamiltonian. 
-A cheating strategy with potential entanglement won't create any witness state with energy lower than the actual ground energy. 
-Thus, this kind of attack won't work for $B$
+A cheating strategy with potential entanglement won't create any witness state with an energy lower than the actual ground energy. 
+Thus, this kind of attack won't work for $\BQP$ computation. 
+
+However, in the context of $\SampBQP$, one needs to both certify both the energy and output a good copy. statistical information cannot rule out a bad copy. 
 
 
 

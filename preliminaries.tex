@@ -6,10 +6,7 @@
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$. For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
-we write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
-We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$,
-We have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
-We say $\rho_1$ and $\rho_2$ are $\varepsilon$-close if $\norm{\rho_1- \rho_2}_{tr}\leq\varepsilon$.
+we write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$. We say $\rho_1$ and $\rho_2$ are $\varepsilon$-close if $\norm{\rho_1- \rho_2}_{tr}\leq\varepsilon$.
 For two distributions $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance,
 and we say $f_1$ and $f_2$ are $\varepsilon$-close if $\norm{f_1-f_2}_{TV}\leq\varepsilon$.
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.

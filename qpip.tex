@@ -110,8 +110,8 @@ We now show its completeness and soundness.
 	which in turn implies a lower bound on the respective trace distance:
 	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\varepsilon}{6}.$$
 	\fi
-	By \Cref{HamCheckClose} we have
-	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\varepsilon}{6}.$$
+	By \Cref{thm:HamCheckClose} we have
+	$$\norm{\tau_j - \ket{\psi^{\mathrm{hist}}_{C'(x)}}\bra{\psi^{\mathrm{hist}}_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\varepsilon}{6}.$$
 	Observe that when $d_j=\Acc$, $z_j$ is the measurement results on $\tau_j$'s data register,
 	which is $\frac{\varepsilon}{6}$-close to that of $\ket{\psi_{C'(x)}}$.
 	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has at least $1-\frac{\varepsilon}{6}$ probability to contain $C(x)$ due to the padding.
