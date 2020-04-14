@@ -33,10 +33,15 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 
 \begin{protocol}{$\QPIP_0$ protocol $\Pi_0=(P, V)(x)$ where only the verifier receives outputs}
 	
-	Public input: $x$ \Ethan{Add footnote here about eps}
+	Common inputs\footnote{TODO something about eps}:
+	\begin{itemize}
+		\item $x\in\zo^*$
+		\item $1^\lambda$
+	\end{itemize}
+
 	\begin{enumerate}
-		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$ and sends $v_1$ to the prover.
-		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(v_1, x)$ and sends $p_1$ to the verifier.
+		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(1^\lambda, x)$ and sends $v_1$ to the prover.
+		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(1^\lambda, v_1, x)$ and sends $p_1$ to the verifier.
 		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
 			\item $V$ generates $(v_t, st_{V, t})\leftarrow\cV_t(p_{t-1}, st_{V, t-1})$ and sends $v_t$ to the prover.
@@ -50,8 +55,9 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 We compile the above protocol to achieve blindness as follows.
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Piblind=(\Pblind, \Vblind(x))$ correponding to $\Pi_0$}
-    \Ethan{Sync common or public inputs wording. Prefer common.}
-	Verifier's input: $x$
+	Common input: $\lambda$
+
+	Verifier's input: $x\in\zo^*$
 
 	Let $L=\poly(x)$ \Ethan{Quantify/define L more clearly}, $\lambda=\poly(x)$.
 
@@ -60,9 +66,9 @@ We compile the above protocol to achieve blindness as follows.
 			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$,
 			and encrypts $\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
 			It sends $pk_1$, $\ctx{x}{}{1}$, and $\ctx{v}{1}{1}$ to the prover.
-		\item $\Pblind$ generates $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$
-			by evaluating %\linebreak
-			$(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow  \QEval(pk, \cP_1,$ \  $\ctx{v}{1}{1}, \ctx{x}{}{1})$.
+		\item $\Pblind$ generates $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(1^\lambda, \ctx{v}{1}{1}, \ctx{x}{}{1})$
+			by evaluating
+			$(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow  \QEval(pk, \cP_1,$ \  $\QEnc(pk_1, 1^\lambda), \ctx{v}{1}{1}, \ctx{x}{}{1})$.
 			It sends $\ctx{p}{1}{1}$ to the verifier.
 		\item for $t=2,\ldots,T$:
 		\begin{enumerate}
@@ -97,7 +103,7 @@ We show the soundness of $\Piblind$ in the following theorem.
 	For the first rounds, it generates
 	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$, then produces the encryptions
 	$\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
-	It then runs $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$.
+	It then runs $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(1^\lambda, \ctx{v}{1}{1}, \ctx{x}{}{1})$.
 	Finally, it decrypts $p_1\leftarrow\QDec(sk_1, \ctx{p}{1}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st}{P, 1}{1}$ and $sk_1$.
 
