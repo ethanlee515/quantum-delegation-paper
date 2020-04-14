@@ -35,6 +35,7 @@ We start with a general form of a $\QPIP_0$ protocol that we'll be compiling.
 		\item Some classical input $x\in\zo^*$ \Ethan{Or should this be $\zo^n$? Or $\zo^{\poly(\lambda)}$?}
 	\end{itemize}
 
+    Protocol:
 	\begin{enumerate}
 		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(1^\lambda, x)$ and sends $v_1$ to the prover.
 		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(1^\lambda, v_1, x)$ and sends $p_1$ to the verifier.
@@ -62,6 +63,7 @@ We compile the above protocol to achieve blindness as follows.
 		\item Let $L$ be the maximum circuit depth of $\cP_t$.
 	\end{itemize}
 
+    Protocol:
 	\begin{enumerate}
 		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(1^\lambda, x)$.
 			Then it generates $(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$,

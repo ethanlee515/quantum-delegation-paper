@@ -358,7 +358,7 @@ For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality,
 % 	\end{align*}
 % \end{prf}
 
-One, however, needs to combine the test and the output on multiple copies of the history states for our second purpose, where we construct the following cut-and-choose protocol.  
+To serve the second purpose, one needs to combine the test and the output on multiple copies of the history states, where we construct the following cut-and-choose protocol.  
 % At a high level, it is a cut-and-choose protocol.
 % The server constructs multiple copies of the ground state as certificates,
 % then the client randomly chooses a copy to output and checks the rest.
@@ -367,12 +367,23 @@ One, however, needs to combine the test and the output on multiple copies of the
 % First, the client needs to reliably extract the circuit output from its corresponding ground state.
 % We accomplish this by padding the circuit with identity gates at the end.
 % By doing so, the clock register collapses to after the last non-identity gate with high probability.
+The challenge comes from the fact that a cheating prover might send something rather than copies of the history state. 
+In particular, the prover can entangle between different copies in order to cheat. 
+In the case of certifying a $\BQP$ computation, the goal is to verify the ground energy of any local Hamiltonian. 
+A cheating strategy with potential entanglement won't create any witness state with energy lower than the actual ground energy. 
+Thus, this kind of attack won't work for $B$
+
+
+
+one always needs to send the best certificate state (i.e., the perfect history state) in order to pass the local Hamiltonian ground energy test. 
 
 The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
 so common techniques such as Chernoff bounds can't be applied as-is.
-This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
-\Ethan{TODO; need brief and intuitive explanation}
+
+%This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
+
 In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
+
 to approximate our measurement results with that of some unentangled copies,
 within inverse polynomial errors.
 
