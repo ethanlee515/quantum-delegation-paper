@@ -304,23 +304,27 @@ For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with prob
 \[
  \mathrm{Prob}[\cVGS \text{ accepts } \rho] \geq \frac{1}{2} - \frac{\epsilon}{2 \sum_i \abs{\alpha_i}},
 \]
-then the fidelity between $\rho$ and $\histpsi{C(x)}$ is at least $1-\epsilon$. 
+then the trace distance between $\rho$ and $\histpsi{C(x)}$ is at most $\frac{2}{\sqrt{3}}\sqrt{\epsilon}$. 
 \end{theorem}
 
 \begin{prf} Consider the pure state case $\rho=\proj{\phi}$ first. By \Cref{thm:HamCheck} and our assumption, we have $\braket{\phi|H|\phi} \leq \epsilon$. 
-Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is a eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\beta}^2 \leq \frac{4}{3}\epsilon$. Thus, 
+Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is a eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\alpha}^2 \geq 1-\frac{4}{3}\epsilon$. Thus, 
 \[
-  \mathrm{F}(\histpsi{C(x)}, \ket{\phi}) =
-\] 
-\XW{todo from here; might need to change the theorem statement as well}
-$$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
-	We can then see
-	$$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
-	which can be generalized for mixed states since we have for all $\ket\psi$ that
-	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
-	As a result, we have
-	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
-	which implies our claim.
+   \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi}}_{tr} = \sqrt{1- |\braket{\psi^{\mathrm{hist}}_{C(x)}|\phi}|^2}
+   \leq \frac{2}{\sqrt{3}}\sqrt{\epsilon}.
+\]
+For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality, we have 
+\[
+    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \rho}_{tr} \leq \sum_i p_i    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi_i}}_{tr} \leq \sum_i p_i \frac{2}{\sqrt{3}} \sqrt{\epsilon} =\frac{2}{\sqrt{3}}\sqrt{\epsilon}.
+\]
+% $$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
+% 	We can then see
+% 	$$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
+% 	which can be generalized for mixed states since we have for all $\ket\psi$ that
+% 	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
+% 	As a result, we have
+% 	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\varepsilon}{T^5}$$
+% 	which implies our claim.
 \end{prf}
 
 % \begin{algorithm}
@@ -353,8 +357,6 @@ $$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(
 % 	\end{align*}
 % \end{prf}
 
-
-\XW{rewrite this part of the introduction}
 At a high level, it is a cut-and-choose protocol.
 The server constructs multiple copies of the ground state as certificates,
 then the client randomly chooses a copy to output and checks the rest.
