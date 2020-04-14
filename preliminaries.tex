@@ -9,7 +9,7 @@ For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
 we write $F(\rho_1, \rho_2)=\left(\tr\sqrt{\sqrt{\rho_1}\rho_2\sqrt{\rho_1}}\right)^2$ for the fidelity between $\rho_1$ and $\rho_2$.
 We write $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ for the trace distance between $\rho_1$ and $\rho_2$,
 We have $\norm{\rho_1-\rho_2}_{tr}\leq\sqrt{1-F(\rho_1, \rho_2)}$.
-We say $\rho_1$ and $\rho_2$ are $\varepsilon$-close if $F(\rho_1, \rho_2)\leq\varepsilon$.
+We say $\rho_1$ and $\rho_2$ are $\varepsilon$-close if $\norm{\rho_1- \rho_2}_{tr}\leq\varepsilon$.
 For two distributions $f_1$ and $f_2$ over the same finite domain $X$, we write $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ for their total variation distance,
 and we say $f_1$ and $f_2$ are $\varepsilon$-close if $\norm{f_1-f_2}_{TV}\leq\varepsilon$.
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
@@ -40,11 +40,25 @@ We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
 \end{definition}
 
 \begin{definition} [$\SampBQP$]
-	$\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\varepsilon \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\varepsilon)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$.
+	$\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\varepsilon \in (0,1)$, $M(1^n, 1^{1/\varepsilon})$ outputs a quantum circuit $C$ in $\poly(n, 1/\varepsilon)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\varepsilon$-close to $D_x$.
 \end{definition}
 
 
 \subsection{Computational Indistinguishability}
+
+\Ethan{Use Mahadev's definitions, but add eps param
+
+change to subnormalized states
+
+Need to define what it means to apply algorithm to subnormalized states
+
+Two families of (potentially sub-normalized) states... leave author note for applying algorithms to subnormalized states; might be ok
+
+change ``attacker" to ``distinguisher"
+
+sec. param change from n to lambda}
+
+\Ethan{Comment out entire section including triangle ineq.; just leave what's said above}
 
 \begin{definition}[quantum computationally indistinguishable]\label{def:comp-indis}
 \hannote{move later}
@@ -121,17 +135,20 @@ We model the interaction between a (almost classical) client and a quantum serve
 \begin{definition}
 	\label{dfn:stats-secure-proto-sampbqp}
 	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
-	We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c$ and statistical (resp., computational) soundness if the following holds:
+	We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c(\cdot)$ and statistical (resp., computational) soundness if the following holds:
 	\begin{itemize}
-		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^n$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{m(n)}$, otherwise $z=\bot$.
+		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{m(\abs{x})}$, \footnote{$m$ is the length of... TODO} otherwise $z=\bot$.
 		\item (Completeness):
-			For all security parameter $\lambda\in\bbN$, accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$, and $x\in\zo^{\poly(\lambda)}$, 
+			For all accuracy parameter $\varepsilon(\lambda)=\frac{1}{\poly(\lambda)}$,
+			security parameter $\lambda\in\bbN$,
+			and $x\in\zo^{\poly(\lambda)}$, 
 			Let $(d, z)\leftarrow(P, V)(1^\lambda, 1^{1/\varepsilon}, x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
 		\item (Statistical soundness): For all cheating prover $P^*$,
-			sufficiently large $\lambda\in\bbN$, accuracy parameter $\varepsilon=\frac{1}{\poly(\lambda)}$, and $x\in\zo^{\poly(\lambda)}$, 
+		    accuracy parameter $\varepsilon(\lambda)=\frac{1}{\poly(\lambda)}$,
+			sufficiently large $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, 
 			consider the following experiment:
 			\begin{itemize}
-				\item Let $(d, z)\leftarrow(P^*, V)(x, 1^{1/\varepsilon}, 1^\lambda)$.
+				\item Let $(d, z)\leftarrow(P^*, V)(1^\lambda, 1^{1/\varepsilon}, x)$.
 				\item Define $z_{ideal}$ by
 				$$\begin{cases}
 					z_{ideal}=\bot & \text{if } d=\Rej\\
@@ -139,20 +156,24 @@ We model the interaction between a (almost classical) client and a quantum serve
 				\end{cases}$$.
 			\end{itemize}
 			It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\varepsilon$. 
-		\item (Computational soundness): Define $d, z, z_{ideal}$ same as above.
-			It holds that for all $\BQP$ distinguisher $D$,
-			$\abs{\Pr[D(1^{\lambda}, d,z) = 1] - \Pr[D(1^{\lambda}, d,z_{ideal}) = 1]} \leq \varepsilon $
+		\item (Computational soundness):
+		For all cheating $\BQP$ prover $P^*$, $\BQP$ distinguisher $\mathsf{D}$, accuracy parameter $\varepsilon(\lambda)=\frac{1}{\poly(\lambda)}$,
+			sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$, 
+			define $d, z, z_{ideal}$ by the same experiment as above.
+			It holds that
+			$$\abs{\Pr[\mathsf{D}(1^{\lambda}, d,z) = 1] - \Pr[\mathsf{D}(1^{\lambda}, d,z_{ideal}) = 1]} \leq \varepsilon $$
 	\end{itemize}
 \end{definition}
 
 We now define blindness of a protocol.
-In the context of blind protocols, the above definitions should be modified so that $x$ is the verifier's private input.
-We define blindness with an accuracy parameter $\varepsilon$, which exists in protocols for $\SampBQP$ instances;
-one can leave it out where appropriate, such as in protocols for $\BQP$ languages.
+In the context of blind protocols, we consider $x$ as the verifier's private input instead of a common input.  
+%the above definitions should be modified so that $x$ is the verifier's private input.
+%We define blindness with an accuracy parameter $\varepsilon$, which exists in protocols for $\SampBQP$ instances;
+%one can leave it out where appropriate, such as in protocols for $\BQP$ languages.
 
 \begin{definition}
-	Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ and $1^{1/\varepsilon}$, and verifier's private input $x\in\zo^*$.
-	We say $\Pi$ is \emph{blind} if for all cheating prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
+	Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ (and $1^{1/\varepsilon}$ for the case of $\SampBQP$ problem), and verifier's private input $x\in\zo^*$.
+	We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
 	\begin{itemize}
 		\item $\set{\View_{P^*}(P^*, V(x))(1^\lambda, 1^{1/\varepsilon})}_{\lambda\in\bbN, \varepsilon\in(0,1), x\in\zo^*}$
 		\item $\set{\View_{P^*}(P^*, V(0))(1^\lambda, 1^{1/\varepsilon})}_{\lambda\in\bbN, \varepsilon\in(0,1), x\in\zo^*}$
@@ -168,8 +189,6 @@ Then for all $0<\delta<1$,
 $$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
 \end{thm}
 
-\Ethan{Proj. lemma and de Finetti thm. were moved}
-
 \subsection{Quantum Homomorphic Encryption Schemes}
 
 \def\QHE{\mathsf{QHE}}
@@ -184,16 +203,16 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 	$\QEnc, \QEval, \QDec)$ is quadruple of quantum polynomial-time algorithms which operate as follows:
 	\begin{itemize}
 		\item \emph{Key generation.}
-			The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda)$ takes a unary representation of the security parameter and outputs a public key encryption key $pk$ and a secret decryption key $sk$.
+			The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda)$ takes a unary representation of the security parameter as input and outputs a public key $pk$ and a secret key $sk$.
 		\item \emph{Encryption.}
-			The algorithm $c\leftarrow\QEnc(pk, \mu)$ takes the public key $pk$ and a single bit message $\mu\in\zo$ and outputs a ciphertext $c$.
+			The algorithm $c\leftarrow\QEnc(pk, \mu)$ takes the public key $pk$ and a single bit message $\mu\in\zo$ as inputs and outputs a ciphertext $c$.
 		\item \emph{Decryption.}
-			The algorithm $\mu^*\leftarrow\QDec(sk, c)$ takes the secret key $sk$ and a ciphertext $c$ and outputs a message $\mu^*\in\zo$.
+			The algorithm $\mu^*\leftarrow\QDec(sk, c)$ takes the secret key $sk$ and a ciphertext $c$ as inputs and outputs a message $\mu^*\in\zo$.
 			It must be the case that
 				$$\QDec(sk, \QEnc(pk, \mu))=\mu$$
 			with overwhelming probability in $\lambda$.
 		\item \emph{Homomorphic Evaluation.}
-			The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit \Ethan{?} $f$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ and outputs a ciphertext $c_f$.
+			The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit $f$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ as inputs and outputs a ciphertext $c_f$.
 			It must be the case that
 				$$\QDec(sk, \QEval(pk, f, c_1, \ldots, c_l))=f(\QDec(sk, c_1),\ldots,\QDec(sk, c_l))$$
 			with overwhelming probability in $\lambda$.
@@ -201,20 +220,18 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
 \end{definition}
 
 \begin{definition}[Compactness and Full Homomorphism]
-	\Ethan{This is copied from Mahadev. Not sure how much of this we need. We need at least how leveled HE is defined.}
-
 	A quantum homomorphic encryption scheme $\QHE$ is compact if
 	there exists a polynomial $s$ in $\lambda$ such that the output length of $\QEval$ is at most $s$ bits long (regardless of $f$ or
 	the number of inputs). A compact scheme is (pure) fully homomorphic if it can evaluate any efficiently computable
 	boolean function. A compact scheme is leveled fully homomorphic if it takes $1^L$ as additional input in key generation,
-	and can only evaluate depth $L$ Boolean circuits where $L$ is polynomial in $\lambda$. A scheme is quantum pure or
-	leveled fully homomorphic if we refer to quantum circuits rather than boolean circuits.
+	and can only evaluate depth $L$ Boolean circuits where $L$ is polynomial in $\lambda$.
 \end{definition}
+
+\Ethan{Combine leveled dfn. with QFHE; keep compactness here}
 
 We also recall the security definition for a FHE scheme.
 
 \begin{definition}
-	\Ethan{This was copied from Mahadev. Not sure where $L$ (level) goes.}
 	A scheme $\QHE$ is IND-CPA secure if, for any polynomial time adversary $\cA$, there exists a negligible function $\mu(\cdot)$ such that
 	$$\abs{Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(0))=1]-Pr[\cA(pk, \mathsf{HE.Enc}_{pk}(1))=1]}\leq\mu(\lambda)$$
 	where $(pk, sk)\leftarrow\QGen(1^\lambda)$
@@ -225,7 +242,7 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
 \begin{definition}
 	we call a quantum homomorphic encryption scheme \emph{classical-friendly} if it has the following properties:
 	\begin{itemize}
-		\item $\QGen$ produces classical keys
+		\item $\QGen$ is a classical algorithm
 		\item In the case where the plaintext is classical, $\QEnc$ can be done classically.
 		\item When the underlying message is classical, the corresponding ciphertext is also classical and can be decrypted classically.
 	\end{itemize}
@@ -233,5 +250,5 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
 
 \begin{theorem} [Theorem 1.1 in \cite{mahadev_qfhe}]
 	Under the assumption that the learning with errors problem with superpolynomial noise ratio is computationally intractable for an efficient quantum machine,
-	there exists a classical-friendly quantum homomorphic encryption scheme.
+	there exists a classical-friendly compact quantum leveled homomorphic encryption scheme.
 \end{theorem}

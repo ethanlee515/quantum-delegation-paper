@@ -1,23 +1,23 @@
-\section{Delegation Protocol for $\QPIP_1$ Client}
+%\section{Delegation Protocol for $\QPIP_1$ Client}
 
-In this section, we construct a one-message $\QPIP_1$ delegation protocol for $\SampBQP$.
-At a high level, it is a cut-and-choose protocol.
-The server constructs multiple copies of the ground state as certificates,
-then the client randomly chooses a copy to output and checks the rest.
-Unfortunately our approach incurs inverse polynomial soundness errors.
+% In this section, we construct a one-message $\QPIP_1$ delegation protocol for $\SampBQP$.
+% At a high level, it is a cut-and-choose protocol.
+% The server constructs multiple copies of the ground state as certificates,
+% then the client randomly chooses a copy to output and checks the rest.
+% Unfortunately our approach incurs inverse polynomial soundness errors.
 
-There are two main challenges to this cut-and-choose approach.
-First, the client needs to reliably extract the circuit output from its corresponding ground state.
-We accomplish this by padding the circuit with identity gates at the end.
-By doing so, the clock register collapses to after the last non-identity gate with high probability.
+% There are two main challenges to this cut-and-choose approach.
+% First, the client needs to reliably extract the circuit output from its corresponding ground state.
+% We accomplish this by padding the circuit with identity gates at the end.
+% By doing so, the clock register collapses to after the last non-identity gate with high probability.
 
-The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
-so common techniques such as Chernoff bounds can't be applied as-is.
-This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
-\Ethan{TODO; need brief and intuitive explanation}
-In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
-to approximate our measurement results with that of some unentangled copies,
-within inverse polynomial errors.
+% The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
+% so common techniques such as Chernoff bounds can't be applied as-is.
+% This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
+% \Ethan{TODO; need brief and intuitive explanation}
+% In our case with $\SampBQP$, we overcome this challenge instead by using de Finetti's theorem
+% to approximate our measurement results with that of some unentangled copies,
+% within inverse polynomial errors.
 
 \begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{ProtoQPIP1}
@@ -29,7 +29,7 @@ within inverse polynomial errors.
 		\item Accuracy parameter $1^{1/\varepsilon}$ where $\varepsilon\in(0, 1)$
 	\end{itemize}
 
-	Ingrediants:
+	Ingredients:
 	\begin{itemize}
 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 		\item Let $T$ be the number of gates in $C$.

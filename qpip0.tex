@@ -8,11 +8,11 @@ In this section, we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev
 
 
 %Subprotocol for Quantum Measurements
-\subsection{$\QPIP_0$ for BQP?}
-\hannote{Ethan old description before parallel rep.}
-As a warm-up, we  restate the construction in \cite{FOCS:Mahadev18a}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
+% \subsection{$\QPIP_0$ for BQP?}
+% \hannote{Ethan old description before parallel rep.}
+% As a warm-up, we  restate the construction in \cite{FOCS:Mahadev18a}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
 
-Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
+% Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
 
 
 
@@ -22,7 +22,10 @@ In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round intera
 
 \begin{protocol}{Mahadev's 4 round commitment}
 \label{proto:urmila4}
+\Ethan{TODO Make notation consistent with protocols in other sections}
+
 \begin{enumerate}
+
     \item Verifier $\bbV$ is a classical machine. Prover $\bbP$ is a $\BQP$ machine. 
 %    \item Both the verifier and the prover know a $\BQP$ circuit $C$ and an input string $x$.
     \item Both party know the number of qubits $n$ and a security parameter $\lambda=1^{\poly(n)}$.
@@ -36,14 +39,14 @@ In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round intera
 \end{protocol}
 
 \begin{definition}
-With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$.
+With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ \Ethan{Font makes this $a$ look screwy} accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$.
 \end{definition}
 
 \begin{lem}[\hannote{ref}]~\label{lem:trivial-4-round-strategy}
     For any input, there exist a prover strategy $(U_{trivial,0},U_{trivial})$ for Protocol~\ref{proto:urmila4} that is accepted with probability $1-\negl{n}$ in the testing.
 \end{lem}
 
-
+\Ethan{Again change all n to lambda for sec. param.}
 
 
 
@@ -97,19 +100,20 @@ Mahadev's 4-round protocol has the following binding property.
 
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of  Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
+If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ \Ethan{Prover will produce isn't right, the one producing z should be verifier} on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
-
 
 Note that even a honest prover has complete freedom in choosing $\rho$, so protocol~\ref{proto:urmila4} didn't make the prover commit to a particular state. What it actually does is let the prover commit to a particular $XZ$ measurement on $\rho$. This is good enough for our application, since we will feed the $XZ$ measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
 
 
 By combining the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP_1$ Protocol, Protocol~\ref{ProtoQPIP1}, we get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
 
+\Ethan{Probably can omit details from below}
+
 \begin{protocol}{naive $\QPIP_0$ protocol  for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
 
-	Inputs: \Ethan{Should the $\SampBQP$ instance be an input?}
+	Inputs: \Ethan{Just assume PiSamp has the properties I need including non-adaptive measurements. Maybe make author note for now if needed and add it back later}
 	\begin{itemize}
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 		\item Error parameter $\varepsilon\in(0, 1)$
@@ -132,9 +136,9 @@ By combining the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QP
 	\begin{enumerate}
 	\item The verifier choose a $XZ$-measurement $h$ over  $M=\frac{T^{21}}{\varepsilon^{33}}$  copies of $\ket{\psi_{C'(x)}}$ from the distribution emergent from by Step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1}.
 	
-	\item \label{step:urmila-in-naive} The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \, s$ , where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the fourth round of Protocol~\ref{proto:urmila4} if $c=1$ to abort the process.\footnote{This is useless for the cheating prover but useful for proving one of our theorems.} If the verifier receives $\bot$ in the fourth round, he outputs $(\Rej,\bot)$ and terminates this protocol.
+	\item \label{step:urmila-in-naive} The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \, s$ , where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the fourth round of Protocol~\ref{proto:urmila4} if $c=1$ to abort the process.\footnote{This is useless for the cheating prover but useful for proving one of our theorems.} If the verifier receives $\bot$ in the fourth round, he outputs $(\Rej,\bot)$ and terminates this protocol. Let $z_{commit}$ be the output of the called Protocol~\ref{proto:urmila4}.
 	
-	\item If $c=1$, the verifier finished the verification step of Protocol~\ref{ProtoQPIP1} by using $z_{commit}$ from Protocol~\ref{proto:urmila4} as the measurement result he would get and outputs $(d,z_{naive})$.
+	\item If $c=1$, the verifier finished the verification step of Protocol~\ref{ProtoQPIP1} by using $z_{commit}$  as the measurement result he would get and outputs $(d,z_{naive})$.
 	
 	
 	\end{enumerate}
@@ -180,6 +184,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 
 %	\label{ProtoQPIP1}
 
+\Ethan{Might need to fix the following. Note that it's not a standard parallel rep, so we can't just say it's N-fold parallel rep without saying anything else}
 
 \begin{protocol}{$\QPIP_0$ for $\SampBQP$}
 \label{proto:QPIP0samp}
@@ -192,7 +197,7 @@ Protocol:
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
     
-    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{step:qpip1-state-gen} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
+    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel \Ethan{proto 2? Or 3?}, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{step:qpip1-state-gen} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
     \item \label{step:multi-testing}Verifier rejects if the result on any of the test rounds is rejected. 
     \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
 \end{enumerate}
@@ -203,15 +208,18 @@ Protocol:
 \end{theorem}
 
 
-\hannote{Intuitions about the partition lemma. }
+\hannote{intuition about proof}
 
+\hannote{Intuitions about the partition lemma. efficient projectors into passing testing part and not passing testing part.}
+
+\hannote{related notation back to 3.5}
 
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
-\begin{lemma}[partition lemma]\label{lem:partition2}
+\begin{lemma}[partition lemma \hannote{ref}\Ethan{Lemma number?}]\label{lem:partition2}
 Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U_0$ is the how the prover generates answer in the second round, and $U$ is how the prover generates answer in the fourth round. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$.  Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$.
 
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
+ For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ \Ethan{Not consistent with the cited paper; typeof(G0, G1) aren't q circuits} such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
 
 \begin{align}
     G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ} \\ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}  \\
@@ -223,7 +231,7 @@ Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U
  
 
  
-  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $pk,sk,y$. \hannote{check}
+  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $pk,y$. \hannote{check}
 
  
 
@@ -231,11 +239,11 @@ Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U
 Furthermore, the following properties are satisfied for all $i\in[m]$.
 %
 \begin{enumerate}
-    \item \label{property:partition-err}  $$E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\|^2 \leq \frac{6}{T}+\negl(n),$$
+    \item \label{property:partition-err}  $$\E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\|^2 \leq \frac{6}{T}+\negl(n),$$
     
     where the averaged is over uniformly sampled $\gamma$. This also implies
     \begin{align}
-        E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\| \leq \sqrt{\frac{6}{T}}+\negl(n)
+        \E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\| \leq \sqrt{\frac{6}{T}}+\negl(n)
     \end{align}
 by Cauchy's inequality.
     
@@ -380,7 +388,7 @@ Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corre
 
 
 $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. \hannote{add description about  averaging $pk$ here.}
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $pk, y$ where as previously everything has fixed $pk$ and $y$. \hannote{add description about  averaging $pk$ here.}
 
 Since $\{c\}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
@@ -394,7 +402,7 @@ $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\
 Define 
 
 \begin{align}
-    z_{good,i}=E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
+    z_{good,i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
 \end{align}
 
 Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string}, 
@@ -414,9 +422,9 @@ we have
     z_i =& \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
     =& \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}} +\bra{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} \R]U^\dag  P_{acc,i,z} U\nn \\
     &\L[ \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}\R]  \nn \\
-    =& E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}} +\bra{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} \R]U^\dag  P_{acc,i,z} U\nn \\
+    =& \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}} +\bra{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} \R]U^\dag  P_{acc,i,z} U\nn \\
     &\L[ \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}\R]  \nn \\
-    =& z_{good,i}+ E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
+    =& z_{good,i}+ \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
     \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \nn \\
       +&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
@@ -433,10 +441,10 @@ we have
 % \ket{\psi_{1^i,\gamma}} 
 % \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}  
 
- where we omitted writing out $e_i$ starting the second line.  We have \Ethan{$\ket{z}\bra{z}$?}
+ where we omitted writing out $e_i$ starting the second line. We have
 \begin{align} \label{eq:zi-zgoodi}
     &\tr|z_i-z_{good,i}|   \nn \\
-    \leq&  \sum_z  \L| E_\gamma \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
+    \leq&  \sum_z  \L| \E_\gamma \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
     \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \R. \nn \\
       +&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
@@ -444,7 +452,7 @@ we have
     +& \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} 
     +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \nn \\
     +&\L.\L.\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R]\R| \nn \\  %%%%%%%%%%%
-    \leq&  \sum_z   E_\gamma \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^j0,\gamma}} \R|+
+    \leq&  \sum_z   \E_\gamma \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^j0,\gamma}} \R|+
     2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R.  \nn \\
       +&  2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\ket{\psi_{err,j,\gamma}}\R|    
     +2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \nn \\
@@ -505,7 +513,7 @@ By Lemma~\ref{lem:trivial-4-round-strategy} and property~\ref{property:partition
 
 
 
-By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where  $(d,z_{good,i}) \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation?} . Therefore
+By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} . Therefore
 
 \begin{align}
     \norm{(d,z_{good,i})-(d,z_{ideal,i})}_q \leq O(\eps).

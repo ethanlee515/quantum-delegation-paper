@@ -23,13 +23,17 @@ Which results in the following protocol.
 \Ethan{General comment: Make story more interesting. Clearly claim our own contributions.}
 
 We now state our compiler that gives any $\QPIP_0$ protocol blindness.
-For the sake of simplicity, we omit the security and accuracy parameters. \Ethan{The previous sentence is newly added}
+For the sake of simplicity, we omit the security and accuracy parameters.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 
+\Ethan{Say in words I'm going to compile proto 5 (which is a general form of...) to proto 6}
+
+\Ethan{Add lambda back}
+
 \begin{protocol}{$\QPIP_0$ protocol $\Pi_0=(P, V)(x)$ where only the verifier receives outputs}
 	
-	Public input: $x$
+	Public input: $x$ \Ethan{Add footnote here about eps}
 	\begin{enumerate}
 		\item $V$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$ and sends $v_1$ to the prover.
 		\item $P$ generates $(p_1, st_{P, 1})\leftarrow\cP_1(v_1, x)$ and sends $p_1$ to the verifier.
@@ -46,10 +50,10 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 We compile the above protocol to achieve blindness as follows.
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Piblind=(\Pblind, \Vblind(x))$ correponding to $\Pi_0$}
-
+    \Ethan{Sync common or public inputs wording. Prefer common.}
 	Verifier's input: $x$
 
-	Let $L=\poly(x)$, $\lambda=\poly(x)$.
+	Let $L=\poly(x)$ \Ethan{Quantify/define L more clearly}, $\lambda=\poly(x)$.
 
 	\begin{enumerate}
 		\item $\Vblind$ generates $(v_1, st_{V, 1})\leftarrow\cV_1(x)$.
@@ -85,22 +89,22 @@ By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly
 We show the soundness of $\Piblind$ in the following theorem.
 
 \begin{theorem}
-	For all cheating prover $\Pblindstar$, there exists a cheating prover $\Pstar$ s.t. for all input $x$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
+	For all cheating $\BQP$ prover $\Pblindstar$, there exists a cheating $\BQP$ prover $\Pstar$ s.t. for all $\lambda$ and input $x\in\zo^{\poly(\lambda)}$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{theorem}
 \begin{proof}
 	We define $\Pstar$ as follows.
 	
-	On $\cPstar{1}$ it generates
+	For the first rounds, it generates
 	$(pk_1, sk_1)\leftarrow\QGen(1^\lambda, 1^L)$, then produces the encryptions
 	$\ctx{x}{}{1}\leftarrow\QEnc(pk_1, x)$ and $\ctx{v}{1}{1}\leftarrow\QEnc(pk_1, v_1)$.
 	It then runs $(\ctx{p}{1}{1}, \ctx{st}{P, 1}{1})\leftarrow\cPblind{1}(\ctx{v}{1}{1}, \ctx{x}{}{1})$.
 	Finally, it decrypts $p_1\leftarrow\QDec(sk_1, \ctx{p}{1}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st}{P, 1}{1}$ and $sk_1$.
 
-	Then, on the rest of the $\cPstar{t}$ rounds, it generates
+	For the other rounds, it generates
 	$(pk_t, sk_t)\leftarrow\QGen(1^\lambda, 1^L)$, and produces ciphertexts
 	$\ctx{v}{t}{t}\leftarrow\QEnc(pk_t, v_t))$ and $\ctx{sk}{t-1}{t}\leftarrow\QEnc(pk_t, sk_{t-1})$.
-	It then runs $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t}, \ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$.
+	It then runs $(\ctx{p}{t}{t}, \ctx{st}{P, t}{t})\leftarrow\cPblind{t}(\ctx{v}{t}{t},$ \ $\ctx{sk}{t-1}{t}, \ctx{st}{P, t-1}{t-1})$.
 	Finally, it decrypts $p_t\leftarrow\QDec(sk_t, \ctx{p}{t}{1})$ and sends it back to the verifier,
 	and keeps $\ctx{st}{P, t}{t}$ and $sk_t$.
 		
@@ -117,14 +121,17 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	For $t<T+1$, we define $\Hyb_{t}$ to be the same as $\Hyb_{t+1}$,
 	except when $\Vblind$ should send $\ctx{sk}{t}{t}$, it instead sends $\ctx{0}{}{t}$ which is encryption of $0$ under $pk_t$.
 	Then, for all $t$, from the perspective of the prover, $\Hyb_{t+1}$ is computationally indistinguishable from $\Hyb_t$ due to the CPA security of $\QHE$ under $pk_t$.
-	By applying triangle inequality iteratively \Ethan{good enough?}, we observe that $\Hyb_1$ is computationally indistinguishable with $\Hyb_{T+1}$.
+	By a standard hybrid argument, we observe that $\Hyb_1$ is computationally indistinguishable with $\Hyb_{T+1}$.
 	Furthermore, $\Hyb_1$ is blind since the prover isn't provided any information about any secret keys.
+	\Ethan{do hybrid on 0 too and make sure it fits the dfns. Also should mention why hybriding works}
 	So we conclude that $\Piblind$ is blind.
 \end{proof}
 
 Our compiler is a straightforward way of achievement blindness with existing $\QPIP_0$ protocols while preserving other runtime properties.
 In particular, we now apply it to the delegation protocol for $\BQP$ from \cite{parallelrep, alagic2019twomessage},
 as well as our $\SampBQP$ protocol $\PiSamp$ to obtain the following results respectively.
+
+\Ethan{``preserves soundness" needs just a bit more discussion, since all we've proven are two experiments being identical.}
 
 \begin{theorem}
 	There exists a blind, constant-round $\QPIP_0$ protocol for $\BQP$ with negligible completeness and soundness errors.
