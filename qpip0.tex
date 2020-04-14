@@ -18,25 +18,40 @@ In this section, we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev
 
 \subsection{Mahadev's classical "commitment" of $XZ$ measurement}
 
-In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round interactive protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine, which we describe below while omitting the implementation details. 
+In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round $\QPIP_0$ protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine, which we describe below while omitting the implementation details. 
 
-\begin{protocol}{Mahadev's 4 round commitment}
+\begin{protocol}{Mahadev's 4 round commitment protocol $\PiMeasure$}
 \label{proto:urmila4}
-\Ethan{TODO Make notation consistent with protocols in other sections}
+\Ethan{Still rooms for improvements, but it's not as bad as before}
 
+Inputs:
+\begin{itemize}
+	\item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$.
+	\item Prover's input: a state $\rho\in\cB^{\otimes n}$ for the verifier to measure.
+	\item Verifier's inputs:
+		\begin{itemize}
+			\item a string $h \in \{0,1\}^n$ that specifies the measurement he wants to make: if $h_i=0$, he wants a $X$ measurement on $i$-th qubit. If $h_i=1$, he wants a $Z$ measurement on $i$-th qubit.  
+			\item a challenge bit $c\in\zo$. The prover needs to do a ``Testing round" if $c=0$. The prover needs to do a ``Hadamard round" if $c=1$.
+		\end{itemize}
+\end{itemize}
+
+The protocol:
 \begin{enumerate}
-
-    \item Verifier $\bbV$ is a classical machine. Prover $\bbP$ is a $\BQP$ machine. 
-%    \item Both the verifier and the prover know a $\BQP$ circuit $C$ and an input string $x$.
-    \item Both party know the number of qubits $n$ and a security parameter $\lambda=1^{\poly(n)}$.
-    \item Verifier has a string $h \in \{0,1\}^n$ that specifies the measurement he wants to make: if $h_i=0$, he wants a $X$ measurement on $i$-th qubit. If $h_i=1$, he wants a $Z$ measurement on $i$-th qubit.  
-    \item In the first round, the verifier generate a secret key and  public key pair $(sk,pk)$ from $h$ and $\lambda$ and sent $pk$ to the prover.
-    \item In the second round, the prover pick some $n$-qubit quantum state $\rho$ and generate a "commitment" $y$ from $pk$ and $\rho$. He send $y$ to the verifier and keep the leftover quantum state $\sigma$.
-    \item In the third round, the verifier send a uniformly random challenge bit $c\in \{0,1\}$. The prover needs to do a "Testing round" if $c=0$. The prover needs to do a "Hadamard round" if $c=1$.
-    \item In the fourth round. The prover generates a classical string $a$ from $c$ and $\sigma$ and send to back to the prover.
-    \item If $c=0$, the verifier decides whether he is going to reject from $(pk,a,y)$. If $c=1$ the verifier computes an $n$-bit string $z$ from $(sk,h,y,a)$, $z=V_f(sk,h,y,a)$.
+    \item The verifier generates a public and secret key pair $(pk, sk)$ on inputs $h$ and $1^\lambda$. It sends $pk$ to the prover.
+    \item The prover generates a classical ``commitment" $y$ and internal state $\sigma$ on inputs $pk$ and $\rho$. He send $y$ to the verifier.
+	\item The verifier sends $c$ to the prover.
+    \item The prover generates a classical string $a$ on inputs $c$ and $\sigma$, and sends it to back to the verifier.
+    \item If $c=0$, the verifier decides whether he is going to reject on inputs $(pk,a,y)$.
+		If $c=1$, the verifier computes an $n$-bit string $z=V_f(sk,h,y,a)$ on inputs $(sk,h,y,a)$.
 \end{enumerate}
 \end{protocol}
+
+\Ethan{The following modifications are mine}
+Two modification have been made from the original protocol.
+\begin{itemize}
+	\item On the protocol's third message. Instead of randomly picking whether to run what's called a ``testing round" or a ``Hadamard round", we let the verifier decide as one of its inputs.
+	\item On the protocol's fourth message, the prover can choose to abort by sending $a=\bot$. This is useless for the cheating prover but useful for proving one of our theorems.
+\end{itemize}
 
 \begin{definition}
 With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ \Ethan{Font makes this $a$ look screwy} accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$.
@@ -48,56 +63,9 @@ With loss of generality,  we can assume that the testing round verification is d
 
 \Ethan{Again change all n to lambda for sec. param.}
 
-
-
-% \begin{lem}[another triangle inequality for computational distance \hannote{unused}]\label{lem:computational-triangle}
-% Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
-
-% If 
-% \begin{align}
-%     &\norm{D_1 - D_2}_q \leq \eps   \\ 
-%     &\norm{D_4 - D_6}_q \leq \eps',  
-% \end{align}
-% then 
-% \begin{align}
-%   \norm{ D_3 - D_5}_q \leq \eps+\eps' 
-% \end{align}
-% \end{lem}
-% % \begin{align}
-% %     D_1 &\approx_{q,\eps} D_2 \\
-% %     D_4 &\approx_{q,\eps'} D_6, 
-% % \end{align}
-% % then 
-% % \begin{align}
-% %     D_3 \approx_{q,\eps+\eps'} D_5
-% % \end{align}
-% \begin{proof}
-% % Since
-% % $$\norm{D_4 - D_6}_q \leq \eps',$$
-% % there exist 
-
-
-% We prove by contradiction. Suppose that
-% $$\norm{ D_3 - D_5}_q > \eps+\eps',$$
-% then there exist a quantum circuit $A$ of size $poly(n)$ such that 
-% $$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
-% Since $$\norm{D_4 - D_6}_q \leq \eps'$$, we know that 
-% $$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
-% Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
-% $$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$ 
-% $$ \Pr[A({D_2})=1]= \Pr[A({D_5})=1]+ \Pr[A({D_6})=1].$$ 
-% So 
-% \begin{align}
-%     &\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \nn \\
-%     =&   \L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1] +\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \nn \\
-%     \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
-%      > &\eps 
-% \end{align}
-% This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
-% \end{proof}
-
 Mahadev's 4-round protocol has the following binding property.
 
+\Ethan{TODO fix variable labels and whatnot here}
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of  Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
 If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the prover will produce a $z$ \Ethan{Prover will produce isn't right, the one producing z should be verifier} on the Hadamard round that is $\negl(n)$-Q-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$\hannote{add notation}, unless LWE can be efficiently solved by a quantum computer. 
@@ -106,47 +74,40 @@ If a prover's strategy in Protocol~\ref{proto:urmila4}\hannote{need clarificatio
 Note that even a honest prover has complete freedom in choosing $\rho$, so protocol~\ref{proto:urmila4} didn't make the prover commit to a particular state. What it actually does is let the prover commit to a particular $XZ$ measurement on $\rho$. This is good enough for our application, since we will feed the $XZ$ measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
 
 
-By combining the commitment Protocol, Protocol~\ref{proto:urmila4}, and the $\QPIP_1$ Protocol, Protocol~\ref{ProtoQPIP1}, we get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
+By combining the commitment Protocol, $\PiMeasure$, and our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, we get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
+In particular, we combine them by replacing the verifier's measurements with a call to $\PiMeasure$. It is possible because $\VSamp$ applies only $X$ and $Z$ measurements.
+Furthermore, its measurements are not adaptive, meaning measurement results do not change later measurement basis choices.
 
 \Ethan{Probably can omit details from below}
 
-\begin{protocol}{naive $\QPIP_0$ protocol  for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
+\begin{protocol}{naive $\QPIP_0$ protocol $\PiNaive$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
 
-	Inputs: \Ethan{Just assume PiSamp has the properties I need including non-adaptive measurements. Maybe make author note for now if needed and add it back later}
+	Inputs:
 	\begin{itemize}
-		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
+		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
 		\item Error parameter $\varepsilon\in(0, 1)$
+		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
+		\item Verifier's input: challenge bit $c\in\zo$ as in $\PiMeasure$
 	\end{itemize}
 
- 	Ingrediants:
- 	\begin{itemize}
- 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
- 		\item Let $T$ be the number of gates in $C$.
-		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
- 		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$.
-		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
-		\item Let $s=n+T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$
-%  		\item Let $\cVGS$ be the way to verify said ground state as defined in \Cref{AlgGroundStateCheck}. \Ethan{TODO wording needs fix...? How?}
- 	\end{itemize}
-
-
+	% Ingrediant: Let $\varepsilon'=0.99\varepsilon$
 
 	Protocol:
 	\begin{enumerate}
-	\item The verifier choose a $XZ$-measurement $h$ over  $M=\frac{T^{21}}{\varepsilon^{33}}$  copies of $\ket{\psi_{C'(x)}}$ from the distribution emergent from by Step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1}.
-	
-	\item \label{step:urmila-in-naive} The verifier and prover run Protocol~\ref{proto:urmila4}, with the following parameters: $h$ is chosen from previous step, $n_{commit}=M \, s$ , where $n_{commit}$ is the $n$ for Protocol~\ref{proto:urmila4}, and the honest prover choose $M$ copies of $\ket{\psi_{C'(x)}}$ as $\rho$. We also allow a cheating prover to send $\bot$ in the fourth round of Protocol~\ref{proto:urmila4} if $c=1$ to abort the process.\footnote{This is useless for the cheating prover but useful for proving one of our theorems.} If the verifier receives $\bot$ in the fourth round, he outputs $(\Rej,\bot)$ and terminates this protocol. Let $z_{commit}$ be the output of the called Protocol~\ref{proto:urmila4}.
-	
-	\item If $c=1$, the verifier finished the verification step of Protocol~\ref{ProtoQPIP1} by using $z_{commit}$  as the measurement result he would get and outputs $(d,z_{naive})$.
-	
-	
+		\item The verifier choose a $XZ$-measurement $h$ from the distribution emergent from by Step~\ref{step:qpip1-verify} of $\PiSamp$. \Ethan{I didn't change the wording here}
+			It samples $c\xleftarrow{\$}\zo$ uniformly at random.
+		\item The prover prepares $\sigma$ by running Step~\ref{step:qpip1-state-gen} of $\PiSamp$.
+		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\sigma), \VMeasure(h))(1^\lambda, 1^{1/\varepsilon}, x)$.
+			If $c=1$, the verifier obtains $z_{commit}$.
+		\item If $c=1$, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by using $z_{commit}$ as the measurement result he would get and outputs $(d,z_{naive})$.
 	\end{enumerate}
 \end{protocol}
 
  Protocol~\ref{proto:qpip0_naive} has no soundness guarantee, but it has the following binding property that would be useful in proving the soundness of the actual protocol in Section~\ref{sec:qpip0}.
 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of  Protocol~\ref{proto:qpip0_naive} ]
+	\Ethan{I haven't done anything with this lemma yet. Might need to fix or make consistent later.}
 If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, 
 
 $$\norm{(d,z_{naive})-(d,z_{ideal})}_q \leq O(\eps),$$ 
@@ -186,22 +147,29 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 
 \Ethan{Might need to fix the following. Note that it's not a standard parallel rep, so we can't just say it's N-fold parallel rep without saying anything else}
 
-\begin{protocol}{$\QPIP_0$ for $\SampBQP$}
+\begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
 
-\hannote{fix inputs}
-Inputs: 
- Both verifier and prover start with the description of number of qubits $n$,  input string $x$ to the $\SampBQP$ Instance, and a soundness parameter $\varepsilon$.
+Inputs:
+	\begin{itemize}
+		\item Security parameter $1^\lambda$ for $\lambda\in\bbN$.
+		\item Accuracy paramter $1^\varepsilon$ for the $\SampBQP$ instance
+		\item Input $x\in\zo^n$ \Ethan{Or $\zo^*$?} for the $\SampBQP$ instance
+	\end{itemize}
+
+Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to run.
     
 Protocol:
 \begin{enumerate}
 %    \item Verifier start with description of quantum circuit $C$, input string $x$ 
-    
-    \item Run $m=O(1/\varepsilon^2)$ copies of protocol~\ref{proto:urmila4} in parallel \Ethan{proto 2? Or 3?}, with following modifications. The copies have separate $\{h\}$, $\{sk\}$, $\{pk\}$, $\{y\}$, $\{c\}$, and $\{a\}$.  The verifier draws $\{h\}$ independently from the distribution specifier by step~\ref{step:qpip1-verify} of Protocol~\ref{ProtoQPIP1} to generate $\{sk\}$ and $\{pk\}$ for all copies on the first round. On the second round, for each copy, the prover choose the state specified by step~\ref{step:qpip1-state-gen} of Protocol~\ref{ProtoQPIP1}  (with  $(C,x,\eps)$ as input) as $\rho$. On the third round, the verifier uniformly randomly pick an $i\in [m]$, do a Hadamard round on $i$-th copy, and has do test rounds on all other copies, i.e. $c_i=1$ and $c_j=0$ for all $j\neq i$.
-    \item \label{step:multi-testing}Verifier rejects if the result on any of the test rounds is rejected. 
-    \item If all testing rounds are accepted, verifier run the verification procedure of Protocol~\ref{ProtoQPIP1} on the string $z$ decoded from the Hadamard round.
+	\item The verifier samples $r\xleftarrow{\$}[m]$. For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
+	\item The prover and verifier runs $m$-fold parallel repetion of $\PiNaive$.
+		That is, for $1\leq i\leq m$, run $(\PNaive, \VNaive(c_i))(1^\lambda, 1^\varepsilon, x)$.
+	\item \label{step:multi-testing} If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
+		Else it outputs the result from the Hadamard round copy.
 \end{enumerate}
 \end{protocol}
+
 
 \begin{theorem}\label{thm:qpip0}
     Protocol~\ref{proto:QPIP0samp} is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and $O(\eps)$ computational soundness error\hannote{definition}. 
