@@ -75,10 +75,9 @@ Note that even a honest prover has complete freedom in choosing $\rho$, so proto
 
 
 By combining the commitment Protocol, $\PiMeasure$, and our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, we get a naive $\QPIP_0$ Protocol for $\SampBQP$ that has no soundness guarantee.
+\Ethan{The following discussion is mine}
 In particular, we combine them by replacing the verifier's measurements with a call to $\PiMeasure$. It is possible because $\VSamp$ applies only $X$ and $Z$ measurements.
 Furthermore, its measurements are not adaptive, meaning measurement results do not change later measurement basis choices.
-
-\Ethan{Probably can omit details from below}
 
 \begin{protocol}{naive $\QPIP_0$ protocol $\PiNaive$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
@@ -145,7 +144,7 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 
 %	\label{ProtoQPIP1}
 
-\Ethan{Might need to fix the following. Note that it's not a standard parallel rep, so we can't just say it's N-fold parallel rep without saying anything else}
+\Ethan{TODO add discussion about parallel rep}
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
