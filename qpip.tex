@@ -35,7 +35,7 @@
 		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
 		\item Let $T$ be the number of gates in $C$.
 		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
-		\item Let $H_{C'(x)}$ be the local Hamiltonian instance associated with the computation of $C'(x)$. \Ethan{Refer to the appropriate previous theorem}
+		\item Let $H_{C'(x)}=\sum_i \alpha_i H_i$ be the local Hamiltonian instance associated with the computation of $C'(x)$. \Ethan{Refer to the appropriate previous theorem}
 		\item Let $\ket{\psi_{C'(x)}}$ be the ground state of $H_{C'(x)}$.
 		\item Let $s=n+T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$
 		\item Let $\cVGS$ be the verification algorithm for $H_{C'(x)}$ as defined in \Cref{AlgGroundStateCheck}.
@@ -43,15 +43,15 @@
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=505\frac{T^{21}\lambda^2}{\varepsilon^{31}}$ copies of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
-		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{10}\lambda}{\varepsilon^{14}}$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=505\frac{T^{40}\lambda^2}{\varepsilon^{48}}$ copies \Ethan{$505=2\times 7\times 6\times 6+1$} of $\ket{\psi_{C'(x)}}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\varepsilon^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $y_i\leftarrow\cV_{\GS}(\rho_i)$.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name. Nobody has defined/used this register before.} of $\rho_i$ under the standard basis and save the outcome as $z$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{c\varepsilon^2}{72\left(T+\frac{6T}{\varepsilon}\right)^5}$ and $c\in\bbR$ is the constant specified in \Cref{cor:HamCheck}, then the verifier outputs $(\Acc, z)$.
+			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{1}{192}\frac{\varepsilon^2}{\sum_i\abs{\alpha_i}}$, then the verifier outputs $(\Acc, z)$.
 			Else, it outputs $(\Rej, \bot)$.
 	\end{enumerate}
 \end{protocol}
@@ -104,10 +104,14 @@ We now show its completeness and soundness.
 	As a result, $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{TV}=\negl(\lambda)$.
 
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
+	\iffalse
 	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\tau_j$ and $\ket{\psi_{C'(x)}}$:
 	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\frac{\varepsilon^2}{36}.$$
 	which in turn implies a lower bound on the respective trace distance:
 	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\varepsilon}{6}.$$
+	\fi
+	By \Cref{HamCheckClose} we have
+	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\varepsilon}{6}.$$
 	Observe that when $d_j=\Acc$, $z_j$ is the measurement results on $\tau_j$'s data register,
 	which is $\frac{\varepsilon}{6}$-close to that of $\ket{\psi_{C'(x)}}$.
 	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has at least $1-\frac{\varepsilon}{6}$ probability to contain $C(x)$ due to the padding.
