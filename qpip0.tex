@@ -106,7 +106,7 @@ In PiInt We let the verifier use $\PiMeasure$ to learn...
 		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
 		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
 		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$,
-			where on $\PiMeasure$'s fourth message, the prover can instead choose to abort by sending $a=\bot$.
+			where on $\PiMeasure$'s second message, the prover can instead choose to abort by sending $a=\bot$.
 			This is useless for the cheating prover but useful for proving one of our theorems later. \Ethan{Where/how to say this?}
 			If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
 			If it's a Hadamard round, the verifier obtains $v$.
@@ -122,10 +122,16 @@ On the other hand, it also has a binding property, which we will use to achieve 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of $\PiNaive$]
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
 	Under the QLWE assumption, if $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+	\Ethan{Wrong assumption. The ``perfect prover" notion here is generalized and allows giving up.}
 	then the verifier's output in the Hadamard round is $(\varepsilon+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
 
 \begin{proof}
+	\Ethan{TODO this is currently wrong and I'm not sure how to fix it.
+	The version before this which had subnormalized states seems strange too.
+	The correct proof should involve an alternative prover strategy that ``fixes" the abort case
+	by re-running with perfect prover strategy,
+	in order to connect the dots with \Cref{lem:urmila-binding}}
 	By \Cref{lem:urmila-binding},
 	there exist some $\rho$ such that
 	$v\approx_{c,\negl(\lambda)}M_{XZ}(\rho,h)$.
