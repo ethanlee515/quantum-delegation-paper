@@ -1,3 +1,21 @@
+@ARTICLE{HPF15,
+       author = {{Hajdu{\v{s}}ek}, Michal and {P{\'e}rez-Delgado}, Carlos A. and
+         {Fitzsimons}, Joseph F.},
+        title = "{Device-Independent Verifiable Blind Quantum Computation}",
+      journal = {arXiv e-prints},
+     keywords = {Quantum Physics, Computer Science - Computational Complexity, Computer Science - Cryptography and Security},
+         year = 2015,
+        month = feb,
+          eid = {arXiv:1502.02563},
+        pages = {arXiv:1502.02563},
+archivePrefix = {arXiv},
+       eprint = {1502.02563},
+ primaryClass = {quant-ph},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2015arXiv150202563H},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
 @INPROCEEDINGS{BFK09, author={A. {Broadbent} and J. {Fitzsimons} and E. {Kashefi}}, booktitle={2009 50th Annual IEEE Symposium on Foundations of Computer Science}, title={Universal Blind Quantum Computation}, year={2009}, volume={}, number={}, pages={517-526},}
 
 @article{JACM:Regev09,
@@ -59,6 +77,38 @@
   year      = {2019},
 }
 
+@article{Gheorghiu_2015,
+	doi = {10.1088/1367-2630/17/8/083040},
+	url = {https://doi.org/10.1088%2F1367-2630%2F17%2F8%2F083040},
+	year = 2015,
+	month = {aug},
+	publisher = {{IOP} Publishing},
+	volume = {17},
+	number = {8},
+	pages = {083040},
+	author = {Alexandru Gheorghiu and Elham Kashefi and Petros Wallden},
+	title = {Robustness and device independence of verifiable blind quantum computing},
+	journal = {New Journal of Physics},
+	abstract = {Recent advances in theoretical and experimental quantum computing bring us closer to scalable quantum computing devices. This makes the need for protocols that verify the correct functionality of quantum operations timely and has led to the field of quantum verification. In this paper we address key challenges to make quantum verification protocols applicable to experimental implementations. We prove the robustness of the single server verifiable universal blind quantum computing protocol of Fitzsimons and Kashefi (2012 arXiv:1203.5217) in the most general scenario. This includes the case where the purification of the deviated input state is in the hands of an adversarial server. The proved robustness property allows the composition of this protocol with a device-independent state tomography protocol that we give, which is based on the rigidity of CHSH games as proposed by Reichardt et al (2013 Nature 
+496 456–60). The resulting composite protocol has lower round complexity for the verification of entangled quantum servers with a classical verifier and, as we show, can be made fault tolerant.}
+}
+
+@InProceedings{CGJV19,
+author="Coladangelo, Andrea
+and Grilo, Alex B.
+and Jeffery, Stacey
+and Vidick, Thomas",
+editor="Ishai, Yuval
+and Rijmen, Vincent",
+title="Verifier-on-a-Leash: New Schemes for Verifiable Delegated Quantum Computation, with Quasilinear Resources",
+booktitle="Advances in Cryptology -- EUROCRYPT 2019",
+year="2019",
+publisher="Springer International Publishing",
+address="Cham",
+pages="247--277",
+abstract="The problem of reliably certifying the outcome of a computation performed by a quantum device is rapidly gaining relevance. We present two protocols for a classical verifier to verifiably delegate a quantum computation to two non-communicating but entangled quantum provers. Our protocols have near-optimal complexity in terms of the total resources employed by the verifier and the honest provers, with the total number of operations of each party, including the number of entangled pairs of qubits required of the honest provers, scaling as {\$}{\$}O(g{\backslash}log g){\$}{\$}for delegating a circuit of size g. This is in contrast to previous protocols, whose overhead in terms of resources employed, while polynomial, is far beyond what is feasible in practice. Our first protocol requires a number of rounds that is linear in the depth of the circuit being delegated, and is blind, meaning neither prover can learn the circuit or its input. The second protocol is not blind, but requires only a constant number of rounds of interaction.",
+isbn="978-3-030-17659-4"
+}
 
 
 @article{arXiv:ABOEM17,

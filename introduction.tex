@@ -27,9 +27,26 @@ A complexity theoretic formulation of this problem by Gottesman in 2004~\cite{we
 efficient quantum prover (a $\BQP$ machine).
 In the absence of techniques for directly tackling this question, earlier feasibility results on this problem have been focusing on two weaker formulations. 
 The first type of feasibility results (e.g.,~\cite{BFK09,arXiv:ABOEM17,PR:FitKas17,mf16}) considers the case where the $\BPP$ verifier is equipped with limited quantum power.
-The second type of feasibility results (e.g,~\cite{Nat:RUV13} \XW{add more reference})
+The second type of feasibility results (e.g,~\cite{Nat:RUV13, CGJV19, Gheorghiu_2015, HPF15})
 considers a $\BPP$ verifier interacting with at least two entangled, non communicating quantum provers. 
-\XW{state the Mahadev's result + post Mahadev's development (3 papers)}. 
+In a recent breakthrough, Mahadev~\cite{mahadev_2018} proposed the first protocol of classical verification of quantum computation (CVQC) whose soundness is based on a widely recognized computational assumption that the learning with error (LWE) problem~\cite{JACM:Regev09} is hard for $\BQP$ machines. 
+The technique invented therein has inspired many  subsequent developments of CVQC protocols with improved parameters and functionality (e.g.~\cite{FOCS:GheVid19,arXiv:AlaChiHun19,arXiv:ChiaChungYam19}). 
+We refer curious readers to the survey~\cite{survey:GKK19} for details. 
+
+With the newly developed techniques, we revisit the verification of quantum computation problem from both a philosophical and a practical point of view. 
+Our first observation is that the sampling version of $\BQP$ (e.g., as formulated in Aaronson~\cite
+
+
+
+\XW{motivation: say with the development, a first question is to revisit the BQP formulation; emphasize that SampBQP is a more important question; and poses some technique difficulty. }
+
+
+\XW{Another feature one hope is the blindness}
+
+
+\vspace{1mm} \noindent \textbf{Contribution.}
+
+\XW{list the main results; + comparison with all related works}
 
 
 Sampling Part
@@ -51,6 +68,9 @@ Related work
 \begin{itemize}
     \item Comparison with related works here?
 \end{itemize}
+
+
+\XW{then the technical contribution}
 
 Technical Contribution
 \begin{itemize}
