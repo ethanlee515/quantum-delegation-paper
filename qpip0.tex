@@ -30,10 +30,6 @@ Break the previous sentence into two sentences accordingly. Something like the f
 Mahadev's end results in groundbreaking work 4 round protocol for BQP. At the core it is a 4 round protocol to let BQP prover commit XZ measurement to a classical machine.
 }
 Intuitively, the protocol allows the prover to commit to a state $\rho$ and the verifier to choose a measurement basis $h$ and learn a corresponding measurement outcome $M_{XZ}(\rho, h)$ \Ethan{Actually define this notation by cutting-pasting $h$ from verifier's input}.
-\Ethan{Remove the next sentences or move to later}
-Note that even a honest prover has complete freedom in choosing $\rho$;
-what this protocol actually does is let the prover commit to a particular measurement on $\rho$.
-This is good enough for our application, since we will feed the measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
 We now describe the protocol while omitting the implementation details.
 
 \Ethan{Check tone, this is intro/interface}
@@ -57,8 +53,8 @@ Protocol:
 		He sends $y$ to the verifier.
 	\item \label{step:measure3} The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates what's called a ``testing round", and $c=1$ indicates a ``Hadamard round".
 	\item \label{step:measure4} The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it to back to the verifier.
-	\item \label{step:output} If it's a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$. \Ethan{Just say testing and acc/rej}
-		If it's \Ethan{No abbreviations} a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
+	\item \label{step:output} If it is a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$. \Ethan{Just say it's a test that can acc or rej}
+		If it is a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
 \end{enumerate}
 \end{protocol}
 
@@ -69,7 +65,8 @@ The protocol achieves a ``binding" property that gives guarantees against cheati
 % With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ \Ethan{Font makes this $a$ look screwy} accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$. \hannote{do  i actually use this}
 % \end{definition}
 
-\begin{lemma}\label{lem:urmila-binding}[binding property of Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
+\begin{lemma}[binding property of $\PiMeasure$]
+\label{lem:urmila-binding}
 	Let $\PMeasureStar$ be a $\BQP$ cheating  prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
 \iffalse	
 	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
@@ -87,9 +84,9 @@ We also mention a fact that will be useful later.
 
 \Ethan{Introduce $(U_{trivial,0},U_{trivial})$ later corresponding to the ``honest" prover}
 
-We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$ in a natural way.
-Recall that in $\PiSamp$ the verifier learns the XZ measurement outcome of the prover's message.
-In PiInt We let the verifier use $\PiMeasure$ to learn...
+We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$.
+Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prover's message.
+In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead.
 
 \begin{protocol}{Intermediate $\QPIP_0$ protocol $\PiNaive$ for a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
@@ -105,9 +102,9 @@ In PiInt We let the verifier use $\PiMeasure$ to learn...
 	\begin{enumerate}
 		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
 		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
-		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$,
-			where on $\PiMeasure$'s second message, the prover can instead choose to abort by sending $a=\bot$.
-			This is useless for the cheating prover but useful for proving one of our theorems later. \Ethan{Where/how to say this?}
+		\item \label{step:urmila-in-naive}
+		    The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$. On $\PiMeasure$'s second message, we allow the prover to abort by sending $a=\bot$, which does not benefit cheating provers but is useful for analysis.
+		    
 			If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
 			If it's a Hadamard round, the verifier obtains $v$.
 		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
@@ -119,7 +116,8 @@ Note that in $\PiNaive$ the verifier only learns the output in Hadamard round.
 So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
 On the other hand, it also has a binding property, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
 
-\begin{lemma}\label{lem:naive-qpip0-binding}[binding property of $\PiNaive$]
+\begin{lemma}[binding property of $\PiNaive$]
+\label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
 	Under the QLWE assumption, if $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
 	\Ethan{Wrong assumption. The ``perfect prover" notion here is generalized and allows giving up.}
@@ -143,37 +141,44 @@ On the other hand, it also has a binding property, which we will use to achieve 
 	$\cVVer(M_{XZ}(\rho, h))\approx_{c, \varepsilon}(d, z_{ideal})$.
 	So we conclude that
 	$(d, z)\approx_{c, \varepsilon+\negl(\lambda)}(d, z_{ideal})$.
+	
+	\Ethan{Original proof below.}
+	
+	By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with probability $1-\negl(n)$, there exist a $\rho$ such that $\norm{z_{commit}- M_{XZ}(\rho,h)}_q \leq \negl(n)$. Note that the prover can choose to abort, so $z_{commit}$ and $\rho$ are subnormalized. Let $Ver$ be the verification operation run by Protocol~\ref{ProtoQPIP1} on the measurement outcome. \hannote{describe better} Since $Ver$ is an efficient process and $Ver(z_{commmit})+p_{abort}(\Rej,\bot)=(d,z_{naive})$, we have that
+
+\begin{equation} \label{eq:z=verM}
+    \norm{(d,z_{naive})-(Ver( M_{XZ}(\rho,h))+p_{abort}(\Rej,\bot))}_q \leq \negl(n).
+\end{equation}
+\hannote{actually true with subnormalize shit?}
+ By Theorem~\ref{QPIP1thm}, for all $\rho$,
+ \begin{equation}
+     \norm{Ver(M_{XZ}(\rho,h))-(d,z_{ideal})} \leq O(\eps).
+ \end{equation}
+   Combined with Equation~\ref{eq:z=verM} and Lemma~\ref{lem:computational-triangle0}, and note that $\norm{(\Rej,\bot)-(d,z_{ideal})}=0$, we have that
+   \begin{equation}
+       \norm{(d,z_{naive})-(d,z_{ideal})}_q\leq O(\eps)
+   \end{equation}
 \end{proof}
 
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
 %Parallel Repetition of the Measurement Subprotocol
 
-
+\iffalse
 The following protocol is a $\QPIP_0$ protocol for $\SampBQP$
 
 $\forall c\in\bbN$ Soundness = $O(T^{-c})$
 
 Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
-
+\fi
 
 %	\label{ProtoQPIP1}
-
-\Ethan{TODO add discussion about parallel rep}
-
-\Ethan{Define in words first, and use the protocol box to introduce notations
-
-unfold for the sake of convenience in analysis
-
-verifier h1 to hm, prover generates whatever it should generate (tensor of whatever),
-pki ski expand all, use vec.
-
-}
 
 We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
 It is essentially a $m$-fold parallel repetition of $\PiNaive$.
 However, instead of choosing whether to run test or Hadamard round randomly each round,
 we run $m-1$ test rounds and only one Hadamard round.
+In the description of our protocol below, we expand out the uses of $\PiNaive$ and $\PiMeasure$ in order to introduce notations that we need in our analysis.
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
@@ -206,21 +211,20 @@ Protocol:
 \end{enumerate}
 \end{protocol}
 
-\Ethan{TODO Fix proof notations. Like U0, U notations might've been undefined; see parallel rep paper}
+\Ethan{TODO Fix proof notations. Like U0, U notations might've been undefined; copy from parallel rep paper if needed}
 
 \begin{theorem}\label{thm:qpip0}
 	$\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and computational soundness. 
-	\Ethan{Its proof currently only shows $O(\varepsilon)$ accuracy.}
 \end{theorem}
 
 
 The intuition behind this theorem is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover is quantum, so he might create quantum correlations that let him cheat with probability more than $1/m$. To prove that such kind of cheating is impossible, we use the following partition lemma from \cite{parallelrep}, which intuitively says that there exist efficient projectors $G_{0,i}$ and $G_{1,i}$ which splits a quantum state in the prover's   internal space into a part that is rejected with high probability in the testing round of $i$-th copy and a part that is accepted with high probability.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because Protocol~\ref{proto:urmila4} only gives computational indistinguishability. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events. For example, $G_{0,3} G_{1,5} \ket{\psi}$ corresponds to the events of passing the testing round on fifth copy then fails the the testing round on the third copy. We split the state sub-normalized states corresponding to the prover cheating on different copies and show that the sum of probabilities corresponding to bad states can't be more than $1/m$. {The actual proof is more complicated than this sketch because the $G$'s don't commute with each other, so we need to handle the splitting carefully.}
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
-\begin{lemma}[partition lemma (revision of Lemma 3.5 of \cite{parallelrep}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{parallelrep} and post-select on the $th$ register being $0$ or $1$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing}corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.})]\label{lem:partition2}
+\begin{lemma}[partition lemma (revision of Lemma 3.5 of \cite{parallelrep}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{parallelrep} and post-select on the $th$ register being $0$ or $1$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.})]\label{lem:partition2}
 Let $(U_0,U)$ be a prover's strategy in Protocol~\ref{proto:QPIP0samp}, where $U_0$ is the how the prover generates answer in the second round, and $U$ is how the prover generates answer in the fourth round. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$.  Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$.
 
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ \Ethan{Not consistent with the cited paper; typeof(G0, G1) aren't q circuits} such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
+ For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
 
 \begin{align}
     G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ} \\ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}  \\
@@ -249,7 +253,7 @@ Furthermore, the following properties are satisfied for all $i\in[m]$.
 by Cauchy's inequality.
     
         \item \label{property:partition-testing}
-For all $\{pk\}$, $\{y\}$, fixed $\gamma$, and  $j\neq i$, we have 
+For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have 
  
 %      \begin{align*}
 %  \Pr\left[M_{\regX_i}\circ U\frac{\ket{\{c\}}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{pk_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
@@ -272,7 +276,7 @@ where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round
     \item \label{property:partition-binding}
     
     % $\{c\}\in S_m$ such that $c_i = 0$
-For all $\{pk\}$, $\{y\}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that 
+For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that 
 
 \begin{align}
      \norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\secpar).
@@ -333,6 +337,9 @@ where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =
 
 Now we are ready to prove Theorem~\ref{thm:qpip0}
 \begin{proof}
+
+\Ethan{This proof currently only shows $O(\varepsilon)$ accuracy, which doesn't perfectly match up with the definition. Hopefully doesn't matter way too much though?}
+
 Completeness is trivial.
 
 
@@ -367,7 +374,7 @@ By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we 
 Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as
 
 $$P_{acc,i,z}.$$
-Note that $P_{acc,i,z}$ also depends on $\{\pk\},\,\{y\}$ and  $(sk_i,h_i,y_i)$ since it includes the measurement the prover did before sending $a$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
+Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $a$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
 Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
 
