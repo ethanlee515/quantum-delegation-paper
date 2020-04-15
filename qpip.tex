@@ -37,13 +37,13 @@
 		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
 		\item Let $H_{C'(x)}=\sum_i \alpha_i H_i$ be the X-Z local Hamiltonian instance associated with the computation of $C'(x)$ from \Cref{thm:LHReduction}.
 		\item Let $\histpsi{{C'(x)}}$ be the ground state of $H_{C'(x)}$.
-		\item \XW{Let $s=n+T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$ Why this number?} \Ethan{This number is used in de Finetti theorem. But I forgot to count ancilla, so this currently isn't correct.}
+		\item \XW{Let $s\leq n+2T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$ Why this number?} \Ethan{This number is used in de Finetti theorem. But I forgot to count ancilla, so it wasn't correct.}
 		\item Let $\cVGS$ be the verification algorithm for $H_{C'(x)}$ as defined in \Cref{AlgGroundStateCheck}.
 	\end{itemize}
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=505\frac{T^{41}\lambda^2}{\varepsilon^{51}}$ copies \Ethan{$505=2\times 7\times 6\times 6+1$} of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\varepsilon^{51}}$ copies \Ethan{$649=2\times 9\times 6\times 6+1$} of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
 		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\varepsilon^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
