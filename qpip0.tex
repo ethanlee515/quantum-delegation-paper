@@ -18,12 +18,22 @@ In this section, we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev
 
 \subsection{Mahadev's measurement protocol}
 
-In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round $\QPIP_0$ protocol to let a $\BQP$ machine "commit a $XZ$ measurement" to a classical machine.
-Intuitively, the protocol allows the prover to commit to a state $\rho$ and the verifier to choose a measurement basis $h$ and learn a corresponding measurement outcome $M_{XZ}(\rho, h)$.
-\Ethan{The following discussion is from Han-Hsuan}
+
+\Ethan{Half of this discussion is from Han-Hsuan}
+
+In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gave a 4-round $\QPIP_0$ protocol to let a $\BQP$ machine ``commit a $XZ$ measurement" to a classical machine.
+\Ethan{Mahadev's end result is QPIP0 BQP.
+Two steps. One is measurement proto.
+The other is combine with MF.
+Break the previous sentence into two sentences accordingly. Something like the following:
+
+Mahadev's end results in groundbreaking work 4 round protocol for BQP. At the core it is a 4 round protocol to let BQP prover commit XZ measurement to a classical machine.
+}
+Intuitively, the protocol allows the prover to commit to a state $\rho$ and the verifier to choose a measurement basis $h$ and learn a corresponding measurement outcome $M_{XZ}(\rho, h)$ \Ethan{Actually define this notation by cutting-pasting $h$ from verifier's input}.
+\Ethan{Remove the next sentences or move to later}
 Note that even a honest prover has complete freedom in choosing $\rho$;
 what this protocol actually does is let the prover commit to a particular measurement on $\rho$.
-This is good enough for our application, since we will feed the $XZ$ measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
+This is good enough for our application, since we will feed the measurement results into the verification of $\QPIP_1$ protocol to ensure that the prover pick the history state as $\rho$ as we will show next.
 We now describe the protocol while omitting the implementation details.
 
 \Ethan{Check tone, this is intro/interface}
@@ -46,36 +56,36 @@ Protocol:
 		$y$ is a classical ``commitment", and $\sigma$ is some internal state.
 		He sends $y$ to the verifier.
 	\item The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates what's called a ``testing round", and $c=1$ indicates a ``Hadamard round".
-	\item The prover generates a classical string $a\leftarrow\cPMeasure{4}(c, \sigma)$ and sends it to back to the verifier.
-	\item If it's a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$.
-		If it's a Hadamard round ($c=1$), then the verifier computes $M_{XZ}(\rho, h)$ by $v\leftarrow\cVMeasure{H}(sk, h, y, a)$. It outputs $v$.
+	\item The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it to back to the verifier.
+	\item If it's a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$. \Ethan{Just say testing and acc/rej}
+		If it's \Ethan{No abbreviations} a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
 \end{enumerate}
 \end{protocol}
 
-Notice that the verifier doesn't in fact receive a measurement result on a testing round.
-Instead, it exists to achieve a ``binding" property that gives certain guarantees against cheating provers.
+The verifier only learns the measurement outcome on a Hadamard round.
+The protocol achieves a ``binding" property that gives guarantees against cheating provers.
 
 % \begin{definition}
 % With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ \Ethan{Font makes this $a$ look screwy} accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$. \hannote{do  i actually use this}
 % \end{definition}
 
-\Ethan{Again change all n to lambda for sec. param. and fix variable labels}
-
 \begin{lemma}\label{lem:urmila-binding}[binding property of Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-If a prover's strategy in $\PiMeasure$ \hannote{need clarification} results in passing the testing round with probability $1-\negl(n)$, then there must exist a $\rho$ such that for all $h$, the verifier will produce a $z$ on the Hadamard round that is $\negl(n)$-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$, unless LWE can be efficiently solved by a quantum computer. 
+\Ethan{Need to be more formal. BQP adversaries... etc. Look at the two parallel rep papers}
+\Ethan{Changed $n$ to $\lambda$, TODO sync later uses of this lemma}
+If a prover's strategy in $\PiMeasure$ \hannote{need clarification} results in passing the testing round with probability $1-\negl(\lambda)$, then there must exist a $\rho$ such that for all $h$, the verifier will produce a $v$ on the Hadamard round that is $\negl(\lambda)$-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$, unless LWE can be efficiently solved by a quantum computer. 
 \end{lemma}
 
-We also mention a fact that intuitively captures the completeness of $\PiMeasure$.
-
-\begin{fact}[\cite{FOCS:Mahadev18a}]~\label{lem:trivial-4-round-strategy}
+We also mention a fact that will be useful later.
+\begin{fact}
+\label{lem:trivial-4-round-strategy}
    There exist a prover strategy for $\PiMeasure$ that is accepted with probability $1-\negl{\lambda}$ \Ethan{Changed n to lambda here, see what does it affect} in the testing.
 \end{fact}
 
 \Ethan{Introduce $(U_{trivial,0},U_{trivial})$ later corresponding to the ``honest" prover}
 
-We now use $\PiMeasure$ to modify our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to achieve a corresponding $\QPIP_0$ protocol $\PiNaive$.
-Recall that $\PiSamp$ is a one-message protocol, where $\VSamp$ applies $X$ and $Z$ measurements non-adaptively to the incoming message.
-We modify $\VSamp$ to pick all its measurement ahead of time, and measure the incoming message from $\PSamp$ through $\PiMeasure$ instead as below.
+We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$ in a natural way.
+Recall that in $\PiSamp$ the verifier learns the XZ measurement outcome of the prover's message.
+In PiInt We let the verifier use $\PiMeasure$ to learn...
 
 \begin{protocol}{Intermediate $\QPIP_0$ protocol $\PiNaive$ for a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
@@ -89,27 +99,38 @@ We modify $\VSamp$ to pick all its measurement ahead of time, and measure the in
 
 	Protocol:
 	\begin{enumerate}
-		\item The verifier choose a $XZ$-measurement $h\leftarrow\cVNaive{1}(1^\lambda, 1^\varepsilon, x)$ from the distribution specified in Step~\ref{step:qpip1-verify} of $\PiSamp$.
-		It picks between testing and Hadamard round by sampling $c\xleftarrow{\$}\zo$ uniformly at random.
-	\item The prover prepares $\sigma\leftarrow\cPNaive{2}(1^\lambda, 1^\varepsilon, x)$ by running Step~\ref{step:qpip1-state-gen} of $\PiSamp$.
-		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\sigma), \VMeasure(h))(1^\lambda, 1^{1/\varepsilon}, x)$.
-	\item If it's a testing round, the verifier accepts or rejects based on the outputs of $\PiMeasure$.
-		If it's a Hadamard round, the verifier obtains $v$. It finishes the verification step of Protocol~\ref{ProtoQPIP1} by using $v$ as the measurement result he would get and outputs $(d, z)$.
+		\item The verifier choose a $XZ$-measurement $h\leftarrow\cVNaive{1}(1^\lambda, 1^{1/\varepsilon}, x)$ \Ethan{Just don't give names for now} from the distribution specified in Step~\ref{step:qpip1-verify} of $\PiSamp$.
+	\item The prover prepares $\rho\leftarrow\cPNaive{2}(1^\lambda, 1^{1/\varepsilon}, x)$ by running Step~\ref{step:qpip1-state-gen} of $\PiSamp$.
+		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
+		If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
+		If it's a Hadamard round, the verifier obtains $v$.
+	\item 
+		If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)\leftarrow\cVNaive{4}(1^\lambda, 1^{1/\varepsilon}, x, h, v)$.
 	\end{enumerate}
 \end{protocol}
 
-$\PiNaive$ has no soundness guarantee, but it has the following binding property that would be useful in proving the soundness of the actual protocol in Section~\ref{sec:qpip0}.
+$\PiNaive$ has no soundness guarantee \Ethan{Sounds strange}, but it has the following binding property that would be useful in proving the soundness of the actual protocol in Section~\ref{sec:qpip0}.
 
-\begin{lemma}\label{lem:naive-qpip0-binding}[binding property of  Protocol~\ref{proto:qpip0_naive} ]
-	\Ethan{I haven't done anything with this lemma yet. Might need to fix or make consistent later.}
+\Ethan{
+Note that in PiInt the verifier only learns the output in H round
+So PiInt is not QPIP0 with good completeness or soundness.
+On the other hand, it has the following binding property (maybe refer that it does because PiMeasure does)
+}
+
+\begin{lemma}\label{lem:naive-qpip0-binding}[binding property of $\PiNaive$]
+\Ethan{Statement needs to be more rigorous}
 If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, 
 
-$$\norm{(d,z_{naive})-(d,z_{ideal})}_q \leq O(\eps),$$ 
+\Ethan{Instead of using conditioning, just say the verifier's output in the Hadamard round satisfies this}
 
-unless LWE can be efficiently solved by a quantum computer. 
+$$(d, z)\approx_{c, \varepsilon}(d, z_{ideal})$$
+
+unless LWE can be efficiently solved by a quantum computer.
+\Ethan{under the QLWE assumption}
 \end{lemma}
 
 \begin{proof}
+\Ethan{I haven't looked at this yet}
 By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with probability $1-\negl(n)$, there exist a $\rho$ such that $\norm{z_{commit}- M_{XZ}(\rho,h)}_q \leq \negl(n)$. Note that the prover can choose to abort, so $z_{commit}$ and $\rho$ are subnormalized. Let $Ver$ be the verification operation run by Protocol~\ref{ProtoQPIP1} on the measurement outcome. \hannote{describe better} Since $Ver$ is an efficient process and $Ver(z_{commmit})+p_{abort}(\Rej,\bot)=(d,z_{naive})$, we have that 
 
 \begin{equation} \label{eq:z=verM}
@@ -144,6 +165,15 @@ Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 %	\label{ProtoQPIP1}
 
 \Ethan{TODO add discussion about parallel rep}
+
+\Ethan{Define in words first, and use the protocol box to introduce notations
+
+unfold for the sake of convenience in analysis
+
+verifier h1 to hm, prover generates whatever it should generate (tensor of whatever),
+pki ski expand all, use vec.
+
+}
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
