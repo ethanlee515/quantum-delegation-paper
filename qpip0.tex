@@ -70,11 +70,13 @@ The protocol achieves a ``binding" property that gives guarantees against cheati
 % \end{definition}
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-	Let $\PMeasureStar$ be a cheating $\BQP$ prover for $\PiMeasure$.
+	Let $\PMeasureStar$ be a $\BQP$ cheating  prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
+\iffalse	
 	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
 	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
 	Then, under the QLWE assumption, there exists some $\rho$ so that for all $h$,
 	the verifier's outputs on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
+\fi
 \end{lemma}
 
 We also mention a fact that will be useful later.
@@ -101,13 +103,13 @@ In PiInt We let the verifier use $\PiMeasure$ to learn...
 
 	Protocol:
 	\begin{enumerate}
-		\item \label{step:naive1} The verifier choose a $XZ$-measurement $h$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
-		\item \label{step:naive2} The prover prepares $\rho$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
+		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
+		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
 		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
 		If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
 		If it's a Hadamard round, the verifier obtains $v$.
 		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
-			on inputs $1^\lambda$, $1^{1/\varepsilon}$, $x$, $h$, and $v$. \Ethan{So many inputs... Should the verifier keep internal states instead?}
+			
 	\end{enumerate}
 \end{protocol}
 
@@ -186,7 +188,7 @@ Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to 
     
 Protocol:
 \begin{enumerate}
-	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$ as in \stepref{naive1} of $\PiNaive$
+	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ as in \stepref{naive1} of $\PiNaive$
 	\item The prover prepares $\rho^{\otimes m}$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$. Each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$
 	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, on inputs $1^\lambda$ and $\vec{h}$, as in \stepref{measure1} of $\PiMeasure$.
 		It sends $\vec{pk}$ to the prover.
