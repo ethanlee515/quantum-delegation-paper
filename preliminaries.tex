@@ -28,27 +28,6 @@ The phase gate and Pauli matrices are the following matrices.
 	$Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$
 \end{definition}
 
-\begin{definition}
-	Let $\rho_1,\rho_2\in\cB^n$.
-	We write $\rho_1\approx_{c,\varepsilon}\rho_2$ if $\rho_1$ and $\rho_2$ are \emph{$\varepsilon$-computationally indistinguishable}.
-	That is, for all quantum polynomial-time distinguishers $\mathsf{D}$,
-	$$\abs{\Pr\left[\mathsf{D}(\rho_1)=1\right]-\Pr\left[\mathsf{D}(\rho_2)=1\right]}\leq\varepsilon.$$
-\end{definition}
-We extend the notion of computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized outputs as appropriate.
-We also extend it to distributions by treating them as mixed states.
-
-\begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
-    Let $\rho_1, \rho_2, \rho_3\in\cB^{\otimes n}$ such that 
-    \begin{align}
-		\rho_1\approx_{c, \varepsilon}\rho_2\\
-		\rho_2\approx_{c, \varepsilon'}\rho_3.
-    \end{align}
-    We have 
-    \begin{align}
-		\rho_1\approx_{c, \varepsilon+\varepsilon'}\rho_3.
-    \end{align}
-\end{lem}
-
 \subsection{Sampling Problems}
 
 We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
@@ -134,6 +113,35 @@ In the context of blind protocols, we consider $x$ as the verifier's private inp
 		\item $\set{\View_{P^*}(P^*, V(0))(1^\lambda, 1^{1/\varepsilon})}_{\lambda\in\bbN, \varepsilon\in(0,1), x\in\zo^*}$
 	\end{itemize}
 \end{definition}
+
+\begin{definition}
+\label{def:comp-indis}
+    \Ethan{TODO Mention asymptotic/ensemble. Things should be in terms of $\lambda$. Should also move to other subsections instead, since this is computatational. Maybe move to end of 2.3.}
+	Let $\rho_1,\rho_2\in\cB^n$.
+	We write $\rho_1\approx_{c,\varepsilon}\rho_2$ if $\rho_1$ and $\rho_2$ are \emph{$\varepsilon$-computationally indistinguishable}.
+	That is, for all quantum polynomial-time \hannote{formalize} distinguishers $\mathsf{D}$,
+	$$\abs{\Pr\left[\mathsf{D}(\rho_1)=1\right]-\Pr\left[\mathsf{D}(\rho_2)=1\right]}\leq\varepsilon.$$
+\end{definition}
+We extend the notion of computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized outputs as appropriate.
+We also extend it to distributions by treating them as mixed states.
+
+\iffalse
+
+Probably not necessary
+
+\begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
+    Let $\rho_1, \rho_2, \rho_3\in\cB^{\otimes n}$ such that 
+    \begin{align}
+		\rho_1\approx_{c, \varepsilon}\rho_2\\
+		\rho_2\approx_{c, \varepsilon'}\rho_3.
+    \end{align}
+    We have 
+    \begin{align}
+		\rho_1\approx_{c, \varepsilon+\varepsilon'}\rho_3.
+    \end{align}
+\end{lem}
+
+\fi
 
 \subsection{Chernoff bound}
 

@@ -32,7 +32,7 @@ We start with a general form of a $\QPIP_0$ protocol that we'll be compiling.
 	Common inputs\footnote{For the sake of simplicity, we omit accuracy parameter $\varepsilon$ where it exists}:
 	\begin{itemize}
 		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
-		\item Some classical input $x\in\zo^*$ \Ethan{Or should this be $\zo^n$? Or $\zo^{\poly(\lambda)}$?}
+		\item A classical input $x\in\zo^{\poly(\lambda)}$
 	\end{itemize}
 
     Protocol:
@@ -125,12 +125,12 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 	$\Piblind$ is blind.
 \end{theorem}
 \begin{proof}
-	We show that for all cheating prover $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
-	$P^*$ cannot distinguish $(P^*, \Vblind(x))(\lambda)$ from $(P^*, \Vblind(0^n))(\lambda)$ with noticeable probability in $\lambda$.
-	We use a hybrid argument; let $\Hyb_{T+1}^x=(P^*, \Vblind(x))(\lambda)$ and $\Hyb_{T+1}^0=(P^*, \Vblind(0^n))(\lambda)$.
+	We show that for all cheating $\BQP$ prover $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
+	$P^*$ cannot distinguish $(P^*, \Vblind(x))(1^\lambda)$ from $(P^*, \Vblind(0^n))(1^\lambda)$ with noticeable probability in $\lambda$.
+	We use a hybrid argument; let $\Hyb_{T+1}^x=(P^*, \Vblind(x))(1^\lambda)$ and $\Hyb_{T+1}^0=(P^*, \Vblind(0^n))(1^\lambda)$.
 	For $2\leq t<T+1$, define $\Hyb_t^x$ to be the same as $\Hyb_{t+1}^x$,
 	except when $\Vblind$ should send $\ctx{v}{t}{t}$ and $\ctx{sk}{t-1}{t}$, it instead sends encryptions of $0$ under $pk_t$.
-	We define $\Hyb_1^x$ to be the same as $\Hyb_2^x$ except the verifier sends encryptions of $0$ in place of $\ctx{x}{}{1}$ and $\ctx{v}{1}{1}$.
+	We define $\Hyb_1^x$ to be the same as $\Hyb_2^x$ except the verifier sends encryptions of $0$ under $pk_1$ in place of $\ctx{x}{}{1}$ and $\ctx{v}{1}{1}$.
 	We define $\Hyb_t^0$ similarly. Note that $\Hyb_1^x$ and $\Hyb_1^0$ are identical.
 
 	For all $t$, from the perspective of the prover,

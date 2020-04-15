@@ -1,19 +1,89 @@
 \section{Introduction}
+% \XW{ 
+% \begin{itemize}
+%     \item add a lot of references. 
+%     \item comparison with the most relevant results:
+%       \begin{itemize}
+%           \item Sampling, the only paper; how about classical sampling?
+%           \item the following for BQP  
+%           \item blind and verifiable ~\cite{GV19}; we  constant round; technique-wise very different. 
+%           \item there is a table in~\cite{Grilo19}. Safe to say ~\cite{GV19} only existing blind protocol in the computational setting? 
+%           \item all previous either quantum clients, or at least 2 provers. 
+%           \item the following for blindess
+%           \item Mahadev in her thesis~\cite{mahadev_2018} discussed a bit about the relation between verifiability and blindness. She hoped to get verifiability out of blindness by designing some non-malleable QFHE but failed.   
+%           \item what's the high-level message we can say here?  Use QFHE in a different way? It is correct that not much work in the classical setting either.  Maybe existing classical work employs the principle but with different implementation. 
+%           \item old approach, first get blindness  (measurement-based, self-testing), and then try to make it verifiable; our approach, first have a verifiable protocol, and upgrade by a QFHE. 
+%           \item directly QFHE (blindness) won't give verifiability. some thoughts from Mahadev. 
+%           \item 
+%       \end{itemize}
+% \end{itemize}
+% }
+Can quantum computation, with potential computational advantages that are intractable for classical computers,
+be efficiently verified by classical human being? 
+This seemingly paradox has been one of the central problems in quantum complexity theory and delegation of quantum computation~\cite{web:Aaronson}. 
+From a philosophical point of view, this question is also known to have a fascinating connection to the \emph{falsifiability} of quantum mechanics in the potential high complexity regime~\cite{survey:AV12}. 
 
-\Ethan{This section is currently all rough draft. We'll probably rewrite almost all of it.}
+A complexity theoretic reformulation of this problem by Gottesman~\cite{web:Aaronson}
 
-\Ethan{application: verifiable private constant round delegation}
 
-\Ethan{Below is my attempt to talk about it in my SoP}
 
-It was proven that BQP=BQIP\hannote{who  when and cite}. That is, if a quantum computer can efficiently solve a given decision problem, then it can also efficiently convince a classical machine of its solution. I'm generalizing this to arbitrary efficient quantum computations. The proof for decision problems involves the classical verifier reducing the problem to a local Hamiltonian instance; the quantum prover would then commit its certificate and act as the verifier’s trusted measurement device as put forth in ``Classical Verification of Quantum Computations" by Mahadev. It isn't as trivial as it may seem. Repeating the scheme for each qubit loses the information carried by entanglements and throws off the joint distribution between qubits. Simply measuring the entire output register instead is difficult to analyze. For decision problems, it’s not hard to argue that a malicious prover cannot do better than sending identical copies of some pure state unentangled with each others. That same reasoning doesn't apply here a priori. I've been trying to get a grasp on the particular structure of the local Hamiltonian reduction in order to better analyze it.
 
-\Ethan{Below is my attempt to talk about it in my research proposal}
+\begin{itemize}
+    \item Add some of the very original motivation of delegation (at some philosophical level) to motivate that sampling problem is important and has been sought after from the very beginning. 
+    \item quickly survey the topic (Add references and surveys) to Mahadev's results. 
+    \item \XW{What're important post-Mahadev's result to discuss here? use subsequentially 3 papers}
+\end{itemize}
 
-We are interested in delegating quantum computations from a classical client to an untrusted quantum server. Under this setting, the client would send the server a quantum circuit and an initial state. Then, through interaction with the honest server, the client obtains a measurement result as if he measured the true output of the circuit. If the server attempts to deceive the client, the client should reject it. The case where the circuit encodes a decision problem has been well-studied, and we're now trying to generalize those results to circuits with possibly many bits of output.
+Sampling Part
+\begin{itemize}
+    \item Motivating Sampling.  and a little bit why sampling could be different and hard. (Aaronson's paper?) 
+    \item To ADD
+    \item 2nd de finetti have independence; but latter, the analysis, computational parallel repetition. 
+    \item emphasize the feasibility. 
+\end{itemize}
 
-If the circuit encodes a decision problem, then by considering adiabatic quantum computation, there exists a reduction to local Hamiltonian. Local Hamiltonian is QMA-complete, so there's a certificate for every yes-instance, and no valid certificates for any no-instances. An introduction can be found in Kitaev, Shen, and Vyalyi's "Classical and Quantum Computation". Furthermore, Biamonte and Love's "Realizable Hamiltonians for Universal Adiabatic Quantum Computers" states that these local Hamiltonians have very simple forms, which in turn implies that in order to check such certificates one only requires abilities to receive qubits and perform X/Z measurements. Based on this observation, Mahadev constructed a protocol in "Classical Verification of Quantum Computations" which, under the LWE assumption (a widely believed conjecture in quantum cryptography), allows the prover to commit qubits and act as the verfier's trusted X/Z measurement device. This solves the delegation of decision problem from a fully classical client to a quantum server.
+Blindness Part 
+\begin{itemize}
+    \item Motivating Blindness
+    \item To ADD
+    \item Combine both for the results. 
+\end{itemize}
 
-To generalize delegation of quantum computations to allow long output, simply repeating the known protocol for every output qubit doesn't work. The joint probability distribution between qubits would be incorrect due to entanglements. In fact, generally the output qubits encode sampling problems rather than decision problems. Furthermore, for decision problems one can argue that the prover's optimal strategy is to send identical copies of a certificate, so Chernoff bound can be applied, but said argument doesn't generalize to sampling problems either. To overcome these challenges, we start by modifying the local Hamiltonian construction so it is compatible with long output. We then analyze our protocol's soundness more carefully, before using Mahadev's result as a black box to solve the long output case too for fully classical clients.
+Related work
+\begin{itemize}
+    \item Comparison with related works here?
+\end{itemize}
 
-A possible application for our long output protocol is to make the computation not only verifiable, but also private in the sense of homomorphic encryptions. That is, the input is encrypted before being sent to the server. The server computes on the encrypted input, obtaining an encrypted output. The client then receives and decrypts the output. Here we can combine results from Mahadev's "Classical Homomorphic Encryption for Quantum Circuits" with our long output scheme. The client can simply send the homomorphic evaluation circuit to the server with the encrypted input.
+Technical Contribution
+\begin{itemize}
+    \item Technical contribution. 
+    \item TO ADD for both parts. 
+\end{itemize}
+
+Open Questions
+\begin{itemize}
+    \item Open questions, and also explain for some associated high-cost. specifically 
+    \item T dependence. In general, improve the efficiency.  
+    \item negligible soundness error.  compare with classical? what's the state-of-the art. 
+\end{itemize}
+
+Organization
+
+
+% \Ethan{This section is currently all rough draft. We'll probably rewrite almost all of it.}
+
+% \Ethan{application: verifiable private constant round delegation}
+
+% \Ethan{Below is my attempt to talk about it in my SoP}
+
+% It was proven that BQP=BQIP\hannote{who  when and cite}. That is, if a quantum computer can efficiently solve a given decision problem, then it can also efficiently convince a classical machine of its solution. I'm generalizing this to arbitrary efficient quantum computations. The proof for decision problems involves the classical verifier reducing the problem to a local Hamiltonian instance; the quantum prover would then commit its certificate and act as the verifier’s trusted measurement device as put forth in ``Classical Verification of Quantum Computations" by Mahadev. It isn't as trivial as it may seem. Repeating the scheme for each qubit loses the information carried by entanglements and throws off the joint distribution between qubits. Simply measuring the entire output register instead is difficult to analyze. For decision problems, it’s not hard to argue that a malicious prover cannot do better than sending identical copies of some pure state unentangled with each others. That same reasoning doesn't apply here a priori. I've been trying to get a grasp on the particular structure of the local Hamiltonian reduction in order to better analyze it.
+
+% \Ethan{Below is my attempt to talk about it in my research proposal}
+
+% We are interested in delegating quantum computations from a classical client to an untrusted quantum server. Under this setting, the client would send the server a quantum circuit and an initial state. Then, through interaction with the honest server, the client obtains a measurement result as if he measured the true output of the circuit. If the server attempts to deceive the client, the client should reject it. The case where the circuit encodes a decision problem has been well-studied, and we're now trying to generalize those results to circuits with possibly many bits of output.
+
+% If the circuit encodes a decision problem, then by considering adiabatic quantum computation, there exists a reduction to local Hamiltonian. Local Hamiltonian is QMA-complete, so there's a certificate for every yes-instance, and no valid certificates for any no-instances. An introduction can be found in Kitaev, Shen, and Vyalyi's "Classical and Quantum Computation". Furthermore, Biamonte and Love's "Realizable Hamiltonians for Universal Adiabatic Quantum Computers" states that these local Hamiltonians have very simple forms, which in turn implies that in order to check such certificates one only requires abilities to receive qubits and perform X/Z measurements. Based on this observation, Mahadev constructed a protocol in "Classical Verification of Quantum Computations" which, under the LWE assumption (a widely believed conjecture in quantum cryptography), allows the prover to commit qubits and act as the verfier's trusted X/Z measurement device. This solves the delegation of decision problem from a fully classical client to a quantum server.
+
+% To generalize delegation of quantum computations to allow long output, simply repeating the known protocol for every output qubit doesn't work. The joint probability distribution between qubits would be incorrect due to entanglements. In fact, generally the output qubits encode sampling problems rather than decision problems. Furthermore, for decision problems one can argue that the prover's optimal strategy is to send identical copies of a certificate, so Chernoff bound can be applied, but said argument doesn't generalize to sampling problems either. To overcome these challenges, we start by modifying the local Hamiltonian construction so it is compatible with long output. We then analyze our protocol's soundness more carefully, before using Mahadev's result as a black box to solve the long output case too for fully classical clients.
+
+% A possible application for our long output protocol is to make the computation not only verifiable, but also private in the sense of homomorphic encryptions. That is, the input is encrypted before being sent to the server. The server computes on the encrypted input, obtaining an encrypted output. The client then receives and decrypts the output. Here we can combine results from Mahadev's "Classical Homomorphic Encryption for Quantum Circuits" with our long output scheme. The client can simply send the homomorphic evaluation circuit to the server with the encrypted input.
