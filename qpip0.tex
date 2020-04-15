@@ -175,38 +175,46 @@ pki ski expand all, use vec.
 
 }
 
+We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
+It is essentially a $m$-fold parallel repetition of $\PiNaive$.
+However, instead of choosing whether to run test or Hadamard round randomly each round,
+we run $m-1$ test rounds and only one Hadamard round.
+
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
 
 Inputs:
 	\begin{itemize}
 		\item Security parameter $1^\lambda$ for $\lambda\in\bbN$.
-		\item Accuracy paramter $1^\varepsilon$ for the $\SampBQP$ instance
-		\item Input $x\in\zo^n$ \Ethan{Or $\zo^*$?} for the $\SampBQP$ instance
+		\item Accuracy paramter $1^{1/\varepsilon}$ for the $\SampBQP$ instance
+		\item Input $x\in\zo^{\poly(\lambda)}$ for the $\SampBQP$ instance
 	\end{itemize}
 
 Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to run.
     
 Protocol:
 \begin{enumerate}
-%    \item Verifier start with description of quantum circuit $C$, input string $x$ 
-	\item The verifier samples $r\xleftarrow{\$}[m]$. For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
-	\item The prover and verifier runs $m$-fold parallel repetion of $\PiNaive$.
-		That is, for $1\leq i\leq m$, run $(\PNaive, \VNaive(c_i))(1^\lambda, 1^\varepsilon, x)$.
-	\item \label{step:multi-testing} If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
-		Else it outputs the result from the Hadamard round copy.
+	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$.
+	\item The prover prepares $\rho^{\otimes m}$.
+	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}={sk_1,\ldots,sk_m}$, on inputs $1^\lambda$ and $\vec{h}$. It sends $\vec{pk}$ to the prover.
+	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ on inputs $\vec{pk}$ and $\rho^{\otimes m}$, and sends it to the verifier.
+	\item The verifier samples $r\xleftarrow{\$}[m]$ which is the copy to run Hadamard round for.
+		For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$. It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
+	\item The prover generates $\vec{a}$ on inputs $pk, c, \sigma$ and sends it back to the verifier.
+	\item \label{step:multi-testing}
+		The verifier computes the outcome for each round.
+		If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
+		Else, it outputs the result from the Hadamard round copy.
 \end{enumerate}
 \end{protocol}
 
-
 \begin{theorem}\label{thm:qpip0}
-    Protocol~\ref{proto:QPIP0samp} is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and $O(\eps)$ computational soundness error\hannote{definition}. 
+	$\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and computational soundness. 
+	\Ethan{Its proof currently only shows $O(\varepsilon)$ accuracy.}
 \end{theorem}
 
+
 The intuition behind this theorem is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover is quantum, so he might create quantum correlations that let him cheat with probability more than $1/m$. To prove that such kind of cheating is impossible, we use the following partition lemma from \cite{parallelrep}, which intuitively says that there exist efficient projectors $G_{0,i}$ and $G_{1,i}$ which splits a quantum state in the prover's   internal space into a part that is rejected with high probability in the testing round of $i$-th copy and a part that is accepted with high probability.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because Protocol~\ref{proto:urmila4} only gives computational indistinguishability. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events. For example, $G_{0,3} G_{1,5} \ket{\psi}$ corresponds to the events of passing the testing round on fifth copy then fails the the testing round on the third copy. We split the state sub-normalized states corresponding to the prover cheating on different copies and show that the sum of probabilities corresponding to bad states can't be more than $1/m$. {The actual proof is more complicated than this sketch because the $G$'s don't commute with each other, so we need to handle the splitting carefully.}
-
-
-
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
 \begin{lemma}[partition lemma (revision of Lemma 3.5 of \cite{parallelrep}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{parallelrep} and post-select on the $th$ register being $0$ or $1$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing}corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.})]\label{lem:partition2}
