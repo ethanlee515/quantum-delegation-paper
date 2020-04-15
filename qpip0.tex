@@ -97,12 +97,18 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
 		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
 		\item \label{step:urmila-in-naive}
-		    The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$. On $\PiMeasure$'s second message, we allow the prover to abort by sending $a=\bot$, which does not benefit cheating provers but is useful for analysis.
-		    
-			If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
-			If it's a Hadamard round, the verifier obtains $v$.
+		    The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
+			\begin{enumerate}
+				\item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
+				\item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$.
+					Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
+				\item The verifier samples $c\leftarrow\cVNaive{3}$
+				\item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
+				\item 
+					If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
+					If it is a Hadamard round, the verifier obtains $v$.
+			\end{enumerate}
 		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
-			
 	\end{enumerate}
 \end{protocol}
 
@@ -110,133 +116,33 @@ Note that in $\PiNaive$ the verifier only learns the output in Hadamard round.
 So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
 On the other hand, it also has a binding property, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
 
-\Ethan{TODO move the following}
-
-\begin{lem}[another triangle inequality for computational distance]\label{lem:computational-triangle}
-Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$, where $D_3$, $D_4$, $D_5$, and $D_6$ are subnormalized distributions.
-
-If
-\begin{align}
-	D_1\approx_{c,\eps} D_2 \\
-	D_4\approx_{c,\eps'} D_6,
-\end{align}
-then
-\begin{align}
-	D_3\approx_{c,\eps+\eps'} D_5
-\end{align}
-\end{lem}
-% \begin{align}
-%     D_1 &\approx_{q,\eps} D_2 \\
-%     D_4 &\approx_{q,\eps'} D_6,
-% \end{align}
-% then
-% \begin{align}
-%     D_3 \approx_{q,\eps+\eps'} D_5
-% \end{align}
-\begin{proof}
-% Since
-% $$\norm{D_4 - D_6}_q \leq \eps',$$
-% there exist
-
-
-We prove by contradiction. Suppose that
-$$D_3\not\approx_{c, \eps+\eps'} D_5,$$
-then there exist a quantum circuit $A$ of size $poly(n)$ such that
-$$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
-Since $$D_4\approx_{c, \eps'}D_6,$$ we know that
-$$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
-Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
-$$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$
-$$ \Pr[A({D_2})=1]= \Pr[A({D_5})=1]+ \Pr[A({D_6})=1].$$
-So
-\begin{align}
-    &\L\|\Pr[A({D_1})=1]-\Pr[A({D_2})=1]  \R\| \nn \\
-    =&   \L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1] +\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \nn \\
-    \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
-     > &\eps
-\end{align}
-	This contradicts with the assumption that $D_1\approx_{c,\eps}D_2$.
-\end{proof}
-
-
-
-\hannote{comp. indistinguish for subnormalized state?}
-\hannote{triangle inequality}
-
 \begin{lemma}[binding property of $\PiNaive$]
 \label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
 	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
-	\Ethan{Wrong assumption. The ``perfect prover" notion here is generalized and allows giving up.}
 	then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
-
 \begin{proof}
-	\Ethan{TODO this is currently wrong and I'm not sure how to fix it.
-	The version before this which had subnormalized states seems strange too.
-	The correct proof should involve an alternative prover strategy that ``fixes" the abort case
-	by re-running with perfect prover strategy,
-	in order to connect the dots with \Cref{lem:urmila-binding}}
-	By \Cref{lem:urmila-binding},
-	there exist some $\rho$ such that
-	$v\approx_{c,\negl(\lambda)}M_{XZ}(\rho,h)$.
-	Let $\cVVer$ be the verification operation in \stepref{qpip1-verify} of $\PiSamp$.
-	Since $\cVVer$ is efficient, we have
-	$(d,z)\approx_{c, \negl(\lambda)}\cVVer(M_{XZ}(\rho, h))$.
-	\Ethan{There were some shenanigans involving subnormalized states for which I'm not quite sure what's going on.}
-	By \Cref{QPIP1thm}, for all $\rho$, 
-	$\cVVer(M_{XZ}(\rho, h))\approx_{c, \eps}(d, z_{ideal})$.
-	So we conclude that
-	$(d, z)\approx_{c, \eps+\negl(\lambda)}(d, z_{ideal})$.
-	
-	\Ethan{Original proof below.}
-	
-	By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with probability $1-\negl(n)$, there exist a $\rho$ such that $\norm{z_{commit}- M_{XZ}(\rho,h)}_q \leq \negl(n)$. Note that the prover can choose to abort, so $z_{commit}$ and $\rho$ are subnormalized. Let $Ver$ be the verification operation run by Protocol~\ref{ProtoQPIP1} on the measurement outcome. \hannote{describe better} Since $Ver$ is an efficient process and $Ver(z_{commmit})+p_{abort}(\Rej,\bot)=(d,z_{naive})$, we have that
+	Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
 
-\begin{equation} \label{eq:z=verM}
-    \norm{(d,z_{naive})-(Ver( M_{XZ}(\rho,h))+p_{abort}(\Rej,\bot))}_q \leq \negl(n).
-\end{equation}
-\hannote{actually true with subnormalize shit?}
- By Theorem~\ref{QPIP1thm}, for all $\rho$,
- \begin{equation}
-     \norm{Ver(M_{XZ}(\rho,h))-(d,z_{ideal})} \leq O(\eps).
- \end{equation}
-   Combined with Equation~\ref{eq:z=verM} and Lemma~\ref{lem:computational-triangle0}, and note that $\norm{(\Rej,\bot)-(d,z_{ideal})}=0$, we have that
-   \begin{equation}
-       \norm{(d,z_{naive})-(d,z_{ideal})}_q\leq O(\eps)
-   \end{equation}
+	We define $\Pstar$ as follows.
+	For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
+	If $y\ne\bot$, then reply $y$.
+	Else run the corresponding step of the dummy strategy as in \Cref{lem:trivial-4-round-strategy} and reply with its results.
+	For the fourth message, if $y\ne\bot$, run and reply with $a\leftarrow\cPNaiveStar{4}(pk, c, \sigma)$.
+	If $y=\bot$ and $c=0$, continue the dummy strategy.
+
+	Observe that this $\Pstar$ indeed passes testing round with overwhelming probability by construction.
+	So we can apply \Cref{lem:urmila-binding} to the $\PiMeasure$ call to use its binding property.
+	Combining it with $\PiSamp$'s soundness,
+	we see that the verifier's outputs corresponding $\Pstar$, $(d', z')$ is computationally indistinguishable to some $(d', z_{ideal}')$
+
+	Conditioned on $\PNaiveStar$ accept, clearly $(d, z)=(d', z')$.
+	On $\PNaiveStar$ reject, since dummy strategy will be rejected with overwhelming probability in Hadamard round, \Ethan{kinda obvious but we never explicitly explained why}
+	we also have $(d, z)=(\Rej, \bot)\approx_{c, \negl(\lambda)}(d', z')$
+
+	The conclusion follows from a simple hybrid argument.
 \end{proof}
-
-\begin{proof}
-For every cheating prover $\PNaiveStar$ which aborts, consider an alternative prover $P_{alt}$ which is $\PNaiveStar$ with the following modification: on the second round of $\PiMeasure$, if $\PNaiveStar$ would abort, $P_{alt}$ switch to run the trivial strategy specified by Fact~\ref{fact:perfectly_pass_test} instead. This is possible because the message send by the verifier on the first round is classical, so the prover can recalculate everything.
-
-By \Cref{lem:trivial-4-round-strategy} and the assumption of the lemma, $p_{alt}$ passes the testing round with $(1-\negl(\lambda))$ probability. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a state $\rho_{alt}$ such that 
-\begin{align} \label{eq:z-alt-rho}
-    z_{commit,alt} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{alt},h).
-\end{align}
-
-Note that $z_{commit,alt} = z_{commit}+z_{trivial}$, where $z_{commit}$ and $z_{trivial}$ are sub-normalized states correspond to whether $p_{alt}$ follows $\PNaiveStar$ or the trivial strategy.
-
-By Fact~\ref{lem:trivial-4-round-strategy} and Lemma~\ref{lem:urmila-binding}, there exist a sub-normalized state $\rho_{trivial}$ such that
-
-\begin{align} \label{eq:z-triv-rho}
-    z_{trivial} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{trivial},h).
-\end{align}
-
-By Equation~\ref{eq:z-alt-rho}, Equation~\ref{eq:z-triv-rho}, and Lemma~\ref{lem:computational-triangle}, we have 
-
-\begin{align} \label{eq:z-triv-rho}
-    z_{commit} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{commit},h),
-\end{align}
-
-where $\rho_{commit} \defeq \rho_{alt}-\rho_{trivial}$.\hannote{wrong, not a state.} Note that 
-
-
-
-
-
-\end{proof}
-
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
 %Parallel Repetition of the Measurement Subprotocol
