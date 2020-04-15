@@ -25,33 +25,33 @@
 	Inputs:
 	\begin{itemize}
 		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
-		\item Accuracy parameter $1^{1/\varepsilon}$ where $\varepsilon\in(0, 1)$
+		\item Accuracy parameter $1^{1/\eps}$ where $\eps\in(0, 1)$
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 		%	\Ethan{I switched the order of the inputs for consistency}
 	\end{itemize}
 
 	Ingredients:
 	\begin{itemize}
-		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\varepsilon$.
+		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\eps$.
 		\item Let $T$ be the number of gates in $C$.
-		\item Let $C'$ be $C$ padded with $\frac{6T}{\varepsilon}$ identity gates at the end.
+		\item Let $C'$ be $C$ padded with $\frac{6T}{\eps}$ identity gates at the end.
 		\item Let $H_{C'(x)}=\sum_i \alpha_i H_i$ be the X-Z local Hamiltonian instance associated with the computation of $C'(x)$ from \Cref{thm:LHReduction}.
 		\item Let $\histpsi{{C'(x)}}$ be the ground state of $H_{C'(x)}$.
-		\item \XW{Let $s\leq 3T+\frac{6T}{\varepsilon}$ be the number of qubits in $\ket{\psi_{C'(x)}}$ Why this number?} \Ethan{This is used in de Finetti theorem. Btw I forgot to count ancilla, so it wasn't correct before.}
+		\item \XW{Let $s\leq 3T+\frac{6T}{\eps}$ be the number of qubits in $\ket{\psi_{C'(x)}}$ Why this number?} \Ethan{This is used in de Finetti theorem. Btw I forgot to count ancilla, so it wasn't correct before.}
 		\item Let $\cVGS$ be the verification algorithm for $H_{C'(x)}$ as defined in \Cref{AlgGroundStateCheck}.
 	\end{itemize}
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\varepsilon^{51}}$ copies \Ethan{$649=2\times 9\times 6\times 6+1$} of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
-		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\varepsilon^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\eps^{51}}$ copies \Ethan{$649=2\times 9\times 6\times 6+1$} of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\eps^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $y_i\leftarrow\cV_{\GS}(\rho_i)$.
 			\item Else if $i=k$, measure the data register \Ethan{Revisit this name. Nobody has defined/used this register before.} \XW{this is the Z measurement?} \Ethan{Yeah} of $\rho_i$ under the standard basis and save the outcome as $z$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
-			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{1}{192}\frac{\varepsilon^2}{\sum_i\abs{\alpha_i}}$, then the verifier outputs $(\Acc, z)$.
+			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{1}{192}\frac{\eps^2}{\sum_i\abs{\alpha_i}}$, then the verifier outputs $(\Acc, z)$.
 			Else, it outputs $(\Rej, \bot)$.
 	\end{enumerate}
 \end{protocol}
@@ -67,11 +67,11 @@ We now show its completeness and soundness.
 \begin{prf}
 	For completeness, notice $y_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
 	So we can apply Chernoff bound (\Cref{thm:Chernoff}) to get
-	$$\Prob{Y>\frac{m}{2}-\varepsilon m}\leq\negl(\lambda).$$
+	$$\Prob{Y>\frac{m}{2}-\eps m}\leq\negl(\lambda).$$
 	So $\VSamp$ has negligible probability to reject.
 	
 	Now we show soundness.
-	Suppose $\PSampstar$ is a cheating prover that, on inputs $x, 1^{1/\varepsilon}, 1^\lambda$, sends some $\sigma$ to the verifier.
+	Suppose $\PSampstar$ is a cheating prover that, on inputs $x, 1^{1/\eps}, 1^\lambda$, sends some $\sigma$ to the verifier.
 
 	The first step of our analysis is to use de Finetti's theorem.
 	Randomly picking $m+1$ out of $M$ registers is equivalent to first applying a random permutation then taking the first $m+1$ registers.
@@ -90,13 +90,13 @@ We now show its completeness and soundness.
 	such that for all quantum-classical channels $\Lambda_i$ acting on registers of size $s$:
 	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'_{\leq m+1}-\rho)}
 	\leq\sqrt{\frac{2m^2s}{M-m}}
-	\leq\frac{\varepsilon}{6}$$
+	\leq\frac{\eps}{6}$$
 	where $\sigma'_{\leq m+1}$ is the first $m+1$ registers of $\sigma'$.
 	In our context, for $1\leq i\leq m$, $\Lambda_i$ corresponds to measurements chosen by $\cVGS$.
 	$\Lambda_{m+1}$ measures the data register under the standard basis.
 	
 	We now analyze the verifier's output for each $\tau_j$ in $\rho=\sum_j w_j\tau_j^{\otimes m+1}$. Let $(d_j, z_j)$ be the verifier's output corresponding to $\tau_j$, and define $z_{j, ideal}$ accordingly.
-	We claim that $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{TV}<\frac{2\varepsilon}{6}$.
+	We claim that $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{TV}<\frac{2\eps}{6}$.
 	Let $p_j$ be the probability that $\cVGS(\tau_j)=\Acc$, and consider the following two cases.
 
 	First suppose $p_j<\frac{1}{2}-2\kappa$,
@@ -106,24 +106,24 @@ We now show its completeness and soundness.
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
 	\iffalse
 	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\tau_j$ and $\ket{\psi_{C'(x)}}$:
-	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\frac{\varepsilon^2}{36}.$$
+	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\frac{\eps^2}{36}.$$
 	which in turn implies a lower bound on the respective trace distance:
-	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\varepsilon}{6}.$$
+	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\eps}{6}.$$
 	\fi
 	By \Cref{thm:HamCheckClose} we have
-	$$\norm{\tau_j - \ket{\psi^{\mathrm{hist}}_{C'(x)}}\bra{\psi^{\mathrm{hist}}_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\varepsilon}{6}.$$
+	$$\norm{\tau_j - \ket{\psi^{\mathrm{hist}}_{C'(x)}}\bra{\psi^{\mathrm{hist}}_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\eps}{6}.$$
 	Observe that when $d_j=\Acc$, $z_j$ is the measurement results on $\tau_j$'s data register,
-	which is $\frac{\varepsilon}{6}$-close to that of $\ket{\psi_{C'(x)}}$.
-	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has at least $1-\frac{\varepsilon}{6}$ probability to contain $C(x)$ due to the padding.
-	So $z_j$ is $\frac{2\varepsilon}{6}$-close to $z_{ideal}$ when $d=\Acc$,
-	which implies that $(d_j, z_j)$ is $\frac{2\varepsilon}{6}$-close to $(d_j, z_{j, ideal})$.
+	which is $\frac{\eps}{6}$-close to that of $\ket{\psi_{C'(x)}}$.
+	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has at least $1-\frac{\eps}{6}$ probability to contain $C(x)$ due to the padding.
+	So $z_j$ is $\frac{2\eps}{6}$-close to $z_{ideal}$ when $d=\Acc$,
+	which implies that $(d_j, z_j)$ is $\frac{2\eps}{6}$-close to $(d_j, z_{j, ideal})$.
 
     Finally, let $(d_\rho, z_\rho)$ denote the verifier's output distribution corresponding to $\rho=\sum_j w_j\tau_j^{\otimes m+1}$,
 	and define $z_{\rho, ideal}$ accordingly.
-	We have $\norm{(d_\rho, z_\rho) - (d, z_{\rho, ideal})}_{TV} < \frac{2\varepsilon}{6}$ since the same is true for all components $\tau_j$.
+	We have $\norm{(d_\rho, z_\rho) - (d, z_{\rho, ideal})}_{TV} < \frac{2\eps}{6}$ since the same is true for all components $\tau_j$.
 
-	As $(d, z)$ is $\frac{\varepsilon}{6}$-close to $(d_\rho, z_\rho)$ by the data processing inequality,
-	using triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{TV}\leq\frac{\varepsilon}{2}$.
-	Hence $\norm{d - d_\rho}_{TV}\leq\frac{\varepsilon}{2}$, which implies $\norm{(d_\rho, z_{\rho, ideal}) - (d, z_{ideal})}_{TV}$ $\leq$ $\frac{\varepsilon}{2}$.
+	As $(d, z)$ is $\frac{\eps}{6}$-close to $(d_\rho, z_\rho)$ by the data processing inequality,
+	using triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{TV}\leq\frac{\eps}{2}$.
+	Hence $\norm{d - d_\rho}_{TV}\leq\frac{\eps}{2}$, which implies $\norm{(d_\rho, z_{\rho, ideal}) - (d, z_{ideal})}_{TV}$ $\leq$ $\frac{\eps}{2}$.
 	The conclusion then follows from triangle inequality.
 \end{prf}

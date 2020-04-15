@@ -94,7 +94,7 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 	Inputs:
 	\begin{itemize}
 		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
-		\item Error parameter $\varepsilon\in(0, 1)$
+		\item Error parameter $\eps\in(0, 1)$
 		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
 	\end{itemize}
 
@@ -121,7 +121,7 @@ On the other hand, it also has a binding property, which we will use to achieve 
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
 	Under the QLWE assumption, if $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
 	\Ethan{Wrong assumption. The ``perfect prover" notion here is generalized and allows giving up.}
-	then the verifier's output in the Hadamard round is $(\varepsilon+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
+	then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
 
 \begin{proof}
@@ -138,9 +138,9 @@ On the other hand, it also has a binding property, which we will use to achieve 
 	$(d,z)\approx_{c, \negl(\lambda)}\cVVer(M_{XZ}(\rho, h))$.
 	\Ethan{There were some shenanigans involving subnormalized states for which I'm not quite sure what's going on.}
 	By \Cref{QPIP1thm}, for all $\rho$, 
-	$\cVVer(M_{XZ}(\rho, h))\approx_{c, \varepsilon}(d, z_{ideal})$.
+	$\cVVer(M_{XZ}(\rho, h))\approx_{c, \eps}(d, z_{ideal})$.
 	So we conclude that
-	$(d, z)\approx_{c, \varepsilon+\negl(\lambda)}(d, z_{ideal})$.
+	$(d, z)\approx_{c, \eps+\negl(\lambda)}(d, z_{ideal})$.
 	
 	\Ethan{Original proof below.}
 	
@@ -186,16 +186,16 @@ In the description of our protocol below, we expand out the uses of $\PiNaive$ a
 Inputs:
 	\begin{itemize}
 		\item Security parameter $1^\lambda$ for $\lambda\in\bbN$.
-		\item Accuracy paramter $1^{1/\varepsilon}$ for the $\SampBQP$ instance
+		\item Accuracy paramter $1^{1/\eps}$ for the $\SampBQP$ instance
 		\item Input $x\in\zo^{\poly(\lambda)}$ for the $\SampBQP$ instance
 	\end{itemize}
 
-Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to run.
+Ingrediant: Let $m=O(1/\eps^2)$ be the number of parallel repetitions to run.
     
 Protocol:
 \begin{enumerate}
 	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ as in \stepref{naive1} of $\PiNaive$
-	\item The prover prepares $\rho^{\otimes m}$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$. Each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$
+	\item The prover prepares $\rho^{\otimes m}$ on inputs $1^\lambda$, $1^{1/\eps}$, and $x$. Each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$
 	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, on inputs $1^\lambda$ and $\vec{h}$, as in \stepref{measure1} of $\PiMeasure$.
 		It sends $\vec{pk}$ to the prover.
 	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ on inputs $\vec{pk}$ and $\rho^{\otimes m}$ as in \stepref{measure2} of $\PiMeasure$.
@@ -338,7 +338,7 @@ where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =
 Now we are ready to prove Theorem~\ref{thm:qpip0}
 \begin{proof}
 
-\Ethan{This proof currently only shows $O(\varepsilon)$ accuracy, which doesn't perfectly match up with the definition. Hopefully doesn't matter way too much though?}
+\Ethan{This proof currently only shows $O(\eps)$ accuracy, which doesn't perfectly match up with the definition. Hopefully doesn't matter way too much though?}
 
 Completeness is trivial.
 
