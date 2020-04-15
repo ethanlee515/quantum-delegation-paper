@@ -105,9 +105,11 @@ In PiInt We let the verifier use $\PiMeasure$ to learn...
 	\begin{enumerate}
 		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
 		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
-		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
-		If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
-		If it's a Hadamard round, the verifier obtains $v$.
+		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$,
+			where on $\PiMeasure$'s fourth message, the prover can instead choose to abort by sending $a=\bot$.
+			This is useless for the cheating prover but useful for proving one of our theorems later. \Ethan{Where/how to say this?}
+			If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
+			If it's a Hadamard round, the verifier obtains $v$.
 		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
 			
 	\end{enumerate}
@@ -118,36 +120,29 @@ So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
 On the other hand, it also has a binding property, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of $\PiNaive$]
-	Let $\Pstar$ be a cheating $\BQP$ prover for $\PiNaive$ which passes the testing round with probability $1-\negl(\lambda)$.
-	Then, under the QLWE assumption, the verifier's output in the Hadamard round satisfies
-		$$(d, z)\approx_{c, \varepsilon}(d, z_{ideal}).$$
+	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
+	Under the QLWE assumption, if $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+	then the verifier's output in the Hadamard round is $(\varepsilon+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
 
 \begin{proof}
-\Ethan{I haven't looked at this yet}
-By Lemma~\ref{lem:urmila-binding}, if the prover passes the testing round with probability $1-\negl(n)$, there exist a $\rho$ such that $\norm{z_{commit}- M_{XZ}(\rho,h)}_q \leq \negl(n)$. Note that the prover can choose to abort, so $z_{commit}$ and $\rho$ are subnormalized. Let $Ver$ be the verification operation run by Protocol~\ref{ProtoQPIP1} on the measurement outcome. \hannote{describe better} Since $Ver$ is an efficient process and $Ver(z_{commmit})+p_{abort}(\Rej,\bot)=(d,z_{naive})$, we have that 
-
-\begin{equation} \label{eq:z=verM}
-    \norm{(d,z_{naive})-(Ver( M_{XZ}(\rho,h))+p_{abort}(\Rej,\bot))}_q \leq \negl(n).
-\end{equation}
-\hannote{actually true with subnormalize shit?}
- By Theorem~\ref{QPIP1thm}, for all $\rho$, 
- \begin{equation}
-     \norm{Ver(M_{XZ}(\rho,h))-(d,z_{ideal})} \leq O(\eps).
- \end{equation}
-   Combined with Equation~\ref{eq:z=verM} and Lemma~\ref{lem:computational-triangle0}, and note that $\norm{(\Rej,\bot)-(d,z_{ideal})}=0$, we have that
-   \begin{equation}
-       \norm{(d,z_{naive})-(d,z_{ideal})}_q\leq O(\eps)
-   \end{equation}
+	By \Cref{lem:urmila-binding},
+	there exist some $\rho$ such that
+	$v\approx_{c,\negl(\lambda)}M_{XZ}(\rho,h)$.
+	Let $\cVVer$ be the verification operation in \stepref{qpip1-verify} of $\PiSamp$.
+	Since $\cVVer$ is efficient, we have
+	$(d,z)\approx_{c, \negl(\lambda)}\cVVer(M_{XZ}(\rho, h))$.
+	\Ethan{There were some shenanigans involving subnormalized states for which I'm not quite sure what's going on.}
+	By \Cref{QPIP1thm}, for all $\rho$, 
+	$\cVVer(M_{XZ}(\rho, h))\approx_{c, \varepsilon}(d, z_{ideal})$.
+	So we conclude that
+	$(d, z)\approx_{c, \varepsilon+\negl(\lambda)}(d, z_{ideal})$.
 \end{proof}
 
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
 %Parallel Repetition of the Measurement Subprotocol
 
-\Ethan{Find a good place for this:
-
-On the protocol's fourth message, the prover can choose to abort by sending $a=\bot$. This is useless for the cheating prover but useful for proving one of our theorems.}
 
 The following protocol is a $\QPIP_0$ protocol for $\SampBQP$
 
