@@ -194,19 +194,21 @@ Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to 
     
 Protocol:
 \begin{enumerate}
-	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$.
-	\item The prover prepares $\rho^{\otimes m}$.
-	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}={sk_1,\ldots,sk_m}$, on inputs $1^\lambda$ and $\vec{h}$. It sends $\vec{pk}$ to the prover.
+	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$. \Ethan{As in step A of proto B...}
+	\item The prover prepares $\rho^{\otimes m}$. \Ethan{Same as last pt.}
+	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, on inputs $1^\lambda$ and $\vec{h}$. It sends $\vec{pk}$ to the prover.
 	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ on inputs $\vec{pk}$ and $\rho^{\otimes m}$, and sends it to the verifier.
 	\item The verifier samples $r\xleftarrow{\$}[m]$ which is the copy to run Hadamard round for.
 		For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$. It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
-	\item The prover generates $\vec{a}$ on inputs $pk, c, \sigma$ and sends it back to the verifier.
+	\item The prover generates $\vec{a}$ on inputs $\vec{pk}, \vec{c}, \sigma$ and sends it back to the verifier.
 	\item \label{step:multi-testing}
 		The verifier computes the outcome for each round.
 		If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
 		Else, it outputs the result from the Hadamard round copy.
 \end{enumerate}
 \end{protocol}
+
+\Ethan{TODO Fix proof notations. Like U0, U notations might've been undefined; see parallel rep paper}
 
 \begin{theorem}\label{thm:qpip0}
 	$\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with $\negl(n)$ completeness error and computational soundness. 
@@ -393,7 +395,7 @@ where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the un
 
 Since $\{c\}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
-	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{Typo} probabilities. Note that $z$ is "sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
+	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is "sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
 
 
 
