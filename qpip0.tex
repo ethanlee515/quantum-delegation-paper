@@ -4,7 +4,7 @@
 
 % We then extend our scheme for $\QPIP_0$ using results from \cite{FOCS:Mahadev18a}.
 
-In this section, we combine \cref{QPIP1thm} with results from \cite{FOCS:Mahadev18a} to create a delegation protocol for $\SampBQP$ for fully classical clients. To boost the soundness, we need  polynomial \Ethan{Wording is strange/misleading} rounds, so we use results from \cite{parallelrep} to run polynomially many copies in parallel and get a constant-round protocol.
+In this section, we combine \Cref{QPIP1thm} with results from \cite{FOCS:Mahadev18a} to create a delegation protocol for $\SampBQP$ for fully classical clients. To boost its soundness, we need  polynomially many repetitions, so we use results from \cite{parallelrep} to run polynomially many copies in parallel and get a constant-round protocol.
 
 
 %Subprotocol for Quantum Measurements
@@ -143,7 +143,7 @@ We prove by contradiction. Suppose that
 $$D_3\not\approx_{c, \eps+\eps'} D_5,$$
 then there exist a quantum circuit $A$ of size $poly(n)$ such that
 $$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
-Since $$\norm{D_4 - D_6}_q \leq \eps'$$, we know that
+Since $$D_4\approx_{c, \eps'}D_6,$$ we know that
 $$\L\|\Pr[A({D_4})=1]-\Pr[A({D_6})=1]  \R\| \leq \eps'.$$
 Since $D_1=D_3+D_4$ and $D_2=D_5+D_6$, we have that
 $$ \Pr[A({D_1})=1]= \Pr[A({D_3})=1]+ \Pr[A({D_4})=1]$$
@@ -208,12 +208,32 @@ So
 \end{proof}
 
 \begin{proof}
-For every cheating prover $\PNaiveStar$ which aborts, consider an alternative prover $P_{alt}$ which is $\PNaiveStar$ with the following modification: on the second round of Protocol~\ref{proto:urmila4}, if $\PNaiveStar$ would abort, $P_{alt}$ switch to run the trivial strategy specified by Fact~\ref{fact:perfectly_pass_test} instead. This is possible because the message send by the verifier on the first round is classical, so the prover can recalculate everything.
+For every cheating prover $\PNaiveStar$ which aborts, consider an alternative prover $P_{alt}$ which is $\PNaiveStar$ with the following modification: on the second round of $\PiMeasure$, if $\PNaiveStar$ would abort, $P_{alt}$ switch to run the trivial strategy specified by Fact~\ref{fact:perfectly_pass_test} instead. This is possible because the message send by the verifier on the first round is classical, so the prover can recalculate everything.
 
-By Fact~\ref{fact:perfectly_pass_test} and the assumption of the lemma, $p_{alt}$ passes the testing round with $(1-\negl(\lambda))$ probability. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a state $\rho_{alt}$ such that 
-\begin{align}
-    z_{commit,alt} \approx~{c,\eps} M_{XZ}(\rho_{alt},h)
+By \Cref{lem:trivial-4-round-strategy} and the assumption of the lemma, $p_{alt}$ passes the testing round with $(1-\negl(\lambda))$ probability. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a state $\rho_{alt}$ such that 
+\begin{align} \label{eq:z-alt-rho}
+    z_{commit,alt} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{alt},h).
 \end{align}
+
+Note that $z_{commit,alt} = z_{commit}+z_{trivial}$, where $z_{commit}$ and $z_{trivial}$ are sub-normalized states correspond to whether $p_{alt}$ follows $\PNaiveStar$ or the trivial strategy.
+
+By Fact~\ref{lem:trivial-4-round-strategy} and Lemma~\ref{lem:urmila-binding}, there exist a sub-normalized state $\rho_{trivial}$ such that
+
+\begin{align} \label{eq:z-triv-rho}
+    z_{trivial} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{trivial},h).
+\end{align}
+
+By Equation~\ref{eq:z-alt-rho}, Equation~\ref{eq:z-triv-rho}, and Lemma~\ref{lem:computational-triangle}, we have 
+
+\begin{align} \label{eq:z-triv-rho}
+    z_{commit} \approx_{c,\negl(\lambda)} M_{XZ}(\rho_{commit},h),
+\end{align}
+
+where $\rho_{commit} \defeq \rho_{alt}-\rho_{trivial}$.\hannote{wrong, not a state.} Note that 
+
+
+
+
 
 \end{proof}
 
@@ -293,8 +313,7 @@ Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMe
  
 
  
-  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $pk,y$. \hannote{check}
-  \Ethan{check whether this should be some single pk and y or the entire tuple}
+  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$. \hannote{check}
  
 
 
@@ -382,12 +401,12 @@ $$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi} $$
 \begin{proof}
 \begin{align}
     \sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| \nn \\
-    \leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}}  \nn \\ \leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\norm{ P_z\ket{\phi}}^2}     \nn \\
+    \leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
+    \leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\sum_z\norm{P_z\ket{\phi}}^2} \nn \\
     \leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn \\
     \leq & \norm{\ket{\psi}}\norm{\ket{\phi}},
 \end{align}
 where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
-\Ethan{TODO There are typos in the proof}
 \end{proof}
 
 Now we are ready to prove Theorem~\ref{thm:qpip0}
@@ -452,11 +471,11 @@ Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corre
 
 
 $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $pk, y$ where as previously everything has fixed $pk$ and $y$. \hannote{add description about  averaging $pk$ here.}
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$. 
 
-Since $\{c\}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
+Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
-	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is "sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
+	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
 
 
 
@@ -561,7 +580,7 @@ We now proceeds to prove that $z_{good}$ is close to the ideal distribution.
 
 For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
-The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, there are four possibilities depending on $c$ and whether the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$. If $c=0$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If $c=1$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U$ and check whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies acceptes, he reply with the $i$-th copy, otherwise reply $\bot$. If $c-0$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U_{trivial}$ and repies. If $c=1$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he replies with $\bot$. \footnote{Recall that $c=0$ is the testing round and $c=1$ is the Hadamard round.}
+The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical. On the fourth round, there are four possibilities depending on $c$ and whether the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$. If $c=0$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If $c=1$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U$ and check whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies accepts, he reply with the $i$-th copy, otherwise reply $\bot$. If $c=0$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U_{trivial}$ and repies. If $c=1$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he replies with $\bot$. \footnote{Recall that $c=0$ is the testing round and $c=1$ is the Hadamard round.}
 
 
 
@@ -588,17 +607,17 @@ Average over $i\in[m]$ we get
 \begin{align}
     (d,z_{good})\approx_{c, O(\eps)}(d,z_{ideal}).
 \end{align}
-\hannote{do we lose a factor of $m$?}
-Recall that by Eq~\ref{eq:z-z-good} we have $\norm{z-z_{good}}_1 \leq \eps$ if we pick $m,T,\gamma_0=???$ \hannote{tune eps}, which implies 
+% \hannote{do we lose a factor of $m$?}
+Recall that by Eq~\ref{eq:z-z-good} we have $\norm{z-z_{good}}_1 \leq \eps$ if we pick $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$, which implies 
 \begin{align}
     (d,z)\approx_{c, O(\eps)}(d,z_{good}).
 \end{align}
 
-Therefore by Lemma~\ref{lem:computational-triangle0}, we have  
+Therefore  we have  
 \begin{align}
      (d,z)\approx_{c, O(\eps)}(d,z_{ideal}).
 \end{align}
-\hannote{the composition of z ideal and triangle ineq is sketchy lol. Also need to specify different z ideal}
+%\hannote{the composition of z ideal and triangle ineq is sketchy lol. Also need to specify different z ideal}
 
  
 \end{proof}
