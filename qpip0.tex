@@ -51,13 +51,13 @@ Inputs:
 
 Protocol:
 \begin{enumerate}
-	\item The verifier generates a public and secret key pair $(pk, sk)\leftarrow\cVMeasure{1}(1^\lambda, h)$. It sends $pk$ to the prover.
-	\item The prover generates $(y, \sigma)\leftarrow\cPMeasure{2}(pk, \rho)$.
+	\item \label{step:measure1} The verifier generates a public and secret key pair $(pk, sk)\leftarrow\cVMeasure{1}(1^\lambda, h)$. It sends $pk$ to the prover.
+	\item \label{step:measure2} The prover generates $(y, \sigma)\leftarrow\cPMeasure{2}(pk, \rho)$.
 		$y$ is a classical ``commitment", and $\sigma$ is some internal state.
 		He sends $y$ to the verifier.
-	\item The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates what's called a ``testing round", and $c=1$ indicates a ``Hadamard round".
-	\item The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it to back to the verifier.
-	\item If it's a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$. \Ethan{Just say testing and acc/rej}
+	\item \label{step:measure3} The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates what's called a ``testing round", and $c=1$ indicates a ``Hadamard round".
+	\item \label{step:measure4} The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it to back to the verifier.
+	\item \label{step:output} If it's a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$, where $o\in\set{\Acc, \Rej}$. \Ethan{Just say testing and acc/rej}
 		If it's \Ethan{No abbreviations} a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
 \end{enumerate}
 \end{protocol}
@@ -70,9 +70,11 @@ The protocol achieves a ``binding" property that gives guarantees against cheati
 % \end{definition}
 
 \begin{lemma}\label{lem:urmila-binding}[binding property of Protocol~\ref{proto:urmila4}\cite{FOCS:Mahadev18a}]
-\Ethan{Need to be more formal. BQP adversaries... etc. Look at the two parallel rep papers}
-\Ethan{Changed $n$ to $\lambda$, TODO sync later uses of this lemma}
-If a prover's strategy in $\PiMeasure$ \hannote{need clarification} results in passing the testing round with probability $1-\negl(\lambda)$, then there must exist a $\rho$ such that for all $h$, the verifier will produce a $v$ on the Hadamard round that is $\negl(\lambda)$-computationally indistinguishable\footnote{Recall that quantum computational indistinguishability is defined in Definition~\ref{def:comp-indis}.} from $M_{XZ}(\rho,h)$, unless LWE can be efficiently solved by a quantum computer. 
+	Let $\PMeasureStar$ be a cheating $\BQP$ prover for $\PiMeasure$.
+	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
+	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
+	Then, under the QLWE assumption, there exists some $\rho$ so that for all $h$,
+	the verifier's outputs on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
 \end{lemma}
 
 We also mention a fact that will be useful later.
@@ -99,34 +101,24 @@ In PiInt We let the verifier use $\PiMeasure$ to learn...
 
 	Protocol:
 	\begin{enumerate}
-		\item The verifier choose a $XZ$-measurement $h\leftarrow\cVNaive{1}(1^\lambda, 1^{1/\varepsilon}, x)$ \Ethan{Just don't give names for now} from the distribution specified in Step~\ref{step:qpip1-verify} of $\PiSamp$.
-	\item The prover prepares $\rho\leftarrow\cPNaive{2}(1^\lambda, 1^{1/\varepsilon}, x)$ by running Step~\ref{step:qpip1-state-gen} of $\PiSamp$.
+		\item \label{step:naive1} The verifier choose a $XZ$-measurement $h$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
+		\item \label{step:naive2} The prover prepares $\rho$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
 		\item \label{step:urmila-in-naive} The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
 		If it's a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
 		If it's a Hadamard round, the verifier obtains $v$.
-	\item 
-		If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)\leftarrow\cVNaive{4}(1^\lambda, 1^{1/\varepsilon}, x, h, v)$.
+		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
+			on inputs $1^\lambda$, $1^{1/\varepsilon}$, $x$, $h$, and $v$. \Ethan{So many inputs... Should the verifier keep internal states instead?}
 	\end{enumerate}
 \end{protocol}
 
-$\PiNaive$ has no soundness guarantee \Ethan{Sounds strange}, but it has the following binding property that would be useful in proving the soundness of the actual protocol in Section~\ref{sec:qpip0}.
-
-\Ethan{
-Note that in PiInt the verifier only learns the output in H round
-So PiInt is not QPIP0 with good completeness or soundness.
-On the other hand, it has the following binding property (maybe refer that it does because PiMeasure does)
-}
+Note that in $\PiNaive$ the verifier only learns the output in Hadamard round.
+So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
+On the other hand, it also has a binding property, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
 
 \begin{lemma}\label{lem:naive-qpip0-binding}[binding property of $\PiNaive$]
-\Ethan{Statement needs to be more rigorous}
-If a prover's strategy in Protocol~\ref{proto:qpip0_naive} results in passing the testing round with probability $1-\negl(n)$, then conditioning on the Hadamard round being chosen, 
-
-\Ethan{Instead of using conditioning, just say the verifier's output in the Hadamard round satisfies this}
-
-$$(d, z)\approx_{c, \varepsilon}(d, z_{ideal})$$
-
-unless LWE can be efficiently solved by a quantum computer.
-\Ethan{under the QLWE assumption}
+	Let $\Pstar$ be a cheating $\BQP$ prover for $\PiNaive$ which passes the testing round with probability $1-\negl(\lambda)$.
+	Then, under the QLWE assumption, the verifier's output in the Hadamard round satisfies
+		$$(d, z)\approx_{c, \varepsilon}(d, z_{ideal}).$$
 \end{lemma}
 
 \begin{proof}
@@ -194,15 +186,18 @@ Ingrediant: Let $m=O(1/\varepsilon^2)$ be the number of parallel repetitions to 
     
 Protocol:
 \begin{enumerate}
-	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$. \Ethan{As in step A of proto B...}
-	\item The prover prepares $\rho^{\otimes m}$. \Ethan{Same as last pt.}
-	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, on inputs $1^\lambda$ and $\vec{h}$. It sends $\vec{pk}$ to the prover.
-	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ on inputs $\vec{pk}$ and $\rho^{\otimes m}$, and sends it to the verifier.
+	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ on inputs $1^\lambda, 1^{1/\varepsilon}, x$ as in \stepref{naive1} of $\PiNaive$
+	\item The prover prepares $\rho^{\otimes m}$ on inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x$. Each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$
+	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, on inputs $1^\lambda$ and $\vec{h}$, as in \stepref{measure1} of $\PiMeasure$.
+		It sends $\vec{pk}$ to the prover.
+	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ on inputs $\vec{pk}$ and $\rho^{\otimes m}$ as in \stepref{measure2} of $\PiMeasure$.
+		It sends $\vec{y}$ to the verifier.
 	\item The verifier samples $r\xleftarrow{\$}[m]$ which is the copy to run Hadamard round for.
-		For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$. It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
-	\item The prover generates $\vec{a}$ on inputs $\vec{pk}, \vec{c}, \sigma$ and sends it back to the verifier.
+		For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
+		It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
+	\item The prover generates $\vec{a}$ on inputs $\vec{pk}, \vec{c}, \sigma$ as in \stepref{measure4} of $\PiMeasure$, and sends it back to the verifier.
 	\item \label{step:multi-testing}
-		The verifier computes the outcome for each round.
+		The verifier computes the outcome for each round as in \stepref{output} of $\PiMeasure$.
 		If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
 		Else, it outputs the result from the Hadamard round copy.
 \end{enumerate}

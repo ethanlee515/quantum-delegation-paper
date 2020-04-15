@@ -33,6 +33,7 @@ The phase gate and Pauli matrices are the following matrices.
 We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
+	\label{dfn:sampling-problem}
 	A \emph{sampling problem} is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{m(n)}$ for some fixed polynomial $m$.
 \end{definition}
 
@@ -71,7 +72,8 @@ We model the interaction between a (almost classical) client and a quantum serve
 	Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
 	We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c(\cdot)$ and statistical (resp., computational) soundness if the following holds:
 	\begin{itemize}
-		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$. If $d=\Acc$ then $z\in\zo^{TODO}$ \Ethan{TODO}, otherwise $z=\bot$.
+		\item On public inputs $1^\lambda$, $1^{1/\varepsilon}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
+			If $d=\Acc$ then $z\in\zo^{m(\abs{x})}$ where $m$ is given in \Cref{dfn:sampling-problem} \Ethan{Like this, right?}, otherwise $z=\bot$.
 		\item (Completeness):
 			For all accuracy parameter $\varepsilon(\lambda)=\frac{1}{\poly(\lambda)}$,
 			security parameter $\lambda\in\bbN$,
