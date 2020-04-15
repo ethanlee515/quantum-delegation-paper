@@ -1,6 +1,15 @@
 \section{Achieving Blindness on $\QPIP_0$ protocols}
 \label{sec:BlindBQP2}
 
+In this section, we present a generic protocol compiler that compiles any $\QPIP_0$ protocol $\Pi_0 = (P_0,V_0)$ to a protocol $\Pi = (P,V)$ that achieve blindness while preserving the completeness, soundness, and round complexity. At a high-level, the idea is simple: we simply run the original protocol under a quantum homomorphic encryption $\QHE$ with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the property of the original protocol. 
+
+However, several issues need to be taken care to make the idea work. First, since the verifier is classical, we need the quantum homomorphic encryption scheme $\QHE$ to be \emph{classical friendly} as defined in Definition~\ref{def:classical-friendly}. Namely, the key generation algorithm and the encryption algorithm for classical messages should be classical, and when the underlying message is classical, the ciphertext (potentially from homomorphic evaluation) and the decryption algorithm should be classical as well. Fortunately, the quantum homomorphic encryption scheme of Mahadev~\cite{mahadev_qfhe} is classical friendly
+
+and the encryption algorithm for classical messages should be classical, and 
+
+
+The idea of running the protocol under homomorphic encryptions is used in~\cite{KMThesis} in a classical setting, but for a different purpose of making the protocol ``computationally simulatable'' in their context.  
+
 Here we present our compiler on $\QPIP_0$ protocols that can be used to achieves blindness.
 The high level idea is to run the protocol under homomorphic encryption.
 A classical version of this compiler appears in \cite{KMThesis}, where it is used to make protocols computationally simulatable.

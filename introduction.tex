@@ -23,7 +23,7 @@ be efficiently verified by classical human being?
 This seemingly paradox has been one of the central problems in quantum complexity theory and delegation of quantum computation~\cite{web:Aaronson}. 
 From a philosophical point of view, this question is also known to have a fascinating connection to the \emph{falsifiability} of quantum mechanics in the potential high complexity regime~\cite{survey:AV12}. 
 
-A complexity theoretic formulation of this problem by Gottesman in 2004~\cite{web:Aaronson} asks the possibility for an efficient classical verifier (a $\BPP$ machine) to verify the output of an
+A complexity theoretic formulation of this problem by Gottesman in 2004~\cite{web:Aaronson} asks the possibility for an efficient classical verifier/client (a $\BPP$ machine) to verify the output of an
 efficient quantum prover (a $\BQP$ machine).
 In the absence of techniques for directly tackling this question, earlier feasibility results on this problem have been focusing on two weaker formulations. 
 The first type of feasibility results (e.g.,~\cite{BFK09,arXiv:ABOEM17,PR:FitKas17,mf16}) considers the case where the $\BPP$ verifier is equipped with limited quantum power.
@@ -34,31 +34,30 @@ The technique invented therein has inspired many  subsequent developments of CVQ
 We refer curious readers to the survey~\cite{survey:GKK19} for details. 
 
 With the newly developed techniques, we revisit the classical verification of quantum computation problem from both a philosophical and a practical point of view. 
-Our first observation is that the sampling version of $\BQP$ (e.g., the $\SampBQP$ formulated by Aaronson~\cite{aaronson_2013}) might be a more appropriate notion to serve the purpose of the original problem. 
-Philosophically, experiments of quantum mechanics usually generate samples and statistical information, which is well demonstrated in the famous double-slit experiment. 
-Moreover, a lot of quantum algorithms from the famous Shor's~\cite{Shor} and Grover's~\cite{Grover} algorithms to some recent developments in machine learning and optimization (e.g.~\cite{brando_et_al:LIPIcs:2019:10603, AGGW17,pmlr-v97-li19b}) contain a significant quantum sampling component. 
+We observe that the \emph{sampling} version of $\BQP$ (e.g., the $\SampBQP$ formulated by Aaronson~\cite{aaronson_2013}) might be a more appropriate notion to serve the purpose of the original problem. 
+Philosophically, the outcomes of quantum mechanical experiments are usually samples or statistical information, which is well demonstrated in the famous double-slit experiment. 
+Moreover, a lot of quantum algorithms from Shor's~\cite{Shor} and Grover's~\cite{Grover} algorithms to some recent developments in machine learning and optimization (e.g.~\cite{brando_et_al:LIPIcs:2019:10603, AGGW17,pmlr-v97-li19b}) contain a significant quantum sampling component. 
 The fact that almost all quantum supremacy tasks (e.g.,~\cite{Boson, IQP, nature-google}) are sampling ones strengthens the importance of $\SampBQP$. 
 Even though the relation between $\BQP$ and $\SampBQP$ is relatively understood in the plain model, what are the potential technical challenges raised by their subtle differences in the context of CVQC and how to resolve them is however far from clear. 
 In particular, it is a prior unclear whether it is feasible to develop a CVQC protocol for $\SampBQP$ based on Mahadev's technique~\cite{FOCS:Mahadev18a}.
 
-\XW{motivation: say with the development, a first question is to revisit the BQP formulation; emphasize that SampBQP is a more important question; and poses some technique difficulty. }
+Another desirable property of CVQC protocols is the \emph{blindness} where the prover cannot distinguish the particular computation in the protocol from another one of the same size, and hence is blind about the client's input. 
+Historically, blindness has been achieved in the weaker formulations of CVQC based on various techniques: e.g., the measurement-based quantum computation exploited in~\cite{BFK09}, the quantum authentication scheme exploited in~\cite{arXiv:ABOEM17}, and the self-testing technique exploited in~\cite{Nat:RUV13}. 
+Moreover, the blindness property is known to be helpful to establish the verifiability of CVQC protocols. However, this is never an easy task. 
+See for example the significant amount of efforts to add verifiability to blind CVQC protocols in~\cite{FK17}. 
+Achieving both blindness and verifiability on top of Mahadev's technique~\cite{FOCS:Mahadev18a} is a conceivably much more challenging task. 
+The only successful attempt~\cite{FOCS:GheVid19} so far applies Mahadev's technique to the measurement-based quantum computation, 
+whereas the analysis is still very specific to the construction. 
+Could there be a \emph{generic} way to achieve blindness and verifiability for CVQC protocols at the same time?
 
 
-\XW{Another feature one hope is the blindness}
+\vspace{2mm} \noindent \textbf{Contribution.} We provide \emph{affirmative} solutions to both of our questions. 
+In particular, we demonstrate the feasibility of the classical verification of quantum sampling by 
+constructing a constant-round CVQC protocol for $\SampBQP$. 
+Our protocol leverages the Hamiltonian model and the computational X-Z measurement from~\cite{FOCS:Mahadev18a}.
+However, a significant amount of new techniques have been developed to deal with the difference between $\SampBQP$ and $\BQP$, which will be highlighted in the technical contribution below. Precisely, 
 
-
-\vspace{1mm} \noindent \textbf{Contribution.}
-
-\XW{list the main results; + comparison with all related works}
-
-
-Sampling Part
-\begin{itemize}
-    \item Motivating Sampling.  and a little bit why sampling could be different and hard. (Aaronson's paper?) 
-    \item To ADD
-    \item 2nd de finetti have independence; but latter, the analysis, computational parallel repetition. 
-    \item emphasize the feasibility. 
-\end{itemize}
+\XW{Insert the theorem statement for the first result here!}
 
 Blindness Part 
 \begin{itemize}
@@ -72,23 +71,38 @@ Related work
     \item Comparison with related works here?
 \end{itemize}
 
+%       \begin{itemize}
+%           \item Sampling, the only paper; how about classical sampling?
+%           \item the following for BQP  
+%           \item blind and verifiable ~\cite{GV19}; we  constant round; technique-wise very different. 
+%           \item there is a table in~\cite{Grilo19}. Safe to say ~\cite{GV19} only existing blind protocol in the computational setting? 
+%           \item all previous either quantum clients, or at least 2 provers. 
+%           \item the following for blindess
+%           \item Mahadev in her thesis~\cite{mahadev_2018} discussed a bit about the relation between verifiability and blindness. She hoped to get verifiability out of blindness by designing some non-malleable QFHE but failed.   
+%           \item what's the high-level message we can say here?  Use QFHE in a different way? It is correct that not much work in the classical setting either.  Maybe existing classical work employs the principle but with different implementation. 
+%           \item old approach, first get blindness  (measurement-based, self-testing), and then try to make it verifiable; our approach, first have a verifiable protocol, and upgrade by a QFHE. 
+%           \item directly QFHE (blindness) won't give verifiability. some thoughts from Mahadev. 
+%
+%           technical comparison with the past parallel % reptiton. 
+%           \item 
 
-\XW{then the technical contribution}
+
+\vspace{2mm} \noindent \textbf{Techniques.}
+
 
 Technical Contribution
 \begin{itemize}
     \item Technical contribution. 
+    \item 2nd de finetti have independence; but latter, the analysis, computational parallel repetition. 
     \item TO ADD for both parts. 
 \end{itemize}
 
-Open Questions
+\vspace{2mm} \noindent \textbf{Open Questions.}
 \begin{itemize}
     \item Open questions, and also explain for some associated high-cost. specifically 
     \item T dependence. In general, improve the efficiency.  
     \item negligible soundness error.  compare with classical? what's the state-of-the art. 
 \end{itemize}
-
-Organization
 
 
 % \Ethan{This section is currently all rough draft. We'll probably rewrite almost all of it.}

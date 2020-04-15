@@ -205,9 +205,9 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{parallelrep}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{parallelrep} and post-select on the $th$ register being $0$ or $1$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
-Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=1/\poly(n)$ and $T=\poly(n)$. \Ethan{These $n$ probably should be $\lambda$}
+Let $\lambda$ be the security parameter and  $\eps$ be the accuracy parameter. Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=\poly(\eps)$ and $T=1/\poly(\eps)$. \Ethan{These $n$ probably should be $\lambda$}
 
- For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}$,  
+ For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized) $\poly(\lambda)$-qubits quantum state $\ket{\psi}_{\regX,\regZ}$,  
 
 \begin{align}
     G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ} \\ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}  \\
@@ -219,18 +219,18 @@ Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMe
  
 
  
-  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$. \hannote{check}
+  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$. 
  
 
 
 Furthermore, the following properties are satisfied for all $i\in[m]$.
 %
 \begin{enumerate}
-    \item \label{property:partition-err}  $$\E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\|^2 \leq \frac{6}{T}+\negl(n),$$
+    \item \label{property:partition-err}  $$\E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\|^2 \leq \frac{6}{T}+\negl(\lambda),$$
     
     where the averaged is over uniformly sampled $\gamma$. This also implies
     \begin{align}
-        \E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\| \leq \sqrt{\frac{6}{T}}+\negl(n)
+        \E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\| \leq \sqrt{\frac{6}{T}}+\negl(\lambda)
     \end{align}
 by Cauchy's inequality.
     
@@ -248,7 +248,7 @@ For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have
 %      \vev{\widetilde{\psi_{0,i,\gamma}}|P_{i,pk_i,y_i,acc}|\widetilde{\psi_{0,i,\gamma}}} \leq (m-1)\gamma+\negl(\secpar),
 %  \end{align}
  \begin{align}
-    \norm{ P_{i,pk_i,y_i,acc} \circ U\frac{\ket{e_j}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}}^2 \leq (m-1)\gamma_0+\negl(\secpar),
+    \norm{ P_{i,pk_i,y_i,acc} \circ U\frac{\ket{e_j}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}}^2 \leq (m-1)\gamma_0+\negl(\lambda),
  \end{align}
  
  
@@ -261,7 +261,7 @@ where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round
 For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that 
 
 \begin{align}
-     \norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\secpar).
+     \norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\lambda).
 \end{align}
 
 % \begin{align*}  
@@ -361,7 +361,7 @@ Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts,
 
 $$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
 
-And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$\hannote{problem with $e_j$ or $e_i$}
+And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$   %\hannote{problem with $e_j$ or $e_i$}
 
 \begin{align} \label{eq:rejected-d}
     \norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
@@ -502,7 +502,18 @@ By Lemma~\ref{lem:trivial-4-round-strategy} and property~\ref{property:partition
 
 
 
-By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} . Therefore
+By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where $(d,z_{good,i})$ is defined as: 
+
+$$\begin{cases}
+					 (d,z_{good,i}) \la (\Acc, z_{good,i}/|z_{good,i}|) & \text{with probability } |z_{good,i}|\\
+					(d,z_{good,i}) = (\Rej,\bot)  & \text{otherwise } 
+				\end{cases}$$.
+
+
+% where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} . 
+
+
+Therefore
 
 \begin{align}
     (d,z_{good,i})\approx_{c, O(\eps)}(d,z_{ideal,i}).
