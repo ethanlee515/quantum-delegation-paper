@@ -117,12 +117,12 @@ Let $D_1$, $D_2$ be two distributions such that $D_1=D_3+D_4$ and $D_2=D_5+D_6$,
 
 If
 \begin{align}
-    &\norm{D_1 - D_2}_q \leq \eps   \\
-    &\norm{D_4 - D_6}_q \leq \eps',
+	D_1\approx_{c,\eps} D_2 \\
+	D_4\approx_{c,\eps'} D_6,
 \end{align}
 then
 \begin{align}
-   \norm{ D_3 - D_5}_q \leq \eps+\eps'
+	D_3\approx_{c,\eps+\eps'} D_5
 \end{align}
 \end{lem}
 % \begin{align}
@@ -140,7 +140,6 @@ then
 
 
 We prove by contradiction. Suppose that
-$$\norm{ D_3 - D_5}_q > \eps+\eps',$$
 $$D_3\not\approx_{c, \eps+\eps'} D_5,$$
 then there exist a quantum circuit $A$ of size $poly(n)$ such that
 $$\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| > \eps+\eps'.$$
@@ -156,7 +155,7 @@ So
     \geq  &\L\|\Pr[A({D_3})=1]-\Pr[A({D_5})=1]  \R\| - \L\|\Pr[A({D_6})=1]-\Pr[A({D_4})=1]  \R\|  \nn \\
      > &\eps
 \end{align}
-This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
+	This contradicts with the assumption that $D_1\approx_{c,\eps}D_2$.
 \end{proof}
 
 
