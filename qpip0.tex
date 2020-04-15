@@ -167,7 +167,7 @@ This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
 \begin{lemma}[binding property of $\PiNaive$]
 \label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
-	Under the QLWE assumption, if $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
 	\Ethan{Wrong assumption. The ``perfect prover" notion here is generalized and allows giving up.}
 	then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
@@ -211,7 +211,10 @@ This contradicts with the assumption that $\norm{D_1 - D_2}_q \leq \eps $.
 \begin{proof}
 For every cheating prover $\PNaiveStar$ which aborts, consider an alternative prover $P_{alt}$ which is $\PNaiveStar$ with the following modification: on the second round of Protocol~\ref{proto:urmila4}, if $\PNaiveStar$ would abort, $P_{alt}$ switch to run the trivial strategy specified by Fact~\ref{fact:perfectly_pass_test} instead. This is possible because the message send by the verifier on the first round is classical, so the prover can recalculate everything.
 
-By Fact~\ref{fact:perfectly_pass_test} and the assumption of the lemma, $p_{alt}$ passes the testing round with $(1-\negl(\lambda)$ probability. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a state $\rho_{alt}$ such that 
+By Fact~\ref{fact:perfectly_pass_test} and the assumption of the lemma, $p_{alt}$ passes the testing round with $(1-\negl(\lambda))$ probability. Therefore by Lemma~\ref{lem:urmila-binding}, there exist a state $\rho_{alt}$ such that 
+\begin{align}
+    z_{commit,alt} \approx~{c,\eps} M_{XZ}(\rho_{alt},h)
+\end{align}
 
 \end{proof}
 
