@@ -7,6 +7,7 @@
 \usepackage{stmaryrd}
 \usepackage{braket}
 \usepackage{algorithm}
+\usepackage{enumitem}
 \usepackage{algpseudocode}
 \usepackage[margin=1in]{geometry}
 \newcommand{\sgn}{\operatorname{sgn}}
@@ -57,12 +58,26 @@
 \newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
 \newcommand{\XW}[1]{{\footnotesize\color{red}[XW: #1]}}
 
+\def \Hin {H_{\mathrm{in}}}
+\def \Hout {H_{\mathrm{out}}}
+\def \Hprop {H_{\mathrm{prop}}}
+\def \Hclock {H_{\mathrm{clock}}}
+\def \Jclock {J_{\mathrm{clock}}}
+\def \Jprop {J_{\mathrm{prop}}}
+\def \Kin {K_{\mathrm{in}}}
+\def \Kclock {K_{\mathrm{clock}}}
+\def \Kprop {K_{\mathrm{prop}}}
+
+\newcommand{\histpsi}[1]{\ket{\psi_{#1}^{\mathrm{hist}}}}
+\newcommand{\LHXZ}[1]{\mathrm{LH}_{\mathrm{XZ}}^{#1}}
+\newcommand{\ground}[1]{{\lambda \left (#1 \right)}}
+
 
 \title{Constant-round Blind Classical Verification of Quantum Sampling}
 
 %\iffalse
 \author[1]{Kai-Min Chung\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}}
-\author[2]{Yi Lee\thanks{\href{mailto:ethanlee515@gmail.com}{ethanlee515@gmail.com}.}}
+\author[2]{Yi Lee\thanks{\href{mailto:ethanlee515@gmail.com}{ethanlee515@gmail.com}. This work was done in part while the author was affiliated to National Taiwan University.}}
 \author[3]{Han-Hsuan Lin\thanks{\href{mailto:linhh@cs.utexas.edu}{linhh@cs.utexas.edu}.}}
 \author[4]{Xiaodi Wu\thanks{\href{mailto:xwu@cs.umd.edu}{xwu@cs.umd.edu}. Partially supported by the U.S. National Science Foundation grant CCF-1755800, CCF-1816695, and CCF-1942837(CAREER).}}
 \affil[1, 2]{Institute of Information Science, Academia Sinica, Taiwan}

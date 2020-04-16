@@ -37,18 +37,21 @@
 		\item Let $C'$ be $C$ padded with $\frac{6T}{\eps}$ identity gates at the end.
 		\item Let $H_{C'(x)}=\sum_i \alpha_i H_i$ be the X-Z local Hamiltonian instance associated with the computation of $C'(x)$ from \Cref{thm:LHReduction}.
 		\item Let $\histpsi{{C'(x)}}$ be the ground state of $H_{C'(x)}$.
-		\item \XW{Let $s\leq 3T+\frac{6T}{\eps}$ be the number of qubits in $\ket{\psi_{C'(x)}}$ Why this number?} \Ethan{This is used in de Finetti theorem. Btw I forgot to count ancilla, so it wasn't correct before.}
+		\item Let $s\leq 3T+\frac{6T}{\eps}$ be the number of qubits in $\histpsi{C'(x)}$.
+		%Why this number?} \Ethan{This is used in de Finetti theorem. Btw I forgot to count ancilla, so it wasn't correct before.}
 		\item Let $\cVGS$ be the verification algorithm for $H_{C'(x)}$ as defined in \Cref{AlgGroundStateCheck}.
 	\end{itemize}
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\eps^{51}}$ copies \Ethan{$649=2\times 9\times 6\times 6+1$} of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\eps^{51}}$ copies of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
 		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\eps^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}
 			\item If $i\in I$, run $y_i\leftarrow\cV_{\GS}(\rho_i)$.
-			\item Else if $i=k$, measure the data register \Ethan{Revisit this name. Nobody has defined/used this register before.} \XW{this is the Z measurement?} \Ethan{Yeah} of $\rho_i$ under the standard basis and save the outcome as $z$.
+			\item Else if $i=k$, measure the data register 
+			%\Ethan{Revisit this name. Nobody has defined/used this register before.} \XW{this is the Z measurement?} \Ethan{Yeah} 
+			of $\rho_i$ under the computational (i.e., $Z$) basis and save the outcome as $z$.
 			\item Else, discard $\rho_i$.
 		\end{enumerate}
 			Let $Y=\sum_{i\in I} y_i$. If $Y>\frac{m}{2}-\kappa m$ where $\kappa=\frac{1}{192}\frac{\eps^2}{\sum_i\abs{\alpha_i}}$, then the verifier outputs $(\Acc, z)$.
@@ -62,7 +65,8 @@ We now show its completeness and soundness.
   
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and is statistically sound. \XW{do we want precise error bound?}
+	$\PiSamp$ has negligible completeness error and is statistically sound. 
+	%\XW{do we want precise error bound?}
 \end{thm}
 \begin{prf}
 	For completeness, notice $y_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
@@ -125,5 +129,6 @@ We now show its completeness and soundness.
 	As $(d, z)$ is $\frac{\eps}{6}$-close to $(d_\rho, z_\rho)$ by the data processing inequality,
 	using triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{TV}\leq\frac{\eps}{2}$.
 	Hence $\norm{d - d_\rho}_{TV}\leq\frac{\eps}{2}$, which implies $\norm{(d_\rho, z_{\rho, ideal}) - (d, z_{ideal})}_{TV}$ $\leq$ $\frac{\eps}{2}$.
-	The conclusion then follows from triangle inequality.
+	It then follows from triangle inequality that
+	$\norm{(d, z) - (d, z_{ideal})}_{TV}\leq\eps$.
 \end{prf}
