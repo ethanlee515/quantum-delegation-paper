@@ -99,13 +99,16 @@ We model the interaction between a (almost classical) client and a quantum serve
 	\end{itemize}
 \end{definition}
 
+\begin{remark} Note that we do not parameterize the soundness error in Definition \ref{dfn:stats-secure-proto-sampbqp}. This is because the definition of $\SampBQP$ already includes an error parameter $\eps$, where the algorithm is allowed to generate a sample with statistical error up to $\eps$ in time polynomial in $1/\eps$. Hence, in our definition of soundness, we allow the verifier's output to have error $\eps$ for any given inverse polynomial $\eps$. 
+\end{remark}
+
 We now define blindness of a protocol.
 In the context of blind protocols, we consider $x$ as the verifier's private input instead of a common input.  
 %the above definitions should be modified so that $x$ is the verifier's private input.
 %We define blindness with an accuracy parameter $\eps$, which exists in protocols for $\SampBQP$ instances;
 %one can leave it out where appropriate, such as in protocols for $\BQP$ languages.
 
-\begin{definition}
+\begin{definition}[Blindness]
 	Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ (and $1^{1/\eps}$ for the case of $\SampBQP$ problem), and verifier's private input $x\in\zo^*$.
 	We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
 	\begin{itemize}
