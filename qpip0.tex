@@ -26,7 +26,7 @@ Before introducing Mahadev's protocol, we introduce a notation.
 
 \begin{definition}[$M_{XZ}(\rho,h)$]
 
-For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$. 
+For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$.
 
 We denote the $n$-bit random variable corresponding to the measurement results as $M_{XZ}(\rho,h)$.
 
@@ -34,7 +34,7 @@ We denote the $n$-bit random variable corresponding to the measurement results a
 
 In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gives a $\QPIP_0$ protocol for $\BQP$ languages.
 The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that lets a $\BQP$ machine ``commit a $XZ$ measurement" to a classical machine.
-Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and send encoded $h$ to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chose between have two options: do a \emph{testing round} or do a \emph{Hadamard round}. He send his choice between the two to the prover have the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he see a inconsistency. If the verifier chose the Hadamard round, he calculate $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
+Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and sends encoded $h$ to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice between the two to the prover and has the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -46,22 +46,22 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 
 Inputs:
 \begin{itemize}
-	\item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$.
-	\item Prover's input: a state $\rho\in\cB^{\otimes n}$ for the verifier to measure.
-	\item Verifier's input:
-	    the measurement basis choice $h \in \{0,1\}^n$ 
+    \item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$.
+    \item Prover's input: a state $\rho\in\cB^{\otimes n}$ for the verifier to measure.
+    \item Verifier's input:
+        the measurement basis choice $h \in \{0,1\}^n$
 \end{itemize}
 
 Protocol:
 \begin{enumerate}
-	\item \label{step:measure1} The verifier generates a public and secret key pair $(pk, sk)\leftarrow\cVMeasure{1}(1^\lambda, h)$. It sends $pk$ to the prover.
-	\item \label{step:measure2} The prover generates $(y, \sigma)\leftarrow\cPMeasure{2}(pk, \rho)$.
-		$y$ is a classical ``commitment", and $\sigma$ is some internal state.
-		He sends $y$ to the verifier.
-	\item \label{step:measure3} The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates a \emph{testing round}, while $c=1$ indicates a \emph{Hadamard round}.
-	\item \label{step:measure4} The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it to back to the verifier.
-	\item \label{step:output} If it is a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$ where $o\in\set{\Acc, \Rej}$.
-		If it is a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
+    \item \label{step:measure1} The verifier generates a public and secret key pair $(pk, sk)\leftarrow\cVMeasure{1}(1^\lambda, h)$. It sends $pk$ to the prover.
+    \item \label{step:measure2} The prover generates $(y, \sigma)\leftarrow\cPMeasure{2}(pk, \rho)$.
+        $y$ is a classical ``commitment", and $\sigma$ is some internal state.
+        He sends $y$ to the verifier.
+    \item \label{step:measure3} The verifier samples $c\xleftarrow{\$}\zo$ uniformly at random and sends it to the prover. $c=0$ indicates a \emph{testing round}, while $c=1$ indicates a \emph{Hadamard round}.
+    \item \label{step:measure4} The prover generates a classical string $a\leftarrow\cPMeasure{4}(pk, c, \sigma)$ and sends it back to the verifier.
+    \item \label{step:output} If it is a testing round ($c=0$), then the verifier generates and outputs $o\leftarrow\cVMeasure{T}(pk, y, a)$ where $o\in\set{\Acc, \Rej}$.
+        If it is a Hadamard round ($c=1$), then the verifier generates and outputs $v\leftarrow\cVMeasure{H}(sk, h, y, a)$.
 \end{enumerate}
 \end{protocol}
 
@@ -74,12 +74,12 @@ The protocol achieves a ``binding" property that gives guarantees against cheati
 
 \begin{lemma}[binding property of $\PiMeasure$]
 \label{lem:urmila-binding}
-	Let $\PMeasureStar$ be a $\BQP$ cheating  prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
-\iffalse	
-	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
-	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
-	Then, under the QLWE assumption, there exists some $\rho$ so that for all $h$,
-	the verifier's outputs on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
+    Let $\PMeasureStar$ be a $\BQP$ cheating  prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
+\iffalse    
+    Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
+    $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
+    Then, under the QLWE assumption, there exists some $\rho$ so that for all $h$,
+    The verifier's output on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
 \fi
 \end{lemma}
 
@@ -94,39 +94,39 @@ Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prov
 In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead.
 
 \begin{protocol}{Intermediate $\QPIP_0$ protocol $\PiNaive$ for a $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
-	\label{proto:qpip0_naive}
+    \label{proto:qpip0_naive}
 
-	Inputs:
-	\begin{itemize}
-		\item Security parameter $1^\lambda$ where $\lambda\in\bbN$
-		\item Error parameter $\eps\in(0, 1)$
-		\item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
-	\end{itemize}
+    Inputs:
+    \begin{itemize}
+        \item Security parameter $1^\lambda$ where $\lambda\in\bbN$
+        \item Error parameter $\eps\in(0, 1)$
+        \item Classical input $x\in\zo^n$ to the $\SampBQP$ instance
+    \end{itemize}
 
-	Protocol:
-	\begin{enumerate}
-		\item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
-		\item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
-		\item \label{step:urmila-in-naive}
-		    The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
-			\begin{enumerate}
-				\item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
-				\item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
-	    			Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
-				\item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\cVNaive{3}()$  and sends it to the prover.
-				\item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
-				\item 
-					If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
-					If it is a Hadamard round, the verifier obtains $v$.
-			\end{enumerate}
-		\item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
-	\end{enumerate}
+    Protocol:
+    \begin{enumerate}
+        \item \label{step:naive1} The verifier chooses a $XZ$-measurement $h$ from the distribution specified in \stepref{qpip1-verify} of $\PiSamp$.
+        \item \label{step:naive2} The prover prepares $\rho$ by running \stepref{qpip1-state-gen} of $\PiSamp$.
+        \item \label{step:urmila-in-naive}
+            The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
+            \begin{enumerate}
+                \item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
+                \item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
+                    Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
+                \item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\cVNaive{3}()$  and sends it to the prover.
+                \item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
+                \item
+                    If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
+                    If it is a Hadamard round, the verifier obtains $v$.
+            \end{enumerate}
+        \item \label{step:naive-output} If it's a Hadamard round, the verifier finishes the verification step of Protocol~\ref{ProtoQPIP1} by generating and outputting $(d, z)$
+    \end{enumerate}
 \end{protocol}
 
-There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. first, since the verifier don't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, so the protocol has  completeness error at least $1/2$. And since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round. Such cheating prover only has constant $1/2$ probability of being caught, resulting in constant soundness error. 
+There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. first, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, so the protocol has  completeness error at least $1/2$. And since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round. Such cheating prover only has a constant $1/2$ probability of being caught, resulting in constant soundness error.
 
 
-% Note that in $\PiNaive$ the verifier only learns the output in Hadamard round.
+% Note that in $\PiNaive$ the verifier only learns the output in the Hadamard round.
 % So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
 
 
@@ -134,32 +134,32 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
 
 \begin{lemma}[binding property of $\PiNaive$]
 \label{lem:naive-qpip0-binding}
-	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
-	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
-	then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
+    Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
+    Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+    then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
 \begin{proof}
-	Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
+    Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
 
-	We define $\Pstar$ as follows.
-	For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
-	If $y\ne\bot$, then reply $y$;
-	else, run the corresponding step of the dummy strategy as in \Cref{lem:trivial-4-round-strategy} and reply with its results.
-	For the fourth message, if $y\ne\bot$, run and reply with $a\leftarrow\cPNaiveStar{4}(pk, c, \sigma)$;
-	else, continue the dummy strategy.
+    We define $\Pstar$ as follows.
+    For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
+    If $y\ne\bot$, then reply $y$;
+    else, run the corresponding step of the dummy strategy as in \Cref{lem:trivial-4-round-strategy} and reply with its results.
+    For the fourth message, if $y\ne\bot$, run and reply with $a\leftarrow\cPNaiveStar{4}(pk, c, \sigma)$;
+    else, continue the dummy strategy.
 
-	Observe that this $\Pstar$ passes testing round with overwhelming probability by construction,
-	so we can apply \Cref{lem:urmila-binding} to the $\PiMeasure$ call to use its binding property (\Cref{lem:urmila-binding}).
-	That is, there exists some $\rho$ such that $v=M_{XZ}(\rho, h)$.
-	Combining it with $\PiSamp$'s soundness (\Cref{QPIP1thm}),
-	we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is computationally indistinguishable to $(d', z_{ideal}')$.
-	
+    Observe that this $\Pstar$ passes testing round with overwhelming probability by construction,
+    so we can apply \Cref{lem:urmila-binding} to the $\PiMeasure$ call to use its binding property (\Cref{lem:urmila-binding}).
+    That is, there exists some $\rho$ such that $v=M_{XZ}(\rho, h)$.
+    Combining it with $\PiSamp$'s soundness (\Cref{QPIP1thm}),
+    we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is computationally indistinguishable to $(d', z_{ideal}')$.
+    
     Now we relate $(d', z')$ back to $(d, z)$.
-	Conditioned on $\PNaiveStar$ accept, clearly $(d, z)=(d', z')$.
-	Conditioned on $\PNaiveStar$ reject, since dummy strategy will be rejected with high probability in Hadamard round, \Ethan{kinda obvious but we never explicitly explained why}
-	we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$.
-	So we have $(d, z)\approx_{c, O(\varepsilon)}(d', z')\approx_{c, \negl(\lambda)}(d', z_{ideal}')$,
-	which in turn implies $\abs{d-d'}\leq O(\eps)$
+    Conditioned on $\PNaiveStar$ accept, clearly $(d, z)=(d', z')$.
+    Conditioned on $\PNaiveStar$ reject, since dummy strategy will be rejected with high probability in Hadamard round, \Ethan{kinda obvious but we never explicitly explained why}
+    we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$.
+    So we have $(d, z)\approx_{c, O(\varepsilon)}(d', z')\approx_{c, \negl(\lambda)}(d', z_{ideal}')$,
+    which in turn implies $\abs{d-d'}\leq O(\eps)$
     and $(d, z_{ideal})\approx_{c, O(\eps)}(d', z_{ideal}')$.
     Combining everything, we conclude that $(d, z)\approx_{c, O(\eps)}(d, z_{ideal})$.
 \end{proof}
@@ -175,57 +175,57 @@ $\forall c\in\bbN$ Soundness = $O(T^{-c})$
 Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
 \fi
 
-%	\label{ProtoQPIP1}
+%    \label{ProtoQPIP1}
 
 We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
 It is essentially a $m$-fold parallel repetition of $\PiNaive$.
-Instead of having each copies running testing round or Hadamard round uniformly at random, we randomly pick one copy to run Hadamard round to get our samples, and run testing round on all other $m-1$ copies.
+Instead of having each copy running testing round or Hadamard round uniformly at random, we randomly pick one copy to run Hadamard round to get our samples, and run testing round on all other $m-1$ copies.
 In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure$ in details  in order to introduce notations that we need in our analysis.
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 \label{proto:QPIP0samp}
 
 Inputs:
-	\begin{itemize}
-		\item Security parameter $1^\lambda$ for $\lambda\in\bbN$.
-		\item Accuracy paramter $1^{1/\eps}$ for the $\SampBQP$ instance
-		\item Input $x\in\zo^{\poly(\lambda)}$ for the $\SampBQP$ instance
-	\end{itemize}
+    \begin{itemize}
+        \item Security parameter $1^\lambda$ for $\lambda\in\bbN$.
+        \item Accuracy parameter $1^{1/\eps}$ for the $\SampBQP$ instance
+        \item Input $x\in\zo^{\poly(\lambda)}$ for the $\SampBQP$ instance
+    \end{itemize}
 
-Ingrediant: Let $m=O(1/\eps^2)$ be the number of parallel repetitions to run.
+Ingredient: Let $m=O(1/\eps^2)$ be the number of parallel repetitions to run.
     
 Protocol:
 \begin{enumerate}
-	\item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ as in \stepref{naive1} of $\PiNaive$.
-	\item The prover prepares $\rho^{\otimes m}$; each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$.
-	\item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, as in \stepref{measure1} of $\PiMeasure$.
-		It sends $\vec{pk}$ to the prover.
-	\item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ as in \stepref{measure2} of $\PiMeasure$.
-		It sends $\vec{y}$ to the verifier.
-	\item The verifier samples $r\xleftarrow{\$}[m]$ which is the copy to run Hadamard round for.
-		For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
-		It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
-	\item The prover generates $\vec{a}$ as in \stepref{measure4} of $\PiMeasure$, and sends it back to the verifier.
-	\item \label{step:multi-testing}
-		The verifier computes the outcome for each round as in \stepref{naive-output} of $\PiNaive$.
-		If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
-		Else, it outputs the result from the Hadamard round copy.
+    \item The verifier generates $m$ independently copies of basis choices $\vec{h}=(h_1,\ldots,h_m)$ as in \stepref{naive1} of $\PiNaive$.
+    \item The prover prepares $\rho^{\otimes m}$; each copy of $\rho$ is prepared as in \stepref{naive2} of $\PiNaive$.
+    \item The verifier generates $m$ key pairs for $\PiMeasure$, $\vec{pk}=(pk_1,\ldots,pk_m)$ and $\vec{sk}=(sk_1,\ldots,sk_m)$, as in \stepref{measure1} of $\PiMeasure$.
+        It sends $\vec{pk}$ to the prover.
+    \item The prover generates $\vec{y}=(y_1,\ldots,y_m)$ and $\sigma$ as in \stepref{measure2} of $\PiMeasure$.
+        It sends $\vec{y}$ to the verifier.
+    \item The verifier samples $r\xleftarrow{\$}[m]$ which is the copy to run Hadamard round for.
+        For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
+        It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
+    \item The prover generates $\vec{a}$ as in \stepref{measure4} of $\PiMeasure$, and sends it back to the verifier.
+    \item \label{step:multi-testing}
+        The verifier computes the outcome for each round as in \stepref{naive-output} of $\PiNaive$.
+        If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
+        Else, it outputs the result from the Hadamard round copy.
 \end{enumerate}
 \end{protocol}
 
 \begin{theorem}\label{thm:qpip0}
-	Assuming the QLWE assumption, $\PiSampZ$ is a $\QPIP_0$ protocol for all problems in $\SampBQP$ with negligible  completeness error and computational soundness. 
+    Assuming the QLWE assumption, $\PiSampZ$ is a $\QPIP_0$ protocol for all problems in $\SampBQP$ with negligible  completeness error and computational soundness.
 \end{theorem}
 
 
 The intuition behind this theorem is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.  $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy; $G_{1,i}$  represents the subspace accepted with ``high probability"\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events.  We  split up  $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
  probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$. Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
  
- %but there will always be some states  herefore we introduce  an extra parameter $\gamma$ that corresponds to the probability cut-off line that to distinguish the accepted and rejected part, and we need to average over $\gamma$.
+ %but there will always be some states  therefore we introduce  an extra parameter $\gamma$ that corresponds to the probability cut-off line that to distinguish the accepted and rejected part, and we need to average over $\gamma$.
  
 % We split the state sub-normalized states corresponding to the prover cheating on different copies and show that the sum of probabilities corresponding to bad states can't be more than $1/m$. {The actual proof is more complicated than this sketch because the $G$'s don't commute with each other, so we need to handle the splitting carefully.}
 
-%For example, $G_{0,3} G_{1,5} \ket{\psi}$ corresponds to the events of passing the testing round on fifth copy then fails the the testing round on the third copy.
+%For example, $G_{0,3} G_{1,5} \ket{\psi}$ corresponds to the events of passing the testing round on the fifth copy then fails the testing round on the third copy.
 
 %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $th$ register being $0$ or $1$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
@@ -243,7 +243,7 @@ Let $\lambda$ be the security parameter and  $\eps$ be the accuracy parameter. L
  
 
  
-  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$. 
+  Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$.
  
 
 
@@ -259,7 +259,7 @@ Furthermore, the following properties are satisfied for all $i\in[m]$.
 by Cauchy's inequality.
     
         \item \label{property:partition-testing}
-For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have 
+For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have
  
 %      \begin{align*}
 %  \Pr\left[M_{\regX_i}\circ U\frac{\ket{\{c\}}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{pk_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
@@ -276,13 +276,13 @@ For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have
  \end{align}
  
  
-where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round accepts with $pk_i,y_i$, including the last measurement the prover did before sending $\vec{a}$.  This means that $\ket{\psi_{0,i,\gamma}}$ is rejected by $i$-th testing round with high probability.
+where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round accepts with $pk_i,y_i$, including the last measurement the prover did before sending $\vec{a}$.  This means that $\ket{\psi_{0,i,\gamma}}$ is rejected by the $i$-th testing round with high probability.
 
 
     \item \label{property:partition-binding}
     
     % $\{c\}\in S_m$ such that $c_i = 0$
-For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that 
+For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that
 
 \begin{align}
      \norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\lambda).
@@ -291,15 +291,15 @@ For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an ef
 % \begin{align*}  
 %   \Pr\left[M_{\regX_i}\circ \ext_i\left(\frac{\ket{\{c\}}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)\in \Acc_{pk_i,y_i}\right]=1-\negl(\secpar).
 %   \end{align*}
-This will imply that    $\ket{\psi_{1,i,\gamma}}$ is binding to $i$-th Hadamard round.
+This will imply that    $\ket{\psi_{1,i,\gamma}}$ is binding to the $i$-th Hadamard round.
 
 \item \label{property-partition-norm-sum}
-  For all $\gamma$, 
+  For all $\gamma$,
   \begin{align}
-    \norm{\ket{\psi_{0,i,\gamma}}}^2+ \norm{\ket{\psi_{1,i,\gamma}}}^2 \leq  \norm{\ket{\psi}}^2 
+    \norm{\ket{\psi_{0,i,\gamma}}}^2+ \norm{\ket{\psi_{1,i,\gamma}}}^2 \leq  \norm{\ket{\psi}}^2
 \end{align}
 
-  
+ 
 % \item \hannote{added by me..not needed?}
 
 % $$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
@@ -316,7 +316,7 @@ This will imply that    $\ket{\psi_{1,i,\gamma}}$ is binding to $i$-th Hadamard 
 
 
 % \begin{proof}
-% Step~\ref{step:sum-ob}: 
+% Step~\ref{step:sum-ob}:
 % \begin{align}
 %   ( G_{0,i,\gamma}+G_{1,i,\gamma}) \ket{\psi}_{\regX,\regZ}
 %   &= \ket{\psi_{0,i,\gamma}}_{\regX,\regZ}+\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}
@@ -357,10 +357,10 @@ By Lemma~\ref{lem:partition2}, we have
     \ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
     =& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
     =& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
-    &+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}}, 
+    &+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}},
 \end{align}
 
-where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over verifier's choice of $pk$.}
+where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over the verifier's choice of $pk$.}
 
 By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
 \begin{align} \label{eq:bad-term-sum}
@@ -387,34 +387,34 @@ And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:par
     \norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
     =& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
     \leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-    \leq& (m-1)\gamma_0+\negl(n) 
+    \leq& (m-1)\gamma_0+\negl(n)
 \end{align}
 
 
-Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then 
+Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
 
 
 
 
 $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$. 
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
 
-Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have 
-$$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$ 
-	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
-
-
+Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
+$$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
+    where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z)= \text{probability of getting accepted} \leq 1$.
 
 
 
 
-Define 
+
+
+Define
 
 \begin{align}
     z_{good,i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
 \end{align}
 
-Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string}, 
+Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
 %\hannote{gamma..}
 
 \begin{align}
@@ -425,7 +425,7 @@ Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
 \end{align}
 
 
-we have 
+we have
 
 \begin{align}
     z_i =& \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
@@ -438,16 +438,16 @@ we have
       +&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \nn \\
-    +& \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} 
+    +& \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
     +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \nn \\
     +&\L.\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R] , \nn     
-    %=& z_{good,i} +(\text{terms with } \psi_{1^j0},\, j\neq i ) + (\text{terms with } \psi_{1^{i-1}0}) +(\text{terms with }err ) 
+    %=& z_{good,i} +(\text{terms with } \psi_{1^j0},\, j\neq i ) + (\text{terms with } \psi_{1^{i-1}0}) +(\text{terms with }err )
 \end{align}
 
 %  U^\dag  P_{acc,i,z}U
 
-% \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} 
-% \ket{\psi_{1^i,\gamma}} 
+% \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
+% \ket{\psi_{1^i,\gamma}}
 % \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}  
 
  where we omitted writing out $e_i$ starting the second line. We have
@@ -458,7 +458,7 @@ we have
       +&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
     +\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \nn \\
-    +& \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} 
+    +& \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
     +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \nn \\
     +&\L.\L.\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R]\R| \nn \\  %%%%%%%%%%%
     \leq&  \sum_z   \E_\gamma \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^j0,\gamma}} \R|+
@@ -469,10 +469,10 @@ we have
       \leq&  \sum_z   \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{e_i,\psi_{1^j0,\gamma}} \R|+
     2 \sum_{k=0}^{i-1} \L|\bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^i,\gamma}} \R|  \R]    +O\L(\frac{m^2}{\sqrt T}\R)\nn \\ %%%%%%%%%
     \leq&  \sum_z   \L[\L| \bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^{i-1}0,\gamma}} \R|+
-    2  \L|\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R]    \nn \\ +&O\L(\frac{m^2}{\sqrt T}+m^2{(m-1)\gamma_0}+m\sqrt{(m-1)\gamma_0}\R)\nn \\ %%%%%%%%% 
+    2  \L|\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R]    \nn \\ +&O\L(\frac{m^2}{\sqrt T}+m^2{(m-1)\gamma_0}+m\sqrt{(m-1)\gamma_0}\R)\nn \\ %%%%%%%%%
     \leq& \norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R),
 \end{align}
-where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant. 
+where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
 
 
 
@@ -487,7 +487,7 @@ where on the second inequality we used triangle inequality, on the third inequal
 Now we try to  put together all $i\in [m]$. Define
 $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
 
-We have 
+We have
 \begin{align} \label{eq:z-z-good}
     \tr|z-z_{good}| =& \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| \nn \\
     \leq&  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
@@ -502,11 +502,11 @@ where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi
 
 
 
-We now proceeds to prove that $z_{good}$ is close to the ideal distribution. 
+We now proceed to prove that $z_{good}$ is close to the ideal distribution.
 
 For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
-The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything aborts by sending $\bot$ back.   On the fourth round,  If it's a testing round the prover reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If it's the Hadamard round  the prover  runs $U$ and check whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies accepts, he reply with the $i$-th copy, otherwise reply $\bot$. 
+The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and aborts by sending $\bot$ back.   On the fourth round,  If it's a testing round the prover reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If it's the Hadamard round  the prover  runs $U$ and checks whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies are accepted, he replies with the $i$-th copy, otherwise reply $\bot$.
 
 %old protocol when jerection on 4-th round
 % The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical.  On the fourth round, there are four possibilities depending on $c$ and whether the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$. If $c=0$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If $c=1$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U$ and check whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies accepts, he reply with the $i$-th copy, otherwise reply $\bot$. If $c=0$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U_{trivial}$ and repies. If $c=1$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he replies with $\bot$. \footnote{Recall that $c=0$ is the testing round and $c=1$ is the Hadamard round.}
@@ -516,22 +516,22 @@ The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of P
 
 Denote the result we would get when $c=1$ by $(d,z_{composite,i})$.
 
-By  property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strartegy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding}, 
+By  property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
 \begin{align}
     (d,z_{composite,i})\approx_{c, O(\eps)}(d,z_{ideal,i})
 \end{align}
 
 
 
-By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where $(d,z_{good,i})$ is defined as: 
+By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where $(d,z_{good,i})$ is defined as:
 
 $$\begin{cases}
-					 (d,z_{good,i}) \la (\Acc, z_{good,i}/|z_{good,i}|) & \text{with probability } |z_{good,i}|\\
-					(d,z_{good,i}) = (\Rej,\bot)  & \text{otherwise } 
-				\end{cases}$$.
+                     (d,z_{good,i}) \la (\Acc, z_{good,i}/|z_{good,i}|) & \text{with probability } |z_{good,i}|\\
+                    (d,z_{good,i}) = (\Rej,\bot)  & \text{otherwise }
+                \end{cases}$$.
 
 
-% where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} . 
+% where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} .
 
 
 Therefore
@@ -546,7 +546,7 @@ Average over $i\in[m]$ we get
     (d,z_{good})\approx_{c, O(\eps)}(d,z_{ideal}).
 \end{align}
 % \hannote{do we lose a factor of $m$?}
-Recall that by Eq~\ref{eq:z-z-good} we have $\norm{z-z_{good}}_1 \leq O(\eps)$ if we pick $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$, which implies 
+Recall that by Eq~\ref{eq:z-z-good} we have $\norm{z-z_{good}}_1 \leq O(\eps)$ if we pick $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$, which implies
 \begin{align}
     (d,z)\approx_{c, O(\eps)}(d,z_{good}).
 \end{align}
@@ -559,6 +559,8 @@ Therefore  we have
 
  
 \end{proof}
+
+
 
 
 
