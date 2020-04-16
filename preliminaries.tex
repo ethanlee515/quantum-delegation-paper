@@ -99,7 +99,7 @@ We model the interaction between a (almost classical) client and a quantum serve
 	\end{itemize}
 \end{definition}
 
-\begin{remark} Note that we do not parameterize the soundness error in Definition \ref{dfn:stats-secure-proto-sampbqp}. This is because the definition of $\SampBQP$ already includes an error parameter $\eps$, where the algorithm is allowed to generate a sample with statistical error up to $\eps$ in time polynomial in $1/\eps$. Hence, in our definition of soundness, we allow the verifier's output to have error $\eps$ for any given inverse polynomial $\eps$. 
+\begin{remark} Note that we do not parameterize the soundness error in Definition \ref{dfn:stats-secure-proto-sampbqp}. This is because the definition of $\SampBQP$ already includes an error parameter $\eps$, where the algorithm is allowed to generate a sample with statistical error up to $\eps$ in time polynomial in $1/\eps$. Hence, we define the soundness to  allow the verifier's output to have an $\eps$ error for any given inverse polynomial $\eps$ without introducing an extra soundness error parameter. 
 \end{remark}
 
 We now define blindness of a protocol.
@@ -119,8 +119,8 @@ In the context of blind protocols, we consider $x$ as the verifier's private inp
 
 \begin{definition}
 \label{def:comp-indis}
-    \Ethan{TODO PROOFREAD ME}
-    Two families of states $\set{\rho_{1,\lambda}}_{\lambda\in\bbN}$ and $\set{\rho_{2,\lambda}}_{\lambda\in\bbN}$ are \emph{$\eps$-computationally indistinguishable} if for all $\BQP$ distinguishers $\mathsf{D}$ and $\lambda\in\bbN$,
+    %\Ethan{TODO PROOFREAD ME}
+    Two ensemble of states $\set{\rho_{1,\lambda}}_{\lambda\in\bbN}$ and $\set{\rho_{2,\lambda}}_{\lambda\in\bbN}$ are \emph{$\eps$-computationally indistinguishable} if for all $\BQP$ distinguishers $\mathsf{D}$ and $\lambda\in\bbN$,
 	$$\abs{\Pr\left[\mathsf{D}(\rho_{1,\lambda})=1\right]-\Pr\left[\mathsf{D}(\rho_{2,\lambda})=1\right]}\leq\eps(\lambda).$$
 	We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
     We drop the $\eps$ parameter when it is negligible.

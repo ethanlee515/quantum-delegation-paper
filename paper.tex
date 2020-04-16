@@ -1,3 +1,7 @@
+\newif\ifdraft
+%\drafttrue
+\draftfalse
+
 \documentclass[11pt]{article}
 \usepackage{authblk}
 %\pagestyle{plain}
@@ -53,10 +57,17 @@
 \refstepcounter{protocol}\textbf{Protocol \theprotocol} #1\\\noindent\linefill}
 {\vspace{-\topsep}\noindent\linefill\endgroup}
 
-
+\ifdraft
 \newcommand{\KM}[1]{{\footnotesize\color{cyan}[KM: #1]}}
 \newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
 \newcommand{\XW}[1]{{\footnotesize\color{red}[XW: #1]}}
+\else
+\newcommand{\KM}[1]{}
+\newcommand{\Ethan}[1]{}
+\newcommand{\XW}[1]{}
+\fi
+
+
 
 \def \Hin {H_{\mathrm{in}}}
 \def \Hout {H_{\mathrm{out}}}

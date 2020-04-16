@@ -5,28 +5,28 @@
 %\XW{merge Section 3 and 4; also easy the discussion;}
 
 \subsection{Construction of the X-Z Local Hamiltonian for $\SampBQP$} \label{sec:LHXZ}
-As we mentioned in this introduction, we will employ the circuit \emph{history} state in the original construction of the Local Hamiltonian problem~\cite{kitaev2002classical} to encode the circuit information for $\SampBQP$. 
+As we mentioned in this introduction, we will employ the circuit \emph{history} state in the original construction of the Local Hamiltonian problem~\cite{kitaev2002classical} to encode the circuit information for $\SampBQP$.
 However, there are distinct requirements between certifying the computation for $\BQP$ and $\SampBQP$ based on the history state.
-For any quantum circuit $C$ on input $x$, the original construction for certifying $\BQP$\footnote{The original construction is for the purpose of certifying problems in QMA. We consider its simple restriction to problems inside BQP.} consists of local Hamiltonian $\Hin, \Hclock, \Hprop$, $\Hout$ where $\Hin$ is used to certify the initial input $x$, $\Hclock$ to certify the validness of the clock register,  $\Hprop$ to certify the gate-by-gate evolution according to the circuit description, and $\Hout$ to certify the final output. 
-In particular, the corresponding history state is in the ground space of $\Hin$, $\Hclock$, and $\Hprop$. Note that $\BQP$ is a decision problem and its outcome (0/1) can be easily encoded into the energy $\Hout$ on the single output qubit. 
-As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hclock+\Hprop + \Hout$. 
+For any quantum circuit $C$ on input $x$, the original construction for certifying $\BQP$\footnote{The original construction is for the purpose of certifying problems in QMA. We consider its simple restriction to problems inside BQP.} consists of local Hamiltonian $\Hin, \Hclock, \Hprop$, $\Hout$ where $\Hin$ is used to certify the initial input $x$, $\Hclock$ to certify the validness of the clock register,  $\Hprop$ to certify the gate-by-gate evolution according to the circuit description, and $\Hout$ to certify the final output.
+In particular, the corresponding history state is in the ground space of $\Hin$, $\Hclock$, and $\Hprop$. Note that $\BQP$ is a decision problem and its outcome (0/1) can be easily encoded into the energy $\Hout$ on the single output qubit.
+As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hclock+\Hprop + \Hout$.
 
-To deal with $\SampBQP$, we will still employ $\Hin, \Hclock$, and $\Hprop$ to certify the circuit's input, the clock register, and gate-by-gate evolution. However, in $\SampBQP$, we care about the entire final state of the circuit, rather than the energy on the output qubit. 
+To deal with $\SampBQP$, we will still employ $\Hin, \Hclock$, and $\Hprop$ to certify the circuit's input, the clock register, and gate-by-gate evolution. However, in $\SampBQP$, we care about the entire final state of the circuit, rather than the energy on the output qubit.
 %The history state remains in the ground space of $\Hin + \Hprop$.  
-Our approach to certify the entire final state (which is encoded inside the history state) is to make sure that the history state is the unique ground state of $\Hin + \Hclock+ \Hprop$ and all other orthogonal states will have much higher energies. 
-Namely, we need to construct some $\Hin'+ \Hclock'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies. 
-It is hence guaranteed that any state with close-to-ground energy must also be close to the history state. 
-We remark that this is a different requirement from most local Hamiltonian constructions that focus on the ground energy. 
-We achieve so by using the \emph{perturbation} technique developed in~\cite{kempe_kitaev_regev_2006} for reducing the locality of Hamiltonian. 
-Another example of local Hamiltonian construction with a focus on the spectral gap can be found in~\cite{adiabatic}, where the purpose is to simulate quantum circuits by adiabatic quantum computation. 
+Our approach to certify the entire final state (which is encoded inside the history state) is to make sure that the history state is the unique ground state of $\Hin + \Hclock+ \Hprop$ and all other orthogonal states will have much higher energies.
+Namely, we need to construct some $\Hin'+ \Hclock'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies.
+It is hence guaranteed that any state with close-to-ground energy must also be close to the history state.
+We remark that this is a different requirement from most local Hamiltonian constructions that focus on the ground energy.
+We achieve so by using the \emph{perturbation} technique developed in~\cite{kempe_kitaev_regev_2006} for reducing the locality of Hamiltonian.
+Another example of local Hamiltonian construction with a focus on the spectral gap can be found in~\cite{adiabatic}, where the purpose is to simulate quantum circuits by adiabatic quantum computation.
 
-We need two more twists for our purpose. 
-First, as we will eventually measure the final state in order to obtain classical samples, we need that the final state occupies a large fraction of the history state. We can simply add dummy identity gates. 
+We need two more twists for our purpose.
+First, as we will eventually measure the final state in order to obtain classical samples, we need that the final state occupies a large fraction of the history state. We can simply add dummy identity gates.
 Second, as we are only able to perform $X$ or $Z$ measurement by techniques from~\cite{FOCS:Mahadev18a},
-we need to construct X-Z only local Hamiltonians. 
-Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction. 
+we need to construct X-Z only local Hamiltonians.
+Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction.
 
-%\XW{TOADD: some orgainization}
+%\XW{TOADD: some organization}
 %\XW{highlight the different requirement from the normal Local Hamiltonian reduction; and highlight a bit about the solution idea}
 
 % In this section, we give a reduction from $\SampBQP$ to a local Hamiltonian instance.
@@ -39,176 +39,176 @@ Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which 
 Recall the definition of the history state which serves as a transcript of the circuit evolution~\cite{kitaev2002classical}:
 
 \begin{dfn}[History-state]
-	\label{dfn:groundstate}	
+    \label{dfn:groundstate}    
     Given any quantum circuit $C=U_T\ldots U_1$ of $T$ elementary gates and input $x\in\{0,1\}^n$, the \emph{history}-state $\histpsi{C(x)}$ is defined by
     \begin{equation}
         \histpsi{C(x)} \equiv \frac{1}{\sqrt{T}}\sum_{t=0}^TU_t\ldots U_1\ket{x,0}\otimes\ket{\hat{t}},
     \end{equation}
-    where the first register of $n$-qubit refers to the input, the second of $m$-qubit refers to the work space ($\mathrm{poly}(n)$, w.l.o.g, $\leq T$ size) which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$. 
+    where the first register of $n$-qubit refers to the input, the second of $m$-qubit refers to the work space ($\mathrm{poly}(n)$, w.l.o.g, $\leq T$ size) which is initialized to $\ket{0}$, and the last refers to the clock space which encodes the time information. Note that $\hat{t}$ could be some representation of $t$=0,..., $T$.
 \end{dfn}
 
 % \begin{rmk}
-% 	\label{idpadding}
-% 	One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
-% 	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
+%     \label{idpadding}
+%     One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
+%     Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
 % \end{rmk}
 
 % \XW{define $k$-local XZ Hamiltonian}
 % We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
 
-We define the X-Z local Hamiltonian of interest as follows: 
+We define the X-Z local Hamiltonian of interest as follows:
 
-\begin{dfn}[$k$-local X-Z Hamiltonian] For any $n$-qubit system, the set of $k$-local X-Z terms, denoted by $\LHXZ{k}$, contains Hermitian matrices that apply non-trivially on at most $k$ qubits as a product of Pauli $X$ and $Z$ terms. Namely, 
+\begin{dfn}[$k$-local X-Z Hamiltonian] For any $n$-qubit system, the set of $k$-local X-Z terms, denoted by $\LHXZ{k}$, contains Hermitian matrices that apply non-trivially on at most $k$ qubits as a product of Pauli $X$ and $Z$ terms. Namely,
 \begin{equation}
-  \LHXZ{k} = \left\{h_1 \otimes h_2 \otimes \ldots \otimes h_n: \forall i \in [n], h_i \in \{I, X, Z\}, \text{and}, \abs{\set{i: h_i=X \text{ or }Z}} \leq k. \right \}. 
+  \LHXZ{k} = \left\{h_1 \otimes h_2 \otimes \ldots \otimes h_n: \forall i \in [n], h_i \in \{I, X, Z\}, \text{and}, \abs{\set{i: h_i=X \text{ or }Z}} \leq k. \right \}.
 \end{equation}
-A $k$-local X-Z Hamiltonian $H$ is a linear combination of terms from $\LHXZ{k}$. Namely, 
+A $k$-local X-Z Hamiltonian $H$ is a linear combination of terms from $\LHXZ{k}$. Namely,
 \begin{equation}
   H = \sum_i \alpha_{i} H_i,  \quad \forall i, \alpha_i \in R,  H_i \in \LHXZ{k}.
 \end{equation}
 \end{dfn}
 
-As our starting point, we will include the existing result of constructing X-Z local Hamitonians for general $\BQP$ computation. 
-First, we note the fact Toffoli and Hadamard gates form a universal gate set for quantum computation~\cite{Shi03, quant-ph/0301040}. 
-It is easy to see that both Toffoli and Hadamard gates can be represented as linear combinations of terms from $\LHXZ{}$. For example, 
+As our starting point, we will include the existing result of constructing X-Z local Hamitonians for general $\BQP$ computation.
+First, we note the fact Toffoli and Hadamard gates form a universal gate set for quantum computation~\cite{Shi03, quant-ph/0301040}.
+It is easy to see that both Toffoli and Hadamard gates can be represented as linear combinations of terms from $\LHXZ{}$. For example,
  \begin{equation}
      \mathrm{(Hadamard)} \quad H \equiv \frac{1}{\sqrt{2}} \begin{pmatrix}1&1\\1&-1\end{pmatrix} = \frac{1}{\sqrt{2}}\left (X+Z\right).
  \end{equation}
  The Toffoli gate maps bits $(a,b,c)$ to $(a,b, c \oplus (a \text{ and } b))$, which can be decomposed as $\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$ where $\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$.
- %Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
- %Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
+ %Here we restate the result from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
+ %Because of this result, we can assume without loss of generality that our quantum circuits consist of only Toffoli and Hadamard gates.
 % Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
 % \begin{Fact}
-%     	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
+%         $H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
 % \end{Fact}
 % \begin{prf}
-% 	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-% 	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-% 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+%     $$H=\frac{1}{\sqrt{2}}(X+Z)$$
+%     $$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+%     $$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 % \end{prf}
 
-We will follow the unary clock register design from Kitaev's original 5-local Hamiltonian construction~\cite{kitaev2002classical}. Namely, valid unary clock states ($T$-qubit) are $\ket{00\ldots0}$, $\ket{10\dots0}$, $\ket{110\ldots0}$, etc, which span the ground energy space of the following local Hamiltonian: 
+We will follow the unary clock register design from Kitaev's original 5-local Hamiltonian construction~\cite{kitaev2002classical}. Namely, valid unary clock states ($T$-qubit) are $\ket{00\ldots0}$, $\ket{10\dots0}$, $\ket{110\ldots0}$, etc, which span the ground energy space of the following local Hamiltonian:
 \begin{equation}
     \Hclock= \sum_{t=1}^{T-1}\proj{01}_{t,t+1},
 \end{equation}
-where $\proj{01}_{t,t+1}$ stands for a projection on the $t$th and $(t+1)$th qubit in the clock register. 
-It is observed in~\cite{PhysRevA.78.012352} that $\Hclock$ can be reformulated as a linear combination of terms from $\LHXZ{}$ as follows, 
+where $\proj{01}_{t,t+1}$ stands for a projection on the $t$th and $(t+1)$th qubit in the clock register.
+It is observed in~\cite{PhysRevA.78.012352} that $\Hclock$ can be reformulated as a linear combination of terms from $\LHXZ{}$ as follows,
 \begin{equation} \label{eqn:Hclock}
    \Hclock= \frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_t\otimes Z_{t+1}),
 \end{equation}
-where $Z_t$ refers to Pauli $Z$ operated on the $t$th qubit in the clock register. 
+where $Z_t$ refers to Pauli $Z$ operated on the $t$th qubit in the clock register.
 
 One can achieve so similarly for $\Hin$ and $\Hprop$. For the input condition, we want to make sure $x=(x_1, \ldots, x_n) \in \{0,1\}^n$ is in the input space and the workspace is initialized to $\ket{0}$ for all qubits at the time $0$. Namely, one can set $\Hin$ to be
-\begin{equation} 
-    \Hin = \sum_{i=1}^n(I- \proj{x_i}_i)\otimes \proj{0}_1 + \sum_{i=1}^m \proj{1}_{n+i} \otimes \proj{0}_1, 
+\begin{equation}
+    \Hin = \sum_{i=1}^n(I- \proj{x_i}_i)\otimes \proj{0}_1 + \sum_{i=1}^m \proj{1}_{n+i} \otimes \proj{0}_1,
 \end{equation}
-where the last part $\proj{0}_1$ applies on to the first qubit in the clock register. One can rewrite $\Hin$ as 
+where the last part $\proj{0}_1$ applies on to the first qubit in the clock register. One can rewrite $\Hin$ as
 \begin{equation}\label{eqn:Hin}
- \Hin=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1) + \frac{1}{4} \sum_{i=1}^m (I - Z_{n+i}) \otimes (I + Z_1). 
+ \Hin=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1) + \frac{1}{4} \sum_{i=1}^m (I - Z_{n+i}) \otimes (I + Z_1).
 \end{equation}
 % Then, we ensure that the initial condition is set up correctly.
-% 	$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
-% 	The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
+%     $$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
+%     The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
 
-For the propagation of the quantum state through the circuit, one uses the $\Hprop$ as follows: 
+For the propagation of the quantum state through the circuit, one uses the $\Hprop$ as follows:
 \begin{equation*} \label{eqn:Hprop}
-    \Hprop=\sum_{t=1}^T \Hprop^t, 
+    \Hprop=\sum_{t=1}^T \Hprop^t,
 \end{equation*}
-where 
+where
 \begin{equation}
     \Hprop^t=\frac{1}{2}I\otimes\proj{\widehat{t}}
-	+\frac{1}{2}I\otimes\proj{\widehat{t-1}}
-	-\frac{1}{2} U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
-	-\frac{1}{2}U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}.
+    +\frac{1}{2}I\otimes\proj{\widehat{t-1}}
+    -\frac{1}{2} U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
+    -\frac{1}{2}U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}.
 \end{equation}
 Note that $\ket{\widehat{t}}\bra{\widehat{t-1}}=\ket{110}\bra{100}_{(t-1,t,t+1)}$ and similarly for $\ket{\widehat{t-1}}\bra{\widehat{t}}$.
-% 	Then, we ensure that the gates are applied correctly.
-% 	$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
-% 	$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
-% 	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
-% 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
-% 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
-% 	We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least nonzero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
-%One can similarly rewrite $\Hprop$ in terms of elements from $\LHXZ{}$. 
-Note that $U_t^\dagger=U_t$, since our gates are either Hadamard or Toffoli. It is observed in~\cite{PhysRevA.78.012352} that 
+%     Then, we ensure that the gates are applied correctly.
+%     $$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
+%     $$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
+%     +I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
+%     -U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
+%     -U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
+%     We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least non zero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
+%One can similarly rewrite $\Hprop$ in terms of elements from $\LHXZ{}$.
+Note that $U_t^\dagger=U_t$, since our gates are either Hadamard or Toffoli. It is observed in~\cite{PhysRevA.78.012352} that
 \begin{equation}
    \Hprop^t=\frac{I}{4}\otimes(I-Z_{t-1})\otimes (I+Z_{t+1})-\frac{U_t}{4}\otimes(I-Z_{t-1})\otimes X_t\otimes (I+Z_{t+1}), \forall t=2, \ldots, T-1,
 \end{equation}
-and 
+and
 \begin{eqnarray}
   \Hprop^1 &= & \frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1\otimes Z_2) \\
   \Hprop^T &= & \frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}\otimes X_T).
 \end{eqnarray}
-% 	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$.
-% 	Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
-% 	
+%     We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$.
+%     Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+%     
 % $$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
-% 	Extra care must be taken for boundary cases.
-% 	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-% 	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
-Combining with the fact that each $U_t$ can be written as a linear combination of terms from $\LHXZ{}$, we conclude that $\Hclock$, $\Hin$, $\Hprop$ are 6-local X-Z Hamiltonian. 
+%     Extra care must be taken for boundary cases.
+%     $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+%     $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+Combining with the fact that each $U_t$ can be written as a linear combination of terms from $\LHXZ{}$, we conclude that $\Hclock$, $\Hin$, $\Hprop$ are 6-local X-Z Hamiltonian.
 
-We will employ the perturbation technique to amplify the spectral gap of $\Hclock + \Hin + \Hprop$. 
-Let $\ground{H}$ denote the ground energy of any Hamiltonian $H$. 
-The projection lemma from \cite{kempe_kitaev_regev_2006} approximates $\ground{H_1 + H_2}$ in terms of $\ground{H_1\big|_{\ker H_2}}$, where $\ker H_2$ denotes the \emph{kernel} space of $H_2$. 
+We will employ the perturbation technique to amplify the spectral gap of $\Hclock + \Hin + \Hprop$.
+Let $\ground{H}$ denote the ground energy of any Hamiltonian $H$.
+The projection lemma from \cite{kempe_kitaev_regev_2006} approximates $\ground{H_1 + H_2}$ in terms of $\ground{H_1\big|_{\ker H_2}}$, where $\ker H_2$ denotes the \emph{kernel} space of $H_2$.
 
 \begin{lem}[Lemma 1 in \cite{kempe_kitaev_regev_2006}]
-	\label{thm:proj1}
-	Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on Hilbert space $\cH=\cS+\cS^\bot$.
-	The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
-	$$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
+    \label{thm:proj1}
+    Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on Hilbert space $\cH=\cS+\cS^\bot$.
+    The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
+    $$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
 \end{lem}
 
-We will use the following simple reformulation instead. 
+We will use the following simple reformulation instead.
 %We will instead use the following formulation, which can be obtained by relabeling variables from above.
 
 \begin{lem}
-	\label{lem:projection}
-	Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
-	$$J=\frac{8\norm{H_1}^2+ 2\norm{H_1}}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
-	then we have
-	$$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
+    \label{lem:projection}
+    Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
+    $$J=\frac{8\norm{H_1}^2+ 2\norm{H_1}}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+    then we have
+    $$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
 \end{lem}
 \begin{proof}
-	Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least nonzero eigenvalue of $JH_2$ is greater than $2\norm{H_1}$.
+    Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least non zero eigenvalue of $JH_2$ is greater than $2\norm{H_1}$.
 \end{proof}
 
 \begin{thm}
-	\label{thm:LHReduction}
-	Given any quantum circuit $C = U_T \ldots U_1$ of  $T$ elementary gates and input $x \in \{0,1\}^n$, one can construct a 6-local X-Z Hamiltonian $H_{C(x)}$ in polynomial time such that 
-	\begin{enumerate}
-		\item[(1)] $H_{C(x)} = \sum_i \alpha_i H_i$ where 
-		each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^9)$. Moreover, there are at most $O(T)$ non-zero terms. 
-		\item[(2)] $H_{C(x)}$ has $\histpsi{C(x)}$ as the unique ground state with eigenvalue $0$ and has a spectral gap at least $\frac{3}{4}$. Namely,  for any state $\ket\phi$ that is orthogonal to $\histpsi{C(x)}$, we have $\braket{\phi|H_{C(x)}|\phi}\geq \frac{3}{4}$.
-	\end{enumerate}
+    \label{thm:LHReduction}
+    Given any quantum circuit $C = U_T \ldots U_1$ of  $T$ elementary gates and input $x \in \{0,1\}^n$, one can construct a 6-local X-Z Hamiltonian $H_{C(x)}$ in polynomial time such that
+    \begin{enumerate}
+        \item[(1)] $H_{C(x)} = \sum_i \alpha_i H_i$ where
+        each $H_i \in \LHXZ{6}$ and $|\alpha_i| \in O(T^9)$. Moreover, there are at most $O(T)$ non-zero terms.
+        \item[(2)] $H_{C(x)}$ has $\histpsi{C(x)}$ as the unique ground state with eigenvalue $0$ and has a spectral gap at least $\frac{3}{4}$. Namely,  for any state $\ket\phi$ that is orthogonal to $\histpsi{C(x)}$, we have $\braket{\phi|H_{C(x)}|\phi}\geq \frac{3}{4}$.
+    \end{enumerate}
 \end{thm}
 
 \begin{proof}
-We will use the above construction $\Hclock$ (\cref{eqn:Hclock}), $\Hin$ (\cref{eqn:Hin}), $\Hprop$ (\cref{eqn:Hprop}) as our starting point, which are already 6-local X-Z Hamiltonian constructable in polynomial time. However, $H_{\mathrm{old}}=\Hin + \Hclock + \Hprop$ does not have the desired spectral gap. To that end, our construction will be a weighted sum of $\Hin$, $\Hclock$, and $\Hprop$ as follows, 
+We will use the above construction $\Hclock$ (\cref{eqn:Hclock}), $\Hin$ (\cref{eqn:Hin}), $\Hprop$ (\cref{eqn:Hprop}) as our starting point, which are already 6-local X-Z Hamiltonian constructable in polynomial time. However, $H_{\mathrm{old}}=\Hin + \Hclock + \Hprop$ does not have the desired spectral gap. To that end, our construction will be a weighted sum of $\Hin$, $\Hclock$, and $\Hprop$ as follows,
 \begin{equation}
     H_{\mathrm{new}}= \Hin + \Jclock \Hclock + \Jprop \Hprop,
 \end{equation}
-where $\Jclock$ and $\Jprop$ will be obtained using \Cref{lem:projection}. 
+where $\Jclock$ and $\Jprop$ will be obtained using \Cref{lem:projection}.
 
-Let $\Kin=\ker \Hin$, $\Kclock=\ker \Hclock$, and $\Kprop=\ker \Hprop$. It is known from e.g.,~\cite{kitaev2002classical}, that 
+Let $\Kin=\ker \Hin$, $\Kclock=\ker \Hclock$, and $\Kprop=\ker \Hprop$. It is known from e.g.,~\cite{kitaev2002classical}, that
 \[
    \Kin \cap \Kclock \cap \Kprop = \spn\set{\histpsi{C(x)}}.
 \]
-Thus $\histpsi{C(x)}$ remains in the ground space of $H_{\mathrm{new}}$. Let $S$ denote its orthogonal space. Namely, $S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$. 
-Denote by $\Hin\big|_S$ the restriction of $\Hin$ on space $S$ and similarly for others. 
+Thus $\histpsi{C(x)}$ remains in the ground space of $H_{\mathrm{new}}$. Let $S$ denote its orthogonal space. Namely, $S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$.
+Denote by $\Hin\big|_S$ the restriction of $\Hin$ on space $S$ and similarly for others.
 
 %\XW{need to check the following calculation and modify the theorem statement respectively.}
-%We will apply \Cref{lem:projection} twice to obtain $\Jclock$ and $\Jprop$ respectively. 
-Consider $\Hin + \Jclock\Hclock$ first. According to \cref{lem:projection}, by choosing 
+%We will apply \Cref{lem:projection} twice to obtain $\Jclock$ and $\Jprop$ respectively.
+Consider $\Hin + \Jclock\Hclock$ first. According to \cref{lem:projection}, by choosing
 \[
   \Jclock = \frac{8\norm{\Hin\big|_S}^2 + 2 \norm{\Hin\big|_S}}{\ground{\Hclock\big|_{S\cap \Kclock^\bot}}} = O(T^2),
 \]
-where we use the fact $\norm{\Hin|_S}\leq T$ and $\ground{\Hclock\big|_{S\cap \Kclock^\bot}}\geq \ground{\Hclock\big|_{\Kclock^\bot}}=1$, 
-we have 
+where we use the fact $\norm{\Hin|_S}\leq T$ and $\ground{\Hclock\big|_{S\cap \Kclock^\bot}}\geq \ground{\Hclock\big|_{\Kclock^\bot}}=1$,
+we have
 \[
- \ground{\Hin\big|_S + \Jclock\Hclock\big|_S}\geq \ground{\Hin\big|_{S\cap \Kclock}} - \frac{1}{8}. 
+ \ground{\Hin\big|_S + \Jclock\Hclock\big|_S}\geq \ground{\Hin\big|_{S\cap \Kclock}} - \frac{1}{8}.
 \]
-Consider further adding $\Jprop\Hprop$ term.  By choosing 
+Consider further adding $\Jprop\Hprop$ term.  By choosing
 \[
  \Jprop= \frac{O(\norm{\Hin\big|_S + \Jclock\Hclock\big|_S}^2)}{\ground{\Hprop\big|_{S \cap \Kprop^\bot}}}= O(T^8),
 \]
@@ -218,131 +218,131 @@ where we use the fact $\ground{\Hprop\big|_{S\cap \Kprop^\bot}}\geq \ground{\Hpr
 % $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 % \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 \[
- \ground{\Hin\big|_S + \Jclock\Hclock\big|_S + \Jprop\Hprop\big|_S} \geq \ground{\Hin\big|_{S \cap \Kclock \cap \Kprop}} - \frac{1}{4}. 
+ \ground{\Hin\big|_S + \Jclock\Hclock\big|_S + \Jprop\Hprop\big|_S} \geq \ground{\Hin\big|_{S \cap \Kclock \cap \Kprop}} - \frac{1}{4}.
 \]
-A simple observation here is that $S \cap \Kclock \cap \Kprop$ is the span of history states with different inputs or different initialization of the work space. Namely, $\ground{\Hin\big|_{S \cap \Kclock \cap \Kprop}} \geq 1$. Thus, 
+A simple observation here is that $S \cap \Kclock \cap \Kprop$ is the span of history states with different inputs or different initialization of the work space. Namely, $\ground{\Hin\big|_{S \cap \Kclock \cap \Kprop}} \geq 1$. Thus,
 \[
-  \ground{(\Hin + \Jclock\Hclock + \Jprop\Hprop)\big|_S} \geq 1- \frac{1}{4}=\frac{3}{4}. 
+  \ground{(\Hin + \Jclock\Hclock + \Jprop\Hprop)\big|_S} \geq 1- \frac{1}{4}=\frac{3}{4}.
 \]
-Given that $\histpsi{C(x)}$ is the ground state of $H_{\mathrm{new}}$ with eigenvalue 0, and any orthogonal state to $\histpsi{C(x)}$ has eigenvalue at least $\ground{H_{\mathrm{new}}}\geq 3/4$, the spectral gap of $H_{\mathrm{new}}$ at at least $3/4$. 
+Given that $\histpsi{C(x)}$ is the ground state of $H_{\mathrm{new}}$ with eigenvalue 0, and any orthogonal state to $\histpsi{C(x)}$ has eigenvalue at least $\ground{H_{\mathrm{new}}}\geq 3/4$, the spectral gap of $H_{\mathrm{new}}$ at at least $3/4$.
 
 Note that $H_{\mathrm{new}}$ is a 6-local X-Z Hamiltonian by construction. It suffices to check the bound of $\abs{\alpha_i}$ and the number of terms. The former is one more than the order of $\Jprop$ since each $\Hprop^t$ contributes $\frac{1}{4}$ to the $I$ term, creating an extra factor of $T$. The latter is by counting the number of terms from $\Hin, \Hclock, \Hprop$, each of which is bounded by $O(T)$.
 \end{proof}
-% 	To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
-% 	$$K_{clock}=\ker H_{clock}$$
-% 	$$K_{in}=\ker H_{in}$$
-% 	$$K_{prop}=\ker H_{prop}$$
+%     To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
+%     $$K_{clock}=\ker H_{clock}$$
+%     $$K_{in}=\ker H_{in}$$
+%     $$K_{prop}=\ker H_{prop}$$
 
-% 	Clearly,
-% 	$$K_{clock}=\set{\sum_{t=1}^T \ket{\phi_t}\otimes\ket{\hat{t}}:\ket{\phi_t}\in\cB^{\otimes n}}$$
-% 	Let $\ket\phi\in K_{clock}\cap K_{prop}$.
-% 	Consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$.
-% 	As $\ket\phi\in K_{prop}$, we can then do induction using $\widetilde{t}$ as base case to get the relations between the $\ket{\phi_t}$s and conclude that $\ket\phi$ must have the form:
-% 	$$\ket\phi=\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}$$
-% 	$$\Rightarrow K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
-% 	As a direct result, we get
-% 	$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$$
+%     Clearly,
+%     $$K_{clock}=\set{\sum_{t=1}^T \ket{\phi_t}\otimes\ket{\hat{t}}:\ket{\phi_t}\in\cB^{\otimes n}}$$
+%     Let $\ket\phi\in K_{clock}\cap K_{prop}$.
+%     Consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$.
+%     As $\ket\phi\in K_{prop}$, we can then do induction using $\widetilde{t}$ as base case to get the relations between the $\ket{\phi_t}$s and conclude that $\ket\phi$ must have the form:
+%     $$\ket\phi=\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}$$
+%     $$\Rightarrow K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
+%     As a direct result, we get
+%     $$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$$
 % \begin{align*}
-% 	S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
-% 	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{C(x)}|y}=0}
+%     S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
+%     &=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{C(x)}|y}=0}
 % \end{align*}
 % $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 % So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
 
 \subsection{Delegation Protocol for $\QPIP_1$ client}
 \label{sec:qpip1}
-In this subsection, we construct a one-message $\QPIP_1$ delegation protocol for $\SampBQP$. By definition of $\QPIP_1$, we assume the client has limited quantum power, e.g., performing single qubit $X$ or $Z$ measurement one by one. 
+In this subsection, we construct a one-message $\QPIP_1$ delegation protocol for $\SampBQP$. By definition of $\QPIP_1$, we assume the client has limited quantum power, e.g., performing single qubit $X$ or $Z$ measurement one by one.
 Intuitively, one should expect the one-message from the server to the client is something like the history state so that the client can measure to sample.  
 
-At a high-level, the design of such protocol should consist of at least two components: (1) the first component should test whether the message is indeed a valid history state; (2) the second component should simulate the last step of a $\SampBQP$ computation by measuring the final state in the computational basis. 
+At a high-level, the design of such protocol should consist of at least two components: (1) the first component should test whether the message is indeed a valid history state; (2) the second component should simulate the last step of a $\SampBQP$ computation by measuring the final state in the computational basis.
 
-Our construction of X-Z local Hamiltonian $H$ from \Cref{thm:LHReduction} will help serve the first purpose. 
+Our construction of X-Z local Hamiltonian $H$ from \Cref{thm:LHReduction} will help serve the first purpose.
 In particular, we adopt a variant of the energy verification protocol for local Hamiltonian (e.g., ~\cite{mf16, PhysRevA.93.022326}) to certify the energy of $H$ with only $X$ or $Z$ measurements.
-Moreover, because of the large spectral gap, when the energy is small, the underlying state must also be close to the history state. 
-Precisely, consider the following protocol $\cVGS$: 
+Moreover, because of the large spectral gap, when the energy is small, the underlying state must also be close to the history state.
+Precisely, consider the following protocol $\cVGS$:
 
 \begin{protocol}{Energy verification for X-Z local Hamiltonian $\cVGS$} \label{AlgGroundStateCheck}
-Given a $k$-local X-Z Hamiltonian 
+Given a $k$-local X-Z Hamiltonian
 $H=\sum_i \alpha_{i} H_i$ (i.e., $\forall i, H_i \in \LHXZ{k}$) and any state $\ket{\phi}$.
 %Let $\ket\phi$ be the potential ground state to check.
 
 \begin{itemize}
-\item Let $p_i= \abs{\alpha_i}/\sum_i \abs{\alpha_i}$ for each $i$. Sample $i^*$ according to $p_{i^*}$. 
-\item Pick $H_{i^*}$ which acts non-trivially on at most $k$ qubits of $\ket{\phi}$. Measure the corresponding single-qubit Pauli X or Z operator. 
-Record the list of the results $x_j=\pm 1$ for $j=1, \ldots k$. 
-\item Let $r=x_1x_2\cdots x_k$. The protocol \emph{accepts} if $r$ and $\alpha_{i^*}$ have different signs, i.e., $\sgn(\alpha_{i^*})r=-1$. Otherwise, the protocol \emph{rejects}. 
+\item Let $p_i= \abs{\alpha_i}/\sum_i \abs{\alpha_i}$ for each $i$. Sample $i^*$ according to $p_{i^*}$.
+\item Pick $H_{i^*}$ which acts non-trivially on at most $k$ qubits of $\ket{\phi}$. Measure the corresponding single-qubit Pauli X or Z operator.
+Record the list of the results $x_j=\pm 1$ for $j=1, \ldots k$.
+\item Let $r=x_1x_2\cdots x_k$. The protocol \emph{accepts} if $r$ and $\alpha_{i^*}$ have different signs, i.e., $\sgn(\alpha_{i^*})r=-1$. Otherwise, the protocol \emph{rejects}.
 \end{itemize}
 \end{protocol}
 % In this subsection, we prove \cref{ThmXZCheck}.
 % That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
 
 \begin{lem}[\cite{PhysRevA.93.022326}]
-	\label{thm:HamCheck}
-	For any $k$-local X-Z Hamiltonian $H=\sum_i \alpha_{i} H_i$ and any state $\ket{\phi}$, 
-	the protocol $\cVGS$ in Protocol~\ref{AlgGroundStateCheck} accepts with 
-	probability
+    \label{thm:HamCheck}
+    For any $k$-local X-Z Hamiltonian $H=\sum_i \alpha_{i} H_i$ and any state $\ket{\phi}$,
+    the protocol $\cVGS$ in Protocol~\ref{AlgGroundStateCheck} accepts with
+    probability
 \begin{equation}
  \mathrm{Prob}[ \cVGS \text{ accepts } \ket{\psi}] = \frac{1}{2} - \frac{1}{2 \sum_i \abs{\alpha_i}}\braket{\phi|H|\phi}.
 \end{equation}
 \end{lem}
 
 \begin{theorem} \label{thm:HamCheckClose}
-Given any quantum circuit $C$ and input $x$, consider using $H_{C(x)}$ from \Cref{thm:LHReduction} in Protocol~\ref{AlgGroundStateCheck} ($\cVGS$). 
-For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with probability, 
+Given any quantum circuit $C$ and input $x$, consider using $H_{C(x)}$ from \Cref{thm:LHReduction} in Protocol~\ref{AlgGroundStateCheck} ($\cVGS$).
+For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with probability,
 \[
  \mathrm{Prob}[\cVGS \text{ accepts } \rho] \geq \frac{1}{2} - \frac{\epsilon}{2 \sum_i \abs{\alpha_i}},
 \]
-then the trace distance between $\rho$ and $\histpsi{C(x)}$ is at most $\frac{2}{\sqrt{3}}\sqrt{\epsilon}$. 
+then the trace distance between $\rho$ and $\histpsi{C(x)}$ is at most $\frac{2}{\sqrt{3}}\sqrt{\epsilon}$.
 \end{theorem}
 
-\begin{prf} Consider the pure state case $\rho=\proj{\phi}$ first. By \Cref{thm:HamCheck} and our assumption, we have $\braket{\phi|H|\phi} \leq \epsilon$. 
-Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is a eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\alpha}^2 \geq 1-\frac{4}{3}\epsilon$. Thus, 
+\begin{prf} Consider the pure state case $\rho=\proj{\phi}$ first. By \Cref{thm:HamCheck} and our assumption, we have $\braket{\phi|H|\phi} \leq \epsilon$.
+Decompose $\ket{\phi}= \alpha \histpsi{C(x)} + \beta \histpsi{C(x)}^\bot$. Note that $\histpsi{C(x)}$ is an eigenvector $H_{C(x)}$ of eigenvalue 0 and all other eigenvalues are at least $3/4$. Thus, we have $\abs{\alpha}^2 \geq 1-\frac{4}{3}\epsilon$. Thus,
 \[
    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi}}_{tr} = \sqrt{1- |\braket{\psi^{\mathrm{hist}}_{C(x)}|\phi}|^2}
    \leq \frac{2}{\sqrt{3}}\sqrt{\epsilon}.
 \]
-For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality, we have 
+For any mixed state $\rho=\sum_i p_i \proj{\phi_i}$, by the triangle inequality, we have
 \[
     \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \rho}_{tr} \leq \sum_i p_i    \norm{\proj{\psi^{\mathrm{hist}}_{C(x)}}- \proj{\phi_i}}_{tr} \leq \sum_i p_i \frac{2}{\sqrt{3}} \sqrt{\epsilon} =\frac{2}{\sqrt{3}}\sqrt{\epsilon}.
 \]
 % $$\ket{\phi}=\braket{\psi_{C(x)}|\phi}\ket{\phi_K}+\sqrt{1-\abs{\braket{\psi_{C(x)}|\phi}}^2}\ket{\phi_{K^\bot}}$$
-% 	We can then see
-% 	$$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
-% 	which can be generalized for mixed states since we have for all $\ket\psi$ that
-% 	$$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
-% 	As a result, we have
-% 	$$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\eps}{T^5}$$
-% 	which implies our claim.
+%     We can then see
+%     $$\braket{\phi|H|\phi}=1-\abs{\braket{\psi_{C(x)}|\phi}}^2=1-F(\ket{\psi_{C(x)}}, \ket{\phi})$$
+%     which can be generalized for mixed states since we have for all $\ket\psi$ that
+%     $$F(\sum_i p_i \ket{\phi_i}\bra{\phi_i}, \ket\psi)=\sum_i p_i F(\ket{\phi_i}, \ket\psi).$$
+%     As a result, we have
+%     $$p_{acc}=\frac{1}{2}-\frac{c}{T^5}(1-F(\ket{\psi_{C(x)}}, \rho))\geq\frac{1}{2}-\frac{c\eps}{T^5}$$
+%     which implies our claim.
 \end{prf}
 
 % \begin{algorithm}
-% 	\caption{Check for ground state $\cVGS$}
-% 	\label{AlgGroundStateCheck}
-% 		Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
-% 		Let $\ket\phi$ be the potential ground state to check.
-% 		\begin{itemize}
-% 			\item Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-% 			\item Set $p_S = \frac{|d_S|}{D}$
-% 			\item Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
-% 			\item Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
-% 			\item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept by outputting $1$. Otherwise, reject by outputting $0$.
-% 		\end{itemize}
+%     \caption{Check for ground state $\cVGS$}
+%     \label{AlgGroundStateCheck}
+%         Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
+%         Let $\ket\phi$ be the potential ground state to check.
+%         \begin{itemize}
+%             \item Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
+%             \item Set $p_S = \frac{|d_S|}{D}$
+%             \item Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
+%             \item Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
+%             \item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept by outputting $1$. Otherwise, reject by outputting $0$.
+%         \end{itemize}
 % \end{algorithm}
 % \begin{prf}
-% 	Here we follow \cite{PhysRevA.93.022326}.
-% 	\begin{align*}
-% 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
-% 		&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
-% 		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\E[\lambda_{\widetilde{S}}]]\\
-% 		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]
-% 	\end{align*}
+%     Here we follow \cite{PhysRevA.93.022326}.
+%     \begin{align*}
+%         \frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
+%         &=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
+%         &=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\E[\lambda_{\widetilde{S}}]]\\
+%         &=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]
+%     \end{align*}
 
-% 	Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
-% 	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
-% 	\begin{align*}
-% 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-% 		&=\frac{1}{2}-\frac{O(1)}{T^5}\braket{\phi|H|\phi}
-% 	\end{align*}
+%     Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
+%     $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
+%     \begin{align*}
+%         \Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
+%         &=\frac{1}{2}-\frac{O(1)}{T^5}\braket{\phi|H|\phi}
+%     \end{align*}
 % \end{prf}
 
 To serve the second purpose, one needs to combine the test and the output on multiple copies of the history states, where we construct the following cut-and-choose protocol.  
@@ -354,24 +354,24 @@ To serve the second purpose, one needs to combine the test and the output on mul
 % First, the client needs to reliably extract the circuit output from its corresponding ground state.
 % We accomplish this by padding the circuit with identity gates at the end.
 % By doing so, the clock register collapses to after the last non-identity gate with high probability.
-The challenge comes from the fact that a cheating prover might send something rather than copies of the history state. 
-In particular, the prover can entangle between different copies in order to cheat. 
-In the case of certifying a $\BQP$ computation, the goal is to verify the ground energy of any local Hamiltonian. 
-A cheating strategy with potential entanglement won't create any witness state with an energy lower than the actual ground energy. 
-Thus, this kind of attack won't work for $\BQP$ computation. 
+The challenge comes from the fact that a cheating prover might send something rather than copies of the history state.
+In particular, the prover can entangle between different copies in order to cheat.
+In the case of certifying a $\BQP$ computation, the goal is to verify the ground energy of any local Hamiltonian.
+A cheating strategy with potential entanglement won't create any witness state with an energy lower than the actual ground energy.
+Thus, this kind of attack won't work for $\BQP$ computation.
 
-However, in the context of $\SampBQP$, one needs to certify the ground energy (known to be zero in this case) and to output a good copy. 
-%%% not sure about this high-level argument. 
-While the statistical test as before can be used to certify the ground energy, 
+However, in the context of $\SampBQP$, one needs to certify the ground energy (known to be zero in this case) and to output a good copy.
+%%% not sure about this high-level argument.
+While the statistical test as before can be used to certify the ground energy,
 it has less control on the shape of the output copy.
-In fact, the prover can always prepare a bad copy among with many good copies as a plain attack. 
-This attack will succeed when the bad copy is chosen to output, the probability of which is non-negligible in terms of the total number of copies assuming some symmetry of the protocol. 
-The potential entanglement among different copies could further complicate the analysis. 
-We employ the quantum \emph{de Finetti}'s theorem to address this technical challenge. 
-Specifically, given any permutation-invariant $k$-register state, it is known that the reduced state on many subsets of $k$-register will be close to a separable state. 
-This helps establish some sort of independence between different copies in the analysis. 
-To serve our purpose, we adopt the following version of quantum de Finetti's theorem from~\cite{Brandão2017} where the error depends nicely  on the number of qubits, rather than the dimension of quantum systems. 
-% one always needs to send the best certificate state (i.e., the perfect history state) in order to pass the local Hamiltonian ground energy test. 
+In fact, the prover can always prepare a bad copy among with many good copies as a plain attack.
+This attack will succeed when the bad copy is chosen to output, the probability of which is non-negligible in terms of the total number of copies assuming some symmetry of the protocol.
+The potential entanglement among different copies could further complicate the analysis.
+We employ the quantum \emph{de Finetti}'s theorem to address this technical challenge.
+Specifically, given any permutation-invariant $k$-register state, it is known that the reduced state on many subsets of $k$-register will be close to a separable state.
+This helps establish some sort of independence between different copies in the analysis.
+To serve our purpose, we adopt the following version of quantum de Finetti's theorem from~\cite{Brandão2017} where the error depends nicely  on the number of qubits, rather than the dimension of quantum systems.
+% one always needs to send the best certificate state (i.e., the perfect history state) in order to pass the local Hamiltonian ground energy test.
 % The other challenge is that a cheating prover's certificates can be arbitrarily entangled,
 % so common techniques such as Chernoff bounds can't be applied as-is.
 %This wasn't a challenge for $\Piblind$ for $\BQP$ earlier because...
@@ -379,15 +379,15 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 % to approximate our measurement results with that of some unentangled copies,
 % within inverse polynomial errors.
 % De Finetti theorem provides a way to obtain close to independent samples by taking random subsystems of a quantum system.
-% There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on number of qubits in each subsystem.
+% There are many formulations; we use the one from \cite{Brandão2017} because we need to avoid exponential dependence on the number of qubits in each subsystem.
 \begin{thm}[\cite{Brandão2017}]
-	\label{deFinetti}
-	Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register contains $s$ qubits. 
-	For any $0\leq l\leq k$,  there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
-	$$\max_{\Lambda_1,\ldots,\Lambda_l}
-	\norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
-	\leq\sqrt{\frac{2l^2s}{k-l}}$$
-	where $\Lambda_i$ are quantum-classical channels.
+    \label{deFinetti}
+    Let $\rho^{A_1\ldots A_k}$ be a permutation-invariant state on registers $A_1,\ldots,A_k$ where each register contains $s$ qubits.
+    For any $0\leq l\leq k$,  there exists states $\set{\rho_i}$ and $\set{p_i}\subset\bbR$ such that
+    $$\max_{\Lambda_1,\ldots,\Lambda_l}
+    \norm{(\Lambda_1\otimes\ldots\otimes\Lambda_l)\left(\rho^{A_1\ldots A_l}-\sum_ip_i\rho_i^{A_1}\otimes\ldots\otimes\rho_i^{A_l}\right)}_1
+    \leq\sqrt{\frac{2l^2s}{k-l}}$$
+    where $\Lambda_i$ are quantum-classical channels.
 \end{thm}
 
 %\XW{comment on saturating the error bound?}
@@ -395,7 +395,7 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 \input{qpip}
 
 %%%%
-%%%% Keep the old version here for the record. 
+%%%% Keep the old version here for the record.
 %%%%
 
 % \section{The History XZ Local Hamiltonian}
@@ -412,144 +412,144 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 % We begin by recalling the form that local Hamiltonian certificates:
 
 % \begin{dfn}
-% 	\label{dfn:groundstate}	
-% 	Let $C=U_T\ldots U_1$ be a quantum circuit consisting of $T$ gates, and let $x\in\set{0,1}^n$. Then we denote
-% 	$$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$$
-% 	We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
+%     \label{dfn:groundstate}    
+%     Let $C=U_T\ldots U_1$ be a quantum circuit consisting of $T$ gates, and let $x\in\set{0,1}^n$. Then we denote
+%     $$\ket{\psi_{C(x)}}=\sum_{t=0}^TU_t\ldots U_1\ket{x}\otimes\ket{\hat{t}}$$
+%     We call the first register of $\ket{\psi_{C(x)}}$ the data register, and the second register of $\ket{\psi_{C(x)}}$ the time register.
 % \end{dfn}
 
 % \begin{rmk}
-% 	\label{idpadding}
-% 	One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
-% 	Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
+%     \label{idpadding}
+%     One can first pad $C$ with identity gates at the end, doubling its number of gates and obtaining another circuit $C'$.
+%     Then by measuring the time register of $\ket{\psi_{C'(x)}}$ one obtains with probability $\frac{1}{2}$ the state $C(x)$.
 % \end{rmk}
 
 % We denote the set of $5$-local tensor products of $X$ and $Z$ gates as $\mathcal{G}_{XZ}$ as below; note that this spans a subspace of $5$-local Hamiltonians.
 % \begin{dfn}
-% 	$$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
+%     $$\mathcal{G}_{XZ}=\set{U_0\otimes U_1\otimes\ldots\otimes U_n: U_i\in\set{I,X,Z}, \abs{\set{i: U_i\ne I}}\leq 5}$$
 % \end{dfn}
 
 % Now we state the main theorems that we'll work towards in this section.
 % The first one is the reduction from $\SampBQP$ to a local Hamiltonian instance, with some additional properties that will be convenient for us:
 % \begin{thm}
-% 	\label{thm:LHReduction}
-% 	Let $C$ be a circuit of size $T$. For any input string $x$, there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
-% 	\begin{itemize}
-% 		\item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
-% 		\item $H_{C(x)}$ has $\ket{\psi_{C(x)}}$ as the unique ground state with eigenvalue $0$.
-% 		\item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
-% 		\item Its descriptions can be constructed by a $\BPP$ machine in polynomial time.
-% 	\end{itemize}
+%     \label{thm:LHReduction}
+%     Let $C$ be a circuit of size $T$. For any input string $x$, there exists a local Hamiltonian $H_{C(x)}$  with the following properties:
+%     \begin{itemize}
+%         \item $H_{C(x)}$ can be written as $\sum_{S\in\mathcal{G}_{XZ}} d_S S$ with at most $O(T)$ terms
+%         \item $H_{C(x)}$ has $\ket{\psi_{C(x)}}$ as the unique ground state with eigenvalue $0$.
+%         \item For any state $\ket\phi$ such that $\braket{\phi|\psi_{C(x)}}=0$,  $\braket{\phi|H_{C(x)}|\phi}>\frac{3}{4}$.
+%         \item Its descriptions can be constructed by a $\BPP$ machine in polynomial time.
+%     \end{itemize}
 % \end{thm}
 
 % The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
 % \begin{thm}
-% 	\label{ThmXZCheck}
-% 	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
+%     \label{ThmXZCheck}
+%     Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
 % \end{thm}
 
 % \subsection{Circuits of Toffoli and Hadamard gates}
 
-% Here we restate the result from from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
-% Because of this result, we can assume without loss of generality that our quantum circuits consists of only Toffoli and Hadamard gates.
+% Here we restate the result from \cite{quant-ph/0301040} showing that $\set{H, \Lambda^2(X)}$ is a universal gate set.
+% Because of this result, we can assume without loss of generality that our quantum circuits consist of only Toffoli and Hadamard gates.
 % Which is significant because this gate set is a linear combinations of tensor products of $X$ and $Z$ operators:
 % \begin{thm}
-% 	$H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
+%     $H,\Lambda^2(X)\in\spn\mathcal{G}_{XZ}$ with $O(1)$ nonzero components.
 % \end{thm}
 % \begin{prf}
-% 	$$H=\frac{1}{\sqrt{2}}(X+Z)$$
-% 	$$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
-% 	$$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
+%     $$H=\frac{1}{\sqrt{2}}(X+Z)$$
+%     $$\Lambda^2_{1,2}(X_3)=\ket{11}\bra{11}\otimes X+(I-\ket{11}\bra{11})\otimes I$$
+%     $$\ket{11}\bra{11}=\frac{1}{4}(I\otimes I+Z\otimes Z-I\otimes Z-Z\otimes I)$$
 % \end{prf}
 
 % Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
 % \begin{thm}
-% 	Let $C$ be a circuit that:
-% 	\begin{itemize}
-% 		\item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
-% 		\item uses $n$ qubits
-% 	\end{itemize}
-% 	Then a classical machine given $C$ can compute a circuit $C'$ that:
-% 	\begin{itemize}
-% 		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
-% 		\item uses $n+1$ qubits
-% 		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
-% 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
-% 	\end{itemize}
+%     Let $C$ be a circuit that:
+%     \begin{itemize}
+%         \item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
+%         \item uses $n$ qubits
+%     \end{itemize}
+%     Then a classical machine given $C$ can compute a circuit $C'$ that:
+%     \begin{itemize}
+%         \item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
+%         \item uses $n+1$ qubits
+%         \item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
+%         The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
+%     \end{itemize}
 % \end{thm}
 % \begin{prf}
-% 	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
-% 	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
-% 		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+%     We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
+%     $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
+%         $$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 
-% 	Now consider the transform on quantum states
-% 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
-% 	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
+%     Now consider the transform on quantum states
+%     $$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
+%     where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
-% 	This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
-% 	$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
-% 	$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
+%     This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turns it into a combination of Hadamard and Toffoli gates. Mathematically,
+%     $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
+%     $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 
-% 	We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
-% 	\begin{itemize}
-% 		\item $C'$ uses only Hadamard and Toffoli gates.
-% 		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
-% 		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
-% 	\end{itemize}
+%     We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
+%     \begin{itemize}
+%         \item $C'$ uses only Hadamard and Toffoli gates.
+%         \item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with a controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
+%         \item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+%     \end{itemize}
 % \end{prf}
 
 % \subsection{Reducing quantum circuit to local Hamiltonian}
 
 % In this subsection, we prove \cref{thm:LHReduction} by showing how to reduce a $\SampBQP$ circuit to a local-$XZ$-Hamiltonian.
 
-% 	The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
+%     The base construction comes from \cite{kitaev2002classical}. The simplification to $\spn\mathcal{G}_{XZ}$ is taken from \cite{PhysRevA.78.012352}.
 
-% 	Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
+%     Let $x_i$ denote the $i$-th bit of $x$, and let $n$ be the number of qubits in $C$.
 
-% 	We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues.
+%     We need to ensure the excited states of $H_{C(x)}$ have high eigenvalues.
 
-% 	First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
-% 	$$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
-% 	As a sum of projections, clearly $H_{clock}\geq 0$. We shall also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
-% 	$$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
-% 	This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
+%     First, we ensure that the invalid clock states have high eigenvalues by applying the following Hamiltonian to the time register.
+%     $$H_{clock}=\sum_{t=1}^{T-1}\ket{01}\bra{01}_{t,t+1}$$
+%     As a sum of projections, clearly $H_{clock}\geq 0$. We shall also show that $H_{clock}\in\spn\mathcal{G}_{XZ}$.
+%     $$H_{clock}=\frac{1}{4}(Z_1 - Z_T) + \frac{1}{4}\sum_{t=1}^{T-1}(I-Z_tZ_{t+1}) $$
+%     This can be checked by fixing the first and last qubit, then doing induction on the number of switches.
 
-% 	Then, we ensure that the initial condition is set up correctly.
-% 	$$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
-% 	The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
-% 	$$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
+%     Then, we ensure that the initial condition is set up correctly.
+%     $$H_{in}=\sum_{i=1}^n(I-\ket{x_i}\bra{x_i})\otimes\ket{0}\bra{0}_1$$
+%     The kernel of this is precisely where everything is set up consistently with $\phi$ in time step $t=0$. Furthermore, $H_{in}\in\spn\mathcal{G}_{XZ}$
+%     $$H_{in}=\frac{1}{4}\sum_{i=1}^n(I-(-1)^{x_i}Z_i)\otimes(I+Z_1)$$
 
-% 	Then, we ensure that the gates are applied correctly.
-% 	$$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
-% 	$$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
-% 	+I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
-% 	-U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
-% 	-U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
+%     Then, we ensure that the gates are applied correctly.
+%     $$H_{prop}=\sum_{t\in T_1}H_{prop,t}$$
+%     $$H_{prop,t}=I\otimes\ket{\widehat{t}}\bra{\widehat{t}}
+%     +I\otimes\ket{\widehat{t-1}}\bra{\widehat{t-1}}
+%     -U_t\otimes\ket{\widehat{t}}\bra{\widehat{t-1}}
+%     -U_t^\dagger\otimes\ket{\widehat{t-1}}\bra{\widehat{t}}$$
 
-% 	We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least nonzero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
+%     We have $H_{prop}\geq 0$ according to \cite{2002quant.ph.10077A}; in fact, the least non zero eigenvalue of $H_{prop}$ is lower bounded by $\frac{1}{2(T+1)^2}$.
 
-% 	We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since our gates are either Hadamard or Toffoli.
-% 	Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
-% 	$$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
-% 	Extra care must be taken for boundary cases.
-% 	$$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
-% 	$$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
+%     We can also write $H_{prop}\in\spn\mathcal{G}_{XZ}$. Note that $U^\dagger=U$, since our gates are either Hadamard or Toffoli.
+%     Additionally, $\frac{1}{2}(I-Z_{t-1})$ annihilates time steps before $t-1$. $\frac{1}{2}(I+Z_{t+1})$ similarly annihilates steps $t+1$ and after.
+%     $$H_{prop,t}=\frac{I}{4}\otimes(I-Z_{t-1})(I+Z_{t+1})-\frac{U}{4}\otimes(I-Z_{t-1})X_t(I+Z_{t+1})$$
+%     Extra care must be taken for boundary cases.
+%     $$H_{prop,1}=\frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1Z_2)$$
+%     $$H_{prop,T}=\frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}X_T)$$
 
-% 	To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
-% 	$$K_{clock}=\ker H_{clock}$$
-% 	$$K_{in}=\ker H_{in}$$
-% 	$$K_{prop}=\ker H_{prop}$$
+%     To properly combine the three Hamiltonians defined and analyze it using the projection lemma (\cref{thm:projection}), we consider the kernels of the Hamiltonians we defined.
+%     $$K_{clock}=\ker H_{clock}$$
+%     $$K_{in}=\ker H_{in}$$
+%     $$K_{prop}=\ker H_{prop}$$
 
-% 	Clearly,
-% 	$$K_{clock}=\set{\sum_{t=1}^T \ket{\phi_t}\otimes\ket{\hat{t}}:\ket{\phi_t}\in\cB^{\otimes n}}$$
-% 	Let $\ket\phi\in K_{clock}\cap K_{prop}$.
-% 	Consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$.
-% 	As $\ket\phi\in K_{prop}$, we can then do induction using $\widetilde{t}$ as base case to get the relations between the $\ket{\phi_t}$s and conclude that $\ket\phi$ must have the form:
-% 	$$\ket\phi=\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}$$
-% 	$$\Rightarrow K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
+%     Clearly,
+%     $$K_{clock}=\set{\sum_{t=1}^T \ket{\phi_t}\otimes\ket{\hat{t}}:\ket{\phi_t}\in\cB^{\otimes n}}$$
+%     Let $\ket\phi\in K_{clock}\cap K_{prop}$.
+%     Consider some $\widetilde{t}$ such that $\braket{\widetilde{t}|\phi}\ne0$.
+%     As $\ket\phi\in K_{prop}$, we can then do induction using $\widetilde{t}$ as base case to get the relations between the $\ket{\phi_t}$s and conclude that $\ket\phi$ must have the form:
+%     $$\ket\phi=\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}$$
+%     $$\Rightarrow K_{clock}\cap K_{prop}=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}: \ket{y}\in\mathcal{B}^{\otimes n}}$$
 
-% 	As a direct result, we get
-% 	$$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$$
+%     As a direct result, we get
+%     $$K_{clock}\cap K_{in}\cap K_{prop}=\spn\set{\ket{\psi_{C(x)}}}$$
 
 % We now consider the space outside the desired state.
 % $$S=(\spn\set{\ket{\psi_{C(x)}}})^\bot$$
@@ -565,8 +565,8 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 % $$\lambda(H_{in}\big|_S+J_{clock}H_{clock}\big|_S+J_{prop}H_{prop}\big|_S)\geq
 % \lambda(H_{in}\big|_{S\cap K_{clock}\cap K_{prop}})-\frac{1}{4}$$
 % \begin{align*}
-% 	S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
-% 	&=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{C(x)}|y}=0}
+%     S\cap K_{clock}\cap K_{prop}&=S\cap\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}|\ket{y}\in\mathcal{B}^{\otimes n}}\\
+%     &=\set{\sum_{t=0}^TU_t\ldots U_1\ket{y}\otimes\ket{\hat{t}}:\braket{\psi_{C(x)}|y}=0}
 % \end{align*}
 % $$\Rightarrow\lambda((H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop})\big|_S)\geq\frac{3}{4}$$
 % So we set $H_{C(x)}=H_{in}+J_{clock}H_{clock}+J_{prop}H_{prop}$, which satisfies the required properties by construction.
@@ -577,44 +577,44 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 % That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
 
 % \begin{algorithm}
-% 	\caption{Check for ground state}
-% 	\label{AlgGroundStateCheck}
-% 		Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
-% 		Let $\ket\phi$ be the potential ground state to check.
-% 		\begin{itemize}
-% 			\item Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
-% 			\item Set $p_S = \frac{|d_S|}{D}$
-% 			\item Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
-% 			\item Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
-% 			\item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept. Otherwise, reject.
-% 		\end{itemize}
+%     \caption{Check for ground state}
+%     \label{AlgGroundStateCheck}
+%         Let $H=\sum_{S\in\mathcal{G}_{XZ}} d_S S$.
+%         Let $\ket\phi$ be the potential ground state to check.
+%         \begin{itemize}
+%             \item Set $D = \sum_{S\in\mathcal{G}_{XZ}}|d_S|$
+%             \item Set $p_S = \frac{|d_S|}{D}$
+%             \item Sample $\widetilde{S}$ from $\mathcal{G}_{XZ}$, weighted by $p_S$.
+%             \item Measure $\ket\phi$ in the $\widetilde{S}$ basis, recording the result as $\lambda_{\widetilde{S}}$.
+%             \item If $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$, accept. Otherwise, reject.
+%         \end{itemize}
 % \end{algorithm}
 
 % \begin{thm}
-% 	Let $H$ have $O(\poly(T))$ nonzero components whose coefficients at most $O(\poly(T))$.
-% 	Then \cref{AlgGroundStateCheck} accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$.
+%     Let $H$ have $O(\poly(T))$ nonzero components whose coefficients at most $O(\poly(T))$.
+%     Then \cref{AlgGroundStateCheck} accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$.
 % \end{thm}
 % \begin{prf}
-% 	Here we follow \cite{PhysRevA.93.022326}.
-% 	\begin{align*}
-% 		\frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
-% 		&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
-% 		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\E[\lambda_{\widetilde{S}}]]\\
-% 		&=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]
-% 	\end{align*}
+%     Here we follow \cite{PhysRevA.93.022326}.
+%     \begin{align*}
+%         \frac{1}{D}\braket{\phi|H|\phi}&=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\braket{\phi|S|\phi}\\
+%         &=\sum_{S\in\mathcal{G}_{XZ}} p_S\sgn(d_S)\E[\lambda_S]\\
+%         &=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\E[\lambda_{\widetilde{S}}]]\\
+%         &=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]
+%     \end{align*}
 
-% 	Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
-% 	$$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
-% 	\begin{align*}
-% 		\Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
-% 		&=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
-% 	\end{align*}
+%     Note that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=\pm1$. Let $p$ be the probability that $\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}=-1$.
+%     $$\Rightarrow \frac{1}{D}\braket{\phi|H|\phi}=\E_{\widetilde{S}}[\sgn(d_{\widetilde{S}})\lambda_{\widetilde{S}}]=-p+(1-p)$$
+%     \begin{align*}
+%         \Rightarrow p&=\frac{1}{2}-\frac{1}{2D}\braket{\phi|H|\phi}\\
+%         &=\frac{1}{2}-\Omega\left(\frac{1}{\poly(T)}\right)\braket{\phi|H|\phi}
+%     \end{align*}
 % \end{prf}
 
 % The second one is a way to verify ground states of local Hamiltonians, again with some extra properties:
 % \begin{thm}
-% 	\label{ThmXZCheck}
-% 	Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
+%     \label{ThmXZCheck}
+%     Given circuit $C$ and an input string $x\in\set{0,1}^*$, there exists a $\BQP$ algorithm that accepts $\ket{\phi}$ with probability $\frac{1}{2}-\Omega(\frac{1}{\poly(T)})\braket{\phi|H_{C(x)}|\phi}$. (In particular, it accepts the $\ket{\psi_{C(x)}}$ with probability $\fot$.) Furthermore, this algorithm doesn't apply any quantum gates, using only $X$ and $Z$ measurements.
 % \end{thm}
 
 %\subsection{Circuits of Toffoli and Hadamard gates}
@@ -625,36 +625,38 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 
 % Now we present the proof that $\set{H, \Lambda^2(X)}$ is indeed a universal gate set from \cite{quant-ph/0301040}: \Ethan{This definitely belongs in the appendix instead...}
 % \begin{thm}
-% 	Let $C$ be a circuit that:
-% 	\begin{itemize}
-% 		\item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
-% 		\item uses $n$ qubits
-% 	\end{itemize}
-% 	Then a classical machine given $C$ can compute a circuit $C'$ that:
-% 	\begin{itemize}
-% 		\item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
-% 		\item uses $n+1$ qubits
-% 		\item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
-% 		The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
-% 	\end{itemize}
+%     Let $C$ be a circuit that:
+%     \begin{itemize}
+%         \item consists of $T$ gates, each either $H$ and $\Lambda(P(i))$
+%         \item uses $n$ qubits
+%     \end{itemize}
+%     Then a classical machine given $C$ can compute a circuit $C'$ that:
+%     \begin{itemize}
+%         \item consists of at most $4T$ gates, each either $H$ or $\Lambda^2(X)$ \hannote{don't like this notation}.
+%         \item uses $n+1$ qubits
+%         \item Let $x\in\set{0,1}^n$. Let $x|| 0\in\set{0,1}^{n+1}$ be $x$ concatenated with $0$.
+%         The measurement result of a tensor product of $X$ and $Z$ operators on the first $n$ qubits of $C'(x||0)$ has the same distribution as that on $C(x)$.
+%     \end{itemize}
 % \end{thm}
 % \begin{prf}
-% 	We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
-% 	$$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
-% 		$$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
+%     We know that Hadamard gate and controlled phase gate is universal from \cite{kitaev_1997}
+%     $$H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$$
+%         $$\Lambda(P(i))=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&i\end{pmatrix}$$
 
-% 	Now consider the transform on quantum states
-% 	$$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
-% 	where $\Re$ and $\Im$ denote real and imaginary parts respectively.
+%     Now consider the transform on quantum states
+%     $$\mathcal{F}(\ket{\phi})=(\Re\ket{\phi})\otimes\ket{0}+(\Im\ket{\phi})\otimes\ket{1}$$
+%     where $\Re$ and $\Im$ denote real and imaginary parts respectively.
 
-% 	This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turn it into a combination of Hadamard and Toffoli gates. Mathematically,
-% 	$$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
-% 	$$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
+%     This transform commutes with Hadamard gates on the respective qubit. On the other hand, exchanging $\mathcal{F}$ with a controlled phase gate turns it into a combination of Hadamard and Toffoli gates. Mathematically,
+%     $$\mathcal{F}\circ H_s=H_s\circ\mathcal{F}$$
+%     $$\mathcal{F}\circ\Lambda_f(P(i)_s)=\Lambda^2_{f,s}(X_0Z_0)\circ\mathcal{F}=\Lambda^2_{f,s}(X_0)H_0\Lambda^2_{f,s}(X_0)H_0\circ\mathcal{F}$$
 
-% 	We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
-% 	\begin{itemize}
-% 		\item $C'$ uses only Hadamard and Toffoli gates.
-% 		\item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
-% 		\item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
-% 	\end{itemize}
+%     We construct $C'$ so that $\mathcal{F}\circ C=C'\circ\mathcal{F}$ by following the computation above. It satisfies the required properties by construction.
+%     \begin{itemize}
+%         \item $C'$ uses only Hadamard and Toffoli gates.
+%         \item Exchanging $\mathcal{F}$ with $H$ doesn't change the circuit size. Exchanging $\mathcal{F}$ with a controlled phase gate turns it into $4$ gates. So the final result is at most $4T$ gates.
+%         \item When $x$ is classical, $\mathcal{F}(x)=x||0$. So $F\circ C(x)=C'(x||0)$. It is simple \hannote{need a little more work?}to verify that $\mathcal{F}$ preserves $X$ and $Z$ measurement results on the first $n$ qubits.
+%     \end{itemize}
 % \end{prf}
+
+
