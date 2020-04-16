@@ -136,7 +136,7 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
 \label{lem:naive-qpip0-binding}
     Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
     Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
-    then the verifier's output in the Hadamard round is $(\eps+\negl(\lambda))$-computationally indistinguishable from $(d, z_{ideal})$.
+    then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{lemma}
 \begin{proof}
     Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
@@ -152,12 +152,12 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
     so we can apply \Cref{lem:urmila-binding} to the $\PiMeasure$ call to use its binding property (\Cref{lem:urmila-binding}).
     That is, there exists some $\rho$ such that $v=M_{XZ}(\rho, h)$.
     Combining it with $\PiSamp$'s soundness (\Cref{QPIP1thm}),
-    we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is computationally indistinguishable to $(d', z_{ideal}')$.
+    we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is $\eps$-computationally indistinguishable to $(d', z_{ideal}')$.
     
     Now we relate $(d', z')$ back to $(d, z)$.
-    Conditioned on $\PNaiveStar$ accept, clearly $(d, z)=(d', z')$.
-    Conditioned on $\PNaiveStar$ reject, since dummy strategy will be rejected with high probability in Hadamard round, %\Ethan{kinda obvious but we never explicitly explained why}
-    we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$.
+    First, for the case that $\PNaiveStar$ aborts, since dummy strategy will be rejected with high probability in Hadamard round,
+    we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$ conditioned on $\PNaiveStar$ aborts.
+    For the other case, conditioned on $\PNaiveStar$ not aborts, clearly $(d, z)=(d', z')$.
     So we have $(d, z)\approx_{c, O(\varepsilon)}(d', z')\approx_{c, \negl(\lambda)}(d', z_{ideal}')$,
     which in turn implies $\abs{d-d'}\leq O(\eps)$
     and $(d, z_{ideal})\approx_{c, O(\eps)}(d', z_{ideal}')$.
