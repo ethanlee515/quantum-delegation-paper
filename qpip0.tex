@@ -34,7 +34,7 @@ We denote the $n$-bit random variable corresponding to the measurement results a
 
 In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gives a $\QPIP_0$ protocol for $\BQP$ languages.
 The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that lets a $\BQP$ machine ``commit a $XZ$ measurement" to a classical machine.
-Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and sends encoded $h$ to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice between the two to the prover and has the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
+Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and sends encoded $h$ \Ethan{what?} to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice between the two to the prover and has the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -113,7 +113,7 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
                 \item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
                 \item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
                     Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
-                \item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\cVNaive{3}()$  and sends it to the prover.
+                \item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\cVNaive{3}()$ \Ethan{Just give it sec. param even though it's just a public coin. Just so it doesn't look strange.} and sends it to the prover.
                 \item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
                 \item
                     If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
@@ -340,6 +340,11 @@ where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =
 \end{proof}
 
 Now we are ready to prove Theorem~\ref{thm:qpip0}
+
+\Ethan{Try to cut the proof into two: point-wise and average arguments. Figure out what does z-good mean intuitively.
+
+Also more comments/remarks/discussions. Subnormalized state and stuff.}
+
 \begin{proof}
 
 Completeness is trivial.
