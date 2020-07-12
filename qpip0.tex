@@ -113,7 +113,7 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
                 \item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
                 \item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
                     Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
-                \item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\cVNaive{3}()$ \Ethan{Just give it sec. param even though it's just a public coin. Just so it doesn't look strange.} and sends it to the prover.
+				\item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\xleftarrow{\$}\zo$ and sends it to the prover.
                 \item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
                 \item
                     If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
@@ -352,7 +352,7 @@ Completeness is trivial.
 
 For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 
-For all $k\leq m$, $d\in \zo^k$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
+For all $k\leq m$, $d\in \zo^k$, \Ethan{and for all $\gamma$?} and $\ket{\psi} \in H_{\regX,\regZ}$, define
 
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
 
@@ -403,10 +403,11 @@ Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corre
 
 $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
 where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
+\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means.}
 
 Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-    where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
+	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
 
 
 

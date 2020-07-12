@@ -70,7 +70,7 @@ We now show its completeness and soundness.
 \end{thm}
 \begin{prf}
 	For completeness, notice $y_i$ are i.i.d. Bernoulli trials with success probability $\frac{1}{2}$.
-	So we can apply Chernoff bound (\Cref{thm:Chernoff}) to get
+	So we can apply Chernoff bound to get
 	$$\Prob{Y>\frac{m}{2}-\eps m}\leq\negl(\lambda).$$
 	So $\VSamp$ has negligible probability to reject.
 	
