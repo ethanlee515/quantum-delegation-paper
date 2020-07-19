@@ -1,24 +1,7 @@
 \section{$\SampBQP$ Delegation Protocol for Fully Classical Client}
 \label{sec:qpip0_all}
 
-%\hannote{In this section, we modify the construction of \cite{FOCS:Mahadev18a} to show that a $\QPIP_1$ protocol for $\SampBQP$ implies a $\QPIP_0$ for $\SampBQP$.}
-
-% We then extend our scheme for $\QPIP_0$ using results from \cite{FOCS:Mahadev18a}.
-
 In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost the soundness of Protocol~\ref{proto:qpip0_naive}, we run $m=\poly(\lambda)$ copies of Protocol~\ref{proto:qpip0_naive} in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error $1/\sqrt{m}$ in \Cref{thm:qpip0}.
-
-
-
-% since Protocol~\ref{proto:urmila4} has a constant soundness error\hannote{too imprecise}\footnote{Protocol~\ref{proto:urmila4} doesn't have a formally defined soundness error. But intuitively, the verifier would accept a non-binding result will constant probability.}, Protocol~\ref{proto:qpip0_naive}  also has a constant soundness error, which means the outputted samples have constant computational distance to the ideal distribution, making the result not very useful.
-
-%Subprotocol for Quantum Measurements
-% \subsection{$\QPIP_0$ for BQP?}
-% \hannote{Ethan old description before parallel rep.}
-% As a warm-up, we  restate the construction in \cite{FOCS:Mahadev18a}, which shows that $\QPIP_1$ protocol for $\BQP$ implies a $\QPIP_0$ for $\BQP$.
-
-% Let $\rho$ be an $n$-qubit state. Let $h$ be an n-bits string called the \emph{basis choice}. That is, $h_i=0$ indicates that the $i$-th qubit of $\rho$ is to be measured in the standard basis, while $i=1$ indicates Hadamard basis measurement instead. Let $D_{\rho, h}$ be the distribution of the corresponding measurement results.
-
-
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
@@ -37,9 +20,6 @@ The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that lets a $
 Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and sends encoded $h$ \Ethan{what?} to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice between the two to the prover and has the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
-
-%  that : if $h_i=0$, he wants a $X$ measurement on $i$-th qubit; if $h_i=1$, he wants a $Z$ measurement on $i$-th qubit.
-% At the end of $\PiMeasure$, the verifier learns a measurement outcome $M_{XZ}(\rho, h)$.
 
 \begin{protocol}{Mahadev's measurement protocol $\PiMeasure=(\PMeasure, \VMeasure)$}
 	\label{proto:urmila4}
@@ -67,10 +47,6 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 
 The verifier only learns the measurement outcome on a Hadamard round.
 The protocol achieves a ``binding" property that gives guarantees against cheating provers.
-
-% \begin{definition}
-% With loss of generality,  we can assume that the testing round verification is deterministic. We denote the set of strings $a$ \Ethan{Font makes this $a$ look screwy} accepted by the verifier in the testing round with $(pk,y)$ as $\Acc_{pk,y}$. \hannote{do  i actually use this}
-% \end{definition}
 
 \begin{lemma}[binding property of $\PiMeasure$]
 	\label{lem:urmila-binding}
@@ -125,11 +101,6 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 
 There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. first, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, so the protocol has  completeness error at least $1/2$. And since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round. Such cheating prover only has a constant $1/2$ probability of being caught, resulting in constant soundness error.
 
-
-% Note that in $\PiNaive$ the verifier only learns the output in the Hadamard round.
-% So $\PiNaive$ is not a $\QPIP_0$ with good completeness or soundness.
-
-
 On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{proto:urmila4}, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
 
 \begin{lemma}[binding property of $\PiNaive$]
@@ -165,17 +136,6 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
 \end{proof}
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
-%Parallel Repetition of the Measurement Subprotocol
-
-\iffalse
-The following protocol is a $\QPIP_0$ protocol for $\SampBQP$
-
-$\forall c\in\bbN$ Soundness = $O(T^{-c})$
-
-Given inverse poly p(T), we can parameterize the protocol to have soundness p(T)
-\fi
-
-%    \label{ProtoQPIP1}
 
 We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
 It is essentially a $m$-fold parallel repetition of $\PiNaive$.
@@ -240,7 +200,7 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 
 	% $$ \ket{\psi}_{\regX,\regZ} =  G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ}+ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ}+\ket{\psi_{err}}_{\regX,\regZ},$$
 
-	\Ethan{Why the $\ket{\psi_{err,i,\gamma}}$ term? $G_0$ and $G_1$ come from post-selection, right? Do they not post-select on all possible outcomes?}
+	\Ethan{Maybe $G_0$ and $G_1$ need to post-select on $in$ and $ph$ registers too?}
 
 
 	Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$.
@@ -299,21 +259,12 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 				\norm{\ket{\psi_{0,i,\gamma}}}^2+ \norm{\ket{\psi_{1,i,\gamma}}}^2 \leq  \norm{\ket{\psi}}^2
 			\end{align}
 
-
 			% \item \hannote{added by me..not needed?}
 
 			% $$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
 
-
-
 	\end{enumerate}
 \end{lemma}
-
-
-
-
-
-
 
 % \begin{proof}
 % Step~\ref{step:sum-ob}:
@@ -345,10 +296,26 @@ Now we are ready to prove Theorem~\ref{thm:qpip0}
 
 Also more comments/remarks/discussions. Subnormalized state and stuff.}
 
+\Ethan{Pull the definitions of $z_i$ and $z_{good, i}$ up here}
+
+\begin{theorem}
+	\Ethan{First part of main theorem this section}
+	$z_i\approx z_{good, i}$
+\end{theorem}
+
+\begin{theorem}
+	\Ethan{Second part of main theorem this section}
+	$(d_i, z_{good, i})\approx (d_i, z_{ideal, i})$
+	\Ethan{Need to define $d_i$ here}
+\end{theorem}
+
+\begin{theorem}
+	\Ethan{TODO some kinda average argument}
+\end{theorem}
+
 \begin{proof}
 
 	Completeness is trivial.
-
 
 	For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 
@@ -395,11 +362,7 @@ Also more comments/remarks/discussions. Subnormalized state and stuff.}
 		\leq& (m-1)\gamma_0+\negl(n)
 	\end{align}
 
-
 	Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
-
-
-
 
 	$$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
 	where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
@@ -408,11 +371,6 @@ Also more comments/remarks/discussions. Subnormalized state and stuff.}
 	Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
 	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
-
-
-
-
-
 
 Define
 
@@ -430,7 +388,6 @@ Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
 	 +& \L.\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,i,\gamma}}\R. \nn \\
 	 =& \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 \end{align}
-
 
 we have
 
@@ -486,11 +443,6 @@ we have
 \end{align}
 where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
 
-
-
-
-
-
 % \begin{align}
 %     &\vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
 %     =& \bra{e_i, \psi_{1^{i-1}1,\gamma}} U^\dag P_{acc,i,z} U \ket{e_i\psi_{1^{i-1}1,\gamma}} +\hannote{poly terms?}+ \negl(n)
@@ -510,10 +462,6 @@ We have
 
 where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
 
-
-
-
-
 We now proceed to prove that $z_{good}$ is close to the ideal distribution.
 
 For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
@@ -525,7 +473,6 @@ The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of P
 
 %We denote the random variable the verifier would get on the Hadamard round as $z_{composite}$. Also define $(d,z_{composite}) \defeq (\Acc, z_{composite}) + (1-|z_{composite}|)(\Rej,\bot)$ \hannote{correct notation?}
 
-
 Denote the result we would get when $c=1$ by $(d,z_{composite,i})$.
 
 By  property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
@@ -534,8 +481,6 @@ By  property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the
 \end{align}
 
 \Ethan{Is this particular $z_{ideal, i}$ defined? As in, what's its corresponding accept probability?}
-
-
 
 By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where $(d,z_{good,i})$ is defined as:
 
@@ -570,6 +515,5 @@ Therefore  we have
 	(d,z)\approx_{c, O(\eps)}(d,z_{ideal}).
 \end{align}
 %\hannote{the composition of z ideal and triangle ineq is sketchy lol. Also need to specify different z ideal}
-
 
 \end{proof}
