@@ -306,15 +306,6 @@ By Lemma~\ref{lem:partition2}, we can decompose
 \end{align}
 where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
-By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
-\begin{align} \label{eq:bad-term-sum}
-	\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
-	\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-	\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
-	\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-	\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
-	&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
-\end{align}
 
 Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as
 
@@ -338,17 +329,14 @@ Define
 	$z_i\approx z_{good, i}$
 \end{theorem}
 \begin{proof}
-	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
-
-	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
-
-	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
-
-	\begin{align} \label{eq:rejected-d}
-		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& (m-1)\gamma_0+\negl(n)
+	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
+	\begin{align} \label{eq:bad-term-sum}
+		\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
+		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
+		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
+		&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
 	\end{align}
 
 	\Ethan{Find precisely where the above is used}
@@ -419,6 +407,20 @@ Define
 	\end{align}
 where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
 
+	\Ethan{Connect the dots with below}
+
+	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
+
+	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
+
+	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
+
+	\begin{align} \label{eq:rejected-d}
+		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
+		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& (m-1)\gamma_0+\negl(n)
+	\end{align}
 \end{proof}
 
 \begin{theorem}
