@@ -321,18 +321,6 @@ Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$
 $$P_{acc,i,z}.$$
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
-Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
-
-$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
-
-And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
-
-\begin{align} \label{eq:rejected-d}
-	\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-	=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-	\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-	\leq& (m-1)\gamma_0+\negl(n)
-\end{align}
 
 Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
 
@@ -350,6 +338,20 @@ Define
 	$z_i\approx z_{good, i}$
 \end{theorem}
 \begin{proof}
+	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
+
+	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
+
+	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
+
+	\begin{align} \label{eq:rejected-d}
+		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
+		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& (m-1)\gamma_0+\negl(n)
+	\end{align}
+
+	\Ethan{Find precisely where the above is used}
 
 	Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
 	\hannote{gamma..}
