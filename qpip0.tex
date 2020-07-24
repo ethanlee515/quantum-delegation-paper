@@ -282,24 +282,6 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 	\end{enumerate}
 \end{lemma}
 
-% \begin{proof}
-% Step~\ref{step:sum-ob}:
-% \begin{align}
-%   ( G_{0,i,\gamma}+G_{1,i,\gamma}) \ket{\psi}_{\regX,\regZ}
-%   &= \ket{\psi_{0,i,\gamma}}_{\regX,\regZ}+\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}
-% \end{align}
-% \end{proof}
-
-
-
-
-
-
-
-
-
-
-
 \Ethan{Try to cut the proof into two: point-wise and average arguments. Figure out what does z-good mean intuitively.
 
 Also more comments/remarks/discussions. Subnormalized state and stuff.}
@@ -322,61 +304,61 @@ Also more comments/remarks/discussions. Subnormalized state and stuff.}
 \end{theorem}
 
 
-	\Ethan{Mention completeness somewhere}
+\Ethan{Mention completeness somewhere}
 
-	For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
+For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 
-	For all $k\leq m$, $d\in \zo^k$, \Ethan{and for all $\gamma$?} and $\ket{\psi} \in H_{\regX,\regZ}$, define
+For all $k\leq m$, $d\in \zo^k$, $\gamma$ \Ethan{domain for $\gamma$?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define
 
-	$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
+$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
 
-	By Lemma~\ref{lem:partition2}, we can decompose
-	\begin{align} \label{eq:partition-string}
-		\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
-		=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
-		=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
-		&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}},
-	\end{align}
+By Lemma~\ref{lem:partition2}, we can decompose
+\begin{align} \label{eq:partition-string}
+	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
+	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
+	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
+	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}},
+\end{align}
 
-	where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over the verifier's choice of $pk$.}
+where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over the verifier's choice of $pk$.}
 
-	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
-	\begin{align} \label{eq:bad-term-sum}
-		\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
-		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
-		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
-		&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
-	\end{align}
+By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
+\begin{align} \label{eq:bad-term-sum}
+	\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
+	\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+	\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
+	\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+	\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
+	&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
+\end{align}
 
-	Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as
+Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as
 
-	$$P_{acc,i,z}.$$
-	Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
+$$P_{acc,i,z}.$$
+Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
-	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
+Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
 
-	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
+$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
 
-	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$   %\hannote{problem with $e_j$ or $e_i$}
+And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$   %\hannote{problem with $e_j$ or $e_i$}
 
-	\begin{align} \label{eq:rejected-d}
-		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& (m-1)\gamma_0+\negl(n)
-	\end{align}
+\begin{align} \label{eq:rejected-d}
+	\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
+	=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+	\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+	\leq& (m-1)\gamma_0+\negl(n)
+\end{align}
 
-	Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
+Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
 
-	$$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-	where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
-	\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means.}
+$$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
+\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means.}
 
-	Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
+Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
 $$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
+where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
 
 Define
 
