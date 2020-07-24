@@ -288,28 +288,14 @@ Also more comments/remarks/discussions. Subnormalized state and stuff.}
 
 \Ethan{Pull the definitions of $z_i$ and $z_{good, i}$ up here}
 
-\begin{theorem}
-	\Ethan{First part of main theorem this section}
-	$z_i\approx z_{good, i}$
-\end{theorem}
-
-\begin{theorem}
-	\Ethan{Second part of main theorem this section}
-	$(d_i, z_{good, i})\approx (d_i, z_{ideal, i})$
-	\Ethan{Need to define $d_i$ here}
-\end{theorem}
-
-\begin{theorem}
-	\Ethan{TODO some kinda average argument}
-\end{theorem}
 
 
 \Ethan{Mention completeness somewhere}
 
 For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
+\Ethan{WLOG $\ket{\psi}$ is pure, or maybe can purify?}
 
 For all $k\leq m$, $d\in \zo^k$, $\gamma$ \Ethan{domain for $\gamma$?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define
-
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
 
 By Lemma~\ref{lem:partition2}, we can decompose
@@ -319,8 +305,7 @@ By Lemma~\ref{lem:partition2}, we can decompose
 	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
 	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}},
 \end{align}
-
-where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$. %\hannote{Note that the prover's state is actually a mixed state. In particular, $\ket{\psi}$ depends on $pk$ and we are considering the mixed state averaged over the verifier's choice of $pk$.}
+where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
 By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
 \begin{align} \label{eq:bad-term-sum}
@@ -341,7 +326,7 @@ Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts,
 
 $$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
 
-And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$   %\hannote{problem with $e_j$ or $e_i$}
+And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
 
 \begin{align} \label{eq:rejected-d}
 	\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
@@ -356,21 +341,21 @@ $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e
 where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
 \Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means.}
 
-Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
-$$ z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
-
 Define
-
 \begin{align}
 	z_{good,i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
 \end{align}
 
-Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
-\hannote{gamma..}
-\Ethan{Maybe take expected value over gamma here}
-
+\begin{theorem}
+	\Ethan{First part of main theorem this section}
+	$z_i\approx z_{good, i}$
+\end{theorem}
 \begin{proof}
+
+	Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
+	\hannote{gamma..}
+	\Ethan{Maybe take expected value over gamma here}
+
 
 	\begin{align}
 		\ket{\psi}=& \L. \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{i-1}0,\gamma}}+
@@ -433,33 +418,23 @@ Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
 	\end{align}
 where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
 
+\end{proof}
+
+\begin{theorem}
+	\Ethan{Second part of main theorem this section}
+	$(d_i, z_{good, i})\approx (d_i, z_{ideal, i})$
+	\Ethan{Need to define $d_i$ here}
+\end{theorem}
+\begin{proof}
+
 % \begin{align}
 %     &\vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
 %     =& \bra{e_i, \psi_{1^{i-1}1,\gamma}} U^\dag P_{acc,i,z} U \ket{e_i\psi_{1^{i-1}1,\gamma}} +\hannote{poly terms?}+ \negl(n)
 % \end{align}
 
-Now we try to  put together all $i\in [m]$. Define
-$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
-
-We have
-\begin{align} \label{eq:z-z-good}
-	\tr|z-z_{good}| =& \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| \nn \\
-	\leq&  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
-	\leq&  \frac{1}{m}\sum_i\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)\R] \nn \\%%%%%%%%
-	\leq&  \frac{1}{m}+ 2\frac{1}{\sqrt m}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R) \nn \\ %%%%%
-	=&O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)
-\end{align}
-
-where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
-
-We now proceed to prove that $z_{good}$ is close to the ideal distribution.
-
 For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
 The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and aborts by sending $\bot$ back.   On the fourth round,  If it's a testing round the prover reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If it's the Hadamard round  the prover  runs $U$ and checks whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies are accepted, he replies with the $i$-th copy, otherwise reply $\bot$.
-
-%old protocol when jerection on 4-th round
-% The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and run $U_{trivial,0}$ described  in  Lemma~\ref{lem:trivial-4-round-strategy} instead. This is possible because all the inputs are classical.  On the fourth round, there are four possibilities depending on $c$ and whether the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$. If $c=0$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If $c=1$ and the prover generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U$ and check whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies accepts, he reply with the $i$-th copy, otherwise reply $\bot$. If $c=0$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he runs $U_{trivial}$ and repies. If $c=1$ and the prover failed to generated $\ket{\psi_{1^{i-1}1,\gamma}}$, he replies with $\bot$. \footnote{Recall that $c=0$ is the testing round and $c=1$ is the Hadamard round.}
 
 %We denote the random variable the verifier would get on the Hadamard round as $z_{composite}$. Also define $(d,z_{composite}) \defeq (\Acc, z_{composite}) + (1-|z_{composite}|)(\Rej,\bot)$ \hannote{correct notation?}
 
@@ -479,15 +454,39 @@ $$\begin{cases}
 					(d,z_{good,i}) = (\Rej,\bot)  & \text{otherwise }
 \end{cases}$$.
 
-
 % where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} .
-
 
 Therefore
 
 \begin{align}
 	(d,z_{good,i})\approx_{c, O(\eps)}(d,z_{ideal,i}).
 \end{align}
+\end{proof}
+
+\begin{theorem}
+	\Ethan{TODO some kinda average argument}
+\end{theorem}
+\begin{proof}
+Now we try to put together all $i\in [m]$. Define
+$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
+
+We have
+\begin{align} \label{eq:z-z-good}
+	\tr|z-z_{good}| =& \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| \nn \\
+	\leq&  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
+	\leq&  \frac{1}{m}\sum_i\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)\R] \nn \\%%%%%%%%
+	\leq&  \frac{1}{m}+ 2\frac{1}{\sqrt m}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R) \nn \\ %%%%%
+	=&O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)
+\end{align}
+
+where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
+
+We now proceed to prove that $z_{good}$ is close to the ideal distribution.
+Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
+$$z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
+where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
+
+	\Ethan{Here use the 2nd thm}
 
 Average over $i\in[m]$ we get
 
@@ -504,6 +503,4 @@ Therefore  we have
 \begin{align}
 	(d,z)\approx_{c, O(\eps)}(d,z_{ideal}).
 \end{align}
-%\hannote{the composition of z ideal and triangle ineq is sketchy lol. Also need to specify different z ideal}
-
 \end{proof}
