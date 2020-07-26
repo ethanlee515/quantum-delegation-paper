@@ -3,32 +3,12 @@
 
 In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost the soundness of Protocol~\ref{proto:qpip0_naive}, we run $m=\poly(\lambda)$ copies of Protocol~\ref{proto:qpip0_naive} in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error $1/\sqrt{m}$ in \Cref{thm:qpip0}.
 
-
-\subsection{Notations and technical lemma}
-
-We first introduce some tools that we'll use in our analysis.
-
+We first introduce a notation that we'll use throughout this chapter.
 \begin{definition}[$M_{XZ}(\rho,h)$]
 	For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$.
 
 	We denote the $n$-bit random variable corresponding to the measurement results as $M_{XZ}(\rho,h)$.
 \end{definition}
-
-\Ethan{Moving the lemma up here for now so it doesn't break the flow later; maybe we can move it into preliminary?}
-\begin{lemma}\label{lem:samp-tech}
-	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $\sum_z P_z \leq Id$ and $P_z P_{z'} =0 $ for all $z\neq z'$, we have
-	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi} $$
-\end{lemma}
-\begin{proof}
-	\begin{align}
-		\sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| \nn \\
-		\leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
-		\leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\sum_z\norm{P_z\ket{\phi}}^2} \nn \\
-		\leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn \\
-		\leq & \norm{\ket{\psi}}\norm{\ket{\phi}},
-	\end{align}
-	where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
-\end{proof}
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
@@ -314,19 +294,52 @@ Now we define
 	z_{good, i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
 \end{align}
 which we can show is close to $z_i$.
+However, before doing so, we first present a couple lemmas that we will need.
+\begin{lemma}\label{lem:samp-tech}
+	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $\sum_z P_z \leq Id$ and $P_z P_{z'} =0 $ for all $z\neq z'$, we have
+	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi} $$
+\end{lemma}
+\begin{proof}
+	\begin{align}
+		\sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| \nn \\
+		\leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
+		\leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\sum_z\norm{P_z\ket{\phi}}^2} \nn \\
+		\leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn \\
+		\leq & \norm{\ket{\psi}}\norm{\ket{\phi}},
+	\end{align}
+	where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
+\end{proof}
+\begin{lemma}
+	\label{lem:partition-testing}
+	$\forall\gamma$,
+	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
+		\leq (m-1)\gamma_0+\negl(n)$$
+\end{lemma}
+\begin{proof}
+	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
+	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
+	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
+	\begin{align} \label{eq:rejected-d}
+		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
+		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
+		\leq& (m-1)\gamma_0+\negl(n)
+	\end{align}
+\end{proof}
+
+Now we're ready to show that $z_{i, good}$ is close to $z_i$.
 
 \begin{theorem}
-	\Ethan{First part of main theorem this section}
-	$z_i\approx z_{good, i}$
+	$$\tr\abs{z_i-z_{i, good}}\leq\E_\gamma\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
 \end{theorem}
 \begin{proof}
 	We rewrite \Cref{eq:partition-string}.
 	$$\ket{\psi}=\E_{\gamma}\left[
 		\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 	\right]$$
-	It is then straightforward to see that
+	Then we expand $z_i$ as
 	\begin{align}
-		z_i=& z_{good,i}+ \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
+		z_i=& z_{good,i}+ \E_\gamma \sum_z \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
 		\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \nn \\
 		+&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 		+\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
@@ -334,40 +347,35 @@ which we can show is close to $z_i$.
 		+&  \bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 		+\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
 		\nn \\
-		+&\L.   \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R] , \nn     
+		+&\L.   \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R] \proj{z} , \nn     
 		%=& z_{good,i} +(\text{terms with } \psi_{1^j0},\, j\neq i ) + (\text{terms with } \psi_{1^{i-1}0}) +(\text{terms with }err )
 	\end{align}
-	by expanding out \Ethan{TODO Some expression}, where we omitted writing out $e_i$ starting the second line.
+	where we omitted writing out $e_i$.
 	Therefore we have
-	\begin{align} \label{eq:zi-zgoodi}
-		\tr|z_i-z_{good,i}|\leq&  \sum_z   \E_\gamma \L[ \sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^j0,\gamma}} \R|+
-		2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R.  \nn \\
+	\begin{align*}
+		\tr|z_i-z_{good,i}|\leq& \E_\gamma \sum_z \L[ \sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^j0,\gamma}} \R|+
+		2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R. \\
 		+& 2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\ket{\psi_{err,j,\gamma}}\R|    
-		+2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \nn \\
-		+&\L. \sum_{k=1}^{i}\sum_{j=1}^{i}\L| \bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \R] \nn \\ %%%%%%%%%
-		\leq&  \sum_z   \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^j0,\gamma}} \R| \nn \R.\\
-		+&\L.2 \sum_{k=0}^{i-1} \L|\bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^i,\gamma}} \R|\R] + O\L(\frac{m^2}{\sqrt T}\R)\nn \\ %%%%%%%%%
-		\leq&  \sum_z   \L[\L| \bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^{i-1}0,\gamma}} \R|+
-		2  \L|\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R]    \nn \\ 
-		+&O\L(\frac{m^2}{\sqrt T}+m^2{(m-1)\gamma_0}+m\sqrt{(m-1)\gamma_0}\R)\nn \\ %%%%%%%%%
-		\leq& \norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R),
-	\end{align}
-	where \Ethan{One of the eqs is deleted so need to correct this later} on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
+		+2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \\
+		+&\L. \sum_{k=1}^{i}\sum_{j=1}^{i}\L| \bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \R] \\ %%%%%%%%%
+	\end{align*}
+	by the triangle inequality.
+	The last three error terms sum to $O\L(\frac{m^2}{\sqrt{T}}\R)$ by \Cref{lem:samp-tech} and \Cref{property:partition-err} of \Cref{lem:partition2}.
 
-	\Ethan{Connect the dots with below}
-
-	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
-
-	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
-
-	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
-
-	\begin{align} \label{eq:rejected-d}
-		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& (m-1)\gamma_0+\negl(n)
-	\end{align}
+	Now by \Cref{lem:samp-tech} and \Cref{lem:partition-testing}, we see that
+	\begin{align*}
+		\sum_z \sum_{k=0}^{i-1}\sum_{j=0}^{i-1}
+		&\abs{\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^j0,\gamma}}} \\
+		&\leq\sum_z \abs{\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^{i-1}0,\gamma}}} + O\L(m^2(m-1)\gamma_0\R) \\
+		&\leq\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2 + O\L(m^2(m-1)\gamma_0\R)
+	\end{align*}
+	and similarly
+	\begin{align*}
+		\sum_z\sum_{k=0}^{i-1}
+		&\abs{\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}}\\
+		&\leq\sum_z\abs{\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}}+O\L(m\sqrt{(m-1)\gamma_0}\R)\\
+		&\leq\norm{\ket{\psi_{1^i,\gamma}}}+O\L(m\sqrt{(m-1)\gamma_0}\R)
+	\end{align*}
 \end{proof}
 
 Now define $z_{true}$ to be sampled from $D_x$... \Ethan{Or something like that},
@@ -442,7 +450,7 @@ $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
 		=&O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)
 	\end{align}
 
-	where we used triangle inequality on the second line, Equation~\ref{eq:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
+	where we used triangle inequality on the second line, \Ethan{thm 1 this section} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
 
 	We now proceed to prove that $z_{good}$ is close to the ideal distribution.
 	Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
