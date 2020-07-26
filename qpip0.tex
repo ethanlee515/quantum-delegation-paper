@@ -265,10 +265,8 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 
 For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 \Ethan{WLOG $\ket{\psi}$ is pure, or maybe can purify?}
-
 For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
-
 By Lemma~\ref{lem:partition2}, we can decompose
 \begin{align} \label{eq:partition-string}
 	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
@@ -282,16 +280,13 @@ We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string 
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
 We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
-\Ethan{Maybe use norm instead of braket for that acc probability?}
-$$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
+$$z_i\defeq \E_{pk,y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi}}^2\proj{z},$$
 where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round.
 Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
-\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means?}
-
+\Ethan{Here $y$ is implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means?}
 Now we define
-\Ethan{Need intuitive high-level description on what this is, maybe the good terms of partition or something?}
 \begin{align}
-	z_{good, i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
+	z_{good, i}=\E_{\gamma, pk, y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi_{1^{i-1}1,\gamma}}}^2\proj{z}
 \end{align}
 which we can show is close to $z_i$.
 However, before doing so, we first present a couple lemmas that we will need.
@@ -311,7 +306,7 @@ However, before doing so, we first present a couple lemmas that we will need.
 \end{proof}
 \begin{lemma}
 	\label{lem:partition-testing}
-	$\forall\gamma$,
+	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$,
 	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
 		\leq (m-1)\gamma_0+\negl(n)$$
 \end{lemma}
@@ -378,12 +373,11 @@ Now we're ready to show that $z_{i, good}$ is close to $z_i$.
 	\end{align*}
 \end{proof}
 
-Now define $z_{true}$ to be sampled from $D_x$... \Ethan{Or something like that},
-and define $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
-
+Now let $z_{true}$, as a mixed state, be correctly sampled from the $\SampBQP$ instance $D_x$,
+and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
+We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{theorem}
-	\Ethan{Second part of main theorem this section}
-	$z_{good, i}\approx z_{ideal, i}$
+	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$ \Ethan{Check thm statement again later}
 \end{theorem}
 \begin{proof}
 
@@ -398,9 +392,9 @@ and define $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 
 	%We denote the random variable the verifier would get on the Hadamard round as $z_{composite}$. Also define $(d,z_{composite}) \defeq (\Acc, z_{composite}) + (1-|z_{composite}|)(\Rej,\bot)$ \hannote{correct notation?}
 
-	Denote the result we would get when $c=1$ by $(d,z_{composite,i})$.
+	Denote the result we would get when $c=1$ by $z_{composite,i}$.
 
-	By  property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
+	By property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
 	\begin{align}
 		(d,z_{composite,i})\approx_{c, O(\eps)}(d,z_{ideal,i})
 	\end{align}
