@@ -106,7 +106,7 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 				\item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
 				\item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
 					Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
-				\item\label{step:c-urmila-in-naive} The verifier samples $c\leftarrow\xleftarrow{\$}\zo$ and sends it to the prover.
+				\item\label{step:c-urmila-in-naive} The verifier samples $c\xleftarrow{\$}\zo$ and sends it to the prover.
 				\item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
 				\item
 					If it is a testing round, the verifier accepts or rejects based on the outcome of $\PiMeasure$.
@@ -281,20 +281,12 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 	\end{enumerate}
 \end{lemma}
 
-\Ethan{Try to cut the proof into two: point-wise and average arguments. Figure out what does z-good mean intuitively.
-
-Also more comments/remarks/discussions. Subnormalized state and stuff.}
-
-\Ethan{Pull the definitions of $z_i$ and $z_{good, i}$ up here}
-
-
-
 \Ethan{Mention completeness somewhere}
 
 For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 \Ethan{WLOG $\ket{\psi}$ is pure, or maybe can purify?}
 
-For all $k\leq m$, $d\in \zo^k$, $\gamma$ \Ethan{domain for $\gamma$?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define
+For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
 
 By Lemma~\ref{lem:partition2}, we can decompose
@@ -306,62 +298,35 @@ By Lemma~\ref{lem:partition2}, we can decompose
 \end{align}
 where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
-
-Denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as
-
-$$P_{acc,i,z}.$$
+We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,i,z}$.
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
-
-Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
-
+We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
+\Ethan{Maybe use norm instead of braket for that acc probability?}
 $$z_i\defeq \E_{pk,y} \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round. Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
-\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means.}
+where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round.
+Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
+\Ethan{Here $\psi$ and $y$ are implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means?}
 
-Define
+Now we define
+\Ethan{Need intuitive high-level description on what this is, maybe the good terms of partition or something?}
 \begin{align}
-	z_{good,i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
+	z_{good, i}=\E_\gamma \sum_z \proj{z} \cdot \vev{e_i,\psi_{1^{i-1}1,\gamma}|U^\dag P_{acc,i,z} U|e_i,\psi_{1^{i-1}1,\gamma}}
 \end{align}
+which we can show is close to $z_i$.
 
 \begin{theorem}
 	\Ethan{First part of main theorem this section}
 	$z_i\approx z_{good, i}$
 \end{theorem}
 \begin{proof}
-	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
-	\begin{align} \label{eq:bad-term-sum}
-		\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
-		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
-		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
-		&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
-	\end{align}
-
-	\Ethan{Find precisely where the above is used}
-
-	Splitting $\ket{\psi}$ with Equation~\ref{eq:partition-string},
-	\hannote{gamma..}
-	\Ethan{Maybe take expected value over gamma here}
-
-
+	We rewrite \Cref{eq:partition-string}.
+	$$\ket{\psi}=\E_{\gamma}\left[
+		\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
+	\right]$$
+	It is then straightforward to see that
 	\begin{align}
-		\ket{\psi}=& \L. \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{i-1}0,\gamma}}+
-		\ket{\psi_{1^{i-1}1,\gamma}} \R. \nn \\
-		+& \L.\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,i,\gamma}}\R. \nn \\
-		=& \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
-	\end{align}
-
-	we have
-
-	\begin{align}
-		z_i =& \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
-		=& \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}} +\bra{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} \R]U^\dag  P_{acc,i,z} U\nn \\
-		&\L[ \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}\R]  \nn \\
-		=& \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}} +\bra{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} \R]U^\dag  P_{acc,i,z} U\nn \\
-		&\L[ \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}\R]  \nn \\
-		=& z_{good,i}+ \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
+		z_i=& z_{good,i}+ \E_\gamma \sum_z \proj{z} \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
 		\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \nn \\
 		+&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 		+\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
@@ -372,40 +337,22 @@ Define
 		+&\L.   \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} +\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R] , \nn     
 		%=& z_{good,i} +(\text{terms with } \psi_{1^j0},\, j\neq i ) + (\text{terms with } \psi_{1^{i-1}0}) +(\text{terms with }err )
 	\end{align}
-
-	%  U^\dag  P_{acc,i,z}U
-
-	% \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
-	% \ket{\psi_{1^i,\gamma}}
-	% \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}  
-
-	where we omitted writing out $e_i$ starting the second line. We have
+	by expanding out \Ethan{TODO Some expression}, where we omitted writing out $e_i$ starting the second line.
+	Therefore we have
 	\begin{align} \label{eq:zi-zgoodi}
-		&\tr|z_i-z_{good,i}|   \nn \\
-		\leq&  \sum_z  \L| \E_\gamma \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
-		\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \R. \nn \\
-		+&  \sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
-		+\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
-		\nn \\
-		+&  \bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
-		+\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U  \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}
-		\nn \\
-		+&\L.\L. \sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}
-		+\sum_{k=1}^{i}\bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}} \R]\R| \nn \\  %%%%%%%%%%%
-		\leq&  \sum_z   \E_\gamma \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^j0,\gamma}} \R|+
+		\tr|z_i-z_{good,i}|\leq&  \sum_z   \E_\gamma \L[ \sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^j0,\gamma}} \R|+
 		2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R.  \nn \\
-		+&  2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\ket{\psi_{err,j,\gamma}}\R|    
+		+& 2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U\ket{\psi_{err,j,\gamma}}\R|    
 		+2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \nn \\
 		+&\L. \sum_{k=1}^{i}\sum_{j=1}^{i}\L| \bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,i,z}U \ket{\psi_{err,j,\gamma}}\R| \R] \nn \\ %%%%%%%%%
-		\leq&  \sum_z   \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{e_i,\psi_{1^j0,\gamma}} \R|+
-		2 \sum_{k=0}^{i-1} \L|\bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^i,\gamma}} \R|  \R]\nn \\
-		+& O\L(\frac{m^2}{\sqrt T}\R)\nn \\ %%%%%%%%%
+		\leq&  \sum_z   \L[\sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^j0,\gamma}} \R| \nn \R.\\
+		+&\L.2 \sum_{k=0}^{i-1} \L|\bra{e_i,\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{e_i,\psi_{1^i,\gamma}} \R|\R] + O\L(\frac{m^2}{\sqrt T}\R)\nn \\ %%%%%%%%%
 		\leq&  \sum_z   \L[\L| \bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U    \ket{\psi_{1^{i-1}0,\gamma}} \R|+
 		2  \L|\bra{\psi_{1^{i-1}0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}} \R|  \R]    \nn \\ 
 		+&O\L(\frac{m^2}{\sqrt T}+m^2{(m-1)\gamma_0}+m\sqrt{(m-1)\gamma_0}\R)\nn \\ %%%%%%%%%
 		\leq& \norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R),
 	\end{align}
-where on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
+	where \Ethan{One of the eqs is deleted so need to correct this later} on the second inequality we used triangle inequality, on the third inequality we used  Lemma~\ref{lem:samp-tech} and property~\ref{property:partition-err} of Lemma~\ref{lem:partition2}, on the fourth inequality we used Lemma~\ref{lem:samp-tech} and Equation~\ref{eq:rejected-d}, and on the last inequality we used Lemma~\ref{lem:samp-tech}. Once again, we omit $e_i$ when it is not relevant.
 
 	\Ethan{Connect the dots with below}
 
@@ -466,12 +413,23 @@ where on the second inequality we used triangle inequality, on the third inequal
 	\end{align}
 \end{proof}
 
+Now we try to put together all $i\in [m]$. Define
+$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
+
 \begin{theorem}
 	\Ethan{TODO some kinda average argument}
 \end{theorem}
 \begin{proof}
-	Now we try to put together all $i\in [m]$. Define
-	$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
+
+	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
+	\begin{align} \label{eq:bad-term-sum}
+		\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
+		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
+		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
+		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
+		&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2
+	\end{align}
 
 	We have
 	\begin{align} \label{eq:z-z-good}
@@ -489,7 +447,7 @@ where on the second inequality we used triangle inequality, on the third inequal
 	$$z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
 	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
 
-		\Ethan{Here use the 2nd thm}
+	\Ethan{Here use the 2nd thm}
 
 	Average over $i\in[m]$ we get
 
