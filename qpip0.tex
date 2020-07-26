@@ -379,7 +379,7 @@ and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{theorem}
 	\label{thm:zgood-zideal}
-	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$ \Ethan{Check thm statement again later}
+	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$
 \end{theorem}
 \begin{proof}
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
