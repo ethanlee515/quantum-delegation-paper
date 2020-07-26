@@ -378,44 +378,20 @@ Now let $z_{true}$, as a mixed state, be correctly sampled from the $\SampBQP$ i
 and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{theorem}
+	\label{thm:zgood-zideal}
 	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$ \Ethan{Check thm statement again later}
 \end{theorem}
 \begin{proof}
-
-	% \begin{align}
-	%     &\vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi} \nn \\
-	%     =& \bra{e_i, \psi_{1^{i-1}1,\gamma}} U^\dag P_{acc,i,z} U \ket{e_i\psi_{1^{i-1}1,\gamma}} +\hannote{poly terms?}+ \negl(n)
-	% \end{align}
-
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
 	The prover tries to run $U_0$ by taking the verifier's input as $i$-th copy of Protocol~\ref{proto:urmila4} in Protocol~\ref{proto:QPIP0samp} and simulating other $m-1$ copies by himself. The prover then picks a uniformly random $\gamma$ and  tries to generate $\ket{\psi_{1^{i-1}1,\gamma}}$ by applying $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$. If the prover fails to generate $\ket{\psi_{1^{i-1}1,\gamma}}$, he throws out everything and aborts by sending $\bot$ back.   On the fourth round,  If it's a testing round the prover reply with the $i$-th register of $\ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)$, where $\ext_i$ is specified in property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}. If it's the Hadamard round  the prover  runs $U$ and checks whether every copy except the $i$-th copy would be accepted. If all $m-1$ copies are accepted, he replies with the $i$-th copy, otherwise reply $\bot$.
 
 	%We denote the random variable the verifier would get on the Hadamard round as $z_{composite}$. Also define $(d,z_{composite}) \defeq (\Acc, z_{composite}) + (1-|z_{composite}|)(\Rej,\bot)$ \hannote{correct notation?}
 
-	Denote the result we would get when $c=1$ by $z_{composite,i}$.
+	Denote the result we would get when $c=1$ by $z_{composite,i}$. By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $z_{composite,i}=z_{good,i}$.
 
 	By property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
-	\begin{align}
-		(d,z_{composite,i})\approx_{c, O(\eps)}(d,z_{ideal,i})
-	\end{align}
-
-	\Ethan{Is this particular $z_{ideal, i}$ defined? As in, what's its corresponding accept probability?}
-
-	By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $(d,z_{composite,i})=(d,z_{good,i})$, where $(d,z_{good,i})$ is defined as:
-
-	$$\begin{cases}
-		(d,z_{good,i}) \la (\Acc, z_{good,i}/|z_{good,i}|) & \text{with probability } |z_{good,i}|\\
-						(d,z_{good,i}) = (\Rej,\bot)  & \text{otherwise }
-	\end{cases}$$.
-
-	% where  $(d,z)_{good,i} \defeq (\Acc, z_{good,i}) + (1-|z_{good,i}|)(\Rej,\bot)$ \hannote{correct notation? operational def?} .
-
-	Therefore
-
-	\begin{align}
-		(d,z_{good,i})\approx_{c, O(\eps)}(d,z_{ideal,i}).
-	\end{align}
+	$\tr\abs{z_{composite,i}-z_{ideal,i}}=O(\eps)$.
 \end{proof}
 
 Now we try to put together all $i\in [m]$. Define the following quantities:
