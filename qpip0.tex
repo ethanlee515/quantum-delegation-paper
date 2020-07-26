@@ -325,6 +325,7 @@ However, before doing so, we first present a couple lemmas that we will need.
 Now we're ready to show that $z_{i, good}$ is close to $z_i$.
 
 \begin{theorem}
+	\label{thm:zi-zgoodi}
 	$$\tr\abs{z_i-z_{i, good}}\leq\E_\gamma\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
 \end{theorem}
 \begin{proof}
@@ -417,14 +418,16 @@ We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 	\end{align}
 \end{proof}
 
-Now we try to put together all $i\in [m]$. Define
-$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
+Now we try to put together all $i\in [m]$. Define the following quantities:
+$$z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi}$$
+$$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}$$
+$$z_{ideal}\defeq \frac{1}{m}\sum_i z_{ideal,i}$$
+Notice that $z_{ideal}=pz_{true}$ for some probability $p\in[0, 1]$.
 
 \begin{theorem}
-	\Ethan{TODO some kinda average argument}
+	$\PiSampZ$ is a computationally sound protocol for $\SampBQP$.
 \end{theorem}
 \begin{proof}
-
 	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
 	\begin{align} \label{eq:bad-term-sum}
 		\norm{\ket{\psi}}^2 \geq& \norm{\ket{\psi_{0,\gamma}}}^2+\norm{\ket{\psi_{1,\gamma}}}^2 \nn \\
@@ -444,28 +447,7 @@ $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}.$$
 		=&O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)
 	\end{align}
 
-	where we used triangle inequality on the second line, \Ethan{thm 1 this section} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
-
-	We now proceed to prove that $z_{good}$ is close to the ideal distribution.
-	Since $\vec{c}$ is drawn  from $e_i$ with uniformly random $i\in [m]$, we have
-	$$z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi},$$
-	where we represent the random variable $z$ as a real non-negative diagonal matrix, with the matrix entries begin \Ethan{typo?} probabilities. Note that $z$ is ``sub-normalized", i.e. $\tr (z) \leq 1 \text{}$, and $\tr(z)$ equals to the probability of getting accepted.
-
-	\Ethan{Here use the 2nd thm}
-
-	Average over $i\in[m]$ we get
-
-	\begin{align}
-		(d,z_{good})\approx_{c, O(\eps)}(d,z_{ideal}).
-	\end{align}
-	% \hannote{do we lose a factor of $m$?}
-	Recall that by Eq~\ref{eq:z-z-good} we have $\norm{z-z_{good}}_1 \leq O(\eps)$ if we pick $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$, which implies
-	\begin{align}
-		(d,z)\approx_{c, O(\eps)}(d,z_{good}).
-	\end{align}
-
-	Therefore  we have  
-	\begin{align}
-		(d,z)\approx_{c, O(\eps)}(d,z_{ideal}).
-	\end{align}
+	where we used triangle inequality on the second line, \Cref{thm:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
+	Let $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$ and by triangle inequality we have $\tr\abs{z-z_{ideal}}=O(\varepsilon)$.
+	Since $z$ is close to some ideal output distribution $z_{ideal}$, it must be close to the ideal output distribution with its accept probability too.
 \end{proof}
