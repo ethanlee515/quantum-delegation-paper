@@ -394,11 +394,13 @@ We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 	$\tr\abs{z_{composite,i}-z_{ideal,i}}=O(\eps)$.
 \end{proof}
 
-Now we try to put together all $i\in [m]$. Define the following quantities:
+Now we try to put together all $i\in [m]$. First let
 $$z=\frac{1}{m} \sum_i z_i= \frac{1}{m} \sum_i \sum_z \proj{z} \cdot \vev{e_i,\psi|U^\dag P_{acc,i,z} U|e_i,\psi}$$
+which is the output distribution of $\PiSampZ$.
+We also define the following accordingly:
 $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}$$
 $$z_{ideal}\defeq \frac{1}{m}\sum_i z_{ideal,i}$$
-Notice that $z_{ideal}=pz_{true}$ for some probability $p\in[0, 1]$.
+Notice that $z_{ideal}$ is some ideal output distribution, which (a priori) might not have the same accept probability as $z$.
 
 \begin{theorem}
 	$\PiSampZ$ is a computationally sound protocol for $\SampBQP$.
