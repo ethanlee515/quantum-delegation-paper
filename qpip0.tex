@@ -164,7 +164,8 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 
 Clearly $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
 We now show that it is computationally sound.
-The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy, while $G_{1,i}$  represents the subspace accepted with high probability\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.
+\Ethan{Try to word the following a bit better}
+The intuition is that the we run $m$ copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy, while $G_{1,i}$  represents the subspace accepted with high probability\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.
 Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
@@ -177,14 +178,9 @@ Also as a careful reader might have noticed, the prover's space don't happen to 
 		\ket{\psi}_{\regX,\regZ} =&   \ket{\psi_{0,i,\gamma}}_{\regX,\regZ}+ \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}+\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}
 	\end{align}
 
-	% $$ \ket{\psi}_{\regX,\regZ} =  G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ}+ G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ}+\ket{\psi_{err}}_{\regX,\regZ},$$
-
 	Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$.
 
-
-
 	Furthermore, the following properties are satisfied for all $i\in[m]$.
-	%
 	\begin{enumerate}
 		\item \label{property:partition-err}  $$\E_{\gamma}\|\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}\|^2 \leq \frac{6}{T}+\negl(\lambda),$$
 
@@ -283,9 +279,8 @@ However, before doing so, we first present a couple lemmas that we will need.
 \end{proof}
 \begin{lemma}
 	\label{lem:partition-testing}
-	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$,
-	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-		\leq (m-1)\gamma_0+\negl(n)$$
+	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
+	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
 \end{lemma}
 \begin{proof}
 	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
