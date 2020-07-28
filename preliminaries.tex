@@ -28,6 +28,14 @@ The phase gate and Pauli matrices are the following matrices.
     $Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$.
 \end{definition}
 
+\Ethan{Quantum measurements...}
+
+\begin{definition}[$M_{XZ}(\rho,h)$]
+	For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$.
+
+	We denote the $n$-bit random variable corresponding to the measurement results as $M_{XZ}(\rho,h)$.
+\end{definition}
+
 \subsection{Sampling Problems}
 
 \Ethan{After this point, add more remarks in this section}

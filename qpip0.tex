@@ -1,14 +1,7 @@
 \section{$\SampBQP$ Delegation Protocol for Fully Classical Client}
 \label{sec:qpip0_all}
 
-In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost the soundness of Protocol~\ref{proto:qpip0_naive}, we run $m=\poly(\lambda)$ copies of Protocol~\ref{proto:qpip0_naive} in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error $1/\sqrt{m}$ in \Cref{thm:qpip0}.
-
-We first introduce a notation that we'll use throughout this chapter.
-\begin{definition}[$M_{XZ}(\rho,h)$]
-	For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$.
-
-	We denote the $n$-bit random variable corresponding to the measurement results as $M_{XZ}(\rho,h)$.
-\end{definition}
+In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost its soundness, we run $m=\poly(\lambda)$ copies in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error $1/\sqrt{m}$.
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
@@ -170,13 +163,9 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 	\end{enumerate}
 \end{protocol}
 
-\begin{theorem}\label{thm:qpip0}
-	Assuming the QLWE assumption, $\PiSampZ$ is a $\QPIP_0$ protocol for all problems in $\SampBQP$ with negligible completeness error and computational soundness.
-\end{theorem}
-
-\Ethan{Mention that completeness is trivial somewhere up here}
-
-The intuition behind this theorem is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.  $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy; $G_{1,i}$  represents the subspace accepted with ``high probability"\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events.  We  split up  $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
+It is trivial to see that $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
+We now show that it is computationally sound.
+The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.  $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy; $G_{1,i}$  represents the subspace accepted with ``high probability"\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events.  We  split up  $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
  probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$. Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
 
  %but there will always be some states  therefore we introduce  an extra parameter $\gamma$ that corresponds to the probability cut-off line that to distinguish the accepted and rejected part, and we need to average over $\gamma$.
@@ -261,9 +250,7 @@ The intuition behind this theorem is that the we send out $m$ independent copies
 	\end{enumerate}
 \end{lemma}
 
-\Ethan{Mention completeness somewhere}
-
-For soundness, We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
+We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 \Ethan{WLOG $\ket{\psi}$ is pure, or maybe can purify?}
 For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
@@ -403,7 +390,7 @@ $$z_{ideal}\defeq \frac{1}{m}\sum_i z_{ideal,i}$$
 Notice that $z_{ideal}$ is some ideal output distribution, which (a priori) might not have the same accept probability as $z$.
 
 \begin{theorem}
-	$\PiSampZ$ is a computationally sound protocol for $\SampBQP$.
+	Under the QLWE assumption, $\PiSampZ$ is a computationally sound protocol for $\SampBQP$.
 \end{theorem}
 \begin{proof}
 	By Property~\ref{property-partition-norm-sum} of Lemma~\ref{lem:partition2}, we have
