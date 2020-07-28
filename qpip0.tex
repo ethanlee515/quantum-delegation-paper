@@ -164,16 +164,15 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 
 Clearly $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
 We now show that it is computationally sound.
-The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.  $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy; $G_{1,i}$  represents the subspace accepted with ``high probability"\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events.  We  split up  $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
- probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$. Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
+The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy, while $G_{1,i}$  represents the subspace accepted with high probability\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.
+\Ethan{Next sentence feels like a technical detail that fits better in a proof?}
+$G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security.
+\Ethan{There's gotta be a better way to describe the following...}
+Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events. We split up $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
+ probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$.
+\Ethan{Maybe move the above chunk below the lemma and just explain by doing} 
+Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
 
- %but there will always be some states  therefore we introduce  an extra parameter $\gamma$ that corresponds to the probability cut-off line that to distinguish the accepted and rejected part, and we need to average over $\gamma$.
-
- % We split the state sub-normalized states corresponding to the prover cheating on different copies and show that the sum of probabilities corresponding to bad states can't be more than $1/m$. {The actual proof is more complicated than this sketch because the $G$'s don't commute with each other, so we need to handle the splitting carefully.}
-
- %For example, $G_{0,3} G_{1,5} \ket{\psi}$ corresponds to the events of passing the testing round on the fifth copy then fails the testing round on the third copy.
-
- %Let $S_m$ be sets of $\{c\}$ such that only one of the $c_i=1$.
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
 	Let $\lambda$ be the security parameter and  $\eps$ be the accuracy parameter. Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=\poly(\eps)$ and $T=1/\poly(\eps)$.
 
@@ -217,16 +216,9 @@ The intuition is that the we send out $m$ independent copies of the naive $\QPIP
 			\begin{align}
 				\norm{ P_{i,pk_i,y_i,acc} \circ U\frac{\ket{e_j}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}}^2 \leq (m-1)\gamma_0+\negl(\lambda),
 			\end{align}
-
-
 			where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round accepts with $pk_i,y_i$, including the last measurement the prover did before sending $\vec{a}$.  This means that $\ket{\psi_{0,i,\gamma}}$ is rejected by the $i$-th testing round with high probability.
-
-
 		\item \label{property:partition-binding}
-
-			% $\{c\}\in S_m$ such that $c_i = 0$
 			For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that
-
 			\begin{align}
 				\norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\lambda).
 			\end{align}
@@ -234,18 +226,13 @@ The intuition is that the we send out $m$ independent copies of the naive $\QPIP
 			% \begin{align*}  
 			%   \Pr\left[M_{\regX_i}\circ \ext_i\left(\frac{\ket{\{c\}}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)\in \Acc_{pk_i,y_i}\right]=1-\negl(\secpar).
 			%   \end{align*}
-			This will imply that    $\ket{\psi_{1,i,\gamma}}$ is binding to the $i$-th Hadamard round.
+			This will imply that $\ket{\psi_{1,i,\gamma}}$ is binding to the $i$-th Hadamard round.
 
 		\item \label{property-partition-norm-sum}
 			For all $\gamma$,
 			\begin{align}
 				\norm{\ket{\psi_{0,i,\gamma}}}^2+ \norm{\ket{\psi_{1,i,\gamma}}}^2 \leq  \norm{\ket{\psi}}^2
 			\end{align}
-
-			% \item \hannote{added by me..not needed?}
-
-			% $$\vev{\psi_{0,i,\gamma}|\psi_{1,i,\gamma}} = \negl(n)$$
-
 	\end{enumerate}
 \end{lemma}
 
@@ -374,7 +361,7 @@ We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 
 	%We denote the random variable the verifier would get on the Hadamard round as $z_{composite}$. Also define $(d,z_{composite}) \defeq (\Acc, z_{composite}) + (1-|z_{composite}|)(\Rej,\bot)$ \hannote{correct notation?}
 
-	Denote the result we would get when $c=1$ by $z_{composite,i}$. By construction, when $G_{i,1,\gamma}G_{i-1,1,\gamma} \cdots G_{2,1,\gamma}G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $z_{composite,i}=z_{good,i}$.
+	Denote the result we would get when $c=1$ by $z_{composite,i}$. By construction, when $G_{i,1,\gamma}\ldots G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $z_{composite,i}=z_{good,i}$.
 
 	By property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
 	$\tr\abs{z_{composite,i}-z_{ideal,i}}=O(\eps)$.
@@ -386,7 +373,7 @@ which is the output distribution of $\PiSampZ$.
 We also define the following accordingly:
 $$z_{good}\defeq \frac{1}{m}\sum_i z_{good,i}$$
 $$z_{ideal}\defeq \frac{1}{m}\sum_i z_{ideal,i}$$
-Notice that $z_{ideal}$ is some ideal output distribution, which (a priori) might not have the same accept probability as $z$.
+Notice that $z_{ideal}$ is some ideal output distribution, which might not have the same accept probability as $z$.
 
 \begin{theorem}
 	Under the QLWE assumption, $\PiSampZ$ is a computationally sound protocol for $\SampBQP$.
