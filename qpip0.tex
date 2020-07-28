@@ -7,7 +7,7 @@ In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which
 
 In her groundbreaking work, Mahadev~\cite{FOCS:Mahadev18a} gives a $\QPIP_0$ protocol for $\BQP$ languages.
 The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that lets a $\BQP$ machine ``commit a $XZ$ measurement" to a classical machine.
-Intuitively, the verifier chooses a string $h$ specifying  the measurement he wants to make, and sends encoded $h$ \Ethan{what?} to the prover. The prover ``commits" to a state $\rho$ with the encoded $h$ and replies. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice between the two to the prover and has the  prover reply. If the verifier chose testing, he checks the prover's two replies and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho,h)$ based on the replies. Mahadev~\cite{FOCS:Mahadev18a} proves a ``binding" property of the above protocol: if a prover's strategy would always succeeds on the testing round, then that strategy must binds to a $\rho$, meaning that no matter what $h$ the verifier has picked at the beginning, the verifier can get $M_{XZ}(\rho,h)$  with the same $\rho$ if he had chosen the Hadamard round.
+Intuitively, the verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$, before sending $pk$ to the prover. The prover commits to a state $\rho$ of its choice using $pk$ and replies with its commitment. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply. \cite{FOCS:Mahadev18a} shows a ``binding" property of $\PiMeasure$: if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ the verifier has picked at the beginning.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -18,8 +18,7 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 	\begin{itemize}
 		\item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$.
 		\item Prover's input: a state $\rho\in\cB^{\otimes n}$ for the verifier to measure.
-		\item Verifier's input:
-			the measurement basis choice $h \in \{0,1\}^n$
+		\item Verifier's input: the measurement basis choice $h \in \zo^n$
 	\end{itemize}
 
 	Protocol:
@@ -35,12 +34,13 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 	\end{enumerate}
 \end{protocol}
 
-The verifier only learns the measurement outcome on a Hadamard round.
-The protocol achieves a ``binding" property that gives guarantees against cheating provers.
+$\PiMeasure$ has negligible completeness errors.
+On the other hand, as the verifier learns the measurement outcome only on Hadamard round, the protocol offers no standard soundness guarantees;
+instead, it achieves the following \emph{binding property} that gives weaker guarantees against cheating provers.
 
 \begin{lemma}[binding property of $\PiMeasure$]
 	\label{lem:urmila-binding}
-	Let $\PMeasureStar$ be a $\BQP$ cheating  prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
+	Let $\PMeasureStar$ be a $\BQP$ cheating prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
 	\iffalse    
 	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
 	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
@@ -48,12 +48,6 @@ The protocol achieves a ``binding" property that gives guarantees against cheati
 	The verifier's output on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
 	\fi
 \end{lemma}
-
-We also mention a fact that will be useful later.
-\begin{fact}
-	\label{lem:trivial-4-round-strategy}
-	There exist a prover strategy for $\PiMeasure$ that is accepted with probability $1-\negl(\lambda)$
-\end{fact}
 
 We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$.
 Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prover's message.
@@ -89,17 +83,22 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 	\end{enumerate}
 \end{protocol}
 
-There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. first, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, so the protocol has  completeness error at least $1/2$. And since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round. Such cheating prover only has a constant $1/2$ probability of being caught, resulting in constant soundness error.
+There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. First, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, the protocol has completeness error at least $1/2$. Moreover, since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round, with only a constant $1/2$ probability of being caught.
+However, we can show that \Cref{proto:qpip0_naive} has a binding property similar to \Cref{proto:urmila4}.
 
-On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{proto:urmila4}, which we will use to achieve completeness and soundness in \Cref{sec:qpip0}.
-
-\begin{lemma}[binding property of $\PiNaive$]
+\begin{theorem}[binding property of $\PiNaive$]
 	\label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
-	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting (ie. $y\ne\bot$), $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
 	then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
-\end{lemma}
+\end{theorem}
 \begin{proof}
+	There's a \emph{dummy strategy} for $\PiNaive$'s prover, who chooses $\rho$ as maximally mixed state instead, and executes the rest of the protocol honestly.
+	It is accepted in the testing round with probability $1-\negl(\lambda)$,
+	but has negligible probability passing the verification after the Hadamard round.
+
+	\Ethan{Smooth this out}
+
 	Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
 
 	We define $\Pstar$ as follows.
@@ -116,7 +115,7 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
 	we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is $\eps$-computationally indistinguishable to $(d', z_{ideal}')$.
 
 	Now we relate $(d', z')$ back to $(d, z)$.
-	First, for the case that $\PNaiveStar$ aborts, since dummy strategy will be rejected with high probability in Hadamard round,
+	First, for the case that $\PNaiveStar$ aborts, since dummy strategy will be rejected with overwhelming probability in Hadamard round,
 	we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$ conditioned on $\PNaiveStar$ aborts.
 	For the other case, conditioned on $\PNaiveStar$ not aborts, clearly $(d, z)=(d', z')$.
 	So we have $(d, z)\approx_{c, O(\varepsilon)}(d', z')\approx_{c, \negl(\lambda)}(d', z_{ideal}')$,
@@ -130,7 +129,7 @@ On the other hand, \Cref{proto:qpip0_naive} has a binding property like \Cref{pr
 We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
 It is essentially a $m$-fold parallel repetition of $\PiNaive$.
 Instead of having each copy running testing round or Hadamard round uniformly at random, we randomly pick one copy to run Hadamard round to get our samples, and run testing round on all other $m-1$ copies.
-In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure$ in details  in order to introduce notations that we need in our analysis.
+In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure$ in details in order to introduce notations that we need in our analysis.
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
 	\label{proto:QPIP0samp}
@@ -163,7 +162,7 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 	\end{enumerate}
 \end{protocol}
 
-It is trivial to see that $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
+Clearly $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
 We now show that it is computationally sound.
 The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.  $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy; $G_{1,i}$  represents the subspace accepted with ``high probability"\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.  $G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security. Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events.  We  split up  $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
  probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$. Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
