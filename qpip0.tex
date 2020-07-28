@@ -165,12 +165,6 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 Clearly $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
 We now show that it is computationally sound.
 The intuition is that the we send out $m$ independent copies of the naive $\QPIP_0$ and do testing on randomly chosen $m-1$ copies of them, and do Hadamard round and calculate results from the remaining one copy. Therefore if the prover want to cheat, i.e. send something not binding in the Hadamard round copy, he would be caught with probability $1-1/m$. However, the prover might create correlations between copies that let him cheat with probability much higher than $1/m$. This is a common problem in trying to create parallel repetition protocols. We are able to bound the soundness error as $O(1/\sqrt{m})$. To prove that, we use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ represents the subspace that are rejected with high probability in the testing round of $i$-th copy, while $G_{1,i}$  represents the subspace accepted with high probability\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.
-\Ethan{Next sentence feels like a technical detail that fits better in a proof?}
-$G_{0,i}$ and $G_{1,i}$ need to be efficient because $\PiMeasure$ only gives computational security.
-\Ethan{There's gotta be a better way to describe the following...}
-Once we have $G_{0,i}$ and $G_{1,i}$, we can split up the prover's internal state $\ket{\psi}$ like conditional probabilistic events. We split up $\ket{\psi}$ into $G_{0,1}\ket{\psi}+ G_{0,2}G_{1,1}\ket{\psi} + G_{0,3}G_{1,2}G_{1,1}\ket{\psi} + \dots +  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} + G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$, where for example, $G_{0,2}G_{1,1}\ket{\psi}$ intuitively corresponds to passing the testing round of the first copy then getting rejected on the testing round of the second copy. Since each of the  substates in  $\{G_{0,1}\ket{\psi}, G_{0,2}G_{1,1}\ket{\psi} , G_{0,3}G_{1,2}G_{1,1}\ket{\psi} , \dots ,  G_{0,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi} \}$ all have  probability $1-1/m$ of being caught by one of the $m-1$ testing rounds, they have well-bounded 
- probability of being accepted in Step~\ref{step:multi-testing} of Protocol~\ref{proto:QPIP0samp}, so the output in  Step~\ref{step:multi-testing} would mostly corresponds to $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$. However, since $G_{1,i}$ don't commute with $G_{1,j}$, $G_{1,m} G_{1,m-1}\dots G_{1,2}G_{1,1}\ket{\psi}$ is only binding for the $m$-th copy, so this simplified strategy is not quite correct. We were able to fix this issue with a more careful split up of $\ket{\psi}$.
-\Ethan{Maybe move the above chunk below the lemma and just explain by doing} 
 Also as a careful reader might have noticed, the prover's space don't happen to split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by doing eigenvalue estimation to calculate the accept probability, then split the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
@@ -236,16 +230,26 @@ Also as a careful reader might have noticed, the prover's space don't happen to 
 	\end{enumerate}
 \end{lemma}
 
-We begin by considering the state $\ket{\psi}$ the prover in $\PiSampZ$ holds before he receives $\vec{c}$. We denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
+\Ethan{The following discussion is under construction}
+
+By using \Cref{lem:partition2} iteratively, we can decompose the prover's internal state.
+Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
 \Ethan{WLOG $\ket{\psi}$ is pure, or maybe can purify?}
+we denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define
-$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}G_{d_{k-1},k-1,\gamma}\cdots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
-By Lemma~\ref{lem:partition2}, we can decompose
+$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}\ldots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}.$$
+For example, $\ket{\psi_{110, \gamma}}$ intuitively corresponds to the component that would pass the first two copies' testing rounds and fail the third one.
+At this point it is tempting to decompose $\ket{\psi}$ into $\ket{\psi_{s, \gamma}}$ where $s\in\zo^m$ and say that $\ket{\psi_{1^m, \gamma}}$ is the only component that is not rejected with high ($1-1/m$) probability;
+however, $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m, \gamma}}$ is only binding for the $m$-th copy.
+Instead, we must make a point-wise argument for each $i\in[m]$, then... \Ethan{TODO}
+
+For all $i\in[m]$, we define
 \begin{align} \label{eq:partition-string}
 	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
 	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
 	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
-	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}},
+	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}} \nn\\
+	=&\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 \end{align}
 where we abuse the notation and use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
