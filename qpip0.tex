@@ -93,18 +93,15 @@ However, we can show that \Cref{proto:qpip0_naive} has a binding property simila
 	then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{theorem}
 \begin{proof}
-	There's a \emph{dummy strategy} for $\PiNaive$'s prover, who chooses $\rho$ as maximally mixed state instead, and executes the rest of the protocol honestly.
-	It is accepted in the testing round with probability $1-\negl(\lambda)$,
+	If the prover chooses $\rho$ as the maximally mixed state and executes the rest of the protocol honestly,
+	it would be accepted in the testing round with probability $1-\negl(\lambda)$,
 	but has negligible probability passing the verification after the Hadamard round.
+	We call this the \emph{dummy strategy}.
 
-	\Ethan{Smooth this out}
-
-	Consider the following reduction to another cheating $\BQP$ prover for $\PiNaive$ that is perfect and non-aborting.
-
-	We define $\Pstar$ as follows.
+	Now we construct another cheating $\BQP$ prover $\Pstar$ that is perfect and non-aborting as follows.
 	For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
 	If $y\ne\bot$, then reply $y$;
-	else, run the corresponding step of the dummy strategy as in \Cref{lem:trivial-4-round-strategy} and reply with its results.
+	else, run the corresponding step of the dummy strategy and reply with its results.
 	For the fourth message, if $y\ne\bot$, run and reply with $a\leftarrow\cPNaiveStar{4}(pk, c, \sigma)$;
 	else, continue the dummy strategy.
 
@@ -115,13 +112,14 @@ However, we can show that \Cref{proto:qpip0_naive} has a binding property simila
 	we see that $(d', z')\leftarrow(\Pstar, \VNaive)(1^\lambda, 1^{1/\varepsilon}, x)$ is $\eps$-computationally indistinguishable to $(d', z_{ideal}')$.
 
 	Now we relate $(d', z')$ back to $(d, z)$.
-	First, for the case that $\PNaiveStar$ aborts, since dummy strategy will be rejected with overwhelming probability in Hadamard round,
-	we have $(d', z')\approx_{c, O(\eps)}(\Rej, \bot)=(d, z)$ conditioned on $\PNaiveStar$ aborts.
-	For the other case, conditioned on $\PNaiveStar$ not aborts, clearly $(d, z)=(d', z')$.
-	So we have $(d, z)\approx_{c, O(\varepsilon)}(d', z')\approx_{c, \negl(\lambda)}(d', z_{ideal}')$,
-	which in turn implies $\abs{d-d'}\leq O(\eps)$
-	and $(d, z_{ideal})\approx_{c, O(\eps)}(d', z_{ideal}')$.
-	Combining everything, we conclude that $(d, z)\approx_{c, O(\eps)}(d, z_{ideal})$.
+	First, conditioned on that $\PNaiveStar$ aborts, since dummy strategy will be rejected with overwhelming probability in Hadamard round,
+	we have $(d', z')$ is $O(\varepsilon)$-computationally indistinguishable to $(\Rej, \bot)=(d, z)$.
+	On the other hand, conditioned on $\PNaiveStar$ not aborting, clearly $(d, z)=(d', z')$.
+	So $(d, z)$ is $O(\eps)$-computationally indistinguishable to $(d', z')$,
+	which in turn is $\negl(\lambda)$-computationally indistinguishable to $d', z_{ideal}')$.
+	So $\abs{d-d'}\leq O(\eps)$,
+	and $(d, z_{ideal})$ is $O(\eps)$-computationally indistinguishable to $(d', z_{ideal}')$.
+	Combining everything, we conclude that $(d, z)$ is $O(\eps)$-computationally indistinguishable to $(d, z_{ideal})$.
 \end{proof}
 
 \subsection{$\QPIP_0$ protocol for $\SampBQP$} \label{sec:qpip0}
@@ -352,6 +350,7 @@ We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{theorem}
 	\label{thm:zgood-zideal}
 	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$
+	\Ethan{This doesn't seem true; I think we get computational guarantees here at best?}
 \end{theorem}
 \begin{proof}
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
