@@ -349,8 +349,7 @@ and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{theorem}
 	\label{thm:zgood-zideal}
-	$\tr\abs{z_{good, i}-z_{ideal, i}}\leq O(\varepsilon)$
-	\Ethan{This doesn't seem true; I think we get computational guarantees here at best?}
+	$z_{good, i}$ is $O(\eps)$-computationally indistinguishable to $z_{ideal, i}$.
 \end{theorem}
 \begin{proof}
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
@@ -361,8 +360,9 @@ We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 
 	Denote the result we would get when $c=1$ by $z_{composite,i}$. By construction, when $G_{i,1,\gamma}\ldots G_{1,1,\gamma}$ succeeded, the corresponding output would be $z_{good,i}$. Also note that this is the only case where the verifier won't reject, so $z_{composite,i}=z_{good,i}$.
 
-	By property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort. Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
-	$\tr\abs{z_{composite,i}-z_{ideal,i}}=O(\eps)$.
+	By property~\ref{property:partition-binding} of Lemma~\ref{lem:partition2}, the above strategy is accepted with probability $1-\negl(n)$ when the prover didn't abort.
+	Since the prover's strategy is also efficient, by Lemma~\ref{lem:naive-qpip0-binding},
+	$z_{composite,}$ is $O(\eps)$-computationally indistinguishable to $z_{ideal, i}$.
 \end{proof}
 
 Now we try to put together all $i\in [m]$. First let
