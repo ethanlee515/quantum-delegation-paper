@@ -4,20 +4,7 @@
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$.
 %For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
-
-For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
-let $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ denote the trace distance between $\rho_1$ and $\rho_2$. We say $\rho_1$ and $\rho_2$ are $\eps$-close if $\norm{\rho_1- \rho_2}_{tr}\leq\eps$.
-For two distributions $f_1$ and $f_2$ over the same finite domain $X$, let $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ denote their total variation distance,
-and we say $f_1$ and $f_2$ are $\eps$-close if $\norm{f_1-f_2}_{TV}\leq\eps$.
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
-
-\begin{definition} [quantum-classical channels]
-    \label{def:QCChannel}
-    A quantum measurement is given by a set of matrices $\set{M_k}$ such that $M_k\geq0$ and $\sum_k M_k=\id$.
-    We associate to any measurement a map $\Lambda(\rho)=\sum_k \tr(M_k\rho)\proj{k}$
-    with $\{\ket{k}\}$ an orthonormal basis.
-    This map is also called a \emph{quantum-classical channel}.
-\end{definition}
 
 The phase gate and Pauli matrices are the following matrices.
 
@@ -28,8 +15,30 @@ The phase gate and Pauli matrices are the following matrices.
     $Z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$.
 \end{definition}
 
-\Ethan{Quantum measurements...}
+For $n$-qubit states $\rho_1, \rho_2\in\cB^{\otimes n}$,
+let $\norm{\rho_1-\rho_2}_{tr}=\frac{1}{2}\norm{\rho_1-\rho_2}_1$ denote the trace distance between $\rho_1$ and $\rho_2$. We say $\rho_1$ and $\rho_2$ are $\eps$-close if $\norm{\rho_1- \rho_2}_{tr}\leq\eps$.
+For two distributions $f_1$ and $f_2$ over the same finite domain $X$, let $\norm{f_1-f_2}_{TV}=\frac{1}{2}\sum_{x\in X}\abs{f_1(x)-f_2(x)}$ denote their total variation distance,
+and we say $f_1$ and $f_2$ are $\eps$-close if $\norm{f_1-f_2}_{TV}\leq\eps$.
+We additionally denote the following for states that are only computationally indistinguishable (but might be statistically far):
+\begin{definition}
+\label{def:comp-indis}
+    Two ensemble of states $\set{\rho_{1,\lambda}}_{\lambda\in\bbN}$ and $\set{\rho_{2,\lambda}}_{\lambda\in\bbN}$ are \emph{$\eps$-computationally indistinguishable} if for all $\BQP$ distinguishers $\mathsf{D}$ and $\lambda\in\bbN$,
+    $$\abs{\Pr\left[\mathsf{D}(\rho_{1,\lambda})=1\right]-\Pr\left[\mathsf{D}(\rho_{2,\lambda})=1\right]}\leq\eps(\lambda).$$
+    We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
+    We drop the $\eps$ parameter when it is negligible.
+    We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized states as appropriate.
+    We also extend it to distributions by treating them as mixed states.
+\end{definition}
 
+We denote measurement as follows:
+\begin{definition} [quantum-classical channels]
+    \label{def:QCChannel}
+    A quantum measurement is given by a set of matrices $\set{M_k}$ such that $M_k\geq0$ and $\sum_k M_k=\id$.
+    We associate to any measurement a map $\Lambda(\rho)=\sum_k \tr(M_k\rho)\proj{k}$
+    with $\{\ket{k}\}$ an orthonormal basis.
+    This map is also called a \emph{quantum-classical channel}.
+\end{definition}
+Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corresponding random variable as follows:
 \begin{definition}[$M_{XZ}(\rho,h)$]
 	For any natural number $n$, $n$-bit string $h$, and $n$-qubit quantum state $\rho$, consider the following measurement procedure: measure the first qubit of $\rho$ in $X$ basis if $h_1=0$; measure the first qubit of $\rho$ in $Z$ basis if $h_1=1$.  Measure the second qubit of $\rho$ in $X$ basis if $h_2=0$; measure the second qubit of $\rho$ in $Z$ basis if $h_2=1$. Continue qubit-by-qubit until all $n$-qubits of $\rho$ are measured, where $i$-th qubit is measured in $X$ basis if $h_i=0$ and  $i$-th qubit is measured in the $Z$ basis if $h_i=1$.
 
@@ -127,7 +136,7 @@ Also discuss whether soundness error needs additional param. besides inherited f
                 \end{cases}$$.
             \end{itemize}
             It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\eps$.
-        \item (Computational soundness):
+		\item (Computational soundness): \Ethan{TODO write in terms of comp. indistinguishability?}
         For all cheating $\BQP$ prover $P^*$, $\BQP$ distinguisher $\mathsf{D}$, accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
             sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$,
             define $d, z, z_{ideal}$ by the same experiment as above.
@@ -141,20 +150,8 @@ Also discuss whether soundness error needs additional param. besides inherited f
 
 We now define blindness of a protocol.
 In the context of blind protocols, we consider $x$ as the verifier's private input instead of a common input.  
-%the above definitions should be modified so that $x$ is the verifier's private input.
-%We define blindness with an accuracy parameter $\eps$, which exists in protocols for $\SampBQP$ instances;
-%one can leave it out where appropriate, such as in protocols for $\BQP$ languages.
 
-\Ethan{The following is more crypto based
-
-Others don't have a fully general definition,
-or it's just statistical/OTP.
-
-Need explanation/discussion for this.
-Nobody else writes it like this,
-but this is the correct way to write it.
-
-Explain what is this saying.}
+\Ethan{The following blindness definition is more crypto-based, but since we're submitting it to Eurocrypt maybe this is fine as-is?}
 
 \begin{definition}[Blindness]
     Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ (and $1^{1/\eps}$ for the case of $\SampBQP$ problem), and verifier's private input $x\in\zo^*$.
@@ -165,21 +162,6 @@ Explain what is this saying.}
     \end{itemize}
 \end{definition}
 
-\Ethan{Maybe swap 2.9 and 2.8 or move it up even more.
-If it's before 2.7 then we can just write 2.7 in terms of this.
-
-Consider making this its own section.}
-
-\begin{definition}
-\label{def:comp-indis}
-    %\Ethan{TODO PROOFREAD ME}
-    Two ensemble of states $\set{\rho_{1,\lambda}}_{\lambda\in\bbN}$ and $\set{\rho_{2,\lambda}}_{\lambda\in\bbN}$ are \emph{$\eps$-computationally indistinguishable} if for all $\BQP$ distinguishers $\mathsf{D}$ and $\lambda\in\bbN$,
-    $$\abs{\Pr\left[\mathsf{D}(\rho_{1,\lambda})=1\right]-\Pr\left[\mathsf{D}(\rho_{2,\lambda})=1\right]}\leq\eps(\lambda).$$
-    We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
-    We drop the $\eps$ parameter when it is negligible.
-    We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized states as appropriate.
-    We also extend it to distributions by treating them as mixed states.
-\end{definition}
 
 \iffalse
 
@@ -196,20 +178,6 @@ Probably not necessary
         \rho_1\approx_{c, \eps+\eps'}\rho_3.
     \end{align}
 \end{lem}
-
-\fi
-
-\Ethan{Chernoff bound looks like it's in the middle of nowhere. Just get rid of it.}
-
-\iffalse
-\subsection{Chernoff bound}
-
-\begin{thm}
-\label{thm:Chernoff}
-Let $X=\sum_{i=1}^n X_i$ where $X_i$ are independent Bernoulli trials, and $\mu=\E[X]$.
-Then for all $0<\delta<1$,
-$$P[\abs{X-\mu}\geq\delta\mu]\leq2e^{-\frac{\mu\delta^2}{3}}.$$
-\end{thm}
 
 \fi
 
