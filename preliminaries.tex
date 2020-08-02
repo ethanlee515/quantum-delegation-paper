@@ -24,7 +24,7 @@ We additionally denote the following for states that are only computationally in
 \label{def:comp-indis}
     Two ensemble of states $\set{\rho_{1,\lambda}}_{\lambda\in\bbN}$ and $\set{\rho_{2,\lambda}}_{\lambda\in\bbN}$ are \emph{$\eps$-computationally indistinguishable} if for all $\BQP$ distinguishers $\mathsf{D}$ and $\lambda\in\bbN$,
     $$\abs{\Pr\left[\mathsf{D}(\rho_{1,\lambda})=1\right]-\Pr\left[\mathsf{D}(\rho_{2,\lambda})=1\right]}\leq\eps(\lambda).$$
-    We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
+    % We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
     We drop the $\eps$ parameter when it is negligible.
     We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized states as appropriate.
     We also extend it to distributions by treating them as mixed states.
@@ -137,12 +137,13 @@ Also discuss whether soundness error needs additional param. besides inherited f
                 \end{cases}$$.
             \end{itemize}
             It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\eps$.
-		\item (Computational soundness): \Ethan{TODO write in terms of comp. indistinguishability?}
+		\item (Computational soundness):
+			\Ethan{tried to write in terms of indistinguishability}
         For all cheating $\BQP$ prover $P^*$, $\BQP$ distinguisher $\mathsf{D}$, accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
             sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$,
             define $d, z, z_{ideal}$ by the same experiment as above.
-            It holds that
-            $$\abs{\Pr[\mathsf{D}(1^{\lambda}, d,z) = 1] - \Pr[\mathsf{D}(1^{\lambda}, d,z_{ideal}) = 1]} \leq \eps $$
+            It holds that $(d, z)$ is $\eps$-computationally indistinguishable to $(d, z_{ideal})$ over $\lambda$.
+            % $$\abs{\Pr[\mathsf{D}(1^{\lambda}, d,z) = 1] - \Pr[\mathsf{D}(1^{\lambda}, d,z_{ideal}) = 1]} \leq \eps $$
     \end{itemize}
 \end{definition}
 
