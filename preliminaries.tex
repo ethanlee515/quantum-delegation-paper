@@ -68,10 +68,11 @@ Try to claim our definitions is WLOG/general/intuitive
 \subsection{Quantum Prover Interactive Protocols (QPIP)}
 
 We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
-
-\Ethan{``Streaming" model; can send qubits one-by-one to let client measure many qubits this way.
-
-Tone: Review/introduce. It's not new. Use Urmila's use case as example.}
+When the client has limited quantum capabilities, this is a ``streaming" model.
+That is, the server can send qubits one-by-one to let client measure them sequentially.
+even if the client cannot hold the entire quantum message,
+We do not care about rounds-complexity unless the client is fully classical,
+in which case this model specializes to the standard rounds-based model.
 
 \begin{definition}
     A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
