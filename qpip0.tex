@@ -1,13 +1,17 @@
 \section{$\SampBQP$ Delegation Protocol for Fully Classical Client}
 \label{sec:qpip0_all}
 
-In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost its soundness, we run $m=\poly(\lambda)$ copies in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error $1/\sqrt{m}$.
+In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which we restate as Protocol~\ref{proto:urmila4} \Ethan{Just say $\PiMeasure$}, with \Cref{QPIP1thm} to create a delegation protocol for $\SampBQP$ for fully classical clients. A direct composition results in Protocol~\ref{proto:qpip0_naive}. However, as we will see in \Cref{sec:urmila4}, Protocol~\ref{proto:urmila4} has a peculiar and weak guarantee, so \Cref{proto:qpip0_naive} don't have any reasonable completeness and soundness. To boost its soundness, we run $m=\poly(\lambda)$ copies in parallel and test on $m-1$ copies of them, resulting in Protocol~\ref{proto:QPIP0samp}. We use techniques from \cite{arXiv:ChiaChungYam19} to prove that Protocol~\ref{proto:QPIP0samp} has soundness error \Ethan{Phrase in terms of accuracy param instead} $1/\sqrt{m}$.
+
+\Ethan{Go even more high level. This roadmap is confusing to people who aren't familiar with the relevant literature}
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
 In her groundbreaking work, Mahadev gives a $\QPIP_0$ protocol for $\BQP$ languages.
 The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that allow a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
-Specifically, the verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$, before sending $pk$ to the prover. The prover commits to a state $\rho$ of its choice using $pk$ and replies with its commitment. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply. \cite{FOCS:Mahadev18a} shows a ``binding" property of $\PiMeasure$: if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ the verifier has picked at the beginning.
+\Ethan{Talk about how $\PiMeasure$ + $\cVGS$ gives $\QPIP_0$ protocol for $\BQP$}
+
+Specifically, the verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$, before \Ethan{bad choice of word?} sending $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply. \cite{FOCS:Mahadev18a} shows a ``binding" property of $\PiMeasure$: if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ the verifier has picked at the beginning.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -40,7 +44,7 @@ instead, it achieves the following \emph{binding property} that gives weaker gua
 
 \begin{lemma}[binding property of $\PiMeasure$]
 	\label{lem:urmila-binding}
-	Let $\PMeasureStar$ be a $\BQP$ cheating prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
+	Let $\PMeasureStar$ be a $\BQP$ cheating prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability \Ethan{Not precise enough - probability over what? For all $h$ or $pk$?} $1-\negl(\lambda)$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
 	\iffalse    
 	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
 	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
@@ -89,10 +93,11 @@ However, we can show that \Cref{proto:qpip0_naive} has a binding property simila
 \begin{theorem}[binding property of $\PiNaive$]
 	\label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
-	Under the QLWE assumption, if conditioned on $\PNaiveStar$ not aborting (ie. $y\ne\bot$), $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
-	then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
+	Under the QLWE assumption, \Ethan{Add ``if P satisfies that..."} if conditioned on $\PNaiveStar$ not aborting (ie. $y\ne\bot$) \Ethan{Make even more explicit ie. say not aborting on round 2}, $\PNaiveStar$ passes the testing round with probability $1-\negl(\lambda)$,
+	then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$. \Ethan{Check if this notation is defined; give reminder even if it is}
 \end{theorem}
 \begin{proof}
+	\Ethan{We first introduce the \emph{dummy strategy} that we will use...}
 	If the prover chooses $\rho$ as the maximally mixed state and executes the rest of the protocol honestly,
 	it would be accepted in the testing round with probability $1-\negl(\lambda)$,
 	but has negligible probability passing the verification after the Hadamard round.
@@ -235,7 +240,7 @@ This doesn't work, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{
 Instead, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy,
 and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
 We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time.
-To begin, for all $i\in[m]$, we decompose $\ket{\psi}$ as follows:
+To begin, for all $i\in[m]$, we decompose $\ket{\psi}$ as follows: \Ethan{Paragraph break before this; should define everything earlier again}
 \begin{align} \label{eq:partition-string}
 	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
 	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
@@ -245,6 +250,8 @@ To begin, for all $i\in[m]$, we decompose $\ket{\psi}$ as follows:
 \end{align}
 where we use $\ket{\psi_{err,i,\gamma}}$ to denote the error state we get from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
+\Ethan{TODO explain more pointwise vs average argument w.r.t. $pk, y$}
+
 We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,i,z}$.
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
@@ -252,8 +259,8 @@ We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string cor
 $$z_i\defeq \E_{pk,y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi}}^2\proj{z},$$
 where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round.
 Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
-\Ethan{Here $y$ is implicitly dependent on $pk$. Might need to clarify what the expected value over $y$ means?}
 Now we define
+\Ethan{TODO what is this? Need intuitive idea.}
 \begin{align}
 	z_{good, i}=\E_{\gamma, pk, y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi_{1^{i-1}1,\gamma}}}^2\proj{z}
 \end{align}
@@ -291,10 +298,12 @@ However, before doing so, we first present a couple lemmas that we will need.
 \end{proof}
 
 Now we're ready to show that $z_{i, good}$ is close to $z_i$.
+\Ethan{Not really ``close to" though. Could use a lot more discussion here anyways.}
 
 \begin{theorem}
 	\label{thm:zi-zgoodi}
 	$$\tr\abs{z_i-z_{i, good}}\leq\E_\gamma\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
+	\Ethan{This should've been a lemma. Same for the next theorem.}
 \end{theorem}
 \begin{proof}
 	We rewrite \Cref{eq:partition-string}.
