@@ -9,9 +9,10 @@ In this section, we combine the core protocol from \cite{FOCS:Mahadev18a}, which
 
 In her groundbreaking work, Mahadev gives a $\QPIP_0$ protocol for $\BQP$ languages.
 The core of this work is a 4-round $\QPIP_0$ protocol $\PiMeasure$ that allow a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
-\Ethan{Talk about how $\PiMeasure$ + $\cVGS$ gives $\QPIP_0$ protocol for $\BQP$}
+One can see $\cVGS$ as a $\QPIP_1$ protocol where the prover sends copies of ground state to the verifier to measure;
+which can then be transformed to a $\QPIP_0$ protocol by replacing the verifier's measurement with calls to $\PiMeasure$.
 
-Specifically, the verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$, before \Ethan{bad choice of word?} sending $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment. The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply. \cite{FOCS:Mahadev18a} shows a ``binding" property of $\PiMeasure$: if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ the verifier has picked at the beginning.
+The details of $\PiMeasure$ is as follows. The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment. \Ethan{Need more intuition} The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply. \cite{FOCS:Mahadev18a} shows a ``binding" property of $\PiMeasure$: if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ the verifier has picked at the beginning.
 
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -89,6 +90,11 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 
 There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. First, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, the protocol has completeness error at least $1/2$. Moreover, since Protocol~\ref{proto:urmila4} does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round, with only a constant $1/2$ probability of being caught.
 However, we can show that \Cref{proto:qpip0_naive} has a binding property similar to \Cref{proto:urmila4}.
+Namely, if a cheating prover passes the testing round with overwhelming probability conditioned on it doesn't ``give up" on the 2nd message, then... \Ethan{Word this better}
+The intuition of the proof is to construct another $\BQP$ prover $\Pstar$ which, intuitively, uses $\PNaiveStar$'s strategy when it doesn't abort,
+otherwise commits with the maximally mixed states.\Ethan{Finish this high level proof sketch}
+...in order to use \Cref{lem:urmila-binding}.
+We state the theorem and proof in full technical details as below.
 
 \begin{theorem}[binding property of $\PiNaive$]
 	\label{lem:naive-qpip0-binding}
@@ -97,11 +103,9 @@ However, we can show that \Cref{proto:qpip0_naive} has a binding property simila
 	then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$. \Ethan{Check if this notation is defined; give reminder even if it is}
 \end{theorem}
 \begin{proof}
-	\Ethan{We first introduce the \emph{dummy strategy} that we will use...}
-	If the prover chooses $\rho$ as the maximally mixed state and executes the rest of the protocol honestly,
-	it would be accepted in the testing round with probability $1-\negl(\lambda)$,
+	We first introduce the \emph{dummy strategy} where the prover chooses $\rho$ as the maximally mixed state and executes the rest of the protocol honestly.
+	It is straightforward to verify that this prover would be accepted in the testing round with probability $1-\negl(\lambda)$,
 	but has negligible probability passing the verification after the Hadamard round.
-	We call this the \emph{dummy strategy}.
 
 	Now we construct another cheating $\BQP$ prover $\Pstar$ that is perfect and non-aborting as follows.
 	For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
@@ -158,8 +162,7 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 			For $1\leq i\leq m$, if $i\ne r$ then set $c_i\leftarrow 0$, else set $c_i\leftarrow 1$.
 			It sends $\vec{c}=(c_1,\ldots,c_m)$ to the prover.
 		\item The prover generates $\vec{a}$ as in \stepref{measure4} of $\PiMeasure$, and sends it back to the verifier.
-		\item \label{step:multi-testing}
-			The verifier computes the outcome for each round as in \stepref{naive-output} of $\PiNaive$.
+		\item The verifier computes the outcome for each round as in \stepref{naive-output} of $\PiNaive$.
 			If any of the testing round copies are rejected, the verifier outputs $(\Rej, \bot)$.
 			Else, it outputs the result from the Hadamard round copy.
 	\end{enumerate}
@@ -297,14 +300,16 @@ However, before doing so, we first present a couple lemmas that we will need.
 	\end{align}
 \end{proof}
 
-Now we're ready to show that $z_{i, good}$ is close to $z_i$.
-\Ethan{Not really ``close to" though. Could use a lot more discussion here anyways.}
+Now we can estimate $z_i$ using $z_{i, good}$, with errors on the orders of $\norm{\ket{\psi_{1^{i-1}0}}}$.
+This error might not be small in general,
+but we can average it out later by considering uniformly random $i\in[m]$.
+The analysis is tedious but straightforward;
+we simply expand $z_i$ and bound the terms other than $z_{i, good}$.
 
-\begin{theorem}
+\begin{lemma}
 	\label{thm:zi-zgoodi}
 	$$\tr\abs{z_i-z_{i, good}}\leq\E_\gamma\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
-	\Ethan{This should've been a lemma. Same for the next theorem.}
-\end{theorem}
+\end{lemma}
 \begin{proof}
 	We rewrite \Cref{eq:partition-string}.
 	$$\ket{\psi}=\E_{\gamma}\left[
@@ -354,10 +359,10 @@ Now we're ready to show that $z_{i, good}$ is close to $z_i$.
 Now let $z_{true}$, as a mixed state, be correctly sampled from the $\SampBQP$ instance $D_x$,
 and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 We show that $z_{ideal, i}$ is close to $z_{good, i}$.
-\begin{theorem}
+\begin{lemma}
 	\label{thm:zgood-zideal}
 	$z_{good, i}$ is $O(\eps)$-computationally indistinguishable to $z_{ideal, i}$.
-\end{theorem}
+\end{lemma}
 \begin{proof}
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for Protocol~\ref{proto:QPIP0samp}, consider the following composite strategy of the prover for the naive $\QPIP_0$ Protocol, Protocol~\ref{proto:qpip0_naive}. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of Protocol~\ref{proto:qpip0_naive} where Protocol~\ref{proto:urmila4} is run, so we describe the prover's action in turns of the four rounds of communication in Protocol~\ref{proto:urmila4}.
 
