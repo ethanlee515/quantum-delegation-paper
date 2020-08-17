@@ -15,18 +15,12 @@ Using techniques from \cite{arXiv:ChiaChungYam19}, we prove that $\PiSampZ$ has 
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
-$\PiMeasure$ is a 4-round protocol played between a verifier (which corresponds to our client) and a prover (which corresponds to our server).
-The first two rounds are similar to the typical commit phase.
+$\PiMeasure$ is a 4-round protocol between a verifier (which corresponds to our client) and a prover (which corresponds to our server).
 The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
-\Ethan{Fix the following...}
-The verifier at this point chooses between the ability to catch cheating provers and generate outputs.
-If it suspects a prover is cheating, it runs a \emph{testing round},
-which catches cheating provers at the cost of obtaining outputs.
-Otherwise it runs a \emph{Hadamard round},
-where it obtains a potentially incorrect output depending on whether the prover cheats.
-
-The verifier then uniformly chooses between two options: do a \emph{testing round} or do a \emph{Hadamard round}. He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply.
-
+The verifier must then choose between two options: do a \emph{testing round} or do a \emph{Hadamard round}.
+In a testing round, the verifier can catch cheating provers, but generates no outputs;
+on the other hand, in a Hadamard round the verifier loses the opportunity to catch cheating provers.
+He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply.
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
 \begin{protocol}{Mahadev's measurement protocol $\PiMeasure=(\PMeasure, \VMeasure)$}
@@ -53,7 +47,7 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 \end{protocol}
 
 $\PiMeasure$ has negligible completeness errors.
-It also gives the following \emph{binding property} against cheating provers:
+It gives the following \emph{binding property} against cheating provers:
 if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ was chosen at the beginning.
 \Ethan{Say somewhere that a ``prover" is fully described by two unitaries}
 
