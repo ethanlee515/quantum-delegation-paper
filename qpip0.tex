@@ -17,7 +17,7 @@ Using techniques from \cite{arXiv:ChiaChungYam19}, we prove that $\PiSampZ$ has 
 
 $\PiMeasure$ is a 4-round protocol between a verifier (which corresponds to our client) and a prover (which corresponds to our server).
 The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
-The verifier must then choose between two options: do a \emph{testing round} or do a \emph{Hadamard round}.
+The verifier must then choose between two options: a \emph{testing round} or a \emph{Hadamard round}.
 In a testing round, the verifier can catch cheating provers, but generates no outputs;
 on the other hand, in a Hadamard round the verifier loses the opportunity to catch cheating provers.
 He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose the Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply.
