@@ -50,15 +50,9 @@ $\PiMeasure$ has negligible completeness errors.
 It gives the following \emph{binding property} against cheating provers:
 if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ was chosen at the beginning.
 
-\begin{lemma}[binding property of $\PiMeasure$]
+\begin{lemma}[binding property of $\PiMeasure$; special case of Claim 7.1 in \cite{FOCS:Mahadev18a}]
 	\label{lem:urmila-binding}
 	Let $\PMeasureStar$ be a $\BQP$ cheating prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$ for all $h$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
-	\iffalse    
-	Suppose that for all $\lambda\in\bbN$ and $h\in\zo^*$ \Ethan{or $\zo^n$?},
-	$\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$.
-	Then, under the QLWE assumption, there exists some $\rho$ so that for all $h$,
-	The verifier's output on the Hadamard round is $\negl(\lambda)$-computationally indistinguishable from $M_{XZ}(\rho, h)$.
-	\fi
 \end{lemma}
 
 We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$.
