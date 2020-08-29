@@ -47,10 +47,6 @@ Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corres
 
 \subsection{Sampling Problems}
 
-\Ethan{After this point, add more remarks in this section}
-
-\Ethan{Mention again why sampling is worth studying for quantum case}
-
 We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
 
 \begin{definition} [sampling problem]
@@ -70,11 +66,11 @@ Try to claim our definitions is WLOG/general/intuitive
 \subsection{Quantum Prover Interactive Protocols (QPIP)}
 
 We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
-When the client has limited quantum capabilities, this is a ``streaming" model.
-That is, the server can send qubits one-by-one to let client measure them sequentially.
-even if the client cannot hold the entire quantum message,
-We do not care about rounds-complexity unless the client is fully classical,
-in which case this model specializes to the standard rounds-based model.
+When the client has limited quantum memories, this is a ``streaming" model.
+That is, the server can send qubits one-by-one to let client measure them sequentially,
+even if the client cannot hold the entire quantum message.
+When the client is fully classical,
+this model specializes to the standard rounds-based model.
 
 \begin{definition}
     A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
@@ -85,23 +81,7 @@ in which case this model specializes to the standard rounds-based model.
     \end{itemize}
 \end{definition}
 
-\Ethan{Need discussion for dfn. 2.7.
-Currently there's a remark after about not needing soundness error.
-Discuss more.
-
-Difference between SampBQP and BQP definitions.
-In particular, SampBQP has additional output (not 0/1).
-
-Two sources of error. Kinda like ``DI" device independent/QKD?
-Condition on acc...
-Really depends on target audience. If not crypto...
-
-Maybe just remark that there are 2 params but this definition captures both
-
-Again, it's different from BQP so explain why/where.
-Make it more friendly to people who aren't familiar with this approach.
-
-Also discuss whether soundness error needs additional param. besides inherited from SampBQP}
+It is straightforward to write down what it means for a $\QPIP_\tau$ protocol to recognize a $\BQP$ language.
 
 \begin{definition}
     Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
@@ -113,6 +93,12 @@ Also discuss whether soundness error needs additional param. besides inherited f
         \item (Soundness): For all cheating $\BQP$ prover $P^*$, sufficiently large security parameter $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
     \end{itemize}
 \end{definition}
+
+It is less simple to state what it means for a $\QPIP_\tau$ protocol to solve a $\SampBQP$ instance.
+We cannot hope for the protocol's output distribution to be close to the true distribution,
+since a cheating prover can abort to force the verifier output $\bot$ with arbitrary probability.
+The natural relaxation is to first condition on acceptance, then require the same of the output distribution.
+By doing so, we arrive at the following definition.
 
 \begin{definition}
     \label{dfn:stats-secure-proto-sampbqp}
@@ -145,7 +131,6 @@ Also discuss whether soundness error needs additional param. besides inherited f
             sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$,
             define $d, z, z_{ideal}$ by the same experiment as above.
             It holds that $(d, z)$ is $\eps$-computationally indistinguishable to $(d, z_{ideal})$ over $\lambda$.
-            % $$\abs{\Pr[\mathsf{D}(1^{\lambda}, d,z) = 1] - \Pr[\mathsf{D}(1^{\lambda}, d,z_{ideal}) = 1]} \leq \eps $$
     \end{itemize}
 \end{definition}
 
