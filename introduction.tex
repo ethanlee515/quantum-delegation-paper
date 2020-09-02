@@ -39,6 +39,7 @@ Philosophically, the outcomes of quantum mechanical experiments are usually samp
 Moreover, a lot of quantum algorithms from Shor's~\cite{Shor} and Grover's~\cite{Grover} algorithms to some recent developments in machine learning and optimization (e.g.~\cite{brando_et_al:LIPIcs:2019:10603, AGGW17,pmlr-v97-li19b}) contain a significant quantum sampling component.
 The fact that almost all quantum supremacy tasks (e.g.,~\cite{Boson, IQP, nature-google}) are sampling ones strengthens the importance of delegation for quantum sampling problems.
  %Even though the relation between $\BQP$ and $\SampBQP$ is relatively understood in the plain model,
+ \Ethan{Maybe replace the following sentence with the actual challenges? Ie. unclear how to run many copies to reduce errors; classical approach with PRG seed doesn't work either}
 However, it is far from clear whether the subtle difference between $\BQP$ and its sampling version could lead to
 technical barrier in the context of CVQC, or
  %what are the potential technical challenges raised by their subtle differences in the context of CVQC and how to resolve them is however far from clear.
@@ -191,8 +192,6 @@ Some of our parameter dependence inherits from previous works (e.g.~\cite{FOCS:M
 It will be extremely interesting to improve the parameter dependence with potentially new techniques. 
 
 \Ethan{TODO add organization of paper}
-
-\Ethan{TODO Mention why sampling is trivial classically (start with PRG seed and do it bitwise) but is hard for quantum (not even easy to amplify)}
 
 % \begin{itemize}
 %     \item Open questions, and also explain for some associated high-cost. specifically
