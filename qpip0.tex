@@ -3,17 +3,14 @@
 
 In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients following the approach taken in \cite{FOCS:Mahadev18a}.
 The core protocol, $\PiMeasure$, allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
-By asking the prover to prepare and commit copies of a certificate for the client to verify, one obtains a $\QPIP_0$ protocol for $\BQP$.
+Composing it with $\QPIP_1$ protocol for $\BQP$ in \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
+Now we try to compose $\PiMeasure$ similarly with our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
 
-Composing our $\PiSamp$ with $\PiMeasure$ directly, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
-This is due to $\PiMeasure$ itself having peculiar and weak guarantees:
-particularly, the client doesn't always obtain measurement outcomes even if the server were honest.
-To overcome this challenge, we run $m=\poly(\lambda)$-copies of $\PiNaive$ in parallel to produce a constant-round $\PiSampZ$.
-Using techniques from \cite{arXiv:ChiaChungYam19}, we prove that $\PiSampZ$ has accuracy error $O(1/\sqrt{m})$.
-
-\Ethan{Above is too concise; might be difficult to read. Either just add ``as we will see..." or expand.}
-
-\Ethan{Maybe explain technical stuff here?}
+A direct composition $\PiSamp$ with $\PiMeasure$, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
+As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
+the client doesn't always obtain measurement outcomes even if the server were honest.
+To overcome this challenge, we run many copies of $\PiNaive$ in parallel so the verifier can generate its outputs from some copy.
+We spend the majority of this section showing the soundness of this parallel repetition.
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
@@ -21,7 +18,7 @@ $\PiMeasure$ is a 4-round protocol between a verifier (which corresponds to our 
 The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
 The verifier must then choose between two options: do a \emph{testing round} or a \emph{Hadamard round}.
 In a testing round the verifier can catch cheating provers, but generates no outputs;
-on the other hand, in a Hadamard round the verifier loses the opportunity to catch cheating provers.
+on the other hand, in a Hadamard round the verifier loses the opportunity \Ethan{focus on what the round can do, not what they can't} to catch cheating provers.
 He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply.
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
