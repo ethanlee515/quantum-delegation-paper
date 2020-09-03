@@ -3,10 +3,10 @@
 
 In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients following the approach taken in \cite{FOCS:Mahadev18a}.
 The core protocol, $\PiMeasure$, allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
-Composing it with $\QPIP_1$ protocol for $\BQP$ in \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
-Now we try to compose $\PiMeasure$ similarly with our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
+Composing it with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
+We now try to compose $\PiMeasure$ similarly with our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
 
-A direct composition $\PiSamp$ with $\PiMeasure$, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
+A direct composition between $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
 As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
 the client doesn't always obtain measurement outcomes even if the server were honest.
 To overcome this challenge, we run many copies of $\PiNaive$ in parallel so the verifier can generate its outputs from some copy.
@@ -17,8 +17,8 @@ We spend the majority of this section showing the soundness of this parallel rep
 $\PiMeasure$ is a 4-round protocol between a verifier (which corresponds to our client) and a prover (which corresponds to our server).
 The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
 The verifier must then choose between two options: do a \emph{testing round} or a \emph{Hadamard round}.
-In a testing round the verifier can catch cheating provers, but generates no outputs;
-on the other hand, in a Hadamard round the verifier loses the opportunity \Ethan{focus on what the round can do, not what they can't} to catch cheating provers.
+In a testing round the verifier can catch cheating provers,
+and in a Hadamard round the verifier receives some measurement outcome.
 He sends his choice to the prover, and prover replies accordingly. If the verifier chose testing round, he checks the prover's reply against the previous commitment, and rejects if he sees an inconsistency. If the verifier chose Hadamard round, he calculates $M_{XZ}(\rho, h)$ based on the reply.
 We now formally describe the interface of $\PiMeasure$ while omitting the implementation details.
 
@@ -47,7 +47,7 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 
 $\PiMeasure$ has negligible completeness errors.
 It gives the following \emph{binding property} against cheating provers:
-if a prover would always succeed on the testing round, then there exists some $\rho$ so that the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round, no matter what $h$ was chosen at the beginning.
+if a prover would always succeed on the testing round, then there exists some $\rho$ so that for any $h$ the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round.
 
 \begin{lemma}[binding property of $\PiMeasure$; special case of Claim 7.1 in \cite{FOCS:Mahadev18a}]
 	\label{lem:urmila-binding}
@@ -90,8 +90,8 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 
 There are several problems with using $\PiNaive$ as a $\SampBQP$ protocol. First, since the verifier doesn't get a sample if he had chosen the testing round in Step~\ref{step:c-urmila-in-naive}, the protocol has completeness error at least $1/2$. Moreover, since $\PiMeasure$ does not check anything on the Hadamard round, a cheating prover can give up passing the testing round and breaks the commitment on the Hadamard round, with only a constant $1/2$ probability of being caught.
 However, we can show that $\PiNaive$ has a binding property similar to $\PiMeasure$:
-if a cheating prover $\PNaiveStar$, conditioned on it doesn't ``give up" \Ethan{Ambiguous. also need to associate this with $y=\bot$ if we haven't yet.} on the second message \Ethan{Move this clause to the end and say ``whenever it doesn't abort"}, passes the testing round with overwhelming probability,
-then the output $(d, z)\leftarrow(\PNaiveStar, \VNaive)$ is close to $(d, z_{ideal})$.
+if a cheating prover $\PNaiveStar$ passes the testing round with overwhelming probability whenever it doesn't abort on the second message,
+then the corresponding output $(d, z)\leftarrow(\PNaiveStar, \VNaive)$ is close to $(d, z_{ideal})$.
 Recall the ideal output
 $$\begin{cases}
 	z_{ideal}=\bot & \text{if } d=\Rej\\
@@ -114,7 +114,7 @@ We now state the theorem and proof.
 	It is straightforward to verify that this prover would be accepted in the testing round with probability $1-\negl(\lambda)$,
 	but has negligible probability passing the verification after the Hadamard round.
 
-	Now we construct another cheating $\BQP$ prover $\Pstar$ that is perfect \Ethan{``almost perfect"?} and non-aborting as follows.
+	Now we construct another cheating $\BQP$ prover $\Pstar$ that is non-aborting and almost perfect as follows.
 	For the second message, run $(y, \sigma)\leftarrow\cPNaiveStar{2}(pk, \rho)$.
 	If $y\ne\bot$, then reply $y$;
 	else, run the corresponding step of the dummy strategy and reply with its results.
@@ -143,7 +143,10 @@ We now state the theorem and proof.
 We now introduce our $\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$.
 It is essentially a $m$-fold parallel repetition of $\PiNaive$,
 but instead of having each copy running testing round or Hadamard round uniformly at random, we randomly pick one copy to run Hadamard round to get our samples and run testing round on all other $m-1$ copies.
-\Ethan{Maybe say the $1/m$ thing here?}
+Intuitively, if the server wants to cheat by sending something not binding on some copy,
+he will be caught when that copy is a testing round, which is with probability $1-1/m$.
+This over-simplified analysis does not take into account that the server might create entanglements between the copies, however, so the correct analysis is more technically involved.
+
 In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure$ in details in order to introduce notations that we need in our analysis.
 
 \begin{protocol}{$\QPIP_0$ protocol $\PiSampZ$ for $\SampBQP$}
@@ -175,13 +178,22 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 			Else, it outputs the result from the Hadamard round copy.
 	\end{enumerate}
 \end{protocol}
+By inspection, $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
+To show that it is computationally sound, we first use the partition lemma from \cite{arXiv:ChiaChungYam19}.
+It says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.
+$G_{0,i}$ represents the subspace where the server knows the answer to the testing round on the $i$-th copy, while $G_{1,i}$ represents the subspace where the server doesn't.
+By using this partition lemma iteratively, we can split the prover's internal state $\ket{\psi}$ by the first copy a component will fail on a testing round. 
+That is, $\ket{\psi}=\ket{\psi_0}+\ket{\psi_{10}}+\ldots+\ket{\psi_{1^{m-1}0}}+\ket{\psi_{1^m}}$, where $\ket{\psi_{1^i0}}$ represents the component that would pass the first $i$ testing rounds then gets rejected by the next one, and $\ket{\psi_{1^m}}$ represents the ``good" component where the prover knows the answer to every testing round.
+% As each $\ket{\psi_{1^i0}}$ survives only when the Hadamard round choice is $c=e_{i+1}$, that is with low probability, the output corresponding to $\ket{\psi}$ would be close to that of the subnormalized state $\ket{\psi_{1^m}}$.
 
-Clearly \Ethan{If it's clear then just say why. Or say ``by inspection..."} $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
-We now show that it is computationally sound. \Ethan{Lacking intuition currently...}
-We first use the following partition lemma from \cite{arXiv:ChiaChungYam19}, which intuitively says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ represents the subspace that are rejected with high probability \Ethan{change the characterization to whether the prover ``knows"...} in the testing round of $i$-th copy, while $G_{1,i}$  represents the subspace accepted with high probability\footnote{This is also not technically correct as we will discuss later.} in the testing round of $i$-th copy.
-\Ethan{Maybe technical overview goes here. That ``tree or something"...}
-\Ethan{TODO then talk about why other naive approaches don't work: stuff doesn't commute and whatnot}
-Also as a careful reader might have noticed, the prover's space don't split nicely into parts of very high accept probability in the testing round and parts with very low accept probability, as there will always be something in the middle. In \cite{arXiv:ChiaChungYam19} this is solved by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
+\Ethan{This paragraph needs more work}
+There is an additional issue, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m, \gamma}}$ is only binding for the $m$-th copy.
+To solve this problem, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy,
+and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
+We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time.
+
+Also as a careful reader might have noticed, in fact the prover's space don't always decompose cleanly. In \cite{arXiv:ChiaChungYam19} this is solved by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so they need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
+Now we give a formal description of the partition lemma.
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
 	Let $\lambda$ be the security parameter and  $\eps$ be the accuracy parameter \Ethan{Is this the global one?}. Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=\poly(\eps)$ and $T=1/\poly(\eps)$.
@@ -241,23 +253,14 @@ Also as a careful reader might have noticed, the prover's space don't split nice
 	\end{enumerate}
 \end{lemma}
 
-By using \Cref{lem:partition2} iteratively, we can decompose the prover's internal state.
-\Ethan{The following is still too quick. Don't use all properties up front in short succession.}
+We now decompose the prover's internal state by using \Cref{lem:partition2} iteratively.
 Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
 we denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define \Ethan{This isn't correct; $\gamma$ should be independent for each copy}
 $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}\ldots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}.$$
-For example \Ethan{``take $k=3$"...}, $\ket{\psi_{110, \gamma}}$ intuitively corresponds to the component that would pass the first two copies' testing rounds and fail the third one.
-\Ethan{Comment about $\ket{\psi_{good}}$ or whatever it is}
-At this point it is tempting to decompose $\ket{\psi}$ into $\ket{\psi_{s, \gamma}}$ where $s\in\zo^m$,
-and say that $\ket{\psi_{1^m, \gamma}}$ is the only component that is not rejected with high probability.
-This doesn't work, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m, \gamma}}$ is only binding for the $m$-th copy.
-Instead, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy,
-and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
-We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time.
 
-To begin, let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$.
 For all $i\in[m]$, we decompose $\ket{\psi}$ as
+\Ethan{Maybe we can delete a couple of the following equations now, since the intuitive idea was presented earlier?}
 \begin{align} \label{eq:partition-string}
 	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
 	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
@@ -265,9 +268,7 @@ For all $i\in[m]$, we decompose $\ket{\psi}$ as
 	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}} \nn\\
 	=&\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 \end{align}
-where
-$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}\ldots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}$$
-and $\ket{\psi_{err,i,\gamma}}$ denotes the error state from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
+where $\ket{\psi_{err,i,\gamma}}$ denotes the error state from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
 We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,i,z}$.
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
@@ -304,6 +305,7 @@ Before doing so, we present a couple technical lemma.
 \end{lemma}
 \begin{proof}
 	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
+	\Ethan{Is this really true?}
 	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
 	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
 	\begin{align} \label{eq:rejected-d}
