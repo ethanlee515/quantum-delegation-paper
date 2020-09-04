@@ -47,20 +47,13 @@ Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corres
 
 \subsection{Sampling Problems}
 
-We define the sampling version of $\BQP$ based on \cite{aaronson_2013}.
+We define the sampling version of $\BQP$ based on \cite{aaronson_2013, aaronson_arkhipov_2011}.
+The definition of $\SampBQP$ allows inverse-polynomial error in order to capture some characteristics of optics-based quantum computing implementations.
 
 \begin{definition} [sampling problem]
     \label{dfn:sampling-problem}
     A \emph{sampling problem} is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{m(n)}$ for some fixed polynomial $m$.
 \end{definition}
-
-\Ethan{see Scott's paper to see why inverse poly there. Maybe it's just because it's required for his result to work.
-More generally, need discussions on sampling vs non sampling
-Try to claim our definitions is WLOG/general/intuitive
-}
-This version has an inverse-polynomial error because... \cite{aaronson_arkhipov_2011}
-test citation
-\Ethan{TODO cite the other paper and something about near-term quantum computers}
 
 \begin{definition} [$\SampBQP$]
     $\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\eps \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\eps)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$.
