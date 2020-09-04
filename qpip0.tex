@@ -267,13 +267,17 @@ We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string 
 Note that $P_{acc,i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$.
 
 We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
-$$z_i\defeq \E_{pk,y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi}}^2\proj{z},$$
+\begin{equation}
+	\label{eq:zi-def}
+	z_i\defeq \E_{pk,y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi}}^2\proj{z},
+\end{equation}
 where $\ket{e_i,\psi}=\ket{e_i}_\regC\ket{\psi}_{\regX,\regZ}$ and $U$ is the unitary the prover applies on the last round.
 Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everything has fixed $\vec{pk}$ and $\vec{y}$.
 Now we define
-\begin{align}
+\begin{equation}
+	\label{eq:zgoodi-def}
 	z_{good, i}=\E_{\gamma, pk, y} \sum_z \norm{P_{acc,i,z} U\ket{e_i,\psi_{1^{i-1}1,\gamma}}}^2\proj{z}
-\end{align}
+\end{equation}
 as the output corresponding to the component that would pass all $i$ testing rounds.
 We will show that it is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to $z_i$.
 Before doing so, we present a couple technical lemma.
@@ -324,7 +328,7 @@ we simply expand $z_i$ and bound the terms other than $z_{i, good}$.
 	$$\ket{\psi}=\E_{\gamma}\left[
 		\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 	\right]$$
-	and expand $z_i$ as
+	and expand $z_i$ from \Cref{eq:zi-def} as
 	\begin{align}
 		z_i=& z_{good,i}+ \E_{pk, y, \gamma} \sum_z \L[\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U   \sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}}+
 		\sum_{k=0}^{i-1} \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^i,\gamma}}  \R. \nn \\
@@ -348,8 +352,7 @@ we simply expand $z_i$ and bound the terms other than $z_{i, good}$.
 	\end{align*}
 	by the triangle inequality.
 	The last three error terms sum to $O\L(\frac{m^2}{\sqrt{T}}\R)$ by \Cref{lem:samp-tech} and \Cref{property:partition-err} of \Cref{lem:partition2}.
-
-	Now by \Cref{lem:samp-tech} and \Cref{lem:partition-testing}, we see that
+	As for the first two terms, by \Cref{lem:samp-tech} and \Cref{lem:partition-testing}, we see that
 	\begin{align*}
 		\sum_z \sum_{k=0}^{i-1}\sum_{j=0}^{i-1}
 		&\abs{\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,i,z}U \ket{\psi_{1^j0,\gamma}}} \\
