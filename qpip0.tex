@@ -106,9 +106,8 @@ We now state the theorem and proof.
 \begin{theorem}[binding property of $\PiNaive$]
 	\label{lem:naive-qpip0-binding}
 	Let $\PNaiveStar$ be a cheating $\BQP$ prover for $\PiNaive$ and $\lambda$ be the security parameter.
-	Suppose that conditioned on $\PNaiveStar$ not aborting on the second round (ie. $y\ne\bot$), it passes the testing round with overwhelming probability.
-	Under the QLWE assumption, then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
-	\Ethan{Write the conditional probability in terms of equations}
+	Suppose that $\Prob{d=\Acc\mid y\ne\bot, c=0}$ is overwhelming, \Ethan{This good?}
+	under the QLWE assumption, then the verifier's output in the Hadamard round is $O(\eps)$-computationally indistinguishable from $(d, z_{ideal})$.
 \end{theorem}
 \begin{proof}
 	We first introduce the \emph{dummy strategy} where the prover chooses $\rho$ as the maximally mixed state and executes the rest of the protocol honestly.
@@ -187,9 +186,8 @@ By using this partition lemma iteratively, we can split the prover's internal st
 That is, $\ket{\psi}=\ket{\psi_0}+\ket{\psi_{10}}+\ldots+\ket{\psi_{1^{m-1}0}}+\ket{\psi_{1^m}}$, where $\ket{\psi_{1^i0}}$ represents the component that would pass the first $i$ testing rounds then gets rejected by the next one, and $\ket{\psi_{1^m}}$ represents the ``good" component where the prover knows the answer to every testing round.
 % As each $\ket{\psi_{1^i0}}$ survives only when the Hadamard round choice is $c=e_{i+1}$, that is with low probability, the output corresponding to $\ket{\psi}$ would be close to that of the subnormalized state $\ket{\psi_{1^m}}$.
 
-\Ethan{This paragraph needs more work}
 There is an additional issue, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m, \gamma}}$ is only binding for the $m$-th copy.
-To solve this problem, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy,
+To solve this problem, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy where $\ket{\psi_{1^i}}$ is binding,
 and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
 We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time.
 
