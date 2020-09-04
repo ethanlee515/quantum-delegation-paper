@@ -304,7 +304,6 @@ Before doing so, we present a couple technical lemma.
 \end{lemma}
 \begin{proof}
 	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
-	\Ethan{Is this really true?}
 	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
 	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
 	\begin{align} \label{eq:rejected-d}
