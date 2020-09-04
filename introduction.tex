@@ -38,12 +38,16 @@ We first observe that the \emph{sampling} version of $\BQP$ (e.g., the class $\S
 Philosophically, the outcomes of quantum mechanical experiments are usually samples or statistical information, which is well demonstrated in the famous double-slit experiment.
 Moreover, a lot of quantum algorithms from Shor's~\cite{Shor} and Grover's~\cite{Grover} algorithms to some recent developments in machine learning and optimization (e.g.~\cite{brando_et_al:LIPIcs:2019:10603, AGGW17,pmlr-v97-li19b}) contain a significant quantum sampling component.
 The fact that almost all quantum supremacy tasks (e.g.,~\cite{Boson, IQP, nature-google}) are sampling ones strengthens the importance of delegation for quantum sampling problems.
- %Even though the relation between $\BQP$ and $\SampBQP$ is relatively understood in the plain model,
- \Ethan{Maybe replace the following sentence with the actual challenges? Ie. unclear how to run many copies to reduce errors; classical approach with PRG seed doesn't work either}
-However, it is far from clear whether the subtle difference between $\BQP$ and its sampling version could lead to
-technical barrier in the context of CVQC, or
- %what are the potential technical challenges raised by their subtle differences in the context of CVQC and how to resolve them is however far from clear.
-whether one can develop a CVQC protocol for $\SampBQP$ based on Mahadev's technique~\cite{FOCS:Mahadev18a}.
+
+\Ethan{This paragraph is new and has to be checked}
+Even with the CVQC protocol for $\BQP$ from \cite{FOCS:Mahadev18a}, however,
+it is still unclear how to construct a CVQC protocol for $\SampBQP$.
+A protocol for classical sampling problems is usually obtained from one for decision problems,
+by fixing a seed for pseudorandomness then computing the output bit-by-bit.
+This does not work for $\SampBQP$ since randomness from quantum computations arises from measurements,
+where the outcome is generally different from one execution to the next.
+Furthermore, it is unclear how to even amplify the soundness of a sampling protocol by means of repetitions,
+especially considering the outputs from different executions might be correlated to begin with.
 
 Another desirable property of CVQC protocols is the \emph{blindness} where the prover cannot distinguish the particular computation in the protocol from another one of the same size, and hence is blind about the client's input.
 Historically, blindness has been achieved in the weaker formulations of CVQC based on various techniques: e.g., the measurement-based quantum computation exploited in~\cite{BFK09}, the quantum authentication scheme exploited in~\cite{arXiv:ABOEM17}, and the self-testing technique exploited in~\cite{Nat:RUV13}.
@@ -52,6 +56,7 @@ See for example the significant amount of efforts to add verifiability to blind 
 Achieving both blindness and verifiability on top of Mahadev's technique~\cite{FOCS:Mahadev18a} is a conceivably much more challenging task.
 The only successful attempt~\cite{FOCS:GheVid19} so far applies Mahadev's technique to the measurement-based quantum computation,
 whereas the analysis is still very specific to the construction.
+\Ethan{And it has inverse-poly errors, which makes it not constant-round to achieve negligible errors for $\BQP$, right?}
 Could there be a \emph{generic} way to achieve blindness and verifiability for CVQC protocols at the same time?
 
 
