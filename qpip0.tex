@@ -255,18 +255,11 @@ Now we give a formal description of the partition lemma.
 We now decompose the prover's internal state by using \Cref{lem:partition2} iteratively.
 Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
 we denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
-For all $k\leq m$, $d\in \zo^k$, $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and $\ket{\psi} \in H_{\regX,\regZ}$, define \Ethan{This isn't correct; $\gamma$ should be independent for each copy}
-$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma}\ldots G_{d_2,2,\gamma} G_{d_1,1,\gamma} \ket{\psi}.$$
+For all $k\leq m$, $d\in \zo^k$, $\gamma=(\gamma_1, \ldots, \gamma_k)$ where each $\gamma_j\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$ \Ethan{This ok?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define
+$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma_k}\ldots G_{d_2,2,\gamma_2} G_{d_1,1,\gamma_1} \ket{\psi}.$$
 
-For all $i\in[m]$, we decompose $\ket{\psi}$ as
-\Ethan{Maybe we can delete a couple of the following equations now, since the intuitive idea was presented earlier?}
-\begin{align} \label{eq:partition-string}
-	\ket{\psi} =& \ket{\psi_{0,\gamma}}+\ket{\psi_{1,\gamma}}+\ket{\psi_{err,1,\gamma}} \nn \\
-	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{11,\gamma}}+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}} \nn \\
-	=& \ket{\psi_{0,\gamma}}+\ket{\psi_{10,\gamma}}+\ket{\psi_{110,\gamma}}+\cdots+\ket{\psi_{1^{m-1}0,\gamma}}+\ket{\psi_{1^{m-1}1,\gamma}} \nn \\
-	&+\ket{\psi_{err,1,\gamma}}+\ket{\psi_{err,2,\gamma}}+\cdots+\ket{\psi_{err,m,\gamma}} \nn\\
-	=&\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
-\end{align}
+For all $i\in[m]$, we decompose
+	$$\ket{\psi}=\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}$$
 where $\ket{\psi_{err,i,\gamma}}$ denotes the error state from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
 We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,i,z}$.
