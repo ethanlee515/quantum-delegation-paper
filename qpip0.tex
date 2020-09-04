@@ -9,8 +9,9 @@ We now try to compose $\PiMeasure$ similarly with our $\QPIP_1$ protocol $\PiSam
 A direct composition between $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
 As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
 the client doesn't always obtain measurement outcomes even if the server were honest.
-To overcome this challenge, we run many copies of $\PiNaive$ in parallel so the verifier can generate its outputs from some copy.
-We spend the majority of this section showing the soundness of this parallel repetition.
+When that happens under the $\BQP$ context, the verifier can simply accept the prover at the cost of some soundness error;
+under our $\SampBQP$ context, however, we must run many copies of $\PiNaive$ in parallel so the verifier can generate its outputs from some copy.
+We spend the majority of this section analyzing the soundness of this parallel repetition.
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
