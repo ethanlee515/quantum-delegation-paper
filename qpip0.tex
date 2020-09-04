@@ -256,7 +256,10 @@ We now decompose the prover's internal state by using \Cref{lem:partition2} iter
 Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
 we denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
 For all $k\leq m$, $d\in \zo^k$, $\gamma=(\gamma_1, \ldots, \gamma_k)$ where each $\gamma_j\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$ \Ethan{This ok?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define
-$$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma_k}\ldots G_{d_2,2,\gamma_2} G_{d_1,1,\gamma_1} \ket{\psi}.$$
+\begin{equation}
+	\Cref{eq:partition-string}
+	\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma_k}\ldots G_{d_2,2,\gamma_2} G_{d_1,1,\gamma_1} \ket{\psi}.
+\end{equation}
 
 For all $i\in[m]$, we decompose
 	$$\ket{\psi}=\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}$$
@@ -319,7 +322,7 @@ we simply expand $z_i$ and bound the terms other than $z_{i, good}$.
 	$$\tr\abs{z_i-z_{i, good}}\leq\E_{pk, y, \gamma}\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
 \end{lemma}
 \begin{proof}
-	We rewrite \Cref{eq:partition-string}
+	We take expectation of \Cref{eq:partition-string} over $\gamma$
 	$$\ket{\psi}=\E_{\gamma}\left[
 		\sum_{j=0}^{i-1} \ket{\psi_{1^j0,\gamma}} +\ket{\psi_{1^i,\gamma}} +\sum_{j=1}^{i}\ket{\psi_{err,j,\gamma}}
 	\right]$$
