@@ -93,9 +93,7 @@ It is straightforward to write down what it means for a $\QPIP_\tau$ protocol to
 It is less simple to state what it means for a $\QPIP_\tau$ protocol to solve a $\SampBQP$ instance.
 We cannot hope for the protocol's output distribution to be close to the true distribution,
 since a cheating prover can abort to force the verifier output $\bot$ with arbitrary probability.
-The natural relaxation is to first condition on acceptance, then require the same of the output distribution.
-We must also add that the acceptance probability is at least noticeable.
-By combining these two conditions, we arrive at the following definition.
+On the other hand, we can ask that the output distribution to be close to the true one whenever the protocol does not abort.
 
 \begin{definition}
     \label{dfn:stats-secure-proto-sampbqp}
