@@ -46,7 +46,7 @@ A protocol for classical sampling problems is usually obtained from that of deci
 by fixing a seed for pseudorandomness then computing the output bit-by-bit.
 This does not work for $\SampBQP$ since randomness from quantum computations arises from measurements.
 Additional challenge comes from modeling and achieving soundness for such a sampling protocol,
-since it is unclear how to use the usual trick of running many copies of the protocol then applying the Chernoff bound.
+since it is unclear how to apply the usual trick of running many copies of the protocol then applying the Chernoff bound.
 
 Another desirable property of CVQC protocols is the \emph{blindness} where the prover cannot distinguish the particular computation in the protocol from another one of the same size, and hence is blind about the client's input.
 Historically, blindness has been achieved in the weaker formulations of CVQC based on various techniques: e.g., the measurement-based quantum computation exploited in~\cite{BFK09}, the quantum authentication scheme exploited in~\cite{arXiv:ABOEM17}, and the self-testing technique exploited in~\cite{Nat:RUV13}.
