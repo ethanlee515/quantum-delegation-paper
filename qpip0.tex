@@ -317,11 +317,11 @@ Now we can estimate $z_i$ using $z_{good, i}$, with errors on the orders of $\no
 This error might not be small in general,
 but we can average it out later by considering uniformly random $i\in[m]$.
 The analysis is tedious but straightforward;
-we simply expand $z_i$ and bound the terms other than $z_{i, good}$.
+we simply expand $z_i$ and bound the terms other than $z_{good, i}$.
 
 \begin{lemma}
 	\label{thm:zi-zgoodi}
-	$$\tr\abs{z_i-z_{i, good}}\leq\E_{pk, y, \gamma}\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
+	$$\tr\abs{z_i-z_{good, i}}\leq\E_{pk, y, \gamma}\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R]+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)$$
 \end{lemma}
 \begin{proof}
 	We take expectation of \Cref{eq:partition-string} over $\gamma$
