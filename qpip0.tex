@@ -180,13 +180,24 @@ In the description of our protocol below, we describe $\PiNaive$ and $\PiMeasure
 \end{protocol}
 By inspection, $\PiSampZ$ is a $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness error.
 To show that it is computationally sound, we first use the partition lemma from \cite{arXiv:ChiaChungYam19}.
-It says that for each $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.
-$G_{0,i}$ represents the subspace where the server knows the answer to the testing round on the $i$-th copy, while $G_{1,i}$ represents the subspace where the server doesn't.
-By using this partition lemma iteratively, we can split the prover's internal state $\ket{\psi}$ by the first copy a component will fail on a testing round. 
-That is, $\ket{\psi}=\ket{\psi_0}+\ket{\psi_{10}}+\ldots+\ket{\psi_{1^{m-1}0}}+\ket{\psi_{1^m}}$, where $\ket{\psi_{1^i0}}$ represents the component that would pass the first $i$ testing rounds then gets rejected by the next one, and $\ket{\psi_{1^m}}$ represents the ``good" component where the prover knows the answer to every testing round.
-% As each $\ket{\psi_{1^i0}}$ survives only when the Hadamard round choice is $c=e_{i+1}$, that is with low probability, the output corresponding to $\ket{\psi}$ would be close to that of the subnormalized state $\ket{\psi_{1^m}}$.
+\Ethan{Tried to ``slow down" on this paragraph}
+It says that for each copy $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$.
+$G_{0,i}$ intuitively represents the subspace where the server does not knows the answer to the testing round on the $i$-th copy, while $G_{1,i}$ represents the subspace where the server does.
+By using this partition lemma iteratively, we can decompose the prover's internal state $\ket{\psi}$.
+First we apply it to the first copy, writing $\ket{\psi}=G_{0,1}\ket{\psi}+G_{1,1}\ket{\psi}=\ket{\psi_0}+\ket{\psi_1}$.
+The component $\ket{\psi_0}$ would then get rejected as long as the first copy is a testing round,
+which occurs with high probability.
+More precisely, the output corresponding to $\ket{\psi_0}$ is $1/m$-close to the ideal distribution that just rejects all the time.
+On the other hand, $\ket{\psi_1}$ is now binding on the first copy;
+we now similarly apply the partition lemma to the second copy of $\ket{\psi_1}$.
+We write $\ket{\psi_1}=G_{0,2}\ket{\psi_1}+G_{1,2}\ket{\psi_1}=\ket{\psi_{10}}+\ket{\psi_{11}}$, and apply the same argument about $\ket{\psi_{10}}$ and $\ket{\psi_{11}}$.
+We then continue to decompose $\ket{\psi_{11}}=\ket{\psi_{110}}+\ket{\psi_{111}}$ and so on, until we reach the last copy and obtain $\ket{\psi_{1^m}}$.
+This $\ket{\psi_{1^m}}$ term represents the ``good" component where the prover knows the answer to every testing round and therefore has high accept probability.
+Intuitively, $\ket{\psi_{1^m}}$ also satisfies some binding property,
+so the verifier should obtain a measurement result of some state on the Hadamard round copy,
+and the analysis from the $\QPIP_1$ protocol $\PiSamp$ follows.
 
-There is an additional issue, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m, \gamma}}$ is only binding for the $m$-th copy.
+There is an additional issue, however, as $G_{1,i}$ don't commute with $G_{1,j}$, so $\ket{\psi_{1^m}}$ is unfortunately only binding for the $m$-th copy.
 To solve this problem, we start with a pointwise argument and fix the Hadamard round on the $i$-th copy where $\ket{\psi_{1^i}}$ is binding,
 and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
 We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time.
