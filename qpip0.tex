@@ -219,25 +219,14 @@ Now we give a formal description of the partition lemma.
 
 		\item \label{property:partition-testing}
 			For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and  $j\neq i$, we have
-
-			%      \begin{align*}
-			%  \Pr\left[M_{\regX_i}\circ U\frac{\ket{\{c\}}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}\in \Acc_{pk_i,y_i}\right]\leq (m-1)\gamma+\negl(\secpar).
-			%  \end{align*}
-
-			%  Define
-			%  $$\ket{\widetilde{\psi_{0,i,\gamma}}}\defeq U\frac{\ket{\{c\}}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}.$$
-			%  We have
-			%  \begin{align}
-			%      \vev{\widetilde{\psi_{0,i,\gamma}}|P_{i,pk_i,y_i,acc}|\widetilde{\psi_{0,i,\gamma}}} \leq (m-1)\gamma+\negl(\secpar),
-			%  \end{align}
 			\begin{align}
-				\norm{ P_{i,pk_i,y_i,acc} \circ U\frac{\ket{e_j}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}}^2 \leq (m-1)\gamma_0+\negl(\lambda),
+				\norm{ P_{acc, i} \circ U\frac{\ket{e_j}_{\regC}\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_0}_{\regX,\regZ}\|}}^2 \leq (m-1)\gamma_0+\negl(\lambda),
 			\end{align}
-			where $P_{i,pk_i,y_i,acc}$ are projector to the states that $i$-th testing round accepts with $pk_i,y_i$, including the last measurement the prover did before sending $\vec{a}$.  This means that $\ket{\psi_{0,i,\gamma}}$ is rejected by the $i$-th testing round with high probability.
+			where $P_{acc, i}$ are projector to the states that $i$-th testing round accepts with $pk_i,y_i$, including the last measurement the prover did before sending $\vec{a}$.  This means that $\ket{\psi_{0,i,\gamma}}$ is rejected by the $i$-th testing round with high probability.
 		\item \label{property:partition-binding}
 			For all $\vec{pk}$, $\vec{y}$, fixed $\gamma$, and $j\neq i$, there exists an efficient quantum algorithm $\ext_i$ such that
 			\begin{align}
-				\norm{P_{i,pk_i,y_i,acc} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\lambda).
+				\norm{P_{acc, i} \circ \ext_i\left(\frac{\ket{e_j}_{\regC}\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}}{\|\ket{\psi_1}_{\regX,\regZ}\|}\right)}^2 =1-\negl(\lambda).
 			\end{align}
 
 			% \begin{align*}  
@@ -252,6 +241,14 @@ Now we give a formal description of the partition lemma.
 			\end{align}
 	\end{enumerate}
 \end{lemma}
+
+By Property~\ref{property:partition-testing} of the partition lemma above,
+it clearly also follows that \Ethan{This ok?}
+\begin{rmk}
+	\label{lem:partition-testing}
+	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
+	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
+\end{rmk}
 
 We now decompose the prover's internal state by using \Cref{lem:partition2} iteratively.
 Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
@@ -281,7 +278,7 @@ Now we define
 \end{equation}
 as the output corresponding to the component that would pass all $i$ testing rounds.
 We will show that it is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to $z_i$.
-Before doing so, we present a couple technical lemma.
+Before doing so, we present a technical lemma.
 \begin{lemma}\label{lem:samp-tech}
 	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $\sum_z P_z \leq Id$ and $P_z P_{z'} =0 $ for all $z\neq z'$, we have
 	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi} $$
@@ -295,23 +292,6 @@ Before doing so, we present a couple technical lemma.
 		\leq & \norm{\ket{\psi}}\norm{\ket{\phi}},
 	\end{align}
 	where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
-\end{proof}
-\begin{lemma}
-	\label{lem:partition-testing}
-	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
-	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
-\end{lemma}
-\begin{proof}
-	Since the verifier only accepts if all $(m-1)$ copies of testing rounds accepts, for all $j\neq i$,
-	\Ethan{Is this really true?}
-	$$P_{acc,i,z}=P_{acc,i,z}P_{j,pk_j,y_j,acc}.$$
-	And therefore by Property~\ref{property:partition-testing} of Lemma~\ref{lem:partition2}, we have that for all $j <i-1$
-	\begin{align} \label{eq:rejected-d}
-		\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2
-		=& \norm{P_{acc,i,z}P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& \norm{P_{j,pk_j,y_j,acc} U \ket{e_i}\, G_{0,j+1,\gamma}\ket{\psi_{1^j,\gamma}}  }^2 \nn \\
-		\leq& (m-1)\gamma_0+\negl(n)
-	\end{align}
 \end{proof}
 
 Now we can estimate $z_i$ using $z_{good, i}$, with errors on the orders of $\norm{\ket{\psi_{1^{i-1}0}}}$.
