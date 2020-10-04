@@ -195,7 +195,8 @@ Also as a careful reader might have noticed, in fact the prover's space don't al
 Now we give a formal description of the partition lemma.
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\{c\}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
-	Let $\lambda$ be the security parameter and  $\eps$ be the accuracy parameter \Ethan{Is this the global one?}. Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others. Let $\gamma_0 \in[0,1]$, and $T\in \mathbb{N}$ such that $\gamma_0=\poly(\eps)$ and $T=1/\poly(\eps)$.
+	Let $\lambda$ be the security parameter, and $\gamma_0 \in[0,1]$ and $T\in \mathbb{N}$ be parameters that will relate to the randomly-chosen threshold $\gamma$.
+	Let $(U_0,U)$ be a prover's strategy in a $m$-fold parallel repetition of $\PiMeasure$, where $U_0$ is how the prover generates $\vec{y}$ on the second message, and $U$ is how the prover generates $\vec{a}$ on the fourth message. Denote the string $0^{i-1}10^{m-i} \in \zo^m $ as $e_i$, which corresponds to Hadamard round on the $i$-th copy and testing round on all others.
 
 	For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two efficient quantum circuit $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized) $\poly(\lambda)$-qubits quantum state $\ket{\psi}_{\regX,\regZ}$,  
 
@@ -373,7 +374,8 @@ and let $z_{ideal, i}=\tr(z_{good, i})z_{true}$.
 We show that $z_{ideal, i}$ is close to $z_{good, i}$.
 \begin{lemma}
 	\label{thm:zgood-zideal}
-	$z_{good, i}$ is $O(\eps)$-computationally indistinguishable to $z_{ideal, i}$.
+	$z_{good, i}$ is $O(\eps)$-computationally indistinguishable to $z_{ideal, i}$,
+	where $\eps\in\bbR$ is the accuracy parameter picked earlier in $\PiSampZ$.
 \end{lemma}
 \begin{proof}
 	For every $i\in [m]$ and every prover strategy $(U_0,U)$ for $\PiSampZ$, consider the following composite strategy of the prover for $\PiNaive$. Note that the prover only interact with the verifier in Step~\ref{step:urmila-in-naive} of $\PiNaive$ where $\PiMeasure$ is run, so we describe the prover's action in terms of the four rounds of communication in $\PiMeasure$.
