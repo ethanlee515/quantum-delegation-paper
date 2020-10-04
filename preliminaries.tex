@@ -50,9 +50,10 @@ Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corres
 We define $\SampBQP$ based on \cite{aaronson_2013, aaronson_arkhipov_2011}.
 \Ethan{Tried to explain better}
 This complexity class is meant to model feasible quantum computations.
-It is worth noting that quantum states live in a Hilbert space which is continuous,
-so it is likely that any physical implementation of quantum computing would naturally involve some sort of errors.
-\cite{aaronson_arkhipov_2011} gives an argument from the physical implementation perspective that this error should be inverse polynomial.
+As quantum states live in a continuous Hilbert space,
+it is likely that any realization of quantum computing would suffer from natural noise and inaccuracies.
+An argument from the physical implementation perspective that this error should be on an inverse polynomial scale is given in \cite{aaronson_arkhipov_2011}.
+As a result, $\SampBQP$ is correspondingly stated to allow inverse-polynomial errors.
 
 \begin{definition} [sampling problem]
     \label{dfn:sampling-problem}
