@@ -1,12 +1,16 @@
 \section{$\SampBQP$ Delegation Protocol for Fully Classical Client}
 \label{sec:qpip0_all}
 
-In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients following the approach taken in \cite{FOCS:Mahadev18a}.
-The core protocol, $\PiMeasure$, allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
-Composing it with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
-We now try to compose $\PiMeasure$ similarly with our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
+%to create a fully classical delegation protocol for $\BQP$
 
-A direct composition between $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ which does not provide reasonable completeness or accuracy guarantees.
+In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients by adapting the approach taken in \cite{FOCS:Mahadev18a}. In \cite{FOCS:Mahadev18a}, 
+Mahadev designed a protocol $\PiMeasure$ (\cref{proto:urmila4}) that allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
+Composing it with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
+In this work, We try to compose $\PiMeasure$ with our $\QPIP_1$ protocol $\PiSamp$ (\cref{ProtoQPIP1}) for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
+
+
+
+A direct composition of $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ (\cref{proto:qpip0_naive}) which does not provide reasonable completeness or accuracy guarantees.
 As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
 the client doesn't always obtain measurement outcomes even if the server were honest.
 When that happens under the $\BQP$ context, the verifier can simply accept the prover at the cost of some soundness error;
@@ -16,7 +20,7 @@ We spend the majority of this section analyzing the soundness of this parallel r
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
 $\PiMeasure$ is a 4-round protocol between a verifier (which corresponds to our client) and a prover (which corresponds to our server).
-The verifier chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
+The verifier (secretly) chooses a string $h$ specifying the measurements he wants to make, and generates keys $pk, sk$ from $h$. It sends $pk$ to the prover. The prover ``commits" to a state $\rho$ of its choice using $pk$ and replies with its commitment $y$.
 The verifier must then choose between two options: do a \emph{testing round} or a \emph{Hadamard round}.
 In a testing round the verifier can catch cheating provers,
 and in a Hadamard round the verifier receives some measurement outcome.
@@ -52,7 +56,7 @@ if a prover would always succeed on the testing round, then there exists some $\
 
 \begin{lemma}[binding property of $\PiMeasure$; special case of Claim 7.1 in \cite{FOCS:Mahadev18a}]
 	\label{lem:urmila-binding}
-	Let $\PMeasureStar$ be a $\BQP$ cheating prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$ for all $h$, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
+	Let $\PMeasureStar$ be a $\BQP$ cheating \hannote{defined?} prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$ for all $h$ \hannote{too weak?}, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
 \end{lemma}
 
 We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$.
