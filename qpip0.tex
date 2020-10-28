@@ -4,13 +4,13 @@
 %to create a fully classical delegation protocol for $\BQP$
 
 In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients by adapting the approach taken in \cite{FOCS:Mahadev18a}. In \cite{FOCS:Mahadev18a}, 
-Mahadev designed a protocol $\PiMeasure$ (\cref{proto:urmila4}) that allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
+Mahadev designed a protocol $\PiMeasure$ (\Cref{proto:urmila4}) that allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
 Composing it with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
-In this work, We try to compose $\PiMeasure$ with our $\QPIP_1$ protocol $\PiSamp$ (\cref{ProtoQPIP1}) for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
+In this work, We try to compose $\PiMeasure$ with our $\QPIP_1$ protocol $\PiSamp$ (\Cref{ProtoQPIP1}) for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
 
 
 
-A direct composition of $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ (\cref{proto:qpip0_naive}) which does not provide reasonable completeness or accuracy guarantees.
+A direct composition of $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ (\Cref{proto:qpip0_naive}) which does not provide reasonable completeness or accuracy guarantees.
 As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
 the client doesn't always obtain measurement outcomes even if the server were honest.
 When that happens under the $\BQP$ context, the verifier can simply accept the prover at the cost of some soundness error;
@@ -34,7 +34,7 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 	\begin{itemize}
 		\item Common input: Security parameter $1^\lambda$ where $\lambda\in\bbN$.
 		\item Prover's input: a state $\rho\in\cB^{\otimes n}$ for the verifier to measure.
-		\item Verifier's input: the measurement basis choice $h \in \zo^n$
+		\item Verifier's input: the measurement basis choice $h \in \zo^n$ \hannote{those two parameters are actually called input?}
 	\end{itemize}
 
 	Protocol:
@@ -59,7 +59,7 @@ if a prover would always succeed on the testing round, then there exists some $\
 	Let $\PMeasureStar$ be a $\BQP$ cheating \hannote{defined?} prover for $\PiMeasure$ and $\lambda$ be the security parameter. Under the QLWE assumption, if $\PMeasureStar$ passes the testing round with probability $1-\negl(\lambda)$ for all $h$ \hannote{too weak?}, then there exists some $\rho$ so that for all verifier's input $h \in \zo^n$, the verifier's outputs on the Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$.
 \end{lemma}
 
-We now use $\PiMeasure$ to transform our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$, to a corresponding $\QPIP_0$ protocol $\PiNaive$.
+We now combine $\PiMeasure$ with our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$ (\Cref{ProtoQPIP1}), to get a corresponding $\QPIP_0$ protocol $\PiNaive$.
 Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prover's message.
 In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead.
 
@@ -80,9 +80,9 @@ In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement ou
 		\item \label{step:urmila-in-naive}
 			The verifier and prover run $(\PMeasure(\rho), \VMeasure(h))(1^\lambda)$.
 			\begin{enumerate}
-				\item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover.
+				\item The verifier samples $(pk, sk)\leftarrow\cVNaive{1}(1^\lambda, h)$ and sends $pk$ to the prover. \hannote{shouldn't those be $V_{meas,1}$?}
 				\item The prover runs $(y, \sigma)\leftarrow\cPNaive{2}(pk, \rho)$ and sends $y$ to the verifier.
-					Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but is useful for analysis.
+					Here we allow the prover to abort by sending $y=\bot$, which does not benefit cheating provers but simplifies our analysis.
 				\item\label{step:c-urmila-in-naive} The verifier samples $c\xleftarrow{\$}\zo$ and sends it to the prover.
 				\item The prover replies $a\leftarrow\cPNaive{4}(pk, c, \sigma)$.
 				\item
@@ -102,10 +102,10 @@ $$\begin{cases}
 	z_{ideal}=\bot & \text{if } d=\Rej\\
 	z_{ideal}\leftarrow D_x & \text{if } d=\Acc
 \end{cases}$$
-is drawn from the true distribution instead when $\PNaiveStar$ is accepted.
-The intuition of the proof is to reduce to \Cref{lem:urmila-binding} by constructing another $\BQP$ prover $\Pstar$ for $\PiMeasure$.
+is drawn from the true distribution instead when $\PNaiveStar$ is accepted. \hannote{?} This binding property is formalized in \Cref{lem:naive-qpip0-binding}.
+The intuition of the proof of \Cref{lem:naive-qpip0-binding} is to reduce\hannote{not quite?} to \Cref{lem:urmila-binding} by constructing another $\BQP$ prover\hannote{this is really confusing..} $\Pstar$ for $\PiMeasure$.
 Specifically, $\Pstar$ uses $\PNaiveStar$'s strategy when it doesn't abort, otherwise honestly chooses some default state for the verifier to measure.
-We now state the theorem and proof.
+%We now state the theorem and proof.
 
 \begin{theorem}[binding property of $\PiNaive$]
 	\label{lem:naive-qpip0-binding}
@@ -137,7 +137,7 @@ We now state the theorem and proof.
 	On the other hand, conditioned on $\PNaiveStar$ not aborting, clearly $(d, z)=(d', z')$.
 	So $(d, z)$ is $O(\eps)$-computationally indistinguishable to $(d', z')$,
 	which in turn is $\negl(\lambda)$-computationally indistinguishable to $(d', z_{ideal}')$.
-	So $\abs{d-d'}\leq O(\eps)$,
+	So $\abs{d-d'}\leq O(\eps)$ \hannote{?},
 	and $(d, z_{ideal})$ is $O(\eps)$-computationally indistinguishable to $(d', z_{ideal}')$.
 	Combining everything, we conclude that $(d, z)$ is $O(\eps)$-computationally indistinguishable to $(d, z_{ideal})$.
 \end{proof}
