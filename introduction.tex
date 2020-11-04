@@ -42,13 +42,16 @@ Philosophically, the outcomes of quantum mechanical experiments are usually samp
 Moreover, a lot of quantum algorithms from Shor's~\cite{Shor} and Grover's~\cite{Grover} algorithms to some recent developments in machine learning and optimization (e.g.~\cite{brando_et_al:LIPIcs:2019:10603, AGGW17,pmlr-v97-li19b}) contain a significant quantum sampling component.
 The fact that almost all quantum supremacy tasks (e.g.,~\cite{Boson, IQP, nature-google}) are sampling ones also suggests the relevance of delegation for quantum sampling problems.
 
-It is worthwhile noting that there is a simple reduction of the delegation of \emph{classical} sampling problems to decision ones: for example, the verifier can fix a seed for pseudo-randomness, send it to the prover, and then the sampling outcome can be computed  bit-by-bit under this pseudo-random seed in a deterministic way. 
+It is worthwhile noting that there is a simple reduction of the delegation of \emph{classical} sampling problems to decision ones: for example, the verifier can fix a seed for pseudo-randomness, send it to the prover, and then the sampling outcome can be computed  bit-by-bit under this pseudo-random seed in a deterministic way. As such, classical literature of delegation of computation primarily focuses on delegation of decision problems. %delegation of classical sampling problem is not explicitly studied in literature. 
+
 Unfortunately, it is unclear how to make this de-randomization trick work for the delegation of $\SampBQP$, 
 as randomness in quantum computation inherently comes from quantum mechanics rather than classical probability theory. 
-Thus, the delegation of $\SampBQP$ might need to take a totally different route from classical. 
-One natural starting point is Mahadev's protocol~\cite{FOCS:Mahadev18a} for the decision problem. 
+Thus, we do not know a generic construction from delegation for $\BQP$, and delegation of $\SampBQP$ may require a different construction.
+%delegation of $\SampBQP$ may require a totally different construction from delegation of $\BQP$. 
+%
+One natural starting point is Mahadev's CVQC protocol~\cite{FOCS:Mahadev18a} for $\BQP$. 
 Indeed, some nice features of Mahadev's protocol (e.g., allowing X-Z measurements on any qubit) suggest the feasibility of generating a multi-bit measurement outcomes with the protocol. 
-However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired completeness and soundness. Note that such difficulty does not hold for the decision problem, which demonstrates an importance difference between CVQC protocols for the decision and the sampling problems. 
+However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired completeness and soundness. As we shall see, such difficulties do not hold for the decision problem, which demonstrates an importance difference between CVQC protocols for the decision and the sampling problems. 
 
 % \XW{Adjust the flow; highlight the key questions}
 % \Ethan{This paragraph is new and has to be checked}
@@ -150,73 +153,103 @@ Our technical approach is quite different and seems incomparable.
 %           technical comparison with the past parallel % repetition.
 %           \item
 
-\vspace{2mm} \noindent \textbf{Techniques.}
-
-\XW{revisit Mahadev's approach: (a) QPIP0 to QPIP1; QPIP0 requires very good completeness and soundness. (can say for examples the use of X-Z Hamiltonian, what's the detailed bound transformation?);  the output protocol has poor soundness errors;   (this is still for the decision problem; inefficiency); cite the recent parallel repetition - motivation and result; efficiency- round ? so sequential-repetition is not preferred.}
-
-\XW{the difference between decision and sampling problems. precision definitions are given in where?}
-
-\XW{still say what's good and where are the gaps. (b) this could cause a problem for samp? because in definition, we need to more than Acc/Rej, we also wants to output the distribution when ACC.}
-
-\XW{(1) a basic step for encoding of the history state in the local Hamiltonian problem, and can be tested (so spectral gap). 
-(2) testing the spectral gap and make sure outputing. QPIP0 protocol. (need and how); here also  
-(3) QPIP1 compilation, and also main the efficiency (round?). But this parallel repetition just makes more complicated because of the sampling requirement! 
-}
-
-\Ethan{Next part needs discussion on context Ie. protocol or local computation}
-Additional challenge comes from modeling and achieving soundness for such a sampling protocol,
-since it is unclear how to apply the usual trick of running many copies of the protocol then applying the Chernoff bound. \XW{too vague to be useful?}
-
+\vspace{2mm} \noindent \textbf{Techniques.} Let us revisit Mahadev's CVQC protocol~\cite{FOCS:Mahadev18a} first for some technical background. 
 Following~\cite{FOCS:Mahadev18a}, we formally define $\QPIP_{\tau}$ as classes of CVQC protocols where $\tau$ refers to the size of quantum register in the possession of the classical verifier, or equivalently, the limited quantum computation power of the verifier.
-It is known that $\BQP$ can be efficiently verified by a classical verifier that can perform a single qubit X or Z measurement~\cite{PhysRevA.93.022326, mf16}.
-Namely, there is a $\QPIP_1$ protocol for $\BQP$.
+It is known that $\BQP$ can be efficiently verified by a classical verifier that can perform a single qubit $X$ or $Z$ measurement~\cite{PhysRevA.93.022326, mf16}, by reducing any $\BQP$ problem to a local Hamiltonian problem where each term consists of  $X$ and $Z$ only. This leads to a $\QPIP_1$ protocol for $\BQP$.
 The main contribution of Mahadev~\cite{FOCS:Mahadev18a} can hence be deemed as a way to compile this $\QPIP_1$ protocol into a $\QPIP_0$ protocol (i.e., with a fully classical verifier).
 
-\vspace{2mm} \noindent \textbf{(1) Construction of a $\QPIP_0$ protocol for $\SampBQP$}.
-We will follow the same road map above (i.e., from $\QPIP_1$ to $\QPIP_0$) for $\SampBQP$. However, since there is no existing $\QPIP_1$ protocol for $\SampBQP$, we make original contributions to both steps as follows:
-\XW{use a different labeling in order to highlight contributions}
+Precisely, to leverage Mahadev's construction, one needs to start with a $\QPIP_1$ protocol with very small completeness and soundness errors, which will then be compiled into a $\QPIP_0$ protocol with a small completeness error, but a close-to-$3/4$ soundness error under the QLWE assumption.  
+This large soundness error is due to the current structure of Mahadev's protocol that consists of the \emph{testing} round and the \emph{Hadamard} round, each of which happens with a half chance. 
+At a high level, the protocol verifies the behavior of the prover in the test round, while assumes that the prover behaves honestly and all the X-Z measurements are correct in the Hadamard round. 
+The soundness is obtained by observing that the dishonest prover cannot cheat in both rounds, while cheating in one round alone is possible which leads to a large soundness error. 
+This less desirable soundness error, as well as other parameters, has been subsequently improved in \cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} by a parallel repetition of Mahadev's original CVQC protocol in the computational setting. 
 
-\vspace{2mm} \noindent \emph{$\diamond \, \QPIP_1$ protocol for $\SampBQP$}: We will employ the local Hamiltonian technique~\cite{kitaev2002classical} and its ground state (known as the history state) as a key technical ingredient to certify the $\SampBQP$ circuits.
-However, there are important differences between the cases for $\BQP$ and $\SampBQP$.
-Recall that the original construction of local Hamiltonian $H$ for $\BQP$ (or $\QMA$) contains two parts $H=H_{\mathrm{circuit}}+ H_{\mathrm{out}}$.
+A key difference between $\SampBQP$ and $\BQP$ is that in addition to the single bit $\mathrm{Accept/Reject}$ information, the verifier in any CVQC protocol for $\SampBQP$ needs to always output a sample of the desired distribution when the protocol accepts.  
+This fundamentally new requirement of $\SampBQP$ could be, as we will show, fulfilled in the Hadamard round of Mahadev's protocol. 
+However, it is unclear how to generate such a sample when the protocol accepts in the testing round, since the sampling information stored in the quantum state will be disturbed by the testing step. 
+
+As a result, in order to construct a $\QPIP_0$ protocol for $\SampBQP$,  one needs to (1) construct a $\QPIP_1$ protocol for $\SampBQP$ with very small completeness and soundness errors, and (2) amend Mahadev's construction so that the protocol will generate the desired sample whenever it accepts. 
+Our first contribution is a solution to address the above two technical challenges. 
+
+% \XW{revisit Mahadev's approach: (a) QPIP0 to QPIP1; QPIP0 requires very good completeness and soundness. (can say for examples the use of X-Z Hamiltonian, what's the detailed bound transformation?);  the output protocol has poor soundness errors;   (this is still for the decision problem; inefficiency); cite the recent parallel repetition - motivation and result; efficiency- round ? so sequential-repetition is not preferred.}
+
+% \XW{the difference between decision and sampling problems. precision definitions are given in where?}
+
+% \Ethan{Next part needs discussion on context Ie. protocol or local computation}
+% Additional challenge comes from modeling and achieving soundness for such a sampling protocol,
+% since it is unclear how to apply the usual trick of running many copies of the protocol then applying the Chernoff bound. \XW{too vague to be useful?}
+
+
+\vspace{2mm} \noindent \textbf{Construction of a $\QPIP_0$ protocol for $\SampBQP$}. 
+% \XW{stop here} We will follow the same road map above (i.e., from $\QPIP_1$ to $\QPIP_0$) for $\SampBQP$
+% However, since there is no existing $\QPIP_1$ protocol for $\SampBQP$, we make original contributions to both steps as follows:
+% \XW{use a different labeling in order to highlight contributions}
+Following the aforementioned outline, our construction can be divided into three key technical steps. 
+
+% \XW{(1) a basic step for encoding of the history state in the local Hamiltonian problem, and can be tested (so spectral gap). 
+% (2) testing the spectral gap and make sure outputing. QPIP0 protocol. (need and how); here also  
+% (3) QPIP1 compilation, and also main the efficiency (round?). But this parallel repetition just makes more complicated because of the sampling requirement! 
+% }
+
+
+\vspace{2mm} \noindent \emph{$\diamond$ Reducing  $\SampBQP$ to the local Hamiltonian problem}: We will continue to employ the local Hamiltonian technique~\cite{kitaev2002classical} and its ground state (known as the history state) as a key technical ingredient to certify the $\SampBQP$ circuits. 
+Recall that the $\QPIP_1$ protocol for $\BQP$ in Mahadev's construction also comes from a reduction of $\BQP$ to a $X$-$Z$-only local Hamiltonian problem. 
+
+However, there are important differences between the cases for $\BQP$ and $\SampBQP$. Recall that the original construction of local Hamiltonian $H$ for $\BQP$ (or $\QMA$) contains two parts $H=H_{\mathrm{circuit}}+ H_{\mathrm{out}}$.
 Roughly speaking, $H_{\mathrm{circuit}}$ helps guarantee its ground space only contains \emph{valid} history states with correct input and circuit evolution, while $H_{\mathrm{out}}$'s energy encodes the 0/1 output for $\BQP$ circuits.
-Thus, its outcome can be encoded by the \emph{ground energy} of $H$.
-For $\SampBQP$, one still uses $H_{\mathrm{circuit}}$ to certify the validity of the history state.
-However, in this case, one needs to measure on the entire final state of the circuit, rather than a single output qubit,
-which can no longer be encoded solely by the ground energy.
-Our approach is to have the valid history state lie in the ground space of a different local Hamiltonian $H'_{\mathrm{circuit}}$  that has a large \emph{spectral} gap between its ground energy and excited ones.
-It is hence guaranteed that any state with close-to-ground energy must also be close to the history state.
-In other words, a certification of the energy $H'_{\mathrm{circuit}}$ could lead to a certification of the history state.
+Thus, the outcome of a $\BQP$ instance can be encoded by the \emph{ground energy} of $H$.
+
+In the case of $\SampBQP$, one needs to output both Accept/Reject information as well as a sample from the desired distribution if the protocol accepts. 
+To that end, one hopes to certify the validity of the entire history state which is the ground state of $H_{\mathrm{circuit}}$, rather than the ground energy of $H_{\mathrm{circuit}}$ only. 
+% one still uses $H_{\mathrm{circuit}}$ to certify the validity of the history state.
+% However, in this case, one needs to measure on the entire final state of the circuit, rather than a single output qubit,
+% which can no longer be encoded solely by the ground energy.
+Namely, we want to rule out the existence of any state that is far from the history state but its energy (respect to $H_{\mathrm{circuit}}$) is very close to the ground one. 
+One nature approach, also ours, is to make the unique valid history state lie in the ground space of a slightly different local Hamiltonian $H'_{\mathrm{circuit}}$ that has a large \emph{spectral} gap between its ground energy and excited ones.
+It is hence guaranteed that any state with a close-to-ground energy must also be close to the history state.
+In other words, a certification of the energy $H'_{\mathrm{circuit}}$ could lead to a certification of the history state, which in turn helps us generate the desired sample. 
 We construct such $H'_{\mathrm{circuit}}$ from $H_{\mathrm{circuit}}$ by using the \emph{perturbation} technique (e.g.,~\cite{kempe_kitaev_regev_2006}) with further restriction to X/Z terms. (\Cref{sec:LHXZ}.)
 
-\XW{anything useful here: Our protocol leverages the Hamiltonian model and the computational X-Z measurement from~\cite{FOCS:Mahadev18a}.
-However, a significant amount of new techniques have been developed to deal with the difference between $\SampBQP$ and $\BQP$, which will be highlighted in the technical contribution section. }
+%\XW{what's good about Mahadev's protocol; one can measure a lot; but of course, one needs to also test it; for the QPIP1 protocol; to get the QPIP0, the story won't be different.}
+% \XW{anything useful here: Our protocol leverages the Hamiltonian model and the computational X-Z measurement from~\cite{FOCS:Mahadev18a}.
+% However, a significant amount of new techniques have been developed to deal with the difference between $\SampBQP$ and $\BQP$, which will be highlighted in the technical contribution section. }
+
+
+\vspace{2mm} \noindent \emph{$\diamond$ A $\QPIP_1$ protocol for $\SampBQP$:} A certification protocol for the history state, however, is insufficient to imply a $\QPIP_1$ protocol for $\SampBQP$ directly. 
+Intuitively, we face a similar dilemma as we described above about Mahadev's protocol: we can either employ the certification protocol on $H'_{\mathrm{circuit}}$ to do the test, or to measure the history state to generate the desired outcome, but not both at the same time since the testing protocol would disturb the measurement outcome.
+% Specifically, we will certify the energy of $H'_{\mathrm{circuit}}$ to guarantee the underlying state is close to the valid history state.
+% However, this procedure could be vastly different from outputting a sample by measuring the final state of $\SampBQP$ circuits.
+To resolve that, we design a \emph{cut-and-choose} protocol on multiple copies of the history state so as to separate the testing and the outputting parts on separate copies of history states. 
+
+The prover in the real protocol, of course, won't necessarily send copies of history states. Thus, to leverage the aforementioned intuition, one needs to avoid entanglement among these copies to obtain some sort of independence. 
+We employ quantum \emph{de Finetti} theorem to address this technical challenge.
+Specifically, given any permutation-invariant $k$-register state (where each register could contain many qubits), it is known that the reduced state on many subsets of $k$-register will be close to a separable state. 
+Typically, for favorable error bounds, the parameter $k$ could be as large as the dimension of a single register, which is exponential in our context and hence undesirable. 
+Fortunately, since there is no entangled operation in the protocol to perform on two copies of history states, one can employ an efficient variant of quantum \emph{de Finetti} theorem~\cite{Brandao2017} whose error bound depends poly-logarithmically on the dimension of the register, which leads to an efficient $\QPIP_1$ protocol for $\SampBQP$. 
+Note further that this $\QPIP_1$ protocol is information-theoretically sound without any computational assumption.  (\Cref{sec:qpip1}.)
+
+\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: we are ready to address the aforementioned drawback of Mahadev's protocol. First, we will use Mahadev's compilation to obtain a $\QPIP_0$ protocol $\PiNaive$ for the above $\QPIP_1$ protocol.  As mentioned previously, this protocol $\PiNaive$ will have some trouble outputting the desired sample in the testing round. 
+To address this issue, we will separate the testing and the outputting in different runs of the protocol, similarly to what we have done in the design of $\QPIP_1$ protocol. 
+Precisely, we will run again a cut-and-choose protocol $\PiSampZ$ on top of many copies of $\PiNaive$, which are executed in parallel to preserve the number of rounds.
+
+However, since $\PiNaive$ only has computational soundness, we need to design a parallel repetition of $\PiNaive$ in the computational setting, which also prevents the use of quantum de Finetti theorem that only holds in the information-theoretical setting. 
+Fortunately,  some recent results on computational parallel repetitions of Mahadev's original protocol for $\BQP$~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} provide a technical starting point for us. 
+Precisely, these results open the box of the analysis of Mahadev's protocol and analyze the computational soundness under a parallel repetition. 
+
+\XW{highlight a bit about the open-the-box partition lemma}
+We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}. \Cref{sec:qpip0_all}.
 
 
 
-Another high-level difficulty in constructing a $\QPIP_1$ protocol for $\SampBQP$ is due to the distinction between the test part and the output part.
-Specifically, we will certify the energy of $H'_{\mathrm{circuit}}$ to guarantee the underlying state is close to the valid history state.
-However, this procedure could be vastly different from outputting a sample by measuring the final state of $\SampBQP$ circuits.
-We design a \emph{cut-and-choose} protocol on multiple copies of the history state for both testing and outputting.
-We also employ a variant of quantum \emph{de Finetti} theorem~\cite{Brandao2017}
-to prevent potential cheating strategies by entangling different copies of history states.
-(\Cref{sec:qpip1}.)
+% A naive attempt is to directly apply Mahadev's protocol on the aforementioned $\QPIP_1$ protocol.
+% Unfortunately, the plain version of Mahadev's protocol does not yield favorable parameters by itself.
+% However, we cannot directly make use of these parallel repetition results due to the subtle difference between protocols for $\BQP$ and $\SampBQP$.
+% One of the major difficulties here is still to deal with both the test part and the output part in $\SampBQP$ protocols.
+% However, because we are now in the computational setting, there is no longer any available quantum de Finetti theorem that is usually derived in the information-theoretic setting.
+% Due to the nature of parallel repetition in the computational setting, our analysis is much less modular and significantly involved for this part.  
+% More intuitions and detailed analysis are given in 
 
-\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$}:
-A naive attempt is to directly apply Mahadev's protocol on the aforementioned $\QPIP_1$ protocol.
-Unfortunately, the plain version of Mahadev's protocol does not yield favorable parameters by itself.
-In fact, there are some recent results~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} that provide a parallel repetition of Mahadev's original protocol for $\BQP$ with
-much more favorable parameters.
-
-However, we cannot directly make use of these parallel repetition results due to the subtle difference between protocols for $\BQP$ and $\SampBQP$.
-One of the major difficulties here is still to deal with both the test part and the output part in $\SampBQP$ protocols.
-However, because we are now in the computational setting, there is no longer any available quantum de Finetti theorem that is usually derived in the information-theoretic setting.
-We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}.
-Due to the nature of parallel repetition in the computational setting, our analysis is much less modular and significantly involved for this part.  
-More intuitions and detailed analysis are given in \Cref{sec:qpip0_all}.
-
-
-\XW{stop here}
+\XW{Comment on Aaronson's blog}
 
 \vspace{2mm} \noindent \textbf{(2) A generic compiler to upgrade $\QPIP_0$ protocols with blindness}. At a high-level, the idea is simple: we run the original protocol under a QFHE with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the properties of the original protocol.
 One subtlety with this approach is due to the fact that the verifier is classical while the QFHE cipher text could depend on both quantum and classical data.
@@ -227,8 +260,7 @@ In particular, compiled protocols with only one-time use of QFHE might (1) leak 
 or (2) fail to simulate original protocols upon receiving invalid ciphertexts.
 We address these issues by letting the verifier switch to a fresh new key for each round of the protocol.
 Details are given in \Cref{sec:BlindBQP2}.
-
-\XW{To KM: expand the above a bit more?}
+%\XW{To KM: expand the above a bit more?}
 
 \vspace{2mm} \noindent \textbf{Open Questions.} Our main focus is on the feasibility of the desired functionality and properties, which nevertheless leaves a big room for the improvement of efficiency.
 Some of our parameter dependence inherits from previous works (e.g.~\cite{FOCS:Mahadev18a}), whereas some is due to our own construction. 

@@ -45,33 +45,12 @@ Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corres
 	We denote the $n$-bit random variable corresponding to the measurement results as $M_{XZ}(\rho,h)$.
 \end{definition}
 
-\subsection{Sampling Problems}
-
-We define $\SampBQP$ based on \cite{aaronson_2013, aaronson_arkhipov_2011}.
-\Ethan{Tried to explain better}
-This complexity class is meant to model feasible quantum computations.
-As quantum states live in a continuous Hilbert space,
-it is likely that any realization of quantum computing would suffer from natural noise and inaccuracies.
-An argument from the physical implementation perspective that this error should be on an inverse polynomial scale is given in \cite{aaronson_arkhipov_2011}.
-As a result, $\SampBQP$ is correspondingly stated to allow inverse-polynomial errors.
-
-\begin{definition} [sampling problem]
-    \label{dfn:sampling-problem}
-    A \emph{sampling problem} is a collection of probability distributions $(D_x)_{x\in\set{0, 1}^*}$, one for each input string $x\in\set{0,1}^n$, where $D_x$ is a distribution over $\set{0,1}^{m(n)}$ for some fixed polynomial $m$.
-\end{definition}
-
-\begin{definition} [$\SampBQP$]
-    $\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\eps \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\eps)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$.
-\end{definition}
 
 \subsection{Quantum Prover Interactive Protocols (QPIP)}
 
-We model the interaction between a (almost classical) client and a quantum server following \cite{FOCS:Mahadev18a}.
-When the client has limited quantum memories, this is a ``streaming" model.
-That is, the server can send qubits one-by-one to let client measure them sequentially,
-even if the client cannot hold the entire quantum message.
-When the client is fully classical,
-this model specializes to the standard rounds-based model.
+Following \cite{FOCS:Mahadev18a}, we model the interaction between a (almost classical) client and a quantum server in the following definition.
+When the client has limited quantum memories (i.e., $\tau > 0$), this is a ``streaming" model. That is, the server can send qubits one-by-one to let client measure them sequentially, even if the client cannot hold the entire quantum message.
+When the client is fully classical (i.e, $\tau = 0$), this model specializes to the standard rounds-based interactive protocols.
 
 \begin{definition}
     A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
@@ -82,7 +61,7 @@ this model specializes to the standard rounds-based model.
     \end{itemize}
 \end{definition}
 
-It is straightforward to write down what it means for a $\QPIP_\tau$ protocol to recognize a $\BQP$ language.
+It is straightforward to define what it means for a $\QPIP_\tau$ protocol to decide a $\BQP$ language.
 
 \begin{definition}
     Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
@@ -95,59 +74,22 @@ It is straightforward to write down what it means for a $\QPIP_\tau$ protocol to
     \end{itemize}
 \end{definition}
 
-It is less simple to state what it means for a $\QPIP_\tau$ protocol to solve a $\SampBQP$ instance.
-We cannot hope for the protocol's output distribution to be close to the true distribution,
-since a cheating prover can abort to force the verifier output $\bot$ with arbitrary probability.
-On the other hand, we can ask that the output distribution to be close to the true one whenever the protocol does not abort.
+We are particularly interested in the case that $\tau = 0$, i.e., when the verifier $V$ is classical. In this case, we say $\Pi$ is a CVQC protocol for the $\BQP$ language $L$.
 
-\begin{definition}
-    \label{dfn:stats-secure-proto-sampbqp}
-    Let $\Pi=(P, V)$ be a $\QPIP_\tau$ protocol.
-    We say it is a protocol for the $\SampBQP$ instance $(D_x)_{x\in\zo^*}$ with completeness error $c(\cdot)$ and statistical (resp., computational) soundness if the following holds:
-    \begin{itemize}
-        \item On public inputs $1^\lambda$, $1^{1/\eps}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
-            If $d=\Acc$ then $z\in\zo^{m(\abs{x})}$ where $m$ is given in \Cref{dfn:sampling-problem}, otherwise $z=\bot$.
-        \item (Completeness):
-            For all accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
-            security parameter $\lambda\in\bbN$,
-            and $x\in\zo^{\poly(\lambda)}$,
-            Let $(d, z)\leftarrow(P, V)(1^\lambda, 1^{1/\eps}, x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-        \item (Statistical soundness): For all cheating prover $P^*$,
-            accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
-            sufficiently large $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$,
-            consider the following experiment:
-            \begin{itemize}
-                \item Let $(d, z)\leftarrow(P^*, V)(1^\lambda, 1^{1/\eps}, x)$.
-                \item Define $z_{ideal}$ by
-                $$\begin{cases}
-                    z_{ideal}=\bot & \text{if } d=\Rej\\
-                    z_{ideal}\leftarrow D_x & \text{if } d=\Acc
-                \end{cases}$$.
-            \end{itemize}
-            It holds that $\norm{(d,z)-(d,z_{ideal})}_{TV}\leq\eps$.
-		\item (Computational soundness):
-			\Ethan{tried to write in terms of indistinguishability}
-        For all cheating $\BQP$ prover $P^*$, $\BQP$ distinguisher $\mathsf{D}$, accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
-            sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$,
-            define $d, z, z_{ideal}$ by the same experiment as above.
-            It holds that $(d, z)$ is $\eps$-computationally indistinguishable to $(d, z_{ideal})$ over $\lambda$.
-    \end{itemize}
-\end{definition}
 
-\begin{remark} Note that we do not parameterize the soundness error in Definition \ref{dfn:stats-secure-proto-sampbqp}. This is because the definition of $\SampBQP$ already includes an error parameter $\eps$, where the algorithm is allowed to generate a sample with statistical error up to $\eps$ in time polynomial in $1/\eps$. Hence, we define the soundness to  allow the verifier's output to have an $\eps$ error for any given inverse polynomial $\eps$ without introducing an extra soundness error parameter.
-\end{remark}
-
-We now define blindness of a protocol.
-In the context of blind protocols, we consider $x$ as the verifier's private input instead of a common input.  
+We now define blindness, which means that the prover does not learn any information about the verifier's input except for its length.
+As such, in this context, we consider the input $x$ as the verifier's private input instead of a common input.  
 
 \Ethan{The following blindness definition is more crypto-based, but since we're submitting it to Eurocrypt maybe this is fine as-is?}
 
 \begin{definition}[Blindness]
-    Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ (and $1^{1/\eps}$ for the case of $\SampBQP$ problem), and verifier's private input $x\in\zo^*$.
+    Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ 
+    %(and $1^{1/\eps}$ for the case of $\SampBQP$ problem), 
+    and verifier's private input $x\in\zo^*$.
     We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
     \begin{itemize}
-        \item $\set{\View_{P^*}(P^*, V(x))(1^\lambda, 1^{1/\eps})}_{\lambda\in\bbN, \eps\in(0,1), x\in\zo^*}$
-        \item $\set{\View_{P^*}(P^*, V(0))(1^\lambda, 1^{1/\eps})}_{\lambda\in\bbN, \eps\in(0,1), x\in\zo^*}$
+        \item $\set{\View_{P^*}(P^*, V(x))(1^\lambda)}_{\lambda\in\bbN, \eps\in(0,1), x\in\zo^*}$
+        \item $\set{\View_{P^*}(P^*, V(0))(1^\lambda)}_{\lambda\in\bbN, \eps\in(0^{|x|},1), x\in\zo^*}$
     \end{itemize}
 \end{definition}
 
