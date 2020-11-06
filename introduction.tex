@@ -44,14 +44,14 @@ The fact that almost all quantum supremacy tasks (e.g.,~\cite{Boson, IQP, nature
 
 It is worthwhile noting that there is a simple reduction of the delegation of \emph{classical} sampling problems to decision ones: for example, the verifier can fix a seed for pseudo-randomness, send it to the prover, and then the sampling outcome can be computed  bit-by-bit under this pseudo-random seed in a deterministic way. As such, classical literature of delegation of computation primarily focuses on delegation of decision problems. %delegation of classical sampling problem is not explicitly studied in literature. 
 
-Unfortunately, it is unclear how to make this de-randomization trick work for the delegation of $\SampBQP$, 
+Unfortunately, it is unclear about how to make this de-randomization trick work for the delegation of $\SampBQP$, 
 as randomness in quantum computation inherently comes from quantum mechanics rather than classical probability theory. 
-Thus, we do not know a generic construction from delegation for $\BQP$, and delegation of $\SampBQP$ may require a different construction.
+Thus, it seems that the delegation of $\SampBQP$ needs to take a different technical route.
 %delegation of $\SampBQP$ may require a totally different construction from delegation of $\BQP$. 
 %
 One natural starting point is Mahadev's CVQC protocol~\cite{FOCS:Mahadev18a} for $\BQP$. 
-Indeed, some nice features of Mahadev's protocol (e.g., allowing X-Z measurements on any qubit) suggest the feasibility of generating a multi-bit measurement outcomes with the protocol. 
-However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired completeness and soundness. As we shall see, such difficulties do not hold for the decision problem, which demonstrates an importance difference between CVQC protocols for the decision and the sampling problems. 
+Indeed, some nice features of Mahadev's protocol (e.g., allowing X-Z measurements on any qubit) suggest the feasibility of generating  multi-bit measurement outcomes with the protocol. 
+However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired performance. As we shall see, such difficulties do not hold for the decision problem, which demonstrates an importance difference between CVQC protocols for the decision and the sampling problems. 
 
 % \XW{Adjust the flow; highlight the key questions}
 % \Ethan{This paragraph is new and has to be checked}
@@ -73,10 +73,10 @@ Indeed, in another paper~\cite{mahadev_qfhe}, Mahadev constructed the first leve
 The constructed QFHE automatically implies a blind CVQC protocol, however, without verifiability.
 Extending this protocol with verifiability seems challenging as hinted by failed attempts in Section 2.2.2 of Mahadev's Phd thesis~\cite{mahadev_2018}.
 
-In fact, most existing blind and verifiable CVQC protocols require a notable amount of effort in achieving each property respectively. 
-The only successful attempt~\cite{FOCS:GheVid19} of achieving both so far applies Mahadev's technique~\cite{FOCS:Mahadev18a} to the measurement-based quantum computation, whereas the analysis is still very specific to the construction.
+In fact, most existing blind and verifiable protocols for delegation of quantum computation require a notable amount of effort in achieving each property respectively. 
+The only successful CVQC protocol~\cite{FOCS:GheVid19} of achieving both so far applies Mahadev's technique~\cite{FOCS:Mahadev18a} to the measurement-based quantum computation, whereas the analysis is still very specific to the construction.
 %\Ethan{And it has inverse-poly errors, which makes it not constant-round to achieve negligible errors for $\BQP$, right?}
-Could there be a \emph{generic} way to achieve blindness and verifiability for CVQC protocols at the same time, say by leveraging the state of the art CVQC~\cite{FOCS:Mahadev18a} and QFHE~\cite{mahadev_qfhe} protocol? 
+Could there be a \emph{generic} way to achieve blindness and verifiability for CVQC protocols at the same time, say by leveraging the state-of-the-art CVQC~\cite{FOCS:Mahadev18a} and QFHE~\cite{mahadev_qfhe} protocols? 
 
 
 %\XW{Mention QFHE as a natural attempt, and highlight the problem}
@@ -84,18 +84,19 @@ Could there be a \emph{generic} way to achieve blindness and verifiability for C
 
 \vspace{2mm} \noindent \textbf{Contribution.} We provide \emph{affirmative} solutions to both of our questions.
 In particular, we demonstrate the feasibility of the classical verification of quantum sampling by
-constructing a constant-round CVQC protocol for $\SampBQP$, the sampling version of $\BQP$ formulated by Aaronson~\cite{aaronson_2013}, based on the quantum LWE (QLWE) assumption that the learning with error problem is hard for BQP machines. 
-Formally, $\SampBQP$ consists of sampling problems $(D_x)_{x\in\zo^*}$ that can be approximately sampled by a $\BQP$ machine with an inverse polynomial accuracy. %Namely, $A(x,1^{1/\eps})$ outputs a sample that is $\eps$-close to the distribution $D_x$ in statistical distance.
+constructing a constant-round CVQC protocol for $\SampBQP$, the sampling version of $\BQP$ formulated by Aaronson~\cite{aaronson_2013}, based on the quantum LWE (QLWE) assumption that the learning-with-error problem is hard for BQP machines. 
+Formally, $\SampBQP$ consists of sampling problems $(D_x)_{x\in\zo^*}$ that can be approximately sampled by a $\BQP$ machine with an inverse polynomial accuracy. \KM{add ref to Sec 3}  %Namely, $A(x,1^{1/\eps})$ outputs a sample that is $\eps$-close to the distribution $D_x$ in statistical distance.
 %, where given an input $x \in \zo^n$, the goal  
 Precisely,
 \begin{theorem}[informal]
 Assuming the QLWE assumption, there exists a four-message CVQC protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
 \end{theorem}
 
-Our second contribution is a simple yet powerful \emph{generic}  compiler that transforms any CVQC protocol to a blind one while preserving completeness and soundness errors, building on top of QFHE. We observe that QFHE, especially the one from~\cite{mahadev_qfhe}, can be used to transform any CVQC protocol to \emph{a blind one with the same number of round communication, while preserving completeness and soundness error}.
+Our second contribution is a simple yet powerful \emph{generic}  compiler that transforms any CVQC protocol to a blind one while preserving verifiability, building on top of QFHE. 
+Precisely, we leverage QFHE (especially the one from~\cite{mahadev_qfhe}) to transform any CVQC protocol to \emph{a blind one with the same number of round communication, while preserving completeness and soundness properties}.
 As a result, one can \emph{upgrade} every verifiable CVQC protocol with blindness almost for free with the help of QFHE.
-Conceptually, we take a very different approach from previous results (e.g.,~\cite{FK17} as well as failed attempts in~\cite{mahadev_2018}) which use the blindness as the start point and then work to extend it with verifiability.
-Instead, our strategy is to simulate the original CVQC protocol under QFHE per each message.
+Conceptually, we take a very different approach from previous ones  (e.g.,~\cite{FK17} as well as failed attempts in~\cite{mahadev_2018}) which use the blindness as the start point and then work to extend it with verifiability.
+Instead, our strategy is to simulate a (verifiable) CVQC protocol under QFHE per each message.
 To that end, we do require a special property of QFHE that the classical part of the ciphertext can be operated on separately from the quantum part, which is satisfied by the construction from~\cite{mahadev_qfhe}.
 Our construction makes a modular use of QFHE and only requires a minor technicality in the analysis, which will be explained below. 
 %As a result, we obtain
@@ -160,16 +161,24 @@ The main contribution of Mahadev~\cite{FOCS:Mahadev18a} can hence be deemed as a
 
 Precisely, to leverage Mahadev's construction, one needs to start with a $\QPIP_1$ protocol with very small completeness and soundness errors, which will then be compiled into a $\QPIP_0$ protocol with a small completeness error, but a close-to-$3/4$ soundness error under the QLWE assumption.  
 This large soundness error is due to the current structure of Mahadev's protocol that consists of the \emph{testing} round and the \emph{Hadamard} round, each of which happens with a half chance. 
-At a high level, the protocol verifies the behavior of the prover in the test round, while assumes that the prover behaves honestly and all the X-Z measurements are correct in the Hadamard round. 
+At a high level, the protocol verifies the behavior of the prover in the testing round, while assumes that the prover behaves honestly and all the X-Z measurements are correct in the Hadamard round. 
 The soundness is obtained by observing that the dishonest prover cannot cheat in both rounds, while cheating in one round alone is possible which leads to a large soundness error. 
 This less desirable soundness error, as well as other parameters, has been subsequently improved in \cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} by a parallel repetition of Mahadev's original CVQC protocol in the computational setting. 
 
-A key difference between $\SampBQP$ and $\BQP$ is that in addition to the single bit $\mathrm{Accept/Reject}$ information, the verifier in any CVQC protocol for $\SampBQP$ needs to always output a sample of the desired distribution when the protocol accepts.  
-This fundamentally new requirement of $\SampBQP$ could be, as we will show, fulfilled in the Hadamard round of Mahadev's protocol. 
-However, it is unclear how to generate such a sample when the protocol accepts in the testing round, since the sampling information stored in the quantum state will be disturbed by the testing step. 
+The first thing when dealing with $\SampBQP$ is to properly define the requirement of CVQC protocols for $\SampBQP$. 
+In contrast to the single bit $\mathrm{Accept/Reject}$ information for the decision $\BQP$, any $\SampBQP$ problem needs to always output a sample of the desired distribution.
+In the context of CVQC protocols, it means that the protocol should allow the verifier to generate a desired output sample whenever the protocol accepts. 
+(Of course, when the prover cheats, the verifier will reject and no further output is required in that case.)
+We provide a formal definition for CVQC protocols for $\SampBQP$ in Section~\ref{sec:samp_definition} to capture the above intuition. \KM{say the distribution should be correct conditioned on accepts}
+
+\KM{terminology: testing protocol, test round etc.}
+
+This fundamentally new requirement of any CVQC protocol for $\SampBQP$ exposes one drawback of Mahadev's protocol: 
+while it is possible, as we will show, to generate desired output samples in the Hadamard round, 
+it is however unclear about how to generate such a sample when the protocol accepts in the testing round, since the sampling information stored in the quantum state will be disturbed by the testing step. 
 
 As a result, in order to construct a $\QPIP_0$ protocol for $\SampBQP$,  one needs to (1) construct a $\QPIP_1$ protocol for $\SampBQP$ with very small completeness and soundness errors, and (2) amend Mahadev's construction so that the protocol will generate the desired sample whenever it accepts. 
-Our first contribution is a solution to address the above two technical challenges. 
+Our contribution is a solution to address the above two technical challenges. 
 
 % \XW{revisit Mahadev's approach: (a) QPIP0 to QPIP1; QPIP0 requires very good completeness and soundness. (can say for examples the use of X-Z Hamiltonian, what's the detailed bound transformation?);  the output protocol has poor soundness errors;   (this is still for the decision problem; inefficiency); cite the recent parallel repetition - motivation and result; efficiency- round ? so sequential-repetition is not preferred.}
 
@@ -226,7 +235,8 @@ We employ quantum \emph{de Finetti} theorem to address this technical challenge.
 Specifically, given any permutation-invariant $k$-register state (where each register could contain many qubits), it is known that the reduced state on many subsets of $k$-register will be close to a separable state. 
 Typically, for favorable error bounds, the parameter $k$ could be as large as the dimension of a single register, which is exponential in our context and hence undesirable. 
 Fortunately, since there is no entangled operation in the protocol to perform on two copies of history states, one can employ an efficient variant of quantum \emph{de Finetti} theorem~\cite{Brandao2017} whose error bound depends poly-logarithmically on the dimension of the register, which leads to an efficient $\QPIP_1$ protocol for $\SampBQP$. 
-Note further that this $\QPIP_1$ protocol is information-theoretically sound without any computational assumption.  (\Cref{sec:qpip1}.)
+We can further achieve very small completeness and soundness errors in this way to satisfy the premise of Mahadev's compilation.  
+Note that the established $\QPIP_1$ protocol is information-theoretically sound without any computational assumption.  (\Cref{sec:qpip1}.)
 
 \vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: we are ready to address the aforementioned drawback of Mahadev's protocol. First, we will use Mahadev's compilation to obtain a $\QPIP_0$ protocol $\PiNaive$ for the above $\QPIP_1$ protocol.  As mentioned previously, this protocol $\PiNaive$ will have some trouble outputting the desired sample in the testing round. 
 To address this issue, we will separate the testing and the outputting in different runs of the protocol, similarly to what we have done in the design of $\QPIP_1$ protocol. 
@@ -236,10 +246,10 @@ However, since $\PiNaive$ only has computational soundness, we need to design a 
 Fortunately,  some recent results on computational parallel repetitions of Mahadev's original protocol for $\BQP$~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} provide a technical starting point for us. 
 Precisely, these results open the box of the analysis of Mahadev's protocol and analyze the computational soundness under a parallel repetition. 
 
-\XW{highlight a bit about the open-the-box partition lemma}
-We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}. \Cref{sec:qpip0_all}.
-
-
+\XW{Precisely, comment on the partition lemma~\cite{arXiv:ChiaChungYam19}, and how it is used ...}
+% We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}. 
+\XW{Note that there is also an important difference between us and~\cite{arXiv:ChiaChungYam19}, the difference between decision and sampling problems.}
+\Cref{sec:qpip0_all}.
 
 % A naive attempt is to directly apply Mahadev's protocol on the aforementioned $\QPIP_1$ protocol.
 % Unfortunately, the plain version of Mahadev's protocol does not yield favorable parameters by itself.
@@ -249,9 +259,12 @@ We end up developing a weaker version of  parallel repetition of Mahadev's proto
 % Due to the nature of parallel repetition in the computational setting, our analysis is much less modular and significantly involved for this part.  
 % More intuitions and detailed analysis are given in 
 
-\XW{Comment on Aaronson's blog}
 
-\vspace{2mm} \noindent \textbf{(2) A generic compiler to upgrade $\QPIP_0$ protocols with blindness}. At a high-level, the idea is simple: we run the original protocol under a QFHE with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the properties of the original protocol.
+It is worthwhile mentioning that we came to notice some online discussion\footnote{\url{https://www.scottaaronson.com/blog/?p=3697}, e.g., comment \#25, \#26, \#42, \#48. } on the possibility of a CVQC protocol for $\SampBQP$ after we developed our own result. 
+These comments suggested a possible reduction of $\SampBQP$ to the local Hamiltonian problem following a similar high-level idea as our solution, however, with no detail and a seemingly different technical route. 
+However, they failed to identify other important gaps in the protocol design that we have addressed. 
+
+\vspace{2mm} \noindent \textbf{A generic compiler to upgrade $\QPIP_0$ protocols with blindness}. At a high-level, the idea is simple: we run the original protocol under a QFHE with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the properties of the original protocol.
 One subtlety with this approach is due to the fact that the verifier is classical while the QFHE cipher text could depend on both quantum and classical data.
 In order to make the classical verifier work in this construction, the ciphertext and the encryption/decryption algorithm needs to be classical when the underlying message is classical, which is fortunately satisfied by~\cite{mahadev_qfhe}.
 

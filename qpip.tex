@@ -19,7 +19,7 @@
 % to approximate our measurement results with that of some unentangled copies,
 % within inverse polynomial errors.
 
-\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the $\SampBQP$ instance $(D_x)_{x\in\set{0, 1}^*}$}
+\begin{protocol}{$\QPIP_1$ protocol $\PiSamp=(\PSamp, \VSamp)$ for the $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{ProtoQPIP1}
 
 	Inputs:
@@ -65,7 +65,7 @@ We now show its completeness and soundness.
   
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ has negligible completeness error and is statistically sound. 
+	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound.\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}}
 	%\XW{do we want precise error bound?}
 \end{thm}
 \begin{prf}
