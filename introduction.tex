@@ -51,7 +51,7 @@ Thus, it seems that the delegation of $\SampBQP$ needs to take a different techn
 %
 One natural starting point is Mahadev's CVQC protocol~\cite{FOCS:Mahadev18a} for $\BQP$. 
 Indeed, some nice features of Mahadev's protocol (e.g., allowing X-Z measurements on any qubit) suggest the feasibility of generating  multi-bit measurement outcomes with the protocol. 
-However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired performance. As we shall see, such difficulties do not hold for the decision problem, which demonstrates an importance difference between CVQC protocols for the decision and the sampling problems. 
+However, as highlighted below in the technical introduction section, there are also important drawbacks of Mahadev's protocol in its current form, which makes it hard to allow a CVQC protocol for $\SampBQP$ with desired performance. As we shall see, such difficulties do not hold for the decision problem, which demonstrates an important difference between CVQC protocols for the decision and the sampling problems. 
 
 % \XW{Adjust the flow; highlight the key questions}
 % \Ethan{This paragraph is new and has to be checked}
@@ -67,11 +67,11 @@ However, as highlighted below in the technical introduction section, there are a
 Another desirable property of CVQC protocols is the \emph{blindness} where the prover cannot distinguish the particular computation in the protocol from another one of the same size, and hence is blind about the client's input.
 Historically, blindness has been achieved in the weaker formulations of CVQC based on various techniques: e.g., the measurement-based quantum computation exploited in~\cite{BFK09}, the quantum authentication scheme exploited in~\cite{arXiv:ABOEM17}, and the self-testing technique exploited in~\cite{Nat:RUV13}.
 Moreover, the blindness property is known to be helpful to establish the verifiability of CVQC protocols. However, this is never an easy task.
-See for example the significant amount of efforts to add verifiability to blind CVQC protocols in~\cite{FK17}.
+See for example the significant amount of efforts to add verifiability to blind computation protocol in~\cite{FK17}.
 It is also known that another important primitive called the Quantum Fully Homomorphic Encryption (QFHE)~\cite{BJ15, DSS16, LC18, NS18, OTF18, mahadev_qfhe} should be helpful for establishing blindness: this is intuitive since QFHE allows fully homomorphic operations on encrypted quantum data. 
 Indeed, in another paper~\cite{mahadev_qfhe}, Mahadev constructed the first leveled QFHE based on similar techniques and computational assumptions from~\cite{FOCS:Mahadev18a}.
 The constructed QFHE automatically implies a blind CVQC protocol, however, without verifiability.
-Extending this protocol with verifiability seems challenging as hinted by failed attempts in Section 2.2.2 of Mahadev's Phd thesis~\cite{mahadev_2018}.
+Extending this protocol with verifiability seems challenging as hinted by failed attempts in Section 2.2.2 of Mahadev's PhD thesis~\cite{mahadev_2018}.
 
 In fact, most existing blind and verifiable protocols for delegation of quantum computation require a notable amount of effort in achieving each property respectively. 
 The only successful CVQC protocol~\cite{FOCS:GheVid19} of achieving both so far applies Mahadev's technique~\cite{FOCS:Mahadev18a} to the measurement-based quantum computation, whereas the analysis is still very specific to the construction.
@@ -238,9 +238,11 @@ Fortunately, since there is no entangled operation in the protocol to perform on
 We can further achieve very small completeness and soundness errors in this way to satisfy the premise of Mahadev's compilation.  
 Note that the established $\QPIP_1$ protocol is information-theoretically sound without any computational assumption.  (\Cref{sec:qpip1}.)
 
-\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: we are ready to address the aforementioned drawback of Mahadev's protocol. First, we will use Mahadev's compilation to obtain a $\QPIP_0$ protocol $\PiNaive$ for the above $\QPIP_1$ protocol.  As mentioned previously, this protocol $\PiNaive$ will have some trouble outputting the desired sample in the testing round. 
+\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: we are ready to address the aforementioned drawback of Mahadev's protocol. First, we will use Mahadev's compilation to obtain an ``intermediate" $\QPIP_0$ protocol $\PiNaive$ for the above $\QPIP_1$ protocol.  As mentioned previously, this protocol $\PiNaive$ will have some trouble outputting the desired sample in the testing round. 
 To address this issue, we will separate the testing and the outputting in different runs of the protocol, similarly to what we have done in the design of $\QPIP_1$ protocol. 
 Precisely, we will run again a cut-and-choose protocol $\PiSampZ$ on top of many copies of $\PiNaive$, which are executed in parallel to preserve the number of rounds.
+
+\KM{more precise about the issue and construction; issue: testing round has no output; construction: parallel repetition and use one hadamard + k - 1 testing; partition lemma: know testing answer and not know; know answer $\Rightarrow$ write output distribution; difference to BQP: $2^{-m}$ vs $1/m$; sampling no amplification can't combine samples  }
 
 However, since $\PiNaive$ only has computational soundness, we need to design a parallel repetition of $\PiNaive$ in the computational setting, which also prevents the use of quantum de Finetti theorem that only holds in the information-theoretical setting. 
 Fortunately,  some recent results on computational parallel repetitions of Mahadev's original protocol for $\BQP$~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} provide a technical starting point for us. 
@@ -249,8 +251,6 @@ Precisely, these results open the box of the analysis of Mahadev's protocol and 
 \XW{Precisely, comment on the partition lemma~\cite{arXiv:ChiaChungYam19}, and how it is used ...}
 % We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}. 
 \XW{Note that there is also an important difference between us and~\cite{arXiv:ChiaChungYam19}, the difference between decision and sampling problems.}
-\Cref{sec:qpip0_all}.
-
 % A naive attempt is to directly apply Mahadev's protocol on the aforementioned $\QPIP_1$ protocol.
 % Unfortunately, the plain version of Mahadev's protocol does not yield favorable parameters by itself.
 % However, we cannot directly make use of these parallel repetition results due to the subtle difference between protocols for $\BQP$ and $\SampBQP$.
@@ -260,7 +260,7 @@ Precisely, these results open the box of the analysis of Mahadev's protocol and 
 % More intuitions and detailed analysis are given in 
 
 
-It is worthwhile mentioning that we came to notice some online discussion\footnote{\url{https://www.scottaaronson.com/blog/?p=3697}, e.g., comment \#25, \#26, \#42, \#48. } on the possibility of a CVQC protocol for $\SampBQP$ after we developed our own result. 
+It is worthwhile to mention that we came to notice some online discussion\footnote{\url{https://www.scottaaronson.com/blog/?p=3697}, e.g., comment \#25, \#26, \#42, \#48. } on the possibility of a CVQC protocol for $\SampBQP$ after we developed our own result. 
 These comments suggested a possible reduction of $\SampBQP$ to the local Hamiltonian problem following a similar high-level idea as our solution, however, with no detail and a seemingly different technical route. 
 However, they failed to identify other important gaps in the protocol design that we have addressed. 
 
