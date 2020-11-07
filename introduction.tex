@@ -84,11 +84,14 @@ Could there be a \emph{generic} way to achieve blindness and verifiability for C
 
 \vspace{2mm} \noindent \textbf{Contribution.} We provide \emph{affirmative} solutions to both of our questions.
 In particular, we demonstrate the feasibility of the classical verification of quantum sampling by
-constructing a constant-round CVQC protocol for $\SampBQP$, the sampling version of $\BQP$ formulated by Aaronson~\cite{aaronson_2013}, based on the quantum LWE (QLWE) assumption that the learning-with-error problem is hard for BQP machines. 
-Formally, $\SampBQP$ consists of sampling problems $(D_x)_{x\in\zo^*}$ that can be approximately sampled by a $\BQP$ machine with an inverse polynomial accuracy. \KM{add ref to Sec 3}  %Namely, $A(x,1^{1/\eps})$ outputs a sample that is $\eps$-close to the distribution $D_x$ in statistical distance.
+constructing a constant-round CVQC protocol for $\SampBQP$, based on the quantum LWE (QLWE) assumption that the learning-with-error problem is hard for BQP machines. 
+$\SampBQP$ is the sampling version of $\BQP$ formulated by Aaronson~\cite{aaronson_2013}.
+%the class of sampling problem that are approximately solvable by polynomial-time quantum algorithms defined by Aaronson~\cite{aaronson_2013}.
+%the sampling version of $\BQP$ formulated by Aaronson~\cite{aaronson_2013}
+Formally, $\SampBQP$ consists of sampling problems $(D_x)_{x\in\zo^*}$ that can be approximately sampled by a $\BQP$ machine with an inverse polynomial accuracy. See Section~\ref{sec:samp_definition} for further discussions on $\SampBQP$ and the precise definition of CVQC for $\SampBQP$.   %Namely, $A(x,1^{1/\eps})$ outputs a sample that is $\eps$-close to the distribution $D_x$ in statistical distance.
 %, where given an input $x \in \zo^n$, the goal  
-Precisely,
-\begin{theorem}[informal]
+%Precisely,
+\begin{theorem}[informal] \label{thm:qpip0-informal}
 Assuming the QLWE assumption, there exists a four-message CVQC protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
 \end{theorem}
 
@@ -159,7 +162,7 @@ Following~\cite{FOCS:Mahadev18a}, we formally define $\QPIP_{\tau}$ as classes o
 It is known that $\BQP$ can be efficiently verified by a classical verifier that can perform a single qubit $X$ or $Z$ measurement~\cite{PhysRevA.93.022326, mf16}, by reducing any $\BQP$ problem to a local Hamiltonian problem where each term consists of  $X$ and $Z$ only. This leads to a $\QPIP_1$ protocol for $\BQP$.
 The main contribution of Mahadev~\cite{FOCS:Mahadev18a} can hence be deemed as a way to compile this $\QPIP_1$ protocol into a $\QPIP_0$ protocol (i.e., with a fully classical verifier).
 
-Precisely, to leverage Mahadev's construction, one needs to start with a $\QPIP_1$ protocol with very small completeness and soundness errors, which will then be compiled into a $\QPIP_0$ protocol with a small completeness error, but a close-to-$3/4$ soundness error under the QLWE assumption.  
+Precisely, to leverage Mahadev's construction, one needs to start with a $\QPIP_1$ protocol with very small completeness and soundness errors, which will then be compiled into a $\QPIP_0$ protocol with a small completeness error, but a close-to-$1/2$ soundness error under the QLWE assumption\footnote{Mahadev only proved soundness error close-to-$3/4$ for her protocol, but it was later proved~\cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19} that her protocol actually achieves close-to-$1/2$ soundness error}.  
 This large soundness error is due to the current structure of Mahadev's protocol that consists of the \emph{testing} round and the \emph{Hadamard} round, each of which happens with a half chance. 
 At a high level, the protocol verifies the behavior of the prover in the testing round, while assumes that the prover behaves honestly and all the X-Z measurements are correct in the Hadamard round. 
 The soundness is obtained by observing that the dishonest prover cannot cheat in both rounds, while cheating in one round alone is possible which leads to a large soundness error. 
@@ -169,11 +172,15 @@ The first thing when dealing with $\SampBQP$ is to properly define the requireme
 In contrast to the single bit $\mathrm{Accept/Reject}$ information for the decision $\BQP$, any $\SampBQP$ problem needs to always output a sample of the desired distribution.
 In the context of CVQC protocols, it means that the protocol should allow the verifier to generate a desired output sample whenever the protocol accepts. 
 (Of course, when the prover cheats, the verifier will reject and no further output is required in that case.)
-We provide a formal definition for CVQC protocols for $\SampBQP$ in Section~\ref{sec:samp_definition} to capture the above intuition. \KM{say the distribution should be correct conditioned on accepts}
+Intuitively, the soundness requires that the verifier $V$ should never be ``cheated'' to accept and output an incorrect sample even when interact with a malicious prover. We formalize this by a strong simulation-based definition (Section~\ref{sec:samp_definition}), where we require that the joint distribution of the decision bit $d \in \set{\Acc, \Rej}$ and the output $z$ (which is $\bot$ when $d = \Rej$) is $\eps$-close (in either statistical or computational sense) to an ``ideal distribution'' $(d,z_{ideal})$, where $z_{ideal}$ is sampled from $D_x$ when $d = \Acc$ and set to $\bot$ when $d = \Rej$.
 
-\KM{terminology: testing protocol, test round etc.}
+To the best of our knowledge, we are the first to formally define delegation of quantum sampling problems. We also note that while several constructions in the relaxed models (e.g., verifiable blind computation~\cite{FK17}) can be naturally generalized to delegate quantum sampling problem and allow the verifier to learn multi-bit outputs, it seems non-trivial to show that these constructions achieve the simulation-based soundness property we defined. Proving soundness of these constructions for delegating $\SampBQP$ is an interesting open question.
 
-This fundamentally new requirement of any CVQC protocol for $\SampBQP$ exposes one drawback of Mahadev's protocol: 
+%We provide a formal definition for CVQC protocols for $\SampBQP$ in Section~\ref{sec:samp_definition} to capture the above intuition. \KM{say the distribution should be correct conditioned on accepts}
+
+%\KM{terminology: testing protocol, test round etc.}
+
+The requirement that the verifier needs to output a sample when accepts exposes one drawback of Mahadev's protocol: 
 while it is possible, as we will show, to generate desired output samples in the Hadamard round, 
 it is however unclear about how to generate such a sample when the protocol accepts in the testing round, since the sampling information stored in the quantum state will be disturbed by the testing step. 
 
@@ -238,19 +245,39 @@ Fortunately, since there is no entangled operation in the protocol to perform on
 We can further achieve very small completeness and soundness errors in this way to satisfy the premise of Mahadev's compilation.  
 Note that the established $\QPIP_1$ protocol is information-theoretically sound without any computational assumption.  (\Cref{sec:qpip1}.)
 
-\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: we are ready to address the aforementioned drawback of Mahadev's protocol. First, we will use Mahadev's compilation to obtain an ``intermediate" $\QPIP_0$ protocol $\PiNaive$ for the above $\QPIP_1$ protocol.  As mentioned previously, this protocol $\PiNaive$ will have some trouble outputting the desired sample in the testing round. 
-To address this issue, we will separate the testing and the outputting in different runs of the protocol, similarly to what we have done in the design of $\QPIP_1$ protocol. 
-Precisely, we will run again a cut-and-choose protocol $\PiSampZ$ on top of many copies of $\PiNaive$, which are executed in parallel to preserve the number of rounds.
+\vspace{2mm} \noindent  \emph{$\diamond$ Compile $\QPIP_1$ into $\QPIP_0$ after parallel repetition}: We now discuss how to use Mahadev's measurement protocol to compile the above $\QPIP_1$ protocol for $\SampBQP$ to a $\QPIP_0$ protocol. As mentioned, a major issue we need to address is that when the verifier $V$ choose to run a testing round, $V$ does not learn a output sample when it accepts.  %(which happens with probability $1/2$), 
 
-\KM{more precise about the issue and construction; issue: testing round has no output; construction: parallel repetition and use one hadamard + k - 1 testing; partition lemma: know testing answer and not know; know answer $\Rightarrow$ write output distribution; difference to BQP: $2^{-m}$ vs $1/m$; sampling no amplification can't combine samples  }
+Specifically, let $\PiNaive$ be an ``intermediate'' $\QPIP_0$ protocol obtained by applying Mahadev's compilation to the above $\QPIP_1$ protocol. Namely, when $V$ chooses to run the Hadamard round, it learns a measurement outcome from the measurement protocol and runs the $\QPIP_1$ verifier to generate a decision and a output sample when accepts. However, when  $V$ chooses to run the testing round, it only decides to accept or reject without being able to output a sample. 
 
-However, since $\PiNaive$ only has computational soundness, we need to design a parallel repetition of $\PiNaive$ in the computational setting, which also prevents the use of quantum de Finetti theorem that only holds in the information-theoretical setting. 
-Fortunately,  some recent results on computational parallel repetitions of Mahadev's original protocol for $\BQP$~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} provide a technical starting point for us. 
-Precisely, these results open the box of the analysis of Mahadev's protocol and analyze the computational soundness under a parallel repetition. 
+Similar to the above cut-and-choose idea for $\QPIP_1$, a natural idea to fix the issue is to execute multiple copies of $\PiNaive$ in parallel\footnote{It is also reasonable to consider sequential repetition, but we consider parallel repetition for its advantage of preserving the round complexity.}, and to choose a random copy to run the Hadamard round to generate an output sample and use all the remaining copies to run the testing round. The verifier accepts only when all executions accept and outputs the sample from the Hadamard round. Let us call this protocol $\PiSampZ$.
 
-\XW{Precisely, comment on the partition lemma~\cite{arXiv:ChiaChungYam19}, and how it is used ...}
+Clearly from the construction, the verifier now can output a sample when it decides to accept, and outputs a correct sample when interacting with an honest prover (completeness). The challenge is to show that $\PiSampZ$ is computationally sound. Note that now we are in the computational setting, we cannot use quantum de Finetti theorem as above since it only holds in the information-theoretical setting. Furthermore, parallel repetition for computationally sound protocols are typically difficult to analyze, and known to not always work for protocols with four or more messages~\cite{BIN97,PW12}.
+
+Fortunately, parallel repetition of Mahadev's protocol for $\BQP$ has been analyzed before in ~\cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19} with interestingly different proofs. Both works showed that $m$-fold parallel repetition reduces the soundness error to $2^{-m}$ by relying on special properties of Mahadev's protocol. 
+
+It is worth comparing parallel repetition of Mahadev's protocol for $\BQP$ and $\SampBQP$. For $\BQP$, the verifier simply chooses to run the Hadamard and testing rounds independently for each repetition. In contrast, our $\PiSampZ$ runs the Hadamard round in one repetition and run the testing round in the rest. The reason is that in $\SampBQP$, we do not have a good way to combine two samples learned from two Hadamard-round executions. The difference also reflects in the parameters, where the soundness error decreases exponentially for $\BQP$, but as we see below (and also in the above $\QPIP_1$ protocols), for $\SampBQP$, $m$-fold repetition only decreases the error to $\poly(1/m)$. The difference stems from the fact that there is no generic error reduction method for the sampling problem, whereas one can just conduct a majority vote for decision problems.
+
+We rely on the technique developed in~\cite{arXiv:ChiaChungYam19} to analyze the soundness of $\PiSampZ$. Intuitively, Mahadev's protocol has the property that if a malicious prover $P^*$ knows the answer to pass the testing round, then it must be ``committed'' to a state $\rho$ in the sense that the verifier $V$ learns the $X/Z$ measurement outcome of $\rho$ in the Hadamard round (in a computational sense), and thus, the soundness of the underlying $\QPIP_1$ protocol ensures that $V$ learns a correct sample when it accepts. In short, when $P^*$ knows the testing round answer,  $P^*$ cannot ``cheat'' in the Hadamard round. The work of~\cite{arXiv:ChiaChungYam19} formalizes this intuition by a \emph{partition lemma}, which roughly says that there is an efficient projection that partitions the prover's internal quantum space into a ``known-answer'' subspace $S_1$ that $P^*$ knows the answer to the testing round, and a ``not-known-answer'' subspace $S_0$ that $P^*$ does not know the answer to the testing round. For (efficient) prover's states $\ket{\psi} \in S_1$, the verifier $V$ can produce a sound output in the Hadamard round. For (efficient) prover's states $\ket{\psi} \in S_0$, the verifier $V$ rejects in the testing round with high probability. The work of \cite{arXiv:ChiaChungYam19} used this partition lemma iteratively to each instance of the repetition to show that for a no instance $x$ for any (efficient) prover's state $\ket{\psi}$, the probability that $V$ accepts is at most roughly $2^{-m}$.
+
+We apply the partition lemma iteratively to the prover's state  similarly as~\cite{arXiv:ChiaChungYam19}, but with significant differences to show the soundness of $\PiSampZ$ for $\SampBQP$. In particular, extra cares are required to reason about the computational indistinguishability of the verifier's output sample from the correct distribution $D_x$. To gain some intuition, let us apply the partition lemma to the prover's state $\ket{\psi}$ with respect to the first coordinate, which decompose $\ket{\psi} = \ket{\psi_0} + \ket{\psi_1}$ with $\ket{\psi_0} \in S_0$ and  $\ket{\psi_1} \in S_1$, respectively. Intuitively, the $\ket{\psi_0}$ component will be rejected whenever the first coordinate runs the testing round, but the verifier may be ``cheated'' to accepted incorrectly when the first coordinate runs the Hadamard round, which happens with probability $1/m$ and is where the error come from. For the $\ket{\psi_1}$ component, $V$ will produce a sound output if it runs the Hadamard round at the first coordinate. For the case that $V$ chooses to run the testing round at the first coordinate, we can analyze it by further applying the partition lemma to $\ket{\psi_1}$ with respect to the second coordinate to analyze. 
+%
+While the analysis outlined above grosses over many technical details, our actual analysis follows this outline closely. 
+(Section~\ref{sec:qpip0_all}.)
+
+
+
+%To address this issue, we will separate the testing and the outputting in different runs of the protocol, similarly to what we have done in the design of $\QPIP_1$ protocol. 
+%Precisely, we will run again a cut-and-choose protocol $\PiSampZ$ on top of many copies of $\PiNaive$, which are executed in parallel to preserve the number of rounds.
+
+%\KM{more precise about the issue and construction; issue: testing round has no output; construction: parallel repetition and use one hadamard + k - 1 testing; partition lemma: know testing answer and not know; know answer $\Rightarrow$ write output distribution; difference to BQP: $2^{-m}$ vs $1/m$; sampling no amplification can't combine samples  }
+
+%However, since $\PiNaive$ only has computational soundness, we need to design a parallel repetition of $\PiNaive$ in the computational setting, which also prevents the use of quantum de Finetti theorem that only holds in the information-theoretical setting. 
+%Fortunately,  some recent results on computational parallel repetitions of Mahadev's original protocol for $\BQP$~\cite{arXiv:AlaChiHun19, arXiv:ChiaChungYam19} provide a technical starting point for us. 
+%Precisely, these results open the box of the analysis of Mahadev's protocol and analyze the computational soundness under a parallel repetition. 
+
+%\XW{Precisely, comment on the partition lemma~\cite{arXiv:ChiaChungYam19}, and how it is used ...}
 % We end up developing a weaker version of  parallel repetition of Mahadev's protocol inspired by the technique from~\cite{arXiv:ChiaChungYam19}. 
-\XW{Note that there is also an important difference between us and~\cite{arXiv:ChiaChungYam19}, the difference between decision and sampling problems.}
+%\XW{Note that there is also an important difference between us and~\cite{arXiv:ChiaChungYam19}, the difference between decision and sampling problems.}
 % A naive attempt is to directly apply Mahadev's protocol on the aforementioned $\QPIP_1$ protocol.
 % Unfortunately, the plain version of Mahadev's protocol does not yield favorable parameters by itself.
 % However, we cannot directly make use of these parallel repetition results due to the subtle difference between protocols for $\BQP$ and $\SampBQP$.
@@ -261,8 +288,8 @@ Precisely, these results open the box of the analysis of Mahadev's protocol and 
 
 
 It is worthwhile to mention that we came to notice some online discussion\footnote{\url{https://www.scottaaronson.com/blog/?p=3697}, e.g., comment \#25, \#26, \#42, \#48. } on the possibility of a CVQC protocol for $\SampBQP$ after we developed our own result. 
-These comments suggested a possible reduction of $\SampBQP$ to the local Hamiltonian problem following a similar high-level idea as our solution, however, with no detail and a seemingly different technical route. 
-However, they failed to identify other important gaps in the protocol design that we have addressed. 
+These comments suggested a possible reduction of $\SampBQP$ to the local Hamiltonian problem following a similar high-level idea as our solution, however, with no detail and a seemingly different technical route. Furthermore, the issue that the verifier does not generate output in the testing round seems to be overlooked and not discussed there.
+%However, they failed to identify other important gaps in the protocol design that we have addressed. 
 
 \vspace{2mm} \noindent \textbf{A generic compiler to upgrade $\QPIP_0$ protocols with blindness}. At a high-level, the idea is simple: we run the original protocol under a QFHE with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the properties of the original protocol.
 One subtlety with this approach is due to the fact that the verifier is classical while the QFHE cipher text could depend on both quantum and classical data.

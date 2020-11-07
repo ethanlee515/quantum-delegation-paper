@@ -2,9 +2,11 @@
 
 \subsection{Notations}
 
-Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$.
+Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$.  
 %For a $T$-qubit Hilbert space, let the state $\ket{\widehat{t}}=\ket{1}^{\otimes t}\otimes \ket{0}^{{\otimes (T-t)}}$.
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
+We use $\BQP$ as an adjective to mean polynomial-time, e.g. a $\BQP$ machine.
+
 
 The phase gate and Pauli matrices are the following matrices.
 
@@ -26,9 +28,11 @@ We additionally denote the following for states that are only computationally in
     $$\abs{\Pr\left[\mathsf{D}(\rho_{1,\lambda})=1\right]-\Pr\left[\mathsf{D}(\rho_{2,\lambda})=1\right]}\leq\eps(\lambda).$$
     % We also denote $\eps$-computational indistinguishability by $\rho_{1,\lambda}\approx_{c, \eps}\rho_{2,\lambda}$.
     We drop the $\eps$ parameter when it is negligible.
-    We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output subnormalized states as appropriate.
-    We also extend it to distributions by treating them as mixed states.
+    We extend computational indistinguishability to subnormalized states by interpreting a subnormalized state $\rho$ as sending out $\bot$ with probability $1-\tr(\rho)$ and having the distinguisher $\mathsf{D}$ output $\bot$ whenever he receives $\bot$.
+    We also extend it to classical random variable by treating them as mixed states.
 \end{definition}
+
+%   We extend computational indistinguishability to subnormalized states by taking the distinguisher $\mathsf{D}$ to output\hannote{?} subnormalized states as appropriate.
 
 We denote measurement as follows:
 \begin{definition} [quantum-classical channels]
