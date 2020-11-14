@@ -32,7 +32,7 @@
 
 	Ingredients:
 	\begin{itemize}
-		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}\leq\eps$.
+		\item Let $C$ be a quantum circuit consisting of only Hadamard and Toffoli gates, which on input $x$ samples from some $C_x$ such that $\norm{C_x-D_x}_{\mathrm{TV}}\leq\eps$.
 		\item Let $T$ be the number of gates in $C$.
 		\item Let $C'$ be $C$ padded with $\frac{6T}{\eps}$ identity gates at the end.
 		\item Let $H_{C'(x)}=\sum_i \alpha_i H_i$ be the X-Z local Hamiltonian instance associated with the computation of $C'(x)$ from \Cref{thm:LHReduction}.
@@ -65,7 +65,7 @@ We now show its completeness and soundness.
   
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound.\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}}
+	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound.\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.}
 	%\XW{do we want precise error bound?}
 \end{thm}
 \begin{prf}
@@ -86,36 +86,36 @@ We now show its completeness and soundness.
 	$$\tilde{\Pi}\sigma'\tilde{\Pi}^\dagger
 	=\frac{1}{\abs{\Sym(M)}}\sum_{\Pi\in\Sym(M)}\tilde{\Pi}\Pi\sigma\Pi^\dagger\tilde{\Pi}^\dagger
 	=\frac{1}{\abs{\Sym(M)}}\sum_{\hat{\Pi}\in\Sym(M)}\hat{\Pi}\sigma\hat{\Pi}^\dagger
-	=\sigma'$$
+	=\sigma',$$
 	where the second equality is by relabeling $\tilde{\Pi}\Pi=\hat{\Pi}$.
 
-	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $m+1$-fold tensor products of identical copies of some states $\tau_j$.
+	Now we apply de Finetti's theorem (\Cref{deFinetti}) to approximate our measurement result on $\sigma$ with that of a classical mix over $(m+1)$-fold tensor products of identical copies of some states $\tau_j$.
 	That is, there exists some $\rho=\sum_j w_j\tau_j^{\otimes m+1}$
 	such that for all quantum-classical channels $\Lambda_i$ acting on registers of size $s$:
-	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'_{\leq m+1}-\rho)}
+	$$\norm{\Lambda_1\otimes\ldots\otimes\Lambda_{m+1}(\sigma'_{\leq m+1}-\rho)}_1
 	\leq\sqrt{\frac{2m^2s}{M-m}}
-	\leq\frac{\eps}{6}$$
+	\leq\frac{\eps}{6},$$
 	where $\sigma'_{\leq m+1}$ is the first $m+1$ registers of $\sigma'$.
 	In our context, for $1\leq i\leq m$, $\Lambda_i$ corresponds to measurements chosen by $\cVGS$.
 	$\Lambda_{m+1}$ measures the data register under the standard basis.
 	
 	We now analyze the verifier's output for each $\tau_j$ in $\rho=\sum_j w_j\tau_j^{\otimes m+1}$. Let $(d_j, z_j)$ be the verifier's output corresponding to $\tau_j$, and define $z_{j, ideal}$ accordingly.
-	We claim that $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{TV}<\frac{2\eps}{6}$.
+	We claim that $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{\mathrm{TV}}<\frac{2\eps}{6}$.
 	Let $p_j$ be the probability that $\cVGS(\tau_j)=\Acc$, and consider the following two cases.
 
 	First suppose $p_j<\frac{1}{2}-2\kappa$,
 	then a standard Chernoff bound argument can be applied show that this case has negligible acceptance probabilities.
-	As a result, $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{TV}=\negl(\lambda)$.
+	As a result, $\norm{(d_j, z_j)-(d_j, z_{j, ideal})}_{\mathrm{TV}}=\negl(\lambda)$.
 
 	Now suppose $p_j\geq\frac{1}{2}-2\kappa$.
 	\iffalse
 	By \Cref{cor:HamCheck} we have a lower bound for the fidelity between $\tau_j$ and $\ket{\psi_{C'(x)}}$:
 	$$p_j>\frac{1}{2}-2\kappa\Rightarrow F(\tau_j, \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}})\geq1-\frac{\eps^2}{36}.$$
 	which in turn implies a lower bound on the respective trace distance:
-	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{tr}<\frac{\eps}{6}.$$
+	$$\norm{\tau_j - \ket{\psi_{C'(x)}}\bra{\psi_{C'(x)}}}_{\tr}<\frac{\eps}{6}.$$
 	\fi
 	By \Cref{thm:HamCheckClose} we have
-	$$\norm{\tau_j - \ket{\psi^{\mathrm{hist}}_{C'(x)}}\bra{\psi^{\mathrm{hist}}_{C'(x)}}}_{tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\eps}{6}.$$
+	$$\norm{\tau_j - \ket{\psi^{\mathrm{hist}}_{C'(x)}}\bra{\psi^{\mathrm{hist}}_{C'(x)}}}_{\tr}\leq\frac{2}{\sqrt{3}}\sqrt{2\kappa\cdot2\sum_i\abs{\alpha_i}}=\frac{\eps}{6}.$$
 	Observe that when $d_j=\Acc$, $z_j$ is the measurement results on $\tau_j$'s data register,
 	which is $\frac{\eps}{6}$-close to that of $\ket{\psi_{C'(x)}}$.
 	As the clock register is traced out from $\ket{\psi_{C'(x)}}$, the data register has at least $1-\frac{\eps}{6}$ probability to contain $C(x)$ due to the padding.
@@ -124,11 +124,11 @@ We now show its completeness and soundness.
 
     Finally, let $(d_\rho, z_\rho)$ denote the verifier's output distribution corresponding to $\rho=\sum_j w_j\tau_j^{\otimes m+1}$,
 	and define $z_{\rho, ideal}$ accordingly.
-	We have $\norm{(d_\rho, z_\rho) - (d, z_{\rho, ideal})}_{TV} < \frac{2\eps}{6}$ since the same is true for all components $\tau_j$.
+	We have $\norm{(d_\rho, z_\rho) - (d, z_{\rho, ideal})}_{\mathrm{TV}} < \frac{2\eps}{6}$ since the same is true for all components $\tau_j$.
 
 	As $(d, z)$ is $\frac{\eps}{6}$-close to $(d_\rho, z_\rho)$ by the data processing inequality,
-	using triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{TV}\leq\frac{\eps}{2}$.
-	Hence $\norm{d - d_\rho}_{TV}\leq\frac{\eps}{2}$, which implies $\norm{(d_\rho, z_{\rho, ideal}) - (d, z_{ideal})}_{TV}$ $\leq$ $\frac{\eps}{2}$.
-	It then follows from triangle inequality that
-	$\norm{(d, z) - (d, z_{ideal})}_{TV}\leq\eps$.
+	using the triangle inequality we have $\norm{(d, z) - (d_\rho, z_{\rho, ideal})}_{\mathrm{TV}}\leq\frac{\eps}{2}$.
+	Hence $\norm{d - d_\rho}_{\mathrm{TV}}\leq\frac{\eps}{2}$, which implies $\norm{(d_\rho, z_{\rho, ideal}) - (d, z_{ideal})}_{\mathrm{TV}}$ $\leq$ $\frac{\eps}{2}$.
+	It then follows from the triangle inequality that
+	$\norm{(d, z) - (d, z_{ideal})}_{\mathrm{TV}}\leq\eps$.
 \end{prf}

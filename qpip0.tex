@@ -6,16 +6,14 @@
 In this section, we create a delegation protocol for $\SampBQP$ with fully classical clients by adapting the approach taken in \cite{FOCS:Mahadev18a}. In \cite{FOCS:Mahadev18a}, 
 Mahadev designed a protocol $\PiMeasure$ (\Cref{proto:urmila4}) that allows a $\BQP$ prover to ``commit a state" for a classical verifier to choose a measurement basis and obtain corresponding measurement results.
 Composing it with the $\QPIP_1$ protocol for $\BQP$ from \cite{mf16} results in a $\QPIP_0$ protocol for $\BQP$.
-In this work, We try to compose $\PiMeasure$ with our $\QPIP_1$ protocol $\PiSamp$ (\Cref{ProtoQPIP1}) for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$ 
-
-
+In this work, We try to compose $\PiMeasure$ with our $\QPIP_1$ protocol $\PiSamp$ (\Cref{ProtoQPIP1}) for $\SampBQP$ in order to obtain a $\QPIP_0$ protocol for $\SampBQP$. 
 
 A direct composition of $\PiSamp$ and $\PiMeasure$, however, results in $\PiNaive$ (\Cref{proto:qpip0_naive}) which does not provide reasonable completeness or accuracy guarantees.
 As we will see, this is due to $\PiMeasure$ itself having peculiar and weak guarantees:
 the client doesn't always obtain measurement outcomes even if the server were honest.
 When that happens under the $\BQP$ context, the verifier can simply accept the prover at the cost of some soundness error;
 under our $\SampBQP$ context, however, we must run many copies of $\PiNaive$ in parallel so the verifier can generate its outputs from some copy.
-We spend the majority of this section analyzing the soundness of this parallel repetition.
+We will spend the majority of this section analyzing the soundness of this parallel repetition.
 
 \subsection{Mahadev's measurement protocol}\label{sec:urmila4}
 
@@ -52,7 +50,7 @@ We now formally describe the interface of $\PiMeasure$ while omitting the implem
 
 $\PiMeasure$ has negligible completeness errors, i.e. if both the prover and verifier are honest, the verifier's output on Hadamard round is computationally indistinguishable from $M_{XZ}(\rho, h)$. As for soundness,
 It gives the following \emph{binding property} against cheating provers:
-if a prover would always succeed on the testing round, then there exists some $\rho$ so that for any $h$ the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen Hadamard round.
+if a prover would always succeed on the testing round, then there exists some $\rho$ so that for any $h$ the verifier obtains $M_{XZ}(\rho, h)$ if he had chosen the Hadamard round.
 
 \begin{lemma}[binding property of $\PiMeasure$; special case of Claim 7.1 in \cite{FOCS:Mahadev18a}]
 	\label{lem:urmila-binding}
@@ -292,7 +290,9 @@ Note that in property~\ref{property:partition-binding}, we are using $\ext_i$ in
 We now decompose the prover's internal state by using \Cref{lem:partition2} iteratively.
 Let $\ket{\psi}$ be the state the prover holds before he receives $\vec{c}$;
 we denote the corresponding Hilbert space as $H_{\regX,\regZ}$.
-For all $k \in [m]$, $d\in \zo^k$, $\gamma=(\gamma_1, \ldots, \gamma_k)$ where each $\gamma_j\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$ \Ethan{This ok?}, and $\ket{\psi} \in H_{\regX,\regZ}$, define $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma_k}\ldots G_{d_2,2,\gamma_2} G_{d_1,1,\gamma_1} \ket{\psi}.$$
+For all $k \in [m]$, $d\in \zo^k$, $\gamma=(\gamma_1, \ldots, \gamma_k)$ where each $\gamma_j\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$,  
+%\Ethan{This ok?}, 
+and $\ket{\psi} \in H_{\regX,\regZ}$, define $$\ket{\psi_{d,\gamma}}\defeq G_{d_k,k,\gamma_k}\ldots G_{d_2,2,\gamma_2} G_{d_1,1,\gamma_1} \ket{\psi}.$$
 For all $i\in[m]$, we then decompose $\ket{\psi}$ into
 \begin{equation}
 	\label{eq:partition-string}
