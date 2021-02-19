@@ -167,19 +167,12 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 
 Applying our compiler to the parallel repetition of Mahadev's protocol for $\BQP$ from \cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19} and our $\QPIP_0$ protocol $\PiSampZ$ from \Cref{proto:QPIP0samp} for $\SampBQP$ yields the first constant-round blind $\QPIP_0$ protocol for $\BQP$ and $\SampBQP$, respectively.
 
-%Our compiler is a straightforward way of achieving blindness with existing $\QPIP_0$ protocols while preserving other runtime properties.
-%In particular, we now apply it to the delegation protocol for $\BQP$ from \cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19},
-%as well as our $\SampBQP$ protocol $\PiSamp$ to obtain the following results respectively.
-
-\Ethan{``preserves soundness" needs just a bit more discussion, since all we've proven are two experiments being identical.}
-
 \begin{thm}
     Assuming the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all languages in $\BQP$ with negligible completeness and soundness errors.
 \end{thm}
 
 \begin{thm}
         Assuming the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
-        %There exists a computationally sound, blind, and constant-round $\QPIP_0$ protocol for $\SampBQP$ with negligible completeness errors under the QLWE assumption.
 \end{thm}
 
 

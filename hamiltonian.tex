@@ -92,7 +92,7 @@ Note that $U_t^\dagger=U_t$, since our gates are either Hadamard or Toffoli. It 
 \end{equation}
 and
 \begin{eqnarray}
-  \Hprop^1 &= & \frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1\otimes Z_2) \\
+  \Hprop^1 &= & \frac{1}{2}(I+Z_2)-U_1\otimes\frac{1}{2}(X_1+X_1\otimes Z_2), \\
   \Hprop^T &= & \frac{1}{2}(I-Z_{t-1})-U_T\otimes\frac{1}{2}(X_T-Z_{T-1}\otimes X_T).
 \end{eqnarray}
 Combining with the fact that each $U_t$ can be written as a linear combination of terms from $\LHXZ{}$, we conclude that $\Hclock$, $\Hin$, $\Hprop$ are 6-local X-Z Hamiltonian.
@@ -105,7 +105,7 @@ The projection lemma from \cite{kempe_kitaev_regev_2006} approximates $\ground{H
     \label{thm:proj1}
     Let $H=H_1+H_2$ be the sum of two Hamiltonians operating on Hilbert space $\cH=\cS+\cS^\bot$.
     The Hamiltonian $H_2$ is such that $\cS$ is a zero eigenspace and the eigenvectors in $\cS^\bot$ have eigenvalues at least $J>2\norm{H_1}$. Then,
-    $$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right)$$
+    $$\lambda\left(H_1\big|_\cS\right)-\frac{\norm{H_1}^2}{J-2\norm{H_1}}\leq\lambda(H)\leq\lambda\left(H_1\big|_\cS\right).$$
 \end{lem}
 
 We will use the following simple reformulation instead.
@@ -113,9 +113,9 @@ We will use the following simple reformulation instead.
 \begin{lem}
     \label{lem:projection}
     Let $H_1, H_2$ be local Hamiltonians where $H_2\geq0$. Let $K=\ker H_2$ and
-    $$J=\frac{8\norm{H_1}^2+ 2\norm{H_1}}{\lambda\left(H_2\big|_{K^\bot}\right)}$$
+    $$J=\frac{8\norm{H_1}^2+ 2\norm{H_1}}{\lambda\left(H_2\big|_{K^\bot}\right)},$$
     then we have
-    $$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}$$
+    $$\lambda(H_1+JH_2)\geq\lambda\left(H_1\big|_K\right)-\frac{1}{8}.$$
 \end{lem}
 \begin{proof}
     Apply \Cref{thm:proj1} to $H=H_1+JH_2$. Note that the least non zero eigenvalue of $JH_2$ is greater than $2\norm{H_1}$.

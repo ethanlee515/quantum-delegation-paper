@@ -1,6 +1,6 @@
 \section{Delegation of Quantum Sampling Problems} \label{sec:samp_definition}
 
-In this section, we formally introduce the task of delegation for quantum sampling problems. We start by recalling the complexity class $\SampBQP$ defined by Aaronson~\cite{aaronson_2013, aaronson_arkhipov_2011}, which captures the class of sampling problems that
+In this section, we formally introduce the task of delegation for quantum sampling problems. We start by recalling the complexity class $\SampBQP$ defined by Aaronson~\cite{aaronson_2013, Boson}, which captures the class of sampling problems that
 are approximately solvable by polynomial-time quantum algorithms.
 
 
@@ -13,7 +13,7 @@ are approximately solvable by polynomial-time quantum algorithms.
     $\SampBQP$ is the class of sampling problems $\left(D_x\right)_{x\in\set{0, 1}^*}$ that can be (approximately) sampled by polynomial-size uniform quantum circuits. Namely, there exists a Turing machine $M$ such that for every $n \in \bbN$ and $\eps \in (0,1)$, $M(1^n, 1^{1/\eps})$ outputs a quantum circuit $C$ in $\poly(n, 1/\eps)$ time such that for every $x \in \zo^n$, the output of $C(x)$ (measured in standard basis) is $\eps$-close to $D_x$ in the total variation distance. 
 \end{definition}
 
-Note that in the above definition, there is an accuracy parameter $\eps$ and the quantum sampling algorithm only requires to output a sample that is $\eps$-close to the correct distribution in time $\poly(n,1/\eps)$, instead of the stringent requirement of outputting a perfect sample. There are multiple reasons for allowing an inverse polynomial error. For example, conceivable physical realizations of quantum computer may consist of inherent noise. We refer the readers to~\cite{aaronson_2013, aaronson_arkhipov_2011} for the discussion therein on why this better captures the sampling problem solvable by realistic quantum computers. 
+Note that in the above definition, there is an accuracy parameter $\eps$ and the quantum sampling algorithm only requires to output a sample that is $\eps$-close to the correct distribution in time $\poly(n,1/\eps)$, instead of the stringent requirement of outputting a perfect sample. There are multiple reasons for allowing an inverse polynomial error. For example, conceivable physical realizations of quantum computer may consist of inherent noise. We refer the readers to~\cite{aaronson_2013, Boson} for the discussion therein on why this better captures the sampling problem solvable by realistic quantum computers. 
 
 We next define what it means for a $\QPIP_\tau$ protocol to solve a $\SampBQP$ problem $\left(D_x\right)_{x\in\set{0, 1}^*}$.
 Since sampling problems come with an accuracy parameter $\eps$, we let the prover $P$ and the verifier $V$ receive the input $x$ and $1^{1/\eps}$ as common inputs. 
