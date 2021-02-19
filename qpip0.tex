@@ -59,7 +59,7 @@ if a prover would always succeed on the testing round, then there exists some $\
 
 We now combine $\PiMeasure$ with our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$ (\Cref{ProtoQPIP1}), to get a corresponding $\QPIP_0$ protocol $\PiNaive$.
 Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prover's message.
-In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead.
+In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead. \hannote{also need to be non-adaptive?}
 
 \begin{protocol}{Intermediate $\QPIP_0$ protocol $\PiNaive$ for the $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
