@@ -164,15 +164,20 @@
 \def\ot{\otimes}
 \nc{\given}{\ensuremath{\;\middle|\;}}
 
-\newenvironment{thm}{\begin{theorem}}{\end{theorem}}
-%\newtheorem*{thm*}{Theorem}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{fact}{Fact}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{claim}{Claim}[section]
+
 \newtheorem{cor}{Corollary}[theorem]
-%\newtheorem{lem}{Lemma}[section]
+\newtheorem{remark}{Remark}[theorem]
+
+\newenvironment{thm}{\begin{theorem}}{\end{theorem}}
 \newenvironment{lem}{\begin{lemma}}{\end{lemma}}
 \newenvironment{rmk}{\begin{remark}}{\end{remark}}
-%\newtheorem{prop}[thm]{Proposition}
 \newenvironment{dfn}{\begin{definition}}{\end{definition}}
-\newtheorem{fact}{Fact}[section]
 %\newtheorem{con}[thm]{Conjecture}
 
 \newenvironment{prf}{\begin{proof}}{\end{proof}}

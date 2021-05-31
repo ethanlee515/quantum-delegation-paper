@@ -2,17 +2,17 @@
 \drafttrue
 %\draftfalse
 
-\documentclass[11pt]{llncs}
+\documentclass{article}
 \pagestyle{plain}
 \usepackage{authblk}
 
-\usepackage{amsmath, amssymb}
+\usepackage{amsmath, amssymb, amsthm}
 \usepackage{stmaryrd}
 \usepackage{braket}
 \usepackage{algorithm}
 \usepackage{enumitem}
 \usepackage{algpseudocode}
-%\usepackage[margin=1in]{geometry}
+\usepackage[margin=1in]{geometry}
 \newcommand{\sgn}{\operatorname{sgn}}
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareMathOperator*{\spn}{\operatorname{span}}
@@ -90,7 +90,6 @@
 
 \title{Constant-round Blind Classical Verification of Quantum Sampling}
 
-\iffalse
 \author[1]{Kai-Min Chung\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}}
 \author[2]{Yi Lee\thanks{\href{mailto:ethanlee515@gmail.com}{ethanlee515@gmail.com}. This work was done in part while the author was affiliated to National Taiwan University.}}
 \author[3]{Han-Hsuan Lin\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense.}}
@@ -102,9 +101,6 @@
 	and Joint Center for Quantum Information and Computer Science,
 	University of Maryland, USA
 }
-\fi
-\author{}
-\institute{}
 
 \input{macros.tex}
 \input{macros_1.tex}
