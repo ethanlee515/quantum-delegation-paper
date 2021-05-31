@@ -74,7 +74,14 @@ As our main result, we construct a constant-round CVQC protocol for $\SampBQP$, 
 Assuming the QLWE assumption, there exists a four-message CVQC protocol for all sampling problems in $\SampBQP$ with computational soundness and negligible completeness error.
 \end{theorem}
 
+\Ethan{Related QIP review below:
 
+A potential problem I see is that the main theorem (Theorem 1.1) in the paper gives a protocol that achieves only computational soundness.  Roughly speaking, this means that the protocol can only be used to verify that the ideal distribution is close to some distribution which in turn is computationally indistinguishable from the ideal quantum distribution.  This guarantee seems not to be enough for any currently established (or conjectured!) hardness argument in quantum supremacy.  The problem is essentially that quantum hardness of sampling arguments are fundamentally only (potentially) robust to statistical distance and not computational indistinguishability.  For example, it would be fully compatible with everything we know (and even quite expected) if the output distribution of random quantum circuits are, with high probability over the choice of random circuit, *computationally indistinguishable* from the uniform distribution.  But clearly the uniform distribution is n!
+ ot hard to sample from.
+
+Said in another way: what is being shown here is the following: consider a new class sampBQP', where the complete problem is to sample from something BQP-indistinguishable from the output distribution of a quantum circuit. Here it is shown that this new class sampBQP' can be interactively verified.  Unfortunately, we don’t know or have evidence that, for example $\SampBQP’ = \SampBPP \implies$ PH collapse, like we do for the standard sampBQP class.
+
+Notably, discussion of this issue is missing entirely from the writeup!  In conclusion, while I found this paper to be an interesting followup to the Mahadev result, I find that the quantum supremacy motivation, which would a priori have been quite strong, is not obviously correct.}
 
 % To the best of our knowledge, we are the first to formally define the delegation of quantum sampling problems. 
 

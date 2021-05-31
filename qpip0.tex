@@ -182,7 +182,7 @@ To solve this problem, we start with a pointwise argument and fix the Hadamard r
 and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
 We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time. Another way to see this issue is to notice that we are partitioning a quantum state, not probability events, so there are some inconsistencies between our intuition and calculation. Indeed, the error we get in the end is $O(\sqrt{1/m})$ instead of the $O(1/m)$ we expected. 
 
-Also a careful reader might have noticed that the prover's space don't always decompose cleanly into parts that the verifier either rejects or accepts with high probability, as there might be some states that a accepted with mediocre probability. In \cite{arXiv:ChiaChungYam19}, this is solved by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$ and applying amplitude amplification to boost the accept probability if it is bigger than $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so they need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
+Also a careful reader might have noticed that the prover's space don't always decompose cleanly into parts that the verifier either rejects or accepts with high probability, as there might be some states that is accepted with mediocre probability. In \cite{arXiv:ChiaChungYam19}, this is solved by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$ and applying amplitude amplification to boost the accept probability if it is bigger than $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so they need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
 Now we give a formal description of the partition lemma.
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-select on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\vec{c}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
@@ -268,11 +268,11 @@ Note that we have averaged over $\vec{pk}, \vec{y}$ where as previously everythi
 
 By Property~\ref{property:partition-testing} of \Cref{lem:partition2},
 it clearly follows that 
-\begin{claim}
+\begin{cor}
 	\label{lem:partition-testing}
 	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
 	$$\norm{P_{acc,i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
-\end{claim}
+\end{cor}
 
 Now we define
 \begin{equation}
@@ -312,6 +312,7 @@ we simply expand $z_i$ and bound the terms that are not $z_{good, i}$.
 \end{lemma}
 \begin{proof}
     See \Cref{sec:qpip0}.
+    \Ethan{Double check this ref? This feels off.}
 \end{proof}
 
 
