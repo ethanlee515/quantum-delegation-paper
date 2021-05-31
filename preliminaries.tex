@@ -45,12 +45,14 @@ Furthermore, we associate measurement outcomes in $X$ or $Z$ basis with a corres
 \end{definition}
 
 
-\subsection{Quantum Prover Interactive Protocols (QPIP)} 
+\subsection{Quantum Prover Interactive Proof (QPIP)} 
 \label{sec:qpip_def}
 
 Following \cite{FOCS:Mahadev18a}, we model the interaction between an almost classical client with quantum memory of size $\tau$ (verifier) and a quantum server (prover) in the following definition.
 When the client has limited quantum memories (i.e., $\tau > 0$), it becomes a ``streaming" model. Namely, the server can send qubits one-by-one to let the client measure them sequentially, even if the client cannot hold the entire quantum message.
 When the client is fully classical (i.e., $\tau = 0$), this model specializes to the standard interactive protocols.
+
+\hannote{different from umila's}
 
 \begin{definition}
     A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
@@ -70,7 +72,7 @@ It is straightforward to define what it means for a $\QPIP_\tau$ protocol to dec
         \item On public input $1^\lambda$ and $x\in\zo^*$, the verifier outputs either $\Acc$ or $\Rej$.
         \item (Completeness): For all security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
         $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
-        \item (Soundness): For all cheating $\BQP$ prover $P^*$, sufficiently large security parameter $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
+        \item (Soundness): For all cheating $\BQP$ prover $P^*$, sufficiently large \\security parameter $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then \\$\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<s(\lambda)$.
     \end{itemize}
 \end{definition}
 
@@ -110,8 +112,7 @@ As such, in this context, we consider the input $x$ as the verifier's private in
 
 We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qfhe} which is compatible with our use of a classical client.
 \begin{definition}
-    A quantum leveled homomorphic (public-key) encryption scheme $\QHE=(\QGen,$ \linebreak
-    $\QEnc, \QEval, \QDec)$ is quadruple of quantum polynomial-time algorithms which operate as follows:
+    A quantum leveled homomorphic (public-key) encryption scheme $\QHE=(\QGen, \QEnc, \QEval, \QDec)$ is quadruple of quantum polynomial-time algorithms which operate as follows:
     \begin{itemize}
         \item \emph{Key generation.}
             The algorithm $(pk, sk)\leftarrow\QGen(1^\lambda, 1^L)$ takes a unary representation of the security parameter and a unary representation of the level parameter as inputs and outputs a public key $pk$ and a secret key $sk$.
@@ -125,7 +126,11 @@ We use the quantum fully homomorphic encryption scheme given in \cite{mahadev_qf
         \item \emph{Homomorphic Evaluation.}
             The algorithm $c_f\leftarrow\QEval(pk, f, c_1, \ldots, c_l)$ takes the public key $pk$, a quantum circuit $f$ of depth at most $L$, and a set of $l$ ciphertexts $c_1,\cdots,c_l$ as inputs and outputs a ciphertext $c_f$.
             It must be the case that
-                $$\QDec(sk, \QEval(pk, f, c_1, \ldots, c_l))=f(\QDec(sk, c_1),\ldots,\QDec(sk, c_l))$$
+            \begin{align*}
+                \QDec&(sk, \QEval(pk, f, c_1, \ldots, c_l))
+                \\
+                &=f(\QDec(sk, c_1),\ldots,\QDec(sk, c_l))
+            \end{align*}
             with overwhelming probability in $\lambda$.
     \end{itemize}
 \end{definition}
