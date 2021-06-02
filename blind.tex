@@ -3,7 +3,7 @@
 
 In this section, we present a generic protocol compiler that compiles any $\QPIP_0$ protocol $\Pi = (P, V)$ (with an arbitrarily number of rounds) to a protocol $\Piblind = (\Pblind, \Vblind)$ that achieve blindness while preserving the completeness, soundness, and round complexity. At a high-level, the idea is simple: we simply run the original protocol under a quantum homomorphic encryption $\QHE$ with the verifier's key. Intuitively, this allows the prover to compute his next message under encryption without learning the underlying verifier's message, and hence achieves blindness while preserving the properties of the original protocol.
 
-However, several issues need to be taking care to make the idea work. First, since the verifier is classical, we need the quantum homomorphic encryption scheme $\QHE$ to be \emph{classical friendly} as defined in Definition~\ref{def:classical-friendly}. Namely, the key generation algorithm and the encryption algorithm for classical messages should be classical, and when the underlying message is classical, the ciphertext (potentially from homomorphic evaluation) and the decryption algorithm should be classical as well. Fortunately, the quantum homomorphic encryption scheme of Mahadev~\cite{mahadev_qfhe} is classical friendly.
+However, several issues need to be taking care to make the idea work. First, since the verifier is classical, we need the quantum homomorphic encryption scheme $\QHE$ to be \emph{classical friendly} as defined in Definition~\ref{def:classical-friendly}. Namely, the key generation algorithm and the encryption algorithm for classical messages should be classical, and when the underlying message is classical, the ciphertext (potentially from homomorphic evaluation) and the decryption algorithm should be classical as well. Fortunately, the quantum homomorphic encryption scheme of Mahadev~\cite{mahadev_qfhe} and Brakerski~\cite{brakerski_qfhe} are classical friendly. Moreover, Brakerski's scheme requires a weaker QLWE assumption, where the modulus is polynomial instead of super-polynomial.
 
 A more subtle issue is to preserve the soundness. Intuitively, the soundness holds since the execution of $\Piblind$ simulates the execution of $\Pi$, and hence the soundness of $\Pi$ implies the soundness of $\Piblind$. However, to see the subtle issue, let us consider the following naive compiler that uses a single key: In $\Piblind$,  the verifier $V$ initially generates a pair $\QHE$ key $(pk, sk)$, sends $pk$ and encrypted input $\QEnc(pk,x)$ to $P$. Then they run $\Pi$ under encryption with this key, where both of them use homomorphic evaluation to compute their next message.
 
@@ -145,7 +145,7 @@ For the soundness property, we show the following lemma, which implies that $\Pi
 
 Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 \begin{thm} \label{thm:compiler-blindness}
-    Assuming the QLWE assumption, $\Piblind$ is blind.
+    Under the QLWE assumption with polynomial modulus, $\Piblind$ is blind.
 \end{thm}
 \begin{proof}
     We show that for all cheating $\BQP$ prover $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
@@ -168,11 +168,11 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
 Applying our compiler to the parallel repetition of Mahadev's protocol for $\BQP$ from \cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19} and our $\QPIP_0$ protocol $\PiSampZ$ from \Cref{proto:QPIP0samp} for $\SampBQP$ yields the first constant-round blind $\QPIP_0$ protocol for $\BQP$ and $\SampBQP$, respectively.
 
 \begin{thm}
-    Assuming the QLWE assumption, \Ethan{wording sounds awkward? Maybe ``under the QLWE assumption"...?} there exists a blind, four-message $\QPIP_0$ protocol for all languages in $\BQP$ with negligible completeness and soundness errors.
+    Under the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all languages in $\BQP$ with negligible completeness and soundness errors.
 \end{thm}
 
 \begin{thm}
-        Assuming the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
+        Under the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
 \end{thm}
 
 

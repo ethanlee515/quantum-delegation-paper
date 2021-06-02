@@ -92,6 +92,12 @@ As such, in this context, we consider the input $x$ as the verifier's private in
     \end{itemize}
 \end{definition}
 
+\begin{remark} \label{rmk:blind-comp}
+In literature, the definition of blindness may also require to additionally hide the computation. The two notions are equivalent from a feasibility point of view by a standard transformation (e.g., as in~\cite{GHRW14} in a different context) that takes the description of the computation as part of the input and delegate the computation of  universal quantum circuits.
+\end{remark}
+
+
+
 % \iffalse
 % Probably not necessary
 
@@ -157,7 +163,7 @@ The quantum homomorphic encryption scheme $\mathsf{QHE}$ from \cite{mahadev_qfhe
     \begin{itemize}
         \item $\QGen$ is a classical algorithm
         \item In the case where the plaintext is classical, $\QEnc$ can be done classically.
-        \item When the underlying message is classical, the corresponding ciphertext is also classical and can be decrypted classically.
+        \item When the underlying message is a classical-quantum state, then the cipher text is composed of a corresponding classical part and a corresponding quantum part. Moreover, the classical part has a classical ciphertext and can be decrypted classically.
     \end{itemize}
 \end{definition}
 

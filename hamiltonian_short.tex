@@ -1,11 +1,33 @@
 \section{Construction of the $\QPIP_1$ Protocol for $\SampBQP$}
 \label{sec:sampbqp_short}
 
-See \Cref{sec:sampbqp} for the details of the construction of our $\QPIP_1$ Protocol for $\SampBQP$, \Cref{ProtoQPIP1}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem.
+As we mentioned in this introduction, we will employ the circuit \emph{history} state in the original construction of the Local Hamiltonian problem~\cite{kitaev2002classical} to encode the circuit information for $\SampBQP$.
+However, there are distinct requirements between certifying the computation for $\BQP$ and $\SampBQP$ based on the history state.
+For any quantum circuit $C$ on input $x$, the original construction for certifying $\BQP$\footnote{The original construction is for the purpose of certifying problems in QMA. We consider its simple restriction to problems inside BQP.} consists of local Hamiltonian $\Hin, \Hclock, \Hprop$, $\Hout$ where $\Hin$ is used to certify the initial input $x$, $\Hclock$ to certify the validness of the clock register,  $\Hprop$ to certify the gate-by-gate evolution according to the circuit description, and $\Hout$ to certify the final output.
+In particular, the corresponding history state is in the ground space of $\Hin$, $\Hclock$, and $\Hprop$. Note that $\BQP$ is a decision problem and its outcome (0/1) can be easily encoded into the energy $\Hout$ on the single output qubit.
+As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hclock+\Hprop + \Hout$.
+
+To deal with $\SampBQP$, we will still employ $\Hin, \Hclock$, and $\Hprop$ to certify the circuit's input, the clock register, and gate-by-gate evolution. However, in $\SampBQP$, we care about the entire final state of the circuit, rather than the energy on the output qubit.
+%The history state remains in the ground space of $\Hin + \Hprop$.  
+Our approach to certify the entire final state (which is encoded inside the history state) is to make sure that the history state is the unique ground state of $\Hin + \Hclock+ \Hprop$ and all other orthogonal states will have much higher energies.
+Namely, we need to construct some $\Hin'+ \Hclock'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies.
+It is hence guaranteed that any state with close-to-ground energy must also be close to the history state.
+We remark that this is a different requirement from most local Hamiltonian constructions that focus on the ground energy.
+We achieve so by using the \emph{perturbation} technique developed in~\cite{kempe_kitaev_regev_2006} for reducing the locality of Hamiltonian.
+Another example of local Hamiltonian construction with a focus on the spectral gap can be found in~\cite{adiabatic}, where the purpose is to simulate quantum circuits by adiabatic quantum computation.
+
+We need two more twists for our purpose.
+First, as we will eventually measure the final state in order to obtain classical samples, we need that the final state occupies a large fraction of the history state. We can simply add dummy identity gates.
+Second, as we are only able to perform $X$ or $Z$ measurement by techniques from~\cite{FOCS:Mahadev18a},
+we need to construct X-Z only local Hamiltonians.
+Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction.
+
+
+
+ For more details of the construction of our $\QPIP_1$ Protocol for $\SampBQP$, \Cref{ProtoQPIP1}, see \Cref{sec:sampbqp}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem.
 
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem\\ $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound.\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.}
-	%\XW{do we want precise error bound?}
-	\Ethan{Don't we need to mention that the verifier only needs to do $X$/$Z$ measurements?}
+	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem\\ $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.} where the verifier only needs to do non-adaptive $X/Z$ measurements.
+	%\XW{do we want precise error bound?}	
 \end{thm}
