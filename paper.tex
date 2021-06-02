@@ -95,10 +95,11 @@
 \title{Constant-round Blind Classical Verification of Quantum Sampling}
 
 \author[1]{Kai-Min Chung\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}}
-\author[2]{Yi Lee\thanks{\href{mailto:ethanlee515@gmail.com}{ethanlee515@gmail.com}. This work was done in part while the author was affiliated to National Taiwan University.}}
+\author[2]{Yi Lee\thanks{\href{mailto:ylee1228@umd.edu}{ylee1228@umd.edu}. This work was done while affiliated to Academia Sinica and to National Taiwan University.}}
 \author[3]{Han-Hsuan Lin\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense.}}
 \author[4]{Xiaodi Wu\thanks{\href{mailto:xwu@cs.umd.edu}{xwu@cs.umd.edu}. Partially supported by the U.S. National Science Foundation grant CCF-1755800, CCF-1816695, and CCF-1942837 (CAREER).}}
-\affil[1, 2]{Institute of Information Science, Academia Sinica, Taiwan}
+\affil[1]{Institute of Information Science, Academia Sinica, Taiwan}
+\affil[2]{Department of Computer Science, University of Maryland, USA}
 \affil[3]{Department of Computer Science, National Tsing Hua University, Taiwan}
 \affil[4]{
 	Department of Computer Science, Institute for Advanced Computer Studies,
@@ -118,7 +119,7 @@
 
 In a recent breakthrough, Mahadev constructed a classical verification of quantum computation (CVQC)  protocol for a  classical client to delegate decision problems in $\BQP$ to an untrusted quantum prover under computational assumptions. In this work, we explore further the feasibility of CVQC with the more general \emph{sampling} problems in BQP and with the desirable \emph{blindness} property. We contribute affirmative solutions to both as follows. 
 \begin{itemize}
-\item  Motivated by the sampling nature of many quantum applications (e.g., quantum algorithms for machine learning and quantum supremacy tasks), we initiate the study of  CVQC for \emph{quantum sampling problems} (denoted by $\SampBQP$).  More precisely, in a CVQC protocol for a $\SampBQP$ problem, the prover and the verifier are given an input $x\in \zo^n$ and a quantum circuit $C$, and the goal of the classical client is to learn a sample from the output $z \leftarrow C(x)$ up to a small error, from its interaction with an untrusted prover. We demonstrate its feasibility by constructing a four-message CVQC protocol for $\SampBQP$ based on the quantum \emph{Learning With Error} assumption.
+\item  Motivated by the sampling nature of many quantum applications (e.g., quantum algorithms for machine learning and quantum supremacy tasks), we initiate the study of  CVQC for \emph{quantum sampling problems} (denoted by $\SampBQP$).  More precisely, in a CVQC protocol for a $\SampBQP$ problem, the prover and the verifier are given an input $x\in \zo^n$ and a quantum circuit $C$, and the goal of the classical client is to learn a sample from the output $z \leftarrow C(x)$ up to a small error, from its interaction with an untrusted prover. We demonstrate its feasibility by constructing a four-message CVQC protocol for $\SampBQP$ based on the quantum \emph{Learning With Errors} assumption.
 
 \item
 The \emph{blindness} of CVQC protocols refers to a property of the protocol where the prover learns nothing, and hence is blind, about the client's input. It is a highly desirable property that has been intensively studied for the delegation of quantum computation. 
