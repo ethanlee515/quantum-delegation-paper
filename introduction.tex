@@ -76,7 +76,11 @@ As our main result, we construct a constant-round CVQC protocol for $\SampBQP$, 
 Assuming the QLWE assumption, there exists a four-message CVQC protocol for all sampling problems in $\SampBQP$ with computational soundness and negligible completeness error.
 \end{theorem}
 
-\KM{mention the inverse poly error and add forward pointer for discussion}
+We note that since the definition of $\SampBQP$ allows an inverse polynomial error, our CVQC protocol also implicitly allows an arbitrary small inverse polynomial error in  soundness (see Section~\ref{sec:samp_definition} for the formal definition). Achieving negligible soundness error for delegating sampling problems is an intriguing open question; see Section~\ref{subsec:discussion} for further discussions.
+
+%, which we discuss  further in Section~\ref{subsec:discussion}.
+
+%\KM{mention the inverse poly error and add forward pointer for discussion}
 
 % To the best of our knowledge, we are the first to formally define the delegation of quantum sampling problems. 
 
@@ -108,7 +112,7 @@ The construction of our CVQC protocol follows the blueprint of Mahadev's constru
 \paragraph{Overview of Mahadev's Protocol.}
 %
 Following~\cite{FOCS:Mahadev18a}, we define $\QPIP_{\tau}$ as classes of interactive proof systems between an (almost) classical verifier and a quantum prover, where the classical verifier has limited quantum computational capability, formalized as possessing $\tau$-qubit quantum memory. %\footnote{Intuitively, the size of local quantum memory limits the size of qubits that a general (entangled) quantum operation can be operated on at the same time. However, the verifier is still able to operate on all the qubits in a streaming fashion: i.e., receive the qubits sent from the prover and discard some local qubits in the case of overflow.}. 
-A formal definition is given in Section~\ref{sec:qpip_def}. 
+A formal definition is given in Appendix~\ref{sec:qpip_def}. 
 
 At a high-level, the heart of Mahadev's protocol is a measurement protocol $\PiMeasure$ that can compile an one-round $\QPIP_1$ protocol (with special properties) to a $\QPIP_0$ protocol. Note that in a $\QPIP_1$ protocol, the verifier with one-qubit memory can only measure the prover's quantum message qubit by qubit. Informally, the measurement protocol $\PiMeasure$ allows a $\BQP$ prover to ``commit to'' a quantum state $\rho$ and a classical verifier to choose an $X$ or $Z$ measurement to apply to each qubit of $\rho$ such that the verifier can learn the resulting measurement outcome. 
 
@@ -305,7 +309,15 @@ We address these issues by letting the verifier switch to a fresh new key for ea
 Details are given in \Cref{sec:BlindBQP2}.
 %\XW{To KM: expand the above a bit more?}
 
-\paragraph{On the Inverse Polynomial Error in $\SampBQP$.} To be added. \KM{where to add this? Sec 1.3?}
+\subsection{Related Works and Discussions}  \label{subsec:discussion}
+
+As mentioned, while we are the first to explicitly investigate delegation of quantum sampling problems, Hayashi and Morimae~\cite{hayashi2015verifiable} constructed an one-round blind $\QPIP_1$ protocol that can be used to delegate $\SampBQP$ and achieve our notion of information-theoretical security. Like us, for $\SampBQP$, their protocol also does not achieve negligible soundness error, but requires an arbitrarily small inverse polynomial soundness error. It is also worth noting that several existing constructions in the relaxed models (e.g., verifiable blind computation~\cite{FK17}) can be generalized to delegate $\SampBQP$ in a natural way, but it seems challenging to analyze their security. Furthermore, these protocols cannot achieve negligible soundness error for $\SampBQP$ as well. The reason is that in all these constructions, some form of cut and choose are used to achieve soundness, and for delegating decision problems, negligible soundness can be achieved by taking majority vote of multiple outcomes. For sampling problems, as mentioned, there seems to be no generic way to combine multiple samples for error reduction, so the verifier needs to choose one sample to output in the cut and choose. In this case, an adversarial prover may choose to cheat on a random copy in the cut and choose and success in cheating with an inverse polynomial probability. 
+
+On the other hand, while the definition of 
+
+
+\paragraph{On the Inverse Polynomial Error in $\SampBQP$.}
+To be added. \KM{where to add this? Sec 1.3?}
 
 
 %\hannote{endddddddddddddddd}
