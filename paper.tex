@@ -1,6 +1,6 @@
 \newif\ifdraft
-\drafttrue
-%\draftfalse
+%\drafttrue
+\draftfalse
 
 \documentclass[11pt]{article}
 \pagestyle{plain}
@@ -115,6 +115,8 @@
 \maketitle
 %\thispagestyle{plain}
 
+
+
 \begin{abstract}
 
 In a recent breakthrough, Mahadev constructed a classical verification of quantum computation (CVQC)  protocol for a  classical client to delegate decision problems in $\BQP$ to an untrusted quantum prover under computational assumptions. In this work, we explore further the feasibility of CVQC with the more general \emph{sampling} problems in BQP and with the desirable \emph{blindness} property. We contribute affirmative solutions to both as follows. 
@@ -125,7 +127,7 @@ In a recent breakthrough, Mahadev constructed a classical verification of quantu
 The \emph{blindness} of CVQC protocols refers to a property of the protocol where the prover learns nothing, and hence is blind, about the client's input. It is a highly desirable property that has been intensively studied for the delegation of quantum computation. 
 We provide a simple yet powerful \emph{generic} compiler that transforms any CVQC protocol to a blind one while preserving its completeness and soundness errors as well as the number of rounds.  
 \end{itemize}
-Applying our compiler to (a parallel repetition of) Mahadev's CVQC protocol for $\BQP$ and our CVQC protocol for $\SampBQP$ yields the first \emph{constant-round} blind CVQC protocol for $\BQP$ and $\SampBQP$ respectively, with negligible completeness and soundness errors. 
+Applying our compiler to (a parallel repetition of) Mahadev's CVQC protocol for $\BQP$ and our CVQC protocol for $\SampBQP$ yields the first \emph{constant-round} blind CVQC protocol for $\BQP$ and $\SampBQP$ respectively, with negligible and inverse polynomial soundness errors respectively, and negligible completeness errors. 
 
 \vspace{1mm}
 \noindent \textbf{Keywords:} classical delegation of quantum computation, blind quantum computation, quantum sampling problems

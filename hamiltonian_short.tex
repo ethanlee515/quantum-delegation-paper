@@ -23,11 +23,13 @@ we need to construct X-Z only local Hamiltonians.
 Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction.
 
 
+We present the formal construction of our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in \Cref{sec:sampbqp}, \Cref{ProtoQPIP1}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem, whose proof is also deferred to \Cref{sec:sampbqp}.% The proof of 
 
- For more details of the construction of our $\QPIP_1$ Protocol for $\SampBQP$, \Cref{ProtoQPIP1}, see \Cref{sec:sampbqp}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem.
+
+ %For more details of the construction of our $\QPIP_1$ Protocol for $\SampBQP$, \Cref{ProtoQPIP1}, see \Cref{sec:sampbqp}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem.
 
 \begin{thm}
     \label{QPIP1thm}
-	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem\\ $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.} where the verifier only needs to do non-adaptive $X/Z$ measurements.
+	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem  $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.} where the verifier only needs to do non-adaptive $X/Z$ measurements.
 	%\XW{do we want precise error bound?}	
 \end{thm}
