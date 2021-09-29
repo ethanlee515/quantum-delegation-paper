@@ -44,7 +44,7 @@
 
 	Protocol:
 	\begin{enumerate}
-		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\eps^{51}}$ copies of $\histpsi{C'(x)}$ and sends all of it to the verifier qubit-by-qubit.
+		\item\label{step:qpip1-state-gen} The honest prover prepares $M=649\frac{T^{41}\lambda^2}{\eps^{51}}$ copies of $\histpsi{C'(x)}$ and sends all of them to the verifier qubit-by-qubit.
 		\item\label{step:qpip1-verify} The verifier samples $I\subset[M]$ s.t. $\abs{I}=m$ where $m=\frac{T^{20}\lambda}{\eps^{24}}$, and $k\xleftarrow{\$}[M]\setminus I$.
 			For $i$ from $1$ to $M$, it chooses what to do to the $i$-th copy, $\rho_i$, as follows:
 		\begin{enumerate}

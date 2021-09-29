@@ -193,7 +193,7 @@ Record the list of the results $x_j=\pm 1$ for $j=1, \ldots k$.
 
 \begin{theorem} \label{thm:HamCheckClose}
 Given any quantum circuit $C$ and input $x$, consider using $H_{C(x)}$ from \Cref{thm:LHReduction} in Protocol~\ref{AlgGroundStateCheck} ($\cVGS$).
-For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with probability,
+For any state $\rho$, and $0< \epsilon < 1$, if $\cVGS$ accepts $\rho$ with probability
 \[
  \mathrm{Prob}[\cVGS \text{ accepts } \rho] \geq \frac{1}{2} - \frac{\epsilon}{2 \sum_i \abs{\alpha_i}},
 \]
@@ -222,7 +222,7 @@ Thus, this kind of attack won't work for $\BQP$ computation.
 However, in the context of $\SampBQP$, one needs to certify the ground energy (known to be zero in this case) and to output a good copy.
 While the statistical test as before can be used to certify the ground energy,
 it has less control on the shape of the output copy.
-In fact, the prover can always prepare a bad copy among with many good copies as a plain attack.
+In fact, the prover can always prepare a bad copy along with many good copies as a plain attack.
 This attack will succeed when the bad copy is chosen to output, the probability of which is non-negligible in terms of the total number of copies assuming some symmetry of the protocol.
 The potential entanglement among different copies could further complicate the analysis.
 We employ the quantum \emph{de Finetti}'s theorem to address this technical challenge.
