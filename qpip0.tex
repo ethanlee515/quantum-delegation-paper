@@ -222,9 +222,20 @@ Now we give a formal description of the partition lemma.
 	For all $i\in[m]$, $\gamma \in \L\{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}\R\}$, there exist two $\poly(1/\gamma_0,T,\lambda)$-time quantum circuit with post selection\footnote{A quantum circuit with post selection is composed of unitary gates followed by a post selection on some measurement outcome on ancilla qubits, so it produces a subnormalized state, where the amplitude square of the output state is the probability of post selection.} $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ such that for all (possibly sub-normalized)  quantum state $\ket{\psi}_{\regX,\regZ}\in  H_{\regX,\regZ}$,  properties \ref{property:partition-err}~\ref{property:partition-testing}~\ref{property:partition-binding}~\ref{property-partition-norm-sum}, to be described later, are satisfied. Before we describe the properties, we introduce the following notations:  
 
 	\begin{align}
-	\label{eq:psi0}	G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{0,i,\gamma}}_{\regX,\regZ}, \\ 
-	\label{eq:psi1}	G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ} \defeq& \ket{\psi_{1,i,\gamma}}_{\regX,\regZ},  \\
-	\label{eq:psierr}	\ket{\psi}_{\regX,\regZ} -\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}- \ket{\psi_{1,i,\gamma}}_{\regX,\regZ} \defeq&   \ket{\psi_{err,i,\gamma}}_{\regX,\regZ}.
+	\label{eq:psi0}
+	\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}
+	\defeq&
+	G_{0,i,\gamma}\ket{\psi}_{\regX,\regZ}, \\ 
+	\label{eq:psi1}	
+	\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}
+	 \defeq&
+	G_{1,i,\gamma}\ket{\psi}_{\regX,\regZ}
+	,  \\
+	\label{eq:psierr}
+	\ket{\psi_{err,i,\gamma}}_{\regX,\regZ}
+	\defeq&
+	\ket{\psi}_{\regX,\regZ} -\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}- \ket{\psi_{1,i,\gamma}}_{\regX,\regZ}
+	.
 	\end{align}
 
 	Note that $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ has failure probabilities, and this is reflected by the fact that $\ket{\psi_{0,i,\gamma}}_{\regX,\regZ}$ and $\ket{\psi_{1,i,\gamma}}_{\regX,\regZ}$ are  sub-normalized. $G_{0,i,\gamma}$ and $G_{1,i,\gamma}$ depend on $(U_0,U)$ and $\vec{pk},\vec{y}$.
@@ -300,7 +311,7 @@ it clearly follows that
 \begin{cor}
 	\label{lem:partition-testing}
 	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
-	$$\sum_z\norm{P_{acc,-i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
+	$$\norm{\sum_z P_{acc,-i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
 \end{cor}
 
 Now we define
@@ -311,20 +322,25 @@ Now we define
 as the output corresponding to a component that would pass the $i$-th testing rounds.
 We will show that it is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to $z_i$.
 Before doing so, we present a technical lemma.
-\begin{lemma}\label{lem:samp-tech}
-	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $\sum_z P_z \leq Id$ and $P_z P_{z'} =0 $ for all $z\neq z'$, we have
-	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi}. $$
+
+\begin{lemma}\label{lem:samp-tech-2}
+	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $P_z P_{z'} =0 $ for all $z\neq z'$, we have
+	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 }. $$
 \end{lemma}
 \begin{proof}
 	\begin{align}
 		\sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| \nn \\
 		\leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
 		\leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\sum_z\norm{P_z\ket{\phi}}^2} \nn \\
-		\leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn \\
-		\leq & \norm{\ket{\psi}}\norm{\ket{\phi}},
+		\leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn,
 	\end{align}
 	where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
 \end{proof}
+
+\begin{cor}\label{lem:samp-tech}
+	For any state $\ket{\psi}$,  $\ket{\phi}$ and projectors $\{P_z\}$ such that $\sum_z P_z \leq Id$ and $P_z P_{z'} =0 $ for all $z\neq z'$, we have
+	$$  \sum_z |\vev{\psi|P_z|\phi}| \leq \norm{\psi}\norm{\phi}. $$
+\end{cor}
 
 Now we can estimate $z_i$ using $z_{good, i}$, with errors on the orders of $\norm{\ket{\psi_{1^{i-1}0}}}$.
 This error might not be small in general,
@@ -369,7 +385,7 @@ we simply expand $z_i$ and bound the terms that are not $z_{good, i}$.
 	\end{align*}
 	by the triangle inequality.
 	The last three error terms sum to $O\L(\frac{m^2}{\sqrt{T}}\R)$ by \Cref{lem:samp-tech} and property~\ref{property:partition-err} of \Cref{lem:partition2}.
-	As for the first two terms, by \Cref{lem:samp-tech} and \Cref{lem:partition-testing}, we see that
+	As for the first two terms, by \Cref{lem:samp-tech-2} and \Cref{lem:partition-testing}, we see that
 	\begin{align*}
 		\sum_z \sum_{k=0}^{i-1}\sum_{j=0}^{i-1}
 		&\abs{\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U \ket{\psi_{1^j0,\gamma}}} \\

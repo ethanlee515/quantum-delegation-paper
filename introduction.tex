@@ -127,7 +127,7 @@ In~\cite{FOCS:Mahadev18a}, Mahadev's CVQC protocol for $\BQP$ is constructed by 
 Following the blueprint of Mahadev's construction, our construction proceeds in the following two steps: 1. construct a $\QPIP_1$ protocol for $\SampBQP$ with required special property, and 2. compile the $\QPIP_1$ protocol using $\PiMeasure$ to get the desired $\QPIP_0$ protocol. The first step can be done by combining existing techniques from different contexts, whereas the second step is the main technical challenge.
 %Both steps requires non-trivial works, but it turns out that the second step is the main technical challenge. 
 At a high-level, the reason is the above-mentioned issue that the verifier does not learn the measurement outcome in the testing round. While this is not a problem for decision problems, %(where the verifier only needs to decide to accept or reject), 
-for sampling problems, the verifier needs to produce an output sample when accepts, but there seems no way to produce the output for the verifier without learning the measurement outcome.   
+for sampling problems, the verifier needs to produce an output sample when accepts, but there seems to be no way to produce the output for the verifier without learning the measurement outcome.   
 %
 We discuss both steps in turn as follows.
 
