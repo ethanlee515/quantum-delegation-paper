@@ -116,6 +116,7 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 \end{protocol}
 
 By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly close to that of $\Pi$.
+In particular, note that the level parameter $L$ is sufficient for the honest prover which has a bounded complexity.
 For the soundness property, we show the following lemma, which implies that $\Piblind$ preserves the soundness of $\Pi_0$.
 
 %soundness of $\Piblind$ in the following theorem.
@@ -143,7 +144,10 @@ For the soundness property, we show the following lemma, which implies that $\Pi
     By construction, the experiments $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{proof}
 
-Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
+Finally, we show the blindness of $\Piblind$ through a standard hybrid argument where the $sk_i$'s are ``erased" one by one, starting from $sk_T$.
+Once $sk_1$ is eventually erased, $\QEnc(pk_1, x)$ and $\QEnc(pk_1, 0)$ become indistinguishable due to the IND-CPA security of $\QEnc$, and we complete the proof.
+We now fill in the mathmatical details of this argument.
+
 \begin{thm} \label{thm:compiler-blindness}
     Under the QLWE assumption with polynomial modulus, $\Piblind$ is blind.
 \end{thm}
