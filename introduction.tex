@@ -151,15 +151,17 @@ Clearly from the construction, the verifier now can output a sample when it deci
 
  Parallel repetition of Mahadev's protocol for $\BQP$ has been analyzed before in ~\cite{arXiv:ChiaChungYam19, arXiv:AlaChiHun19}. However, the situation here is different. 
  %the parallel repetitions of Mahadev's protocol for $\BQP$ and $\SampBQP$ is very different. 
- For $\BQP$, the verifier simply chooses to run the Hadamard and testing rounds independently for each repetition. In contrast, our $\PiSampZ$ runs the Hadamard round in one repetition and runs the testing rounds in the rest. The reason is that in $\SampBQP$, as well as generically in sampling problems, there is no known approach to combine multiple samples to generate one sample with reduced error, i.e., there is no generic error reduction method for the sampling problem. 
+ For $\BQP$, the verifier simply chooses to run the Hadamard and testing rounds independently for each repetition.
+ In contrast, our $\PiSampZ$ runs the Hadamard round in one repetition and runs the testing rounds in the rest. The reason is that in $\SampBQP$, as well as generically in sampling problems, there is no known approach to combine multiple samples to generate one sample with reduced error, i.e., there is no generic error reduction method for the sampling problem. 
 In contrast, the error reduction for decision problems can be done with the majority vote. 
 As a result, while the soundness error decreases exponentially for $\BQP$, as we see below (and also in the above $\QPIP_1$ protocols), for $\SampBQP$, $m$-fold repetition only decreases the error to $\poly(1/m)$. 
+
 
 
 %Intuitively, Mahadev's protocol has the property that if a malicious prover $P^*$ knows the answer to pass the testing round, then it must be ``committed'' to a state $\rho$ in the sense that the verifier $V$ learns the $X/Z$ measurement outcome of $\rho$ in the Hadamard round (in a computational sense). Thus, the soundness of the underlying $\QPIP_1$ protocol ensures that $V$ learns a correct sample when it accepts. In short, when $P^*$ knows the testing round answer,  $P^*$ cannot ``cheat'' in the Hadamard round.
 
 %\hannote{copy ch 5 here?}
-To analyze the soundness of $\PiSampZ$, we use the \emph{partition lemma} developed in~\cite{arXiv:ChiaChungYam19} to analyze the prover's behavior while executing copies of $\PiMeasure$. Intuitively, the partition lemma says that for any cheating prover and for each copy $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ and $G_{1,i}$ splits up the prover's residual internal state after sending back his first message.
+To analyze the soundness of $\PiSampZ$, we use the \emph{partition lemma} developed in~\cite{arXiv:ChiaChungYam19} to analyze the prover's behavior while executing copies of $\PiMeasure$.\footnote{The analysis of \cite{arXiv:AlaChiHun19} is more tailored to the decision problems setting, and it is unclear how to extend it to sampling problems where there are multiple bits of output.} Intuitively, the partition lemma says that for any cheating prover and for each copy $i\in[m]$, there exist two efficient ``projectors" \footnote{Actually they are not projectors, but for the simplicity of this discussion let's assume they are.} $G_{0,i}$ and $G_{1,i}$ in the prover's internal space with $G_{0,i}+G_{1,i} \approx Id$. $G_{0,i}$ and $G_{1,i}$ splits up the prover's residual internal state after sending back his first message.
 $G_{0,i}$ intuitively represents the subspace where the prover does not knows the answer to the testing round on the $i$-th copy, while $G_{1,i}$ represents the subspace where the prover does. Note that the prover is using a single internal space for all copies, and every $G_{0,i}$ and every $G_{1,i}$ is acting on this single internal space. 
 By using this partition lemma iteratively, we can decompose the prover's internal state $\ket{\psi}$ into sum of subnormalized states.
 First we apply it to the first copy, writing $\ket{\psi}=G_{0,1}\ket{\psi}+G_{1,1}\ket{\psi} \equiv \ket{\psi_0}+\ket{\psi_1}$.
@@ -309,7 +311,7 @@ We address these issues by letting the verifier switch to a fresh new key for ea
 Details are given in \Cref{sec:BlindBQP2}.
 %\XW{To KM: expand the above a bit more?}
 
-\subsection{Related Works and Discussions}  \label{subsec:discussion}
+\subsection{Related and Followup Works and Discussions}  \label{subsec:discussion}
 
 As mentioned, while we are the first to explicitly investigate delegation of quantum sampling problems, Hayashi and Morimae~\cite{hayashi2015verifiable} constructed an one-round blind $\QPIP_1$ protocol that can be used to delegate $\SampBQP$ and achieve our notion of information-theoretical security. Like our $\SampBQP$ protocol, their protocol has an arbitrarily small inverse polynomial soundness error instead of negligible soundness error. Also as mentioned,  Gheorghiu and Vidick~\cite{FOCS:GheVid19} constructed the first blind CVQC protocol for $\BQP$ by constructing a composable remote state preparation protocol and combining it with the verifiable blind quantum computation protocol of Fitzsimons and Kashefi~\cite{FK17}. However, their protocol has polynomially many rounds  and requires a rather involved analysis. 
 
@@ -322,6 +324,7 @@ For sampling problems, as mentioned, there seems to be no generic way to combine
 
 On the other hand, while the definition of $\SampBQP$ in~\cite{aaronson_2013, Boson} allows an inverse polynomial error, there seems to be no fundamental barriers to achieve negligible error. It is conceivable that negligible error can be achieved using quantum error correction. Negligible security error is also achievable in the related settings of secure multi-party quantum computation (MPQC)~\cite{CGS02,DNS12} and verifiable quantum FHE~\cite{ADSS17} based on verifiable quantum secret sharing or quantum authentication codes\footnote{The security definitions are not comparable, but it seems plausible that the techniques can be used to achieve negligible soundness error for sampling problems.}. However, both primitives require computing and communicating quantum encodings and are not applicable in the context of CVQC and $\QPIP_1$. An intriguing open problem is whether it is possible to achieve negligible soundness error with classical communication while delegating a quantum sampling problem.
 
+As a followup work, Bartusek~\cite{bartuseksecure} constructs maliciously-secure multi-party protocols for $\BQP$  computation using our classical verification protocol for $\SampBQP$.
 
 %(MPQC\hannote{ref})\footnote{In MPQC, for the special case where the output is classical, it has the same simulation-based security for the output as our soundness definition.}. There, it\hannote{?} is achieved by using either verifiable quantum secret sharing or quantum authentication codes, both of which requires quantum communications. An intriguing open problem is whether it is possible to achieve negligible soundness error with classical communication while delegating a quantum sampling problem.
 
