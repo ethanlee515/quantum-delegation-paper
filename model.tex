@@ -34,12 +34,12 @@ Completeness is straightforward to define, which requires that when the prover $
         \item On public inputs $1^\lambda$, $1^{1/\eps}$, and $x\in\zo^{\poly(\lambda)}$, $V$ outputs $(d, z)$ where $d\in\set{\Acc, \Rej}$.
             If $d=\Acc$ then $z\in\zo^{m(\abs{x})}$ where $m$ is given in \Cref{dfn:sampling-problem}, otherwise $z=\bot$.
         \item (Completeness):
-            For all accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
-            security parameter $\lambda\in\bbN$,
+            For all accuracy parameters $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
+            security parameters $\lambda\in\bbN$,
             and $x\in\zo^{\poly(\lambda)}$,
             let $(d, z)\leftarrow(P, V)(1^\lambda, 1^{1/\eps}, x)$, then $d=\Rej$ with probability at most $c(\lambda)$.
-        \item (Statistical soundness): For all cheating prover $P^*$,
-            accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
+        \item (Statistical soundness): For all cheating provers $P^*$,
+            accuracy parameters $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
             sufficiently large $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$,
             consider the following experiment:
             \begin{itemize}
@@ -52,7 +52,7 @@ Completeness is straightforward to define, which requires that when the prover $
             \end{itemize}
             It holds that $\norm{(d,z)-(d,z_{ideal})}_{\mathrm{TV}}\leq\eps$.
 		\item (Computational soundness):
-        For all cheating $\BQP$ prover $P^*$, $\BQP$ distinguisher $\mathsf{D}$, accuracy parameter $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
+        For all cheating $\BQP$ provers $P^*$, $\BQP$ distinguishers $\mathsf{D}$, accuracy parameters $\eps(\lambda)=\frac{1}{\poly(\lambda)}$,
             sufficiently large $\lambda\in\bbN$, and all $x\in\zo^{\poly(\lambda)}$,
             let us define $d, z, z_{ideal}$ by the same experiment as above.
             It holds that $(d, z)$ is $\eps$-computationally indistinguishable to $(d, z_{ideal})$ over $\lambda$.

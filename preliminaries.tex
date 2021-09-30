@@ -70,9 +70,9 @@ It is straightforward to define what it means for a $\QPIP_\tau$ protocol to dec
     We say it is a protocol for a $\BQP$ language $L$ with completeness error $c(\cdot)$ and soundness error $s(\cdot)$ if the following holds:
 \begin{itemize}
         \item On public input $1^\lambda$ and $x\in\zo^*$, the verifier outputs either $\Acc$ or $\Rej$.
-        \item (Completeness): For all security parameter $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
+        \item (Completeness): For all security parameters $\lambda\in\bbN$ and $x\in\zo^{\poly(\lambda)}$, if $x\in L$ then
         $\Pr\left[(P, V)(x, 1^\lambda)=\Rej\right]<c(\lambda)$.
-        \item (Soundness): For all cheating $\BQP$ prover $P^*$, sufficiently large \\security parameter $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then \\$\Pr\left[(P, V)(x, 1^\lambda)=\Acc\right]<s(\lambda)$.
+        \item (Soundness): For all cheating $\BQP$ provers $P^*$, sufficiently large \\security parameters $\lambda\in\bbN$, and $x\in\zo^{\poly(\lambda)}$, if $x \notin L$ then \\$\Pr\left[(P, V)(x, 1^\lambda)=\Acc\right]<s(\lambda)$.
     \end{itemize}
 \end{definition}
 
@@ -85,7 +85,7 @@ As such, in this context, we consider the input $x$ as the verifier's private in
     Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ 
     %(and $1^{1/\eps}$ for the case of $\SampBQP$ problem), 
     and verifier's private input $x\in\zo^*$.
-    We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ prover $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
+    We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ provers $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
     \begin{itemize}
         \item $\set{\View_{P^*}(P^*, V(x))(1^\lambda)}_{\lambda\in\bbN, \eps\in(0,1), x\in\zo^*}$,
         \item $\set{\View_{P^*}(P^*, V(0))(1^\lambda)}_{\lambda\in\bbN, \eps\in(0,1), x\in\zo^*}$.

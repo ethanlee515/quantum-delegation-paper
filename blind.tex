@@ -121,7 +121,7 @@ For the soundness property, we show the following lemma, which implies that $\Pi
 %soundness of $\Piblind$ in the following theorem.
 
 \begin{thm} \label{thm:compiler-errors}
-    For all cheating $\BQP$ prover $\Pblindstar$, there exists a cheating $\BQP$ prover $\Pstar$ s.t. for all $\lambda$ and input $x\in\zo^{\poly(\lambda)}$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
+    For all cheating $\BQP$ provers $\Pblindstar$, there exists a cheating $\BQP$ prover $\Pstar$ s.t. for all $\lambda$ and inputs $x\in\zo^{\poly(\lambda)}$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
 \end{thm}
 \begin{proof}
     We define $\Pstar$ as follows.
@@ -148,7 +148,7 @@ Finally, we show the blindness of $\Piblind$ through a standard hybrid argument:
     Under the QLWE assumption with polynomial modulus, $\Piblind$ is blind.
 \end{thm}
 \begin{proof}
-    We show that for all cheating $\BQP$ prover $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
+    We show that for all cheating $\BQP$ provers $P^*$, $\lambda\in\bbN$, $x\in\zo^n$,
     $P^*$ cannot distinguish $(P^*, \Vblind(x))(1^\lambda)$ from $(P^*, \Vblind(0^n))(1^\lambda)$ with noticeable probability in $\lambda$.
     We use a hybrid argument; let $\Hyb_{T+1}^x=(P^*, \Vblind(x))(1^\lambda)$ and $\Hyb_{T+1}^0=(P^*, \Vblind(0^n))(1^\lambda)$.
     For $2\leq t<T+1$, define $\Hyb_t^x$ to be the same as $\Hyb_{t+1}^x$,
