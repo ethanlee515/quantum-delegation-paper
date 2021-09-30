@@ -285,7 +285,7 @@ For all $i\in[m]$, we then decompose $\ket{\psi}$ into
 by using \Cref{eq:psi0,eq:psi1,eq:psierr} repeatedly,  where $\ket{\psi_{err,i,\gamma}}$ denotes the error state from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
 \hannote{maybe some explanation about $P_{acc,i}$ and $P_{acc,j}$ commute. maybe just stress that $P_{acc}$'s are in standard basis.stress on the dilation dequantization?} We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,-i,z}$.
-Note that $P_{acc,-i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$. $P_{acc,-i,z}$ is a projector because it only involves the projective measurements to get $a$ and classical post-processing of the verifiers. Also note that  $P_{acc,-i,z} P_{acc,-i,z'}=0$ for all $z\neq z'$, and $\sum_z P_{acc,-i,z} =\Pi_{j \neq i} P_{acc,j}\leq Id$.
+Note that $P_{acc,-i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$. $P_{acc,-i,z}$ is a projector because it only involves the standard basis measurements to get $a$ and classical post-processing of the verifiers. Also note that  $P_{acc,-i,z} P_{acc,-i,z'}=0$ for all $z\neq z'$, and $\sum_z P_{acc,-i,z} =\Pi_{j \neq i} P_{acc,j}\leq Id$.
 
 We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
 \begin{equation}
@@ -300,7 +300,7 @@ it clearly follows that
 \begin{cor}
 	\label{lem:partition-testing}
 	For all $\gamma\in\set{\frac{\gamma_0}{T},\frac{2\gamma_0}{T},\dots,\frac{T\gamma_0}{T}}$, and all $i,j\in[m]$ such that $j<i-1$, we have
-	$$\norm{P_{acc,-i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
+	$$\sum_z\norm{P_{acc,-i,z} U \ket{e_i, \psi_{1^j0,\gamma}}}^2\leq (m-1)\gamma_0+\negl(n).$$
 \end{cor}
 
 Now we define
