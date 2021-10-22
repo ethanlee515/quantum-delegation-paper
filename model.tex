@@ -15,6 +15,7 @@ are approximately solvable by polynomial-time quantum algorithms.
 
 Note that in the above definition, there is an accuracy parameter $\eps$ and the quantum sampling algorithm only requires to output a sample that is $\eps$-close to the correct distribution in time $\poly(n,1/\eps)$.
 \cite{aaronson_2013, Boson} discussed multiple reasons for allowing the inverse polynomial error, such as to take into account the inherent noise in conceivable physical realizations of quantum computer.
+On the other hand, it is also meaningful to require negligible error. As discussed, it is an intriguing open question to delegate quantum sampling problem with negligible error.
 
 We next define what it means for a $\QPIP_\tau$ protocol\footnote{See Appendix~\ref{sec:qpip_def} for a formal definition of $\QPIP_\tau$.} to solve a $\SampBQP$ problem $\left(D_x\right)_{x\in\set{0, 1}^*}$.
 Since sampling problems come with an accuracy parameter $\eps$, we let the prover $P$ and the verifier $V$ receive the input $x$ and $1^{1/\eps}$ as common inputs. 
