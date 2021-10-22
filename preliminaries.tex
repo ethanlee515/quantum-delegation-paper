@@ -4,7 +4,6 @@
 
 Let $\mathcal{B}$ be the Hilbert space corresponding to one qubit. Let $H:\mathcal{B}^{\otimes n}\rightarrow\mathcal{B}^{\otimes n}$ be Hermitian matrices. We use $H\geq0$ to denote $H$ being positive semidefinite. Let $\lambda(H)$ be the smallest eigenvalue of $H$. The ground states of $H$ are the eigenvectors corresponding to $\lambda(H)$. For matrix $H$ and subspace $S$, let $H\big|_S=\Pi_S H \Pi_S$, where $\Pi_S$ is the projector onto the subspace $S$.  
 We write $x\xleftarrow{\$}X$ when $x$ is sampled uniformly at random from the set $X$.
-%We use $\BQP$ as an adjective to mean polynomial-time, e.g. a $\BQP$ machine.
 
 The phase gate and Pauli matrices are the following matrices.
 
@@ -52,8 +51,6 @@ Following \cite{FOCS:Mahadev18a}, we model the interaction between an almost cla
 When the client has limited quantum memories (i.e., $\tau > 0$), it becomes a ``streaming" model. Namely, the server can send qubits one-by-one to let the client measure them sequentially, even if the client cannot hold the entire quantum message.
 When the client is fully classical (i.e., $\tau = 0$), this model specializes to the standard interactive protocols.
 
-\hannote{different from umila's}
-
 \begin{definition}
     A protocol $\Pi=(P, V)$ is said to be in $\QPIP_\tau$ if it satisfies the following properties:
     \begin{itemize}
@@ -83,7 +80,6 @@ As such, in this context, we consider the input $x$ as the verifier's private in
 
 \begin{definition}[Blindness]
     Let $\Pi=(P, V)$ be an interactive protocol with common inputs $1^\lambda$ 
-    %(and $1^{1/\eps}$ for the case of $\SampBQP$ problem), 
     and verifier's private input $x\in\zo^*$.
     We say $\Pi$ is \emph{blind} if for all cheating $\BQP$ provers $P^*$ the following ensembles are computationally indistinguishable over $\lambda$:
     \begin{itemize}
@@ -95,24 +91,6 @@ As such, in this context, we consider the input $x$ as the verifier's private in
 \begin{remark} \label{rmk:blind-comp}
 In literature, the definition of blindness may also require to additionally hide the computation. The two notions are equivalent from a feasibility point of view by a standard transformation (e.g., as in~\cite{GHRW14} in a different context) that takes the description of the computation as part of the input and delegate the computation of  universal quantum circuits.
 \end{remark}
-
-
-
-% \iffalse
-% Probably not necessary
-
-% \begin{lem}[triangle inequality for computational distance] \label{lem:computational-triangle0}
-%     Let $\rho_1, \rho_2, \rho_3\in\cB^{\otimes n}$ such that
-%     \begin{align}
-%         \rho_1\approx_{c, \eps}\rho_2\\
-%         \rho_2\approx_{c, \eps'}\rho_3.
-%     \end{align}
-%     We have
-%     \begin{align}
-%         \rho_1\approx_{c, \eps+\eps'}\rho_3.
-%     \end{align}
-% \end{lem}
-% \fi
 
 \subsection{Quantum Homomorphic Encryption Schemes}
 
