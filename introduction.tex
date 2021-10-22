@@ -27,7 +27,8 @@ In this work, we make two more contributions to this exciting line of research. 
 
 \subsection{CVQC for Quantum Sampling Problems} \label{subsection:sampling}
 
-We initiate the study of CVQC for quantum sampling problem, which we believe is highly desirable and natural for delegation of quantum computation. In general, a round of quantum computation can be described as applying a quantum circuit and measuring the output qubits in computational basis. Due to its intrinsic randomness, the output is randomized and described by a distribution. 
+We initiate the study of CVQC for quantum sampling problem, which we believe is highly desirable and natural for delegation of quantum computation. Due to the intrinsic randomness of quantum mechanics, the output from a quantum computation is randomized and described by a distribution. 
+% In general, a round of quantum computation can be described as applying a quantum circuit and measuring the output qubits in computational basis.
 %To verifiably delegate general quantum computation, it is natural to require that the output is close to the correct distribution when the verifier accepts. 
 Thus, if a classical verifier want to utilize the full power of a quantum machine, the ability to get a verifiable sample from the quantum circuit's output distribution is desirable.  On a more concrete level, quantum algorithms like Shor's algorithm~\cite{Shor} has a significant quantum sampling component, and the recent quantum supremacy proposals (e.g.,~\cite{Boson, IQP, nature-google}) are built around sampling tasks, suggesting the importance of sampling in quantum computation.
 
@@ -311,6 +312,8 @@ We address these issues by letting the verifier switch to a fresh new key for ea
 Details are given in \Cref{sec:BlindBQP2}.
 %\XW{To KM: expand the above a bit more?}
 
+\vspace{-3pt}
+
 \subsection{Related and Followup Works and Discussions}  \label{subsec:discussion}
 
 As mentioned, while we are the first to explicitly investigate delegation of quantum sampling problems, Hayashi and Morimae~\cite{hayashi2015verifiable} constructed an one-round blind $\QPIP_1$ protocol that can be used to delegate $\SampBQP$ and achieve our notion of information-theoretical security. Like our $\SampBQP$ protocol, their protocol has an arbitrarily small inverse polynomial soundness error instead of negligible soundness error. Also as mentioned,  Gheorghiu and Vidick~\cite{FOCS:GheVid19} constructed the first blind CVQC protocol for $\BQP$ by constructing a composable remote state preparation protocol and combining it with the verifiable blind quantum computation protocol of Fitzsimons and Kashefi~\cite{FK17}. However, their protocol has polynomially many rounds  and requires a rather involved analysis. 
@@ -322,9 +325,12 @@ It is also worth noting that several existing constructions in the relaxed model
 %\Ethan{Maybe unnecessary?: , and for delegating decision problems, negligible soundness can be achieved by taking majority vote of multiple outcomes.} 
 For sampling problems, as mentioned, there seems to be no generic way to combine multiple samples for error reduction, so the verifier needs to choose one sample to output in the cut and choose. In this case, an adversarial prover may choose to cheat on a random copy in the cut and choose and succeed in cheating with an inverse polynomial probability. 
 
-On the other hand, while the definition of $\SampBQP$ in~\cite{aaronson_2013, Boson} allows an inverse polynomial error, there seems to be no fundamental barriers to achieve negligible error. It is conceivable that negligible error can be achieved using quantum error correction. Negligible security error is also achievable in the related settings of secure multi-party quantum computation (MPQC)~\cite{CGS02,DNS12} and verifiable quantum FHE~\cite{ADSS17} based on verifiable quantum secret sharing or quantum authentication codes\footnote{The security definitions are not comparable, but it seems plausible that the techniques can be used to achieve negligible soundness error for sampling problems.}. However, both primitives require computing and communicating quantum encodings and are not applicable in the context of CVQC and $\QPIP_1$. An intriguing open problem is whether it is possible to achieve negligible soundness error with classical communication while delegating a quantum sampling problem.
+On the other hand, while the definition of $\SampBQP$ in~\cite{aaronson_2013, Boson} allows an inverse polynomial error, there seems to be no fundamental barriers to achieve negligible error. It is conceivable that negligible error can be achieved using quantum error correction. Negligible security error is also achievable in the related settings of secure multi-party quantum computation ~\cite{CGS02,DNS12} and verifiable quantum FHE~\cite{ADSS17} based on verifiable quantum secret sharing or quantum authentication codes\footnote{The security definitions are not comparable, but it seems plausible that the techniques can be used to achieve negligible soundness error for sampling problems.}. However, both primitives require computing and communicating quantum encodings and are not applicable in the context of CVQC and $\QPIP_1$. An intriguing open problem is whether it is possible to achieve negligible soundness error with classical communication while delegating a quantum sampling problem.
 
-As a followup work, Bartusek~\cite{bartuseksecure} constructs maliciously-secure multi-party protocols for $\BQP$  computation using our classical verification protocol for $\SampBQP$.
+In a recent work, Bartusek~\cite{bartuseksecure} used the technique we developed for delegation of $\SampBQP$ to construct secure quantum computation protocols with classical communication for pseudo-deterministic quantum functionalities.
+
+
+%As a followup work, Bartusek~\cite{bartuseksecure} constructs maliciously-secure multi-party protocols for $\BQP$  computation using our classical verification protocol for $\SampBQP$.
 
 %(MPQC\hannote{ref})\footnote{In MPQC, for the special case where the output is classical, it has the same simulation-based security for the output as our soundness definition.}. There, it\hannote{?} is achieved by using either verifiable quantum secret sharing or quantum authentication codes, both of which requires quantum communications. An intriguing open problem is whether it is possible to achieve negligible soundness error with classical communication while delegating a quantum sampling problem.
 

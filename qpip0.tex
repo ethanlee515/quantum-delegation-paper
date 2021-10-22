@@ -211,8 +211,15 @@ To solve this problem, we start with a pointwise argument and fix the Hadamard r
 and show that the corresponding output is $O(\norm{\ket{\psi_{1^{i-1}0}}})$-close to ideal.
 We can later average out this error over the different choices of $i$, since not all $\norm{\ket{\psi_{1^{i-1}0}}}$ can be large at the same time. Another way to see this issue is to notice that we are partitioning a quantum state, not probability events, so there are some inconsistencies between our intuition and calculation. Indeed, the error we get in the end is $O(\sqrt{1/m})$ instead of the $O(1/m)$ we expected. 
 
-Also a careful reader might have noticed that the prover's space don't always decompose cleanly into parts that the verifier either rejects or accepts with high probability, as there might be some states that is accepted with mediocre probability. In \cite{arXiv:ChiaChungYam19}, this is solved by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$ and applying amplitude amplification to boost the accept probability if it is bigger than $\gamma$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so they need to average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$.
-Now we give a formal description of the partition lemma.
+
+
+Also a careful reader might have noticed that the prover's space don't always decompose cleanly into parts that the verifier either rejects or accepts with high probability, as there might be some states that is accepted with mediocre probability. As in \cite{arXiv:ChiaChungYam19}, we solve this by splitting the space into parts that are accepted with probability higher or lower than a small threshold $\gamma$ and applying Marriott-Watrous~\cite{marriott2005quantum} amplification to boost the accept probability if it is bigger than $\gamma$, getting a corresponding amplified prover action $\ext$. However, states with accept probability really close to the threshold $\gamma$ can not be classified, so we average over randomly chosen $\gamma$ to have $G_{0,i}+G_{1,i} \approx Id$. Now we give a formal description of the partition lemma.
+
+
+%
+
+%Roughly speaking, the idea of the partition lemma is picking a small random probability $\gamma$ and run Marriott-Watrous ~\cite{marriott2005quantum} amplification on the acceptance probability of the testing round. This roughly separates the prover's internal space into subspaces with acceptance probability less than $\gamma$ (Corresponds to $G_0$) and subspaces with acceptance probability bigger than $\gamma$ (Corresponds to $G_1$). We also get an "amplified" prover protocol $\ext$ which gi.  
+
 
 \begin{lemma}[partition lemma; revision of Lemma 3.5 of \cite{arXiv:ChiaChungYam19}\footnote{$G_{0}$ and $G_{1}$ of this version are created from doing $G$ of \cite{arXiv:ChiaChungYam19} and post-selecting on the $ph,th,in$ register being $0^t01$ or $0^t11$ then discard $ph,th,in$. Property~\ref{property:partition-err} corresponds to Property~1. Property~\ref{property:partition-testing} corresponds to Property~4, with $2^{m-1}$ changes to $m-1$ because we only have $m$ possible choices of $\vec{c}$. Property~\ref{property:partition-binding} corresponds to Property~5. Property~\ref{property-partition-norm-sum} comes from the fact that $G_0$ and $G_1$ are post-selections of orthogonal results of the same $G$.}]\label{lem:partition2}
 	Let $\lambda$ be the security parameter, and $\gamma_0 \in[0,1]$ and $T\in \mathbb{N}$ be parameters that will be related to the randomly-chosen threshold $\gamma$.
@@ -275,7 +282,7 @@ Now we give a formal description of the partition lemma.
 	\end{enumerate}
 \end{lemma}
 
-Note that in property~\ref{property:partition-binding}, we are using $\ext_i$ instead of $U$ because we are doing some amplitude amplification to boost the success probability. 
+Note that in property~\ref{property:partition-binding}, we are using $\ext_i$ instead of $U$ because we use amplitude amplification to boost the success probability. 
 
 
 
