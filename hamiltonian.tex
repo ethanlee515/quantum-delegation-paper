@@ -169,7 +169,6 @@ Precisely, consider the following protocol $\cVGS$:
 \begin{protocol}{Energy verification for X-Z local Hamiltonian $\cVGS$} \label{AlgGroundStateCheck}
 Given a $k$-local X-Z Hamiltonian
 $H=\sum_i \alpha_{i} H_i$ (i.e., $\forall i, H_i \in \LHXZ{k}$) and any state $\ket{\phi}$.
-%Let $\ket\phi$ be the potential ground state to check.
 
 \begin{itemize}
 \item Let $p_i= \abs{\alpha_i}/\sum_i \abs{\alpha_i}$ for each $i$. Sample $i^*$ according to $p_{i^*}$.
@@ -178,8 +177,6 @@ Record the list of the results $x_j=\pm 1$ for $j=1, \ldots k$.
 \item Let $r=x_1x_2\cdots x_k$. The protocol \emph{accepts} if $r$ and $\alpha_{i^*}$ have different signs, i.e., $\sgn(\alpha_{i^*})r=-1$. Otherwise, the protocol \emph{rejects}.
 \end{itemize}
 \end{protocol}
-% In this subsection, we prove \cref{ThmXZCheck}.
-% That is, we present and analyze an algorithm that checks whether a given state is the ground state of some fixed $H_{C(x)}$, following~\cite{PhysRevA.93.022326}.
 
 \begin{lem}[\cite{PhysRevA.93.022326}]
     \label{thm:HamCheck}
@@ -241,5 +238,3 @@ To serve our purpose, we adopt the following version of quantum de Finetti's the
 \end{thm}
 
 \input{qpip}
-
-

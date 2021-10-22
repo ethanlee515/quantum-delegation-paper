@@ -8,7 +8,6 @@ In particular, the corresponding history state is in the ground space of $\Hin$,
 As a result, the outcome of $\BQP$ can simply be encoded by the \emph{ground energy} of $\Hin + \Hclock+\Hprop + \Hout$.
 
 To deal with $\SampBQP$, we will still employ $\Hin, \Hclock$, and $\Hprop$ to certify the circuit's input, the clock register, and gate-by-gate evolution. However, in $\SampBQP$, we care about the entire final state of the circuit, rather than the energy on the output qubit.
-%The history state remains in the ground space of $\Hin + \Hprop$.  
 Our approach to certify the entire final state (which is encoded inside the history state) is to make sure that the history state is the unique ground state of $\Hin + \Hclock+ \Hprop$ and all other orthogonal states will have much higher energies.
 Namely, we need to construct some $\Hin'+ \Hclock'+ \Hprop'$ with the history state as the unique ground state and with a large \emph{spectral} gap between the ground energy and excited energies.
 It is hence guaranteed that any state with close-to-ground energy must also be close to the history state.
@@ -23,15 +22,11 @@ we need to construct X-Z only local Hamiltonians.
 Indeed, this has been shown possible in, e.g.,~\cite{PhysRevA.78.012352}, which serves as the starting point of our construction.
 
 
-We present the formal construction of our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in \Cref{sec:sampbqp}, \Cref{ProtoQPIP1}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem, whose proof is also deferred to \Cref{sec:sampbqp}.% The proof of 
-
-
- %For more details of the construction of our $\QPIP_1$ Protocol for $\SampBQP$, \Cref{ProtoQPIP1}, see \Cref{sec:sampbqp}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem.
+We present the formal construction of our $\QPIP_1$ protocol $\PiSamp$ for $\SampBQP$ in \Cref{sec:sampbqp}, \Cref{ProtoQPIP1}. The soundness and completeness of \Cref{ProtoQPIP1} is stated in the following theorem, whose proof is also deferred to \Cref{sec:sampbqp}.
 
 \begin{thm}
     \label{QPIP1thm}
 	$\PiSamp$ is a $\QPIP_1$ protocol for the $\SampBQP$ problem  $(D_x)_{x\in\set{0,1}^*}$ with negligible completeness error and is statistically sound\footnote{The soundness and completeness of a $\SampBQP$ protocol is defined in \Cref{dfn:stats-secure-proto-sampbqp}.} where the verifier only needs to do non-adaptive $X/Z$ measurements.
-	%\XW{do we want precise error bound?}	
 \end{thm}
 
 \vspace{-3pt}
