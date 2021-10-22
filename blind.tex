@@ -15,35 +15,7 @@ Since the verifier $\Vblind$ only  sends fresh ciphertexts to $\Pblind$, this av
 
 We note that the idea of running the protocol under homomorphic encryptions is used in~\cite{KMThesis} in a classical setting, but for a different purpose of making the protocol ``computationally simulatable'' in their context.
 
-\iffalse
- 
-
-Here we present our compiler on $\QPIP_0$ protocols that can be used to achieve blindness.
-The high level idea is to run the protocol under homomorphic encryption.
-A classical version of this compiler appears in \cite{KMThesis}, where it is used to make protocols computationally simulatable.
-We have a classical client and a quantum server.
-So we choose the quantum homomorphic encryption from \cite{mahadev_qfhe} that's compatible with classical clients.
-More precisely, when the corresponding plaintext is classical, encryption and decryption can be performed classically.
-Furthermore, we notice that the ciphertexts can be split into registers as with the corresponding plaintext.
-
-A naive approach is to encrypt the initial input,
-run the entire protocol homomorphically,
-then decode the output at the very end.
-However, it is difficult to prove the soundness this way because homomorphic encryption schemes doesn't guarantee circuit privacy;
-the server could learn about its client's coins.
-Furthermore, the prover would also be allowed to send invalid ciphertexts...?
-\Ethan{Can't we assume all ciphertexts are valid, and ``invalid" ones just decodes to $\bot$?}
-So instead we let the verifier decrypt every round.
-Then, in order to preserve blindness, the verifier generates a new set of keys for every message it sends to the prover...
-Which results in the following protocol.
-
-\fi
-
-%\Ethan{General comment: Make the story more interesting. Clearly claim our own contributions.}
-
-
 We proceed to present our compiler. We start by introducing the notation of a $\QPIP_0$ protocol $\Pi$ as follows.
-% We now state our compiler that gives any $\QPIP_0$ protocol blindness.
 
 \begin{protocol}{$\QPIP_0$ protocol $\Pi=(P, V)(x)$ where only the verifier receives outputs}
     
@@ -70,9 +42,6 @@ We proceed to present our compiler. We start by introducing the notation of a $\
 We compile the above protocol to achieve blindness as follows.
 For notation, when there are many sets of $\QHE$ keys in play at the same time,
 we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
-%We start with a general form of a $\QPIP_0$ protocol that we'll be compiling.
-
-
 
 \begin{protocol}{Blind $\QPIP_0$ protocol $\Piblind=(\Pblind, \Vblind(x))$ corresponding to $\Pi_0$}
     Inputs:
@@ -120,8 +89,6 @@ we use $\ctx{x}{}{i}$ to denote $x$ encrypted under $pk_i$.
 By the correctness of $\QHE$, the completeness error of $\Piblind$ is negligibly close to that of $\Pi$.
 In particular, note that the level parameter $L$ is sufficient for the honest prover which has a bounded complexity.
 For the soundness property, we show the following lemma, which implies that $\Piblind$ preserves the soundness of $\Pi_0$.
-
-%soundness of $\Piblind$ in the following theorem.
 
 \begin{thm} \label{thm:compiler-errors}
     For all cheating $\BQP$ provers $\Pblindstar$, there exists a cheating $\BQP$ prover $\Pstar$ s.t. for all $\lambda$ and inputs $x\in\zo^{\poly(\lambda)}$, the output distributions of $(\Pblindstar, \Vblind(x))$ and $(\Pstar, V)(x)$ are identical.
@@ -180,5 +147,3 @@ Applying our compiler to the parallel repetition of Mahadev's protocol for $\BQP
 \begin{thm}
         Under the QLWE assumption, there exists a blind, four-message $\QPIP_0$ protocol for all sampling problems in $\SampBQP$ with negligible completeness error and computational soundness.
 \end{thm}
-
-
