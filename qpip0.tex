@@ -59,7 +59,7 @@ if a prover would always succeed on the testing round, then there exists some $\
 
 We now combine $\PiMeasure$ with our $\QPIP_1$ Protocol for $\SampBQP$, $\PiSamp=(\PSamp, \VSamp)$ (\Cref{ProtoQPIP1}), to get a corresponding $\QPIP_0$ protocol $\PiNaive$.
 Recall that in $\PiSamp$ the verifier takes $X$ and $Z$ measurements on the prover's message.
-In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead. \hannote{also need to be non-adaptive?}
+In $\PiNaive$ we let the verifier use $\PiMeasure$ to learn those measurement outcomes instead.
 
 \begin{protocol}{Intermediate $\QPIP_0$ protocol $\PiNaive$ for the $\SampBQP$ problem $(D_x)_{x\in\set{0, 1}^*}$}
 	\label{proto:qpip0_naive}
@@ -302,7 +302,7 @@ For all $i\in[m]$, we then decompose $\ket{\psi}$ into
 \end{equation}
 by using \Cref{eq:psi0,eq:psi1,eq:psierr} repeatedly,  where $\ket{\psi_{err,i,\gamma}}$ denotes the error state from decomposing $\ket{\psi_{1^{i-1},\gamma}}$.
 
-\hannote{maybe some explanation about $P_{acc,i}$ and $P_{acc,j}$ commute. maybe just stress that $P_{acc}$'s are in standard basis.stress on the dilation dequantization?} We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,-i,z}$.
+We denote the projector in $H_{\regX,\regZ}$ corresponding to outputting string $z$ when doing Hadamard on $i$-th copy as $P_{acc,-i,z}$.
 Note that $P_{acc,-i,z}$ also depends on $\vec{pk}, \vec{y}$, and $(sk_i, h_i)$ since it includes the measurement the prover did before sending $\vec{a}$,  verifier's checking on $(m-1)$ copies of testing rounds, and  the verifier's final computation from $(sk_i,h_i,y_i,a_i)$. $P_{acc,-i,z}$ is a projector because it only involves the standard basis measurements to get $a$ and classical post-processing of the verifiers. Also note that  $P_{acc,-i,z} P_{acc,-i,z'}=0$ for all $z\neq z'$, and $\sum_z P_{acc,-i,z} =\Pi_{j \neq i} P_{acc,j}\leq Id$.
 
 We denote the string $0^{i-1}10^{m-i} \in \zo^m$ as $e_i$. The output string corresponding to $\ket{\psi} \in H_{\regX,\regZ}$ when $c=e_i$ is then
