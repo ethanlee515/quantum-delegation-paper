@@ -1,18 +1,13 @@
-\newif\ifdraft
-%\drafttrue
-\draftfalse
-
-\documentclass{llncs}
+\documentclass[runningheads,a4paper]{llncs}
 \pagestyle{plain}
-\usepackage{authblk}
-
+%\documentclass[11pt]{article}
+%\usepackage[margin=1in]{geometry}
 \usepackage{amsmath, amssymb}
 \usepackage{stmaryrd}
 \usepackage{braket}
 \usepackage{algorithm}
 \usepackage{enumitem}
 \usepackage{algpseudocode}
-%\usepackage[margin=1in]{geometry}
 \newcommand{\sgn}{\operatorname{sgn}}
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareMathOperator*{\spn}{\operatorname{span}}
@@ -33,25 +28,6 @@
 \crefname{lem}{lemma}{lemmata}
 \Crefname{lem}{Lemma}{Lemmata}
 
-
-
-%*************************************page layout****************************
-\iffalse
-\setlength{\textheight}{9in}
-\setlength{\columnsep}{2.0pc}
-\setlength{\textwidth}{6.5in}
-\setlength{\topmargin}{0in}
-\setlength{\headheight}{0ex}
-\setlength{\hoffset}{0in}
-\setlength{\headsep}{0.0in}
-\setlength{\oddsidemargin}{0ex}
-\setlength{\evensidemargin}{0ex}
-\setlength{\parindent}{1pc}
-
-\fi
-
-%\pagecolor{black}
-%\color{white}
 \numberwithin{equation}{section}
 \newcounter{protocol}
 \newcommand{\linefill}{\rule{\linewidth}{0.8pt}}
@@ -59,22 +35,6 @@
 \newenvironment{protocol}[1]{\begingroup\setlength\parindent{0pt}\medskip\noindent\linefill\\
 \refstepcounter{protocol}\textbf{Protocol \theprotocol} #1\\\noindent\linefill}
 {\vspace{-\topsep}\noindent\linefill\endgroup}
-
-\ifdraft
-\newcommand{\KM}[1]{{\footnotesize\color{cyan}[KM: #1]}}
-\newcommand{\Ethan}[1]{{\footnotesize\color{magenta}[Ethan: #1]}}
-\newcommand{\XW}[1]{{\footnotesize\color{red}[XW: #1]}}
-\newcommand{\hannote}[1]{\textcolor{blue}{\small {\textbf{(Han:} #1\textbf{) }}}}
-\newcommand{\Knote}[1]{\textcolor{red}{\small {\textbf{(KM:} #1\textbf{) }}}}
-\else
-\newcommand{\KM}[1]{}
-\newcommand{\Ethan}[1]{}
-\newcommand{\XW}[1]{}
-\newcommand{\hannote}[1]{}
-\newcommand{\Knote}[1]{}
-\fi
-
-
 
 \def \Hin {H_{\mathrm{in}}}
 \def \Hout {H_{\mathrm{out}}}
@@ -85,41 +45,52 @@
 \def \Kin {K_{\mathrm{in}}}
 \def \Kclock {K_{\mathrm{clock}}}
 \def \Kprop {K_{\mathrm{prop}}}
-%\def \tr {\mathrm{tr}}
 
 \newcommand{\histpsi}[1]{\ket{\psi_{#1}^{\mathrm{hist}}}}
 \newcommand{\LHXZ}[1]{\mathrm{LH}_{\mathrm{XZ}}^{#1}}
 \newcommand{\ground}[1]{{\lambda \left (#1 \right)}}
 
-
 \title{Constant-round Blind Classical Verification of Quantum Sampling}
 
-\iffalse
-\author[1]{Kai-Min Chung\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}}
-\author[2]{Yi Lee\thanks{\href{mailto:ylee1228@umd.edu}{ylee1228@umd.edu}. This work was done while affiliated to Academia Sinica and to National Taiwan University.}}
-\author[3]{Han-Hsuan Lin\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense. Partially funded by MOST Grant no. 110-2222-E-007-002-MY3}}
-\author[4]{Xiaodi Wu\thanks{\href{mailto:xwu@cs.umd.edu}{xwu@cs.umd.edu}. Partially supported by the U.S. National Science Foundation grant CCF-1755800, CCF-1816695, and CCF-1942837 (CAREER). }}
-\affil[1]{Institute of Information Science, Academia Sinica, Taiwan}
-\affil[2]{Department of Computer Science, University of Maryland, USA}
-\affil[3]{Department of Computer Science, National Tsing Hua University, Taiwan}
-\affil[4]{
-	Department of Computer Science, Institute for Advanced Computer Studies,
-	and Joint Center for Quantum Information and Computer Science,
-	University of Maryland, USA
+%\iffalse
+\author{Kai-Min Chung
+\inst{1}\orcidID{0000-0002-3356-369X}
+\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}
+\and
+Yi Lee
+\inst{2}\orcidID{0000-0003-3742-3296}
+\thanks{\href{mailto:ylee1228@umd.edu}{ylee1228@umd.edu}. This work was done while affiliated to Academia Sinica and to National Taiwan University.}
+\and
+Han-Hsuan Lin
+\inst{3}\orcidID{???}
+\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense. Partially funded by MOST Grant no. 110-2222-E-007-002-MY3}
+\and
+Xiaodi Wu
+\inst{2,4}\orcidID{0000-0001-8877-9802}
+\thanks{\href{mailto:xwu@cs.umd.edu}{xwu@cs.umd.edu}. Partially supported by the U.S. National Science Foundation grant CCF-1755800, CCF-1816695, and CCF-1942837 (CAREER). }}
+
+\index{Chung, Kai-Min}
+\index{Lee, Yi}
+\index{Lin, Han-Hsuan}
+\index{Wu, Xiaodi}
+
+%\fi
+%\author{}
+\institute{
+Institute of Information Science, Academia Sinica, Taiwan
+\and
+Department of Computer Science, University of Maryland, USA
+\and
+Department of Computer Science, National Tsing Hua University, Taiwan
+\and
+Joint Center for Quantum Information and Computer Science, University of Maryland, USA
 }
-\fi
-\author{}
-\institute{}
 
 \input{macros.tex}
 \input{macros_1.tex}
 \begin{document}
 
-\date{}
 \maketitle
-%\thispagestyle{plain}
-
-
 
 \begin{abstract}
 
@@ -141,8 +112,6 @@ Applying our compiler to (a parallel repetition of) Mahadev's CVQC protocol for 
 \newpage
 
 \input{introduction}
-
-%\input{preliminaries}
 
 \input{model}
 
