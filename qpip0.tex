@@ -336,12 +336,12 @@ Before doing so, we present a technical lemma.
 \end{lemma}
 \begin{proof}
 	\begin{align}
-		\sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| \nn \\
-		\leq& \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
+		\sum_z |\vev{\psi|P_z|\phi}| =&\sum_z|\vev{\psi|P_zP_z|\phi}| %\nn \\
+		\leq \sum_z \norm{\bra{\psi}P_z} \norm{ P_z\ket{\phi}} \nn \\
 		\leq&  \sqrt{\sum_z \norm{P_z\ket{\psi}}^2} \sqrt{\sum_z\norm{P_z\ket{\phi}}^2} \nn \\
 		\leq& \sqrt{\norm{\sum_z P_z\ket{\psi}}^2 } \sqrt{\norm{\sum_z P_z\ket{\phi}}^2 } \nn,
 	\end{align}
-	where we used Cauchy's inequality on the second and third line and $P_z P_{z'} =0 $ on the fourth line.
+	where we used Cauchy's inequality on the first two inequalities and $P_z P_{z'} =0 $ on the last one.
 \end{proof}
 
 \begin{cor}\label{lem:samp-tech}
@@ -383,12 +383,12 @@ we simply expand $z_i$ and bound the terms that are not $z_{good, i}$.
 	where we omitted writing out $e_i$.
 	Therefore we have
 	\begin{align*}
-		\tr|z_i-z_{good,i}|\leq \E_{pk, y, \gamma} \sum_z &\L[ \sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U \ket{\psi_{1^j0,\gamma}} \R|\R.\\
-		&+
-		2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U \ket{\psi_{1^i,\gamma}} \R| \\
-		&+ 2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U\ket{\psi_{err,j,\gamma}}\R| \\   
-		&+2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,-i,z}U \ket{\psi_{err,j,\gamma}}\R| \\
-		&+\L. \sum_{k=1}^{i}\sum_{j=1}^{i}\L| \bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,-i,z}U \ket{\psi_{err,j,\gamma}}\R| \R] \\ %%%%%%%%%
+		&\tr|z_i-z_{good,i}|\leq \E_{pk, y, \gamma} \sum_z \L[ \sum_{k=0}^{i-1} \sum_{j=0}^{i-1} \L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U \ket{\psi_{1^j0,\gamma}} \R|\R.\\
+		&\quad+
+		2 \sum_{k=0}^{i-1} \L|\bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U \ket{\psi_{1^i,\gamma}} \R| %\\
+		+ 2 \sum_{k=0}^{i-1}\sum_{j=1}^{i}\L| \bra{\psi_{1^k0,\gamma}}U^\dag  P_{acc,-i,z}U\ket{\psi_{err,j,\gamma}}\R| \\   
+		&\quad+2 \sum_{j=1}^{i}\L|\bra{\psi_{1^i,\gamma}} U^\dag  P_{acc,-i,z}U \ket{\psi_{err,j,\gamma}}\R| %\\
+		+\L. \sum_{k=1}^{i}\sum_{j=1}^{i}\L| \bra{\psi_{err,k,\gamma}} U^\dag  P_{acc,-i,z}U \ket{\psi_{err,j,\gamma}}\R| \R] \\ %%%%%%%%%
 	\end{align*}
 	by the triangle inequality.
 	The last three error terms sum to $O\L(\frac{m^2}{\sqrt{T}}\R)$ by \Cref{lem:samp-tech} and property~\ref{property:partition-err} of \Cref{lem:partition2}.
@@ -456,20 +456,22 @@ Notice that $z_{ideal}$ is some ideal output distribution, which might not have 
 		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
 		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{11,\gamma}}}^2 \nn \\
 		\geq& \norm{\ket{\psi_{0,\gamma}}}^2+
-		\norm{\ket{\psi_{10,\gamma}}}^2+ \norm{\ket{\psi_{110,\gamma}}}^2 +\cdots  \nn \\
-		&+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^{m-1}1,\gamma}}}^2.
+		\norm{\ket{\psi_{10,\gamma}}}^2
+		%+ \norm{\ket{\psi_{110,\gamma}}}^2
+		+\cdots  %\nn \\
+		+ \norm{\ket{\psi_{1^{m-1}0,\gamma}}}^2+ \norm{\ket{\psi_{1^m,\gamma}}}^2.
 	\end{align}
 
 	We have
 	\begin{align} \label{eq:z-z-good}
-		\tr|z-z_{good}| =& \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| \nn \\
-		\leq&  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
-		\leq&  \frac{1}{m}\sum_i\L[\E_{pk, y, \gamma}\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R] \R.\nn \\
-		&+ \L. O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)\R] \nn \\%%%%%%%%
-		\leq&  \frac{1}{m}+ 2\frac{1}{\sqrt m}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R) \nn \\ %%%%%
-		=&O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R),  
+		&\tr|z-z_{good}| = \tr\L|\frac{1}{m}\sum_i (z_i-z_{good,i})\R| %\nn \\
+		\leq  \frac{1}{m}\sum_i\tr| (z_i-z_{good,i})| \nn \\
+		&\quad\leq  \frac{1}{m}\sum_i\L[\E_{pk, y, \gamma}\L[\norm{\ket{\psi_{1^{i-1}0,\gamma}}}^2+ 2\norm{\ket{\psi_{1^{i-1}0,\gamma}}}\R] \R.\nn \\
+		&\qquad+ \L. O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R)\R] \nn \\%%%%%%%%
+		&\quad\leq  \frac{1}{m}+ 2\frac{1}{\sqrt m}+O\L(\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R) \nn \\ %%%%%
+		&\quad=O\L( \frac{1}{\sqrt m}+\frac{m^2}{\sqrt T}+m\sqrt{(m-1)\gamma_0}\R),  
 	\end{align}
-	where we used triangle inequality on the second line, \Cref{thm:zi-zgoodi} on the third line, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the fourth line.
+	where we used triangle inequality on the first inequality, \Cref{thm:zi-zgoodi} on the next one, Equation~\ref{eq:bad-term-sum} and Cauchy's inequality on the last one.
 	Set $m=O(1/\eps^2), T=O(1/\eps^2),\gamma_0=\eps^8$. Combining \Cref{thm:zgood-zideal} and \Cref{eq:z-z-good} by triangle inequality, we have $z$ is $O(\epsilon)$-computationally indistinguishable to $z_{ideal}$. Therefore, $(d,z)$  $O(\epsilon)$-computationally indistinguishable to $(d,z_{ideal})$.
 %	\hannote{?}Since $z$ is close to some ideal output distribution $z_{ideal}$, it must be close to the ideal output distribution with its own accept probability too.
 \end{proof}

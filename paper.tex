@@ -51,11 +51,21 @@
 
 \title{Constant-round Blind Classical Verification of Quantum Sampling}
 
-%\iffalse
-\author{Kai-Min Chung\inst{1}\orcidID{0000-0002-3356-369X}\thanks{\href{mailto:kmchung@iis.sinica.edu.tw}{kmchung@iis.sinica.edu.tw}. Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.}\and
+\iffalse
+\author{Kai-Min Chung\inst{1}\orcidID{0000-0002-3356-369X} Partially supported by the 2019 Academia Sinica Career Development Award under Grant no. 23-17, and MOST QC project under Grant no. MOST 108-2627-E-002-001.
+\and
 Yi Lee\inst{2}\orcidID{0000-0003-3742-3296}\thanks{\href{mailto:ylee1228@umd.edu}{ylee1228@umd.edu}. This work was done while affiliated to Academia Sinica and to National Taiwan University.}\and
-Han-Hsuan Lin\inst{3}\orcidID{???}\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense. Partially funded by MOST Grant no. 110-2222-E-007-002-MY3}\and
+Han-Hsuan Lin\inst{3}\orcidID{0000-0002-5126-0174}\thanks{\href{mailto:linhh@cs.nthu.edu.tw}{linhh@cs.nthu.edu.tw}. Part of this work was done while supported by Scott Aaronson's Vannevar Bush Faculty Fellowship from the US Department of Defense. Partially funded by MOST Grant no. 110-2222-E-007-002-MY3}\and
 Xiaodi Wu\inst{2,4}\orcidID{0000-0001-8877-9802}\thanks{\href{mailto:xwu@cs.umd.edu}{xwu@cs.umd.edu}. Partially supported by the U.S. National Science Foundation grant CCF-1755800, CCF-1816695, and CCF-1942837 (CAREER).}}
+\fi
+
+\author{Kai-Min Chung\inst{1}\orcidID{0000-0002-3356-369X}
+\and
+Yi Lee\inst{2}\orcidID{0000-0003-3742-3296}
+\and
+Han-Hsuan Lin\inst{3}\orcidID{0000-0002-5126-0174}\
+\and
+Xiaodi Wu\inst{2,4}\orcidID{0000-0001-8877-9802}}
 
 \index{Chung, Kai-Min}
 \index{Lee, Yi}
@@ -66,10 +76,13 @@ Xiaodi Wu\inst{2,4}\orcidID{0000-0001-8877-9802}\thanks{\href{mailto:xwu@cs.umd.
 %\author{}
 \institute{
 Institute of Information Science, Academia Sinica, Taiwan
+\email{kmchung@iis.sinica.edu.tw}
 \and
 Department of Computer Science, University of Maryland, USA
+\email{ylee1228@umd.edu, xwu@cs.umd.edu}
 \and
 Department of Computer Science, National Tsing Hua University, Taiwan
+\email{linhh@cs.nthu.edu.tw}
 \and
 Joint Center for Quantum Information and Computer Science, University of Maryland, USA
 }
@@ -92,12 +105,11 @@ We provide a simple yet powerful \emph{generic} compiler that transforms any CVQ
 \end{itemize}
 Applying our compiler to (a parallel repetition of) Mahadev's CVQC protocol for $\BQP$ and our CVQC protocol for $\SampBQP$ yields the first \emph{constant-round} blind CVQC protocol for $\BQP$ and $\SampBQP$ respectively, with negligible and inverse polynomial soundness errors respectively, and negligible completeness errors. 
 
-\vspace{1mm}
-\noindent \textbf{Keywords:} classical delegation of quantum computation, blind quantum computation, quantum sampling problems
+\keywords{classical delegation of quantum computation\and
+blind quantum computation\and
+quantum sampling problems}
 
 \end{abstract}
-
-\newpage
 
 \input{introduction}
 
