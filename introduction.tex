@@ -113,7 +113,7 @@ The construction of our CVQC protocol follows the blueprint of Mahadev's constru
 \paragraph{Overview of Mahadev's Protocol.}
 %
 Following~\cite{FOCS:Mahadev18a}, we define $\QPIP_{\tau}$ as classes of interactive proof systems between an (almost) classical verifier and a quantum prover, where the classical verifier has limited quantum computational capability, formalized as possessing $\tau$-qubit quantum memory. %\footnote{Intuitively, the size of local quantum memory limits the size of qubits that a general (entangled) quantum operation can be operated on at the same time. However, the verifier is still able to operate on all the qubits in a streaming fashion: i.e., receive the qubits sent from the prover and discard some local qubits in the case of overflow.}. 
-A formal definition is given in Appendix~\ref{sec:qpip_def}. 
+A formal definition is given in our full version \cite{full-version}.
 
 At a high-level, the heart of Mahadev's protocol is a measurement protocol $\PiMeasure$ that can compile an one-round $\QPIP_1$ protocol (with special properties) to a $\QPIP_0$ protocol. Note that in a $\QPIP_1$ protocol, the verifier with one-qubit memory can only measure the prover's quantum message qubit by qubit. Informally, the measurement protocol $\PiMeasure$ allows a $\BQP$ prover to ``commit to'' a quantum state $\rho$ and a classical verifier to choose an $X$ or $Z$ measurement to apply to each qubit of $\rho$ such that the verifier can learn the resulting measurement outcome. 
 
@@ -262,9 +262,9 @@ Section~\ref{sec:qpip0_all}.
 
 
 
-Another desirable property of CVQC protocols is  \emph{blindness}, which means that the prover does not learn any information about the private input for the delegated computation.\footnote{In literature, the definition of blindness may also require to additionally hide the computation. We note the two notions are equivalent from a feasibility point of view by a standard transformation (see Remark~\ref{rmk:blind-comp} in Section~\ref{sec:qpip_def}). 
+Another desirable property of CVQC protocols is  \emph{blindness}, which means that the prover does not learn any information about the private input for the delegated computation.\footnote{In literature, the definition of blindness may also require to additionally hide the computation. We note the two notions are equivalent from a feasibility point of view by a standard transformation (see our full version \cite{full-version}). 
 %The two notions are equivalent from a feasibility point of view by a standard transformation that takes the description of the computation as part of the input and delegate the computation of  universal quantum circuits.
-} In the relaxed setting where the verifier has a limited quantum capability, Hayashi and Morimae~\cite{hayashi2015verifiable} constructed a blind $\QPIP_1$ protocol for delegating quantum computation with information-theoretic security that also handles sampling problems. 
+} In the relaxed setting where the verifier has a limited quantum capability, Hayashi and Morimae~\cite{hayashi2015verifiable} constructed a blind $\QPIP_1$ protocol for delegating quantum computation with information-theoretic security that also handles sampling problems.
 %
 However, for purely classical verifiers, blind CVQC protocols seem much more difficult to construct. This goal is recently achieved by the seminal work of Gheorghiu and Vidick~\cite{FOCS:GheVid19}, who constructed the first blind CVQC protocol for $\BQP$ by constructing a composable remote state preparation protocol and combining it with the verifiable blind quantum computation protocol of Fitzsimons and Kashefi~\cite{FK17}. However, their protocol has   polynomially many rounds  and requires a rather involved analysis. Before our work, it is an open question whether constant-round blind CVQC protocol for $\BQP$ is achievable.
 
@@ -478,7 +478,7 @@ Details are given in \Cref{sec:BlindBQP2}.
 
 %\vspace{2mm} \noindent \textbf{Organization.} \KM{check if its correct...} \KM{can use here to mention that preliminary is moved to appendix} 
 \paragraph{Organization}
-We provide preliminaries on technical background in Section~\ref{sec:prelim}. 
+For preliminary technical background, see our full version \cite{full-version}. 
 Our simulation-based definition of CVQC for $\SampBQP$ is discussed in Section~\ref{sec:samp_definition}. 
 Our main technical contributions are explained in Section~\ref{sec:sampbqp_short} (a construction of $\QPIP_1$ protocol for $\SampBQP$), 
 Section~\ref{sec:qpip0_all} (the construction of $\QPIP_0$ protocol for $\SampBQP$ based on the above $\QPIP_1$ protocol), 
